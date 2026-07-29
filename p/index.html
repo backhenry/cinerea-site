@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uma peça Cinérea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .tudo{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+  svg.marca{width:44px;height:44px}
+  .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
+  .titulo{font-family:'Fraunces';font-weight:300;font-size:clamp(30px,9vw,44px);line-height:1.1;margin-top:10px;word-break:break-word}
+  .conteudo{margin-top:34px;width:100%;max-width:400px}
+  .cta{display:block;margin-top:18px;padding:17px 22px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+  .cta:hover{background:var(--ember)}
+  .recado{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(19px,5.4vw,24px);line-height:1.45;color:var(--char)}
+  .nota{margin-top:16px;font-size:13.5px;color:var(--smoke)}
+  .certidao{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);width:100%;max-width:400px}
+  .proc{font-family:'Fraunces';font-size:17px;margin-top:8px}
+  .refil{display:inline-block;margin-top:16px;color:var(--ember);font-size:14px}
+  .rodape{margin-top:40px;font-size:12px;color:var(--smoke)}
+  .rodape a{color:var(--smoke)}
+  .carregando{color:var(--smoke);font-size:14px}
+</style>
+</head>
+<body>
+<main class="tudo">
+  <svg class="marca" viewBox="0 0 150 150" fill="none" aria-hidden="true">
+    <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <circle cx="112" cy="75" r="11" fill="#B5462A"/>
+  </svg>
+  <div id="corpo"><p class="carregando" style="margin-top:28px">abrindo a peça…</p></div>
+  <p class="rodape"><a href="/">Cinérea</a> · Campos do Jordão</p>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Chave de app web não é segredo: ela vai em qualquer site. Quem protege é a
+// regra do Firestore — `vitrines/` e `pecas/` são de leitura aberta de
+// propósito, e nada mais desse projeto é.
+const app = initializeApp({
+  apiKey: "AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ",
+  authDomain: "cinerea1.firebaseapp.com",
+  projectId: "cinerea1",
+  storageBucket: "cinerea1.firebasestorage.app",
+  messagingSenderId: "458519504441",
+  appId: "1:458519504441:web:b66d6dd2d8a2d497654fe8",
+});
+const fdb = getFirestore(app);
+const corpo = document.getElementById('corpo');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/** O chip é identificado por `?c=`. Curto de propósito: cabe nos 504 bytes. */
+const chip = new URLSearchParams(location.search).get('c');
+
+function vazio(msg){
+  corpo.innerHTML = `<p class="rot" style="margin-top:26px">Cinérea</p>
+    <p class="titulo">Uma peça</p><p class="nota">${esc(msg)}</p>`;
+}
+
+function abrirEm(url, rotulo){
+  return `<a class="cta" href="${esc(url)}" rel="noopener">${esc(rotulo)}</a>`;
+}
+
+function mostrar(v, cert){
+  let bloco = '';
+  if (!v) {
+    bloco = `<p class="rot">Esta peça ainda não diz nada</p>
+      <p class="nota" style="margin-top:12px">Quem tem a peça escolhe o que ela guarda.</p>`;
+  } else if (v.tipo === 'recado') {
+    bloco = `<p class="rot">Recado</p><p class="recado" style="margin-top:14px">${esc(v.dados)}</p>`;
+  } else if (v.tipo === 'wifi') {
+    // A senha nunca chega aqui — a regra do Firestore recusa. Ela vive só no
+    // chip, onde é preciso encostar o celular para pegar.
+    bloco = `<p class="rot">Rede de wi-fi</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>
+      <p class="nota">Encoste o celular na peça para conectar — a senha fica só nela.</p>`;
+  } else if (v.tipo === 'contato') {
+    bloco = `<p class="rot">Contato</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>`;
+  } else {
+    const rotulos = {link:'Abrir o link', playlist:'Ouvir a playlist', whatsapp:'Falar no WhatsApp', local:'Ver no mapa'};
+    bloco = `<p class="rot">${esc({link:'Link',playlist:'Playlist',whatsapp:'WhatsApp',local:'Lugar'}[v.tipo] || 'Conteúdo')}</p>
+      ${abrirEm(v.dados, rotulos[v.tipo] || 'Abrir')}`;
+  }
+
+  let selo = '';
+  if (cert) {
+    const serie = cert.serie && cert.total ? `peça ${cert.serie} de ${cert.total}`
+                : cert.serie ? `peça ${cert.serie}` : '';
+    const feita = cert.feitaEm?.seconds
+      ? new Date(cert.feitaEm.seconds * 1000).toLocaleDateString('pt-BR', {month:'long', year:'numeric'})
+      : '';
+    selo = `<div class="certidao">
+      <p class="rot">Peça original</p>
+      <p class="proc">${esc(cert.modelo || 'Cinérea')}${serie ? ' · ' + esc(serie) : ''}</p>
+      ${feita ? `<p class="nota" style="margin-top:4px">feita em ${esc(feita)}</p>` : ''}
+      ${cert.refil ? `<a class="refil" href="${esc(cert.refil)}" rel="noopener">Repor a areia perfumada</a>` : ''}
+    </div>`;
+  }
+
+  corpo.innerHTML = `<div class="conteudo">${bloco}</div>${selo}`;
+}
+
+if (!chip) {
+  vazio('Encoste o celular numa peça Cinérea para abri-la.');
+} else {
+  try {
+    const [vit, cert] = await Promise.all([
+      getDoc(doc(fdb, 'vitrines', chip)).catch(() => null),
+      getDoc(doc(fdb, 'pecas', chip)).catch(() => null),
+    ]);
+    if (!vit?.exists() && !cert?.exists()) {
+      vazio('Não encontramos esta peça.');
+    } else {
+      mostrar(vit?.exists() ? vit.data() : null, cert?.exists() ? cert.data() : null);
+    }
+  } catch {
+    vazio('Não consegui abrir a peça agora. Tente de novo com internet.');
+  }
+}
+</script>
+</body>
+</html>

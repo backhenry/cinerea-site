@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loja · Cinérea</title>
+<meta name="description" content="Esculturas de gesso feitas à mão. Cada peça guarda o que você escolher dizer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:90px}
+  a{color:inherit}
+  header{padding:26px 22px 8px;text-align:center}
+  header svg{width:38px;height:38px}
+  h1{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:10px}
+  .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:15px}
+  .envolve{max-width:1000px;margin:0 auto;padding:0 22px}
+  .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 26px;justify-content:center}
+  .linhas button{padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;font-size:12.5px;color:var(--smoke);cursor:pointer}
+  .linhas button.on{background:var(--char);color:var(--paper);border-color:var(--char)}
+  .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:30px 22px}
+  .peca{cursor:pointer}
+  .moldura{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash);border:1px solid var(--line);position:relative}
+  .moldura img{width:100%;height:100%;object-fit:cover;display:block}
+  .breve{position:absolute;top:12px;left:12px;background:var(--char);color:var(--paper);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
+  .nome{font-family:'Fraunces';font-size:19px;margin-top:13px}
+  .desc{font-size:13.5px;color:var(--smoke);margin-top:3px}
+  .preco{margin-top:7px;font-size:15px}
+  .vazio{text-align:center;color:var(--smoke);padding:60px 0}
+  /* ficha da peça */
+  .ficha{position:fixed;inset:0;background:var(--paper);overflow-y:auto;z-index:30;display:none}
+  .ficha.abre{display:block}
+  .fechar{position:sticky;top:0;background:var(--paper);padding:14px 22px;border-bottom:1px solid var(--line);z-index:2}
+  .fechar button{background:none;border:none;font-size:14px;color:var(--smoke);cursor:pointer}
+  .fmiolo{max-width:620px;margin:0 auto;padding:22px}
+  .fmiolo .moldura{margin-bottom:22px}
+  .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
+  .ftitulo{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:6px}
+  .fpreco{font-family:'Fraunces';font-size:24px;margin-top:16px}
+  .flonga{margin-top:20px}
+  .ftec{margin-top:26px;border-top:1px solid var(--line)}
+  .ftec div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .ftec span:first-child{color:var(--smoke)}
+  .bt{display:block;width:100%;margin-top:24px;padding:16px;border:none;border-radius:10px;background:var(--char);color:var(--paper);font-size:15px;cursor:pointer}
+  .bt:hover{background:var(--ember)}
+  .bt.fraco{background:none;border:1px solid var(--line);color:var(--char)}
+  /* barra da sacola */
+  .barra{position:fixed;left:0;right:0;bottom:0;background:var(--char);color:var(--paper);padding:16px 22px;display:none;justify-content:space-between;align-items:center;gap:16px;z-index:40}
+  .barra.abre{display:flex}
+  .barra button{background:var(--paper);color:var(--char);border:none;border-radius:8px;padding:11px 18px;font-size:14px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <a href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg></a>
+  <h1>Cinérea</h1>
+  <p class="lema">a base permanece, o conteúdo se renova</p>
+</header>
+
+<div class="envolve">
+  <div class="linhas" id="linhas"></div>
+  <div class="grade" id="grade"><p class="vazio">abrindo a loja…</p></div>
+</div>
+
+<div class="ficha" id="ficha"><div class="fechar"><button onclick="fecharFicha()">← voltar</button></div><div class="fmiolo" id="fmiolo"></div></div>
+<div class="barra" id="barra"><span id="barraTxt"></span><button onclick="fecharPedido()">Fechar pedido</button></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ", authDomain:"cinerea1.firebaseapp.com",
+  projectId:"cinerea1", storageBucket:"cinerea1.firebasestorage.app",
+  messagingSenderId:"458519504441", appId:"1:458519504441:web:b66d6dd2d8a2d497654fe8",
+});
+const fdb = getFirestore(app);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+let produtos=[], whats=null, linhaAtiva=null;
+const sacola={};   // id -> qtd
+
+/**
+ * A MESMA coleção que o app de celular lê, publicada pelo sistema de gestão.
+ * O site não tem lista própria de propósito: duas listas divergem, e o preço
+ * errado aparece na cara do cliente.
+ */
+async function carregar(){
+  const snap = await getDocs(collection(fdb,'catalogo'));
+  const d = snap.docs[0]?.data();
+  produtos = (d?.itens||[]).map((p,i)=>({
+    id:String(p.id??i), nome:p.nome||'Peça', preco:Number(p.preco)||0, foto:p.foto||'',
+    linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
+    desc:p.desc||'', longa:p.longa||'', ficha:Array.isArray(p.ficha)?p.ficha:[],
+    destaque:!!p.destaque, pronto:Number(p.pronto)||0,
+  })).sort((a,b)=>Number(b.destaque)-Number(a.destaque));
+  whats = String(d?.whats||'').replace(/\D/g,'')||null;
+}
+
+function marca(){ return '<div class="moldura"><div style="display:flex;align-items:center;justify-content:center;height:100%"><svg width="42" height="42" viewBox="0 0 150 150" fill="none"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="10" fill="#B5462A"/></svg></div></div>'; }
+
+function cartao(p){
+  const foto = p.foto ? `<div class="moldura"><img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">${p.situacao==='embreve'?'<span class="breve">em breve</span>':''}</div>` : marca();
+  return `<div class="peca" onclick="abrirFicha('${esc(p.id)}')">${foto}
+    <div class="nome">${esc(p.nome)}</div>
+    ${p.desc?`<div class="desc">${esc(p.desc)}</div>`:''}
+    <div class="preco">${brl(p.preco)}</div></div>`;
+}
+
+function pintar(){
+  const linhas=[...new Set(produtos.map(p=>p.linha))];
+  document.getElementById('linhas').innerHTML = linhas.length>1
+    ? `<button class="${!linhaAtiva?'on':''}" onclick="filtrar(null)">Tudo</button>`+
+      linhas.map(l=>`<button class="${linhaAtiva===l?'on':''}" onclick="filtrar('${esc(l)}')">${esc(l)}</button>`).join('')
+    : '';
+  const lista = linhaAtiva?produtos.filter(p=>p.linha===linhaAtiva):produtos;
+  document.getElementById('grade').innerHTML = lista.length
+    ? lista.map(cartao).join('')
+    : '<p class="vazio">A vitrine está sendo montada.</p>';
+  pintarBarra();
+}
+
+function pintarBarra(){
+  const n=Object.values(sacola).reduce((s,q)=>s+q,0);
+  const total=Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
+  const b=document.getElementById('barra');
+  b.classList.toggle('abre', n>0);
+  document.getElementById('barraTxt').textContent = `${n} ${n===1?'peça':'peças'} · ${brl(total)}`;
+}
+
+window.filtrar = l => { linhaAtiva=l; pintar(); };
+
+window.abrirFicha = id => {
+  const p=produtos.find(x=>x.id===id); if(!p)return;
+  const foto = p.foto?`<div class="moldura"><img src="${esc(p.foto)}" alt="${esc(p.nome)}"></div>`:marca();
+  const breve = p.situacao==='embreve';
+  document.getElementById('fmiolo').innerHTML = `${foto}
+    ${p.linha?`<div class="rot">${esc(p.linha)}</div>`:''}
+    <div class="ftitulo">${esc(p.nome)}</div>
+    ${p.desc?`<div class="desc" style="margin-top:6px">${esc(p.desc)}</div>`:''}
+    <div class="fpreco">${brl(p.preco)}</div>
+    ${p.longa?`<p class="flonga">${esc(p.longa)}</p>`:''}
+    ${p.ficha.length?`<div class="ftec">${p.ficha.map(([r,v])=>`<div><span>${esc(r)}</span><span>${esc(v)}</span></div>`).join('')}</div>`:''}
+    ${breve
+      ? `<p class="desc" style="margin-top:24px">Esta peça ainda está sendo feita. Fale com a gente para saber quando ela chega.</p>
+         <button class="bt fraco" onclick="fecharFicha()">Voltar à loja</button>`
+      : `<button class="bt" onclick="juntar('${esc(p.id)}')">Colocar na sacola</button>`}`;
+  document.getElementById('ficha').classList.add('abre');
+  window.scrollTo(0,0);
+};
+window.fecharFicha = () => document.getElementById('ficha').classList.remove('abre');
+window.juntar = id => { sacola[id]=(sacola[id]||0)+1; pintarBarra(); fecharFicha(); };
+
+/**
+ * Estágio 1 na web: o pedido vai escrito pelo WhatsApp. Sem servidor e sem
+ * fingir um checkout que não cobra — o cliente confere antes de enviar.
+ */
+window.fecharPedido = () => {
+  if(!whats){ alert('Fale com a gente pelo Instagram: @cinerea.velas'); return; }
+  const linhas=Object.entries(sacola).map(([id,q])=>{
+    const p=produtos.find(x=>x.id===id);
+    return `• ${q}× ${p.nome} — ${brl(p.preco*q)}`;
+  });
+  const total=Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
+  const numero = whats.length>=12?whats:'55'+whats;
+  const txt = 'Olá! Quero encomendar pela Cinérea:\n\n'+linhas.join('\n')+`\n\nTotal: ${brl(total)}`;
+  location.href = `https://wa.me/${numero}?text=${encodeURIComponent(txt)}`;
+};
+
+try { await carregar(); pintar(); }
+catch { document.getElementById('grade').innerHTML='<p class="vazio">Não consegui abrir a loja agora. Tente de novo com internet.</p>'; }
+</script>
+</body>
+</html>
