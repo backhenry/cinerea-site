@@ -30,6 +30,14 @@
   .passo .n{font-family:'Fraunces';font-size:26px;color:var(--ember)}
   .passo h3{font-family:'Fraunces';font-weight:400;font-size:17px;margin-top:4px}
   .passo p{font-size:14px;color:var(--smoke);margin-top:5px;max-width:none}
+.desenho{display:block;width:100%;max-width:470px;height:auto;margin:26px 0 6px}
+  #chip .desenho{max-width:470px}
+  @media(max-width:560px){
+    /* Em tela estreita as chamadas laterais ficariam ilegíveis: o desenho
+       cresce e o texto delas some, porque o parágrafo já diz a mesma coisa. */
+    .desenho text{display:none}
+    .desenho{max-width:300px;margin-left:auto;margin-right:auto}
+  }
   .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 </style>
 </head>
@@ -60,6 +68,33 @@
     <section class="ideia" id="areia">
       <div class="rot">A vela de areia</div>
       <h2>A vela acaba. A escultura, não.</h2>
+      <svg class="desenho" viewBox="0 0 470 372" role="img" aria-label="Corte de uma vela Cinérea: a escultura de gesso sustenta uma taça com camadas de areia perfumada e um pavio aceso.">
+        <path d="M150 54 C150 54,140 71,140 80 a10 10 0 0 0 20 0 C160 71,150 54,150 54Z" fill="#B5462A"/>
+        <path d="M150 82 L150 146" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M98 124 L108 232 a8 8 0 0 0 8 7 h68 a8 8 0 0 0 8 -7 L202 124 Z" stroke="#1C1A17" stroke-width="2.5" fill="#FFFFFF" fill-opacity=".5"/>
+        <clipPath id="taca"><path d="M100 128 L109 230 a6 6 0 0 0 6 5 h70 a6 6 0 0 0 6 -5 L200 128 Z"/></clipPath>
+        <g clip-path="url(#taca)">
+          <rect x="90" y="146" width="120" height="28" fill="#E7E3DC"/>
+          <rect x="90" y="174" width="120" height="24" fill="#C9BCA8"/>
+          <rect x="90" y="198" width="120" height="20" fill="#B5462A" fill-opacity=".26"/>
+          <rect x="90" y="218" width="120" height="24" fill="#8A7E70" fill-opacity=".42"/>
+        </g>
+        <path d="M98 124 L202 124" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M112 240 C92 254,90 288,116 296" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M188 240 C208 254,210 288,184 296" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M116 296 h68" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
+        <rect x="86" y="304" width="128" height="20" rx="5" stroke="#1C1A17" stroke-width="2.5" fill="none"/>
+        <g stroke="#C9BCA8" stroke-width="1.3">
+          <path d="M158 88 h84"/><path d="M214 186 h28"/><path d="M220 292 h22"/>
+        </g>
+        <g font-family="Inter" font-size="13" fill="#6E6862">
+          <text x="250" y="92">o pavio, que você troca</text>
+          <text x="250" y="182">a areia perfumada —</text>
+          <text x="250" y="199">é ela que se esgota</text>
+          <text x="250" y="288">a escultura de gesso —</text>
+          <text x="250" y="305">essa fica para sempre</text>
+        </g>
+      </svg>
       <p>Vela comum se consome inteira: quando a cera acaba, acabou o objeto
          também. A nossa separa as duas coisas. A escultura é de gesso e fica
          para sempre; o que queima é a areia perfumada que você põe dentro.</p>
@@ -79,6 +114,30 @@
     <section class="ideia" id="chip">
       <div class="rot">O chip</div>
       <h2>A peça diz o que você quiser.</h2>
+      <svg class="desenho" viewBox="0 0 470 300" role="img" aria-label="Um celular encostado na base de uma peça Cinérea abre o conteúdo guardado no chip.">
+        <path d="M74 118 L118 118 L128 172 L64 172 Z" stroke="#1C1A17" stroke-width="2.5" fill="#FFFFFF" fill-opacity=".45"/>
+        <path d="M68 176 C50 192,50 222,72 230" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M124 176 C142 192,142 222,120 230" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M72 230 h48" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
+        <rect x="50" y="238" width="92" height="18" rx="5" stroke="#1C1A17" stroke-width="2.5" fill="none"/>
+        <rect x="84" y="241" width="24" height="12" rx="3" fill="#B5462A" fill-opacity=".2" stroke="#B5462A" stroke-width="1.4"/>
+        <path d="M160 228 a24 24 0 0 1 0 -32" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M173 240 a40 40 0 0 0 0 -56" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round" opacity=".55"/>
+        <path d="M186 252 a56 56 0 0 0 0 -80" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round" opacity=".26"/>
+        <rect x="212" y="142" width="88" height="136" rx="13" stroke="#1C1A17" stroke-width="2.5" fill="#F2EFEA"/>
+        <rect x="242" y="151" width="28" height="5" rx="2.5" fill="#D8D2C8"/>
+        <circle cx="256" cy="176" r="9" fill="none" stroke="#B5462A" stroke-width="2"/>
+        <rect x="226" y="196" width="60" height="7" rx="3.5" fill="#D8D2C8"/>
+        <rect x="226" y="210" width="42" height="7" rx="3.5" fill="#D8D2C8"/>
+        <rect x="226" y="232" width="60" height="24" rx="6" fill="#1C1A17"/>
+        <text x="256" y="248" font-family="Inter" font-size="10.5" fill="#F2EFEA" text-anchor="middle">ouvir</text>
+        <g stroke="#C9BCA8" stroke-width="1.3"><path d="M144 268 h20"/><path d="M306 210 h20"/></g>
+        <g font-family="Inter" font-size="13" fill="#6E6862">
+          <text x="170" y="272">o chip fica na base</text>
+          <text x="332" y="206">abre sozinho,</text>
+          <text x="332" y="223">sem instalar nada</text>
+        </g>
+      </svg>
       <p>Dentro de cada peça há um chip. Quem encostar o celular nela abre o que
          você escolheu deixar ali — uma playlist, a rede de wi-fi da casa, um
          recado, um endereço. Sem aplicativo, sem cadastro: encostou, abriu.</p>
