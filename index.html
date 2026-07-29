@@ -3,45 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cinérea</title>
-<meta name="description" content="Esculturas de gesso que guardam o que você quiser dizer. A base permanece, o conteúdo se renova.">
+<title>Cinérea — esculturas que guardam o que você quiser dizer</title>
+<meta name="description" content="Esculturas de gesso feitas à mão em Campos do Jordão. Você preenche com areia perfumada e repõe quando acabar — a escultura fica. E um chip dentro dela guarda o que você escolher dizer.">
+<meta property="og:title" content="Cinérea">
+<meta property="og:description" content="A base permanece, o conteúdo se renova.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
 <style>
-  :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-  .tudo{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
-  svg.marca{width:64px;height:64px}
-  h1{font-family:'Fraunces';font-weight:300;font-size:clamp(38px,11vw,58px);letter-spacing:.01em;margin-top:24px}
-  .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:clamp(15px,4.2vw,18px);margin-top:6px}
-  .texto{max-width:34ch;margin-top:34px;color:var(--char)}
-  .texto+.texto{margin-top:14px}
-  .links{margin-top:40px;display:flex;flex-direction:column;gap:2px;width:100%;max-width:320px}
-  .links a{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:16px 4px;border-top:1px solid var(--line);color:var(--char);text-decoration:none;transition:.15s}
-  .links a:last-child{border-bottom:1px solid var(--line)}
-  .links a:hover{color:var(--ember)}
-  .links .rot{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)}
-  .rodape{margin-top:44px;font-size:12px;color:var(--smoke)}
+  .capa{text-align:center;padding:78px 22px 66px}
+  .capa svg{width:58px;height:58px}
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(42px,11vw,64px);margin-top:22px;letter-spacing:.01em}
+  .capa .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:clamp(16px,4.4vw,20px);margin-top:4px}
+  .capa p{max-width:38ch;margin:30px auto 0;font-size:16.5px}
+  .bt{display:inline-block;margin-top:30px;padding:15px 30px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+  .bt:hover{background:var(--ember)}
+
+  .ideia{padding:56px 0;border-top:1px solid var(--line)}
+  .ideia .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .ideia h2{font-family:'Fraunces';font-weight:300;font-size:clamp(27px,7vw,38px);margin-top:10px;line-height:1.15;max-width:18ch}
+  .ideia p{margin-top:16px;max-width:56ch;font-size:16px}
+  .ideia p+p{margin-top:12px}
+  .ideia .frisa{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:19px;color:var(--char);margin-top:22px;padding-left:16px;border-left:2px solid var(--ember);max-width:44ch}
+  .passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:22px;margin-top:32px}
+  .passo .n{font-family:'Fraunces';font-size:26px;color:var(--ember)}
+  .passo h3{font-family:'Fraunces';font-weight:400;font-size:17px;margin-top:4px}
+  .passo p{font-size:14px;color:var(--smoke);margin-top:5px;max-width:none}
+  .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 </style>
 </head>
 <body>
-<main class="tudo">
-  <svg class="marca" viewBox="0 0 150 150" fill="none" aria-hidden="true">
-    <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/>
-    <circle cx="112" cy="75" r="10" fill="#B5462A"/>
-  </svg>
-  <h1>Cinérea</h1>
-  <p class="lema">a base permanece, o conteúdo se renova</p>
 
-  <p class="texto">Esculturas de gesso feitas à mão em Campos do Jordão. Dentro de cada uma, um chip guarda o que você escolher dizer — uma playlist, a rede da casa, um recado.</p>
-  <p class="texto">Quando quiser, você troca. A peça continua a mesma.</p>
-
-  <nav class="links">
-    <a href="https://instagram.com/cinerea.velas" rel="noopener"><span class="rot">Instagram</span><span>@cinerea.velas</span></a>
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/loja/">Loja</a>
+    <a href="#areia">A areia</a>
+    <a href="#chip">O chip</a>
+    <a href="#marca">A marca</a>
   </nav>
+</div></header>
 
-  <p class="rodape">Campos do Jordão · SP</p>
+<main>
+  <section class="capa">
+    <svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="10" fill="#B5462A"/></svg>
+    <h1>Cinérea</h1>
+    <p class="lema">a base permanece, o conteúdo se renova</p>
+    <p>Esculturas de gesso feitas à mão em Campos do Jordão. O que elas guardam
+       muda — a escultura, não.</p>
+    <a class="bt" href="/loja/">Ver as peças</a>
+  </section>
+
+  <div class="envolve">
+
+    <section class="ideia" id="areia">
+      <div class="rot">A vela de areia</div>
+      <h2>A vela acaba. A escultura, não.</h2>
+      <p>Vela comum se consome inteira: quando a cera acaba, acabou o objeto
+         também. A nossa separa as duas coisas. A escultura é de gesso e fica
+         para sempre; o que queima é a areia perfumada que você põe dentro.</p>
+      <p>Sem molde, sem cera grudada no vidro, sem raspar nada. Acabou, você
+         repõe a areia e o pavio, e recomeça.</p>
+      <div class="passos">
+        <div class="passo"><div class="n">1</div><h3>Preencha</h3>
+          <p>Areia perfumada na taça, em camadas de cor à sua escolha.</p></div>
+        <div class="passo"><div class="n">2</div><h3>Acenda</h3>
+          <p>Fixe o pavio e acenda. O aroma sobe, a escultura fica intacta.</p></div>
+        <div class="passo"><div class="n">3</div><h3>Reponha</h3>
+          <p>Quando a fragrância se esgotar, troque só a areia.</p></div>
+      </div>
+      <a class="linkinho" href="/loja/">Ver os refis de areia perfumada →</a>
+    </section>
+
+    <section class="ideia" id="chip">
+      <div class="rot">O chip</div>
+      <h2>A peça diz o que você quiser.</h2>
+      <p>Dentro de cada peça há um chip. Quem encostar o celular nela abre o que
+         você escolheu deixar ali — uma playlist, a rede de wi-fi da casa, um
+         recado, um endereço. Sem aplicativo, sem cadastro: encostou, abriu.</p>
+      <p>E quando você quiser dizer outra coisa, é só trocar. A peça continua a
+         mesma.</p>
+      <div class="frisa">O gesso permanece. O conteúdo se renova.</div>
+    </section>
+
+    <section class="ideia" id="app">
+      <div class="rot">O aplicativo</div>
+      <h2>Para quem tem uma peça.</h2>
+      <p>O app da Cinérea é de quem já levou uma peça para casa. É por ele que
+         você escolhe o que ela guarda, vê o que ela já disse antes, e repõe a
+         areia quando acabar.</p>
+      <p>Quem ganha a peça de presente não precisa de nada disso para usá-la:
+         basta encostar o celular.</p>
+      <p style="color:var(--smoke);font-size:14.5px">Em breve nas lojas de
+         aplicativos.</p>
+    </section>
+
+    <section class="ideia" id="marca">
+      <div class="rot">A marca</div>
+      <h2>Feito à mão, em Campos do Jordão.</h2>
+      <p>A Cinérea nasce da vontade de fazer objetos que durem mais que o seu
+         conteúdo. Cada peça é moldada, curada e acabada à mão, uma por vez —
+         e por isso nenhuma sai exatamente igual à outra.</p>
+      <p>As peças numeradas trazem certidão de origem: encostando o celular,
+         aparece o modelo, o número da série e quando ela foi feita.</p>
+      <a class="linkinho" href="https://instagram.com/cinerea.velas" rel="noopener">Acompanhar no Instagram →</a>
+    </section>
+
+  </div>
 </main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Esculturas de gesso e velas de areia perfumada, feitas à mão.</p>
+      <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>A loja</h3>
+      <a href="/loja/">Todas as peças</a>
+      <a href="/loja/#refis">Refis de areia</a>
+      <a href="#chip">Como funciona o chip</a>
+    </div>
+    <div>
+      <h3>Falar com a gente</h3>
+      <a href="https://instagram.com/cinerea.velas" rel="noopener">@cinerea.velas</a>
+      <p>Campos do Jordão · SP</p>
+    </div>
+  </div>
+  <div class="fim">© Cinérea · feito à mão</div>
+</footer>
+
 </body>
 </html>

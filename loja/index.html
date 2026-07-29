@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Loja · Cinérea</title>
 <meta name="description" content="Esculturas de gesso feitas à mão. Cada peça guarda o que você escolher dizer.">
+<link rel="stylesheet" href="/comum.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -20,6 +21,12 @@
   .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 26px;justify-content:center}
   .linhas button{padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;font-size:12.5px;color:var(--smoke);cursor:pointer}
   .linhas button.on{background:var(--char);color:var(--paper);border-color:var(--char)}
+.buscar{margin:26px 0 6px}
+  .buscar input{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-family:'Inter';font-size:14.5px;color:var(--char)}
+  .buscar input:focus{outline:none;border-color:var(--char)}
+  .secao{margin-bottom:56px;scroll-margin-top:80px}
+  .secao-nome{font-family:'Fraunces';font-weight:300;font-size:27px;margin-bottom:6px}
+  .secao-desc{color:var(--smoke);font-size:14.5px;max-width:60ch;margin-bottom:26px}
   .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:30px 22px}
   .peca{cursor:pointer}
   .moldura{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash);border:1px solid var(--line);position:relative}
@@ -53,11 +60,20 @@
 </style>
 </head>
 <body>
-<header>
-  <a href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg></a>
-  <h1>Cinérea</h1>
-  <p class="lema">a base permanece, o conteúdo se renova</p>
-</header>
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/loja/" class="aqui">Loja</a>
+    <a href="/#areia">A areia</a>
+    <a href="/#chip">O chip</a>
+  </nav>
+</div></header>
+
+<div class="envolve">
+  <div class="buscar">
+    <input id="busca" type="search" placeholder="Buscar uma peça" oninput="filtrarTexto(this.value)" autocomplete="off">
+  </div>
+</div>
 
 <div class="envolve">
   <div class="linhas" id="linhas"></div>
@@ -80,7 +96,7 @@ const fdb = getFirestore(app);
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-let produtos=[], whats=null, linhaAtiva=null;
+let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='';
 const sacola={};   // id -> qtd
 
 /**
@@ -95,8 +111,11 @@ async function carregar(){
     id:String(p.id??i), nome:p.nome||'Peça', preco:Number(p.preco)||0, foto:p.foto||'',
     linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
     desc:p.desc||'', longa:p.longa||'', ficha:Array.isArray(p.ficha)?p.ficha:[],
-    destaque:!!p.destaque, pronto:Number(p.pronto)||0,
-  })).sort((a,b)=>Number(b.destaque)-Number(a.destaque));
+    colecao:p.colecao||'', destaque:!!p.destaque, pronto:Number(p.pronto)||0,
+  }));
+  // Sem reordenar: a gestão publica já na ordem em que a loja mostra. Ordenar
+  // aqui de novo abriria espaço para o site e o app discordarem.
+  colecoes = Array.isArray(d?.colecoes) ? d.colecoes : [];
   whats = String(d?.whats||'').replace(/\D/g,'')||null;
 }
 
@@ -111,15 +130,26 @@ function cartao(p){
 }
 
 function pintar(){
-  const linhas=[...new Set(produtos.map(p=>p.linha))];
+  const linhas = colecoes.length ? colecoes.map(c=>c.nome) : [...new Set(produtos.map(p=>p.linha))];
   document.getElementById('linhas').innerHTML = linhas.length>1
     ? `<button class="${!linhaAtiva?'on':''}" onclick="filtrar(null)">Tudo</button>`+
       linhas.map(l=>`<button class="${linhaAtiva===l?'on':''}" onclick="filtrar('${esc(l)}')">${esc(l)}</button>`).join('')
     : '';
-  const lista = linhaAtiva?produtos.filter(p=>p.linha===linhaAtiva):produtos;
-  document.getElementById('grade').innerHTML = lista.length
-    ? lista.map(cartao).join('')
-    : '<p class="vazio">A vitrine está sendo montada.</p>';
+  // A busca corre nome, frase curta e coleção — é o que a pessoa lembra.
+  const casa = p => !termo || [p.nome,p.desc,p.linha].join(' ').toLowerCase().includes(termo);
+  const secoes = colecoes.length
+    ? colecoes.filter(c=>!linhaAtiva||c.nome===linhaAtiva)
+    : [{id:'', nome:'', desc:''}];
+  const html = secoes.map(c=>{
+    const itens = produtos.filter(p=> (colecoes.length ? p.colecao===c.id : true) && casa(p));
+    if(!itens.length) return '';
+    return `<section class="secao">
+      ${c.nome?`<h2 class="secao-nome">${esc(c.nome)}</h2>`:''}
+      ${c.desc?`<p class="secao-desc">${esc(c.desc)}</p>`:''}
+      <div class="grade">${itens.map(cartao).join('')}</div>
+    </section>`;
+  }).join('');
+  document.getElementById('grade').outerHTML = `<div id="grade">${html||(termo?`<p class="vazio">Nada encontrado para “${esc(termo)}”.</p>`:'<p class="vazio">A vitrine está sendo montada.</p>')}</div>`;
   pintarBarra();
 }
 
@@ -132,6 +162,7 @@ function pintarBarra(){
 }
 
 window.filtrar = l => { linhaAtiva=l; pintar(); };
+window.filtrarTexto = t => { termo=String(t||'').trim().toLowerCase(); pintar(); };
 
 window.abrirFicha = id => {
   const p=produtos.find(x=>x.id===id); if(!p)return;
@@ -173,5 +204,26 @@ window.fecharPedido = () => {
 try { await carregar(); pintar(); }
 catch { document.getElementById('grade').innerHTML='<p class="vazio">Não consegui abrir a loja agora. Tente de novo com internet.</p>'; }
 </script>
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Esculturas de gesso e velas de areia perfumada, feitas à mão.</p>
+      <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>Entenda a peça</h3>
+      <a href="/#areia">A vela que se repõe</a>
+      <a href="/#chip">O chip dentro dela</a>
+      <a href="/#app">O aplicativo</a>
+    </div>
+    <div>
+      <h3>Falar com a gente</h3>
+      <a href="https://instagram.com/cinerea.velas" rel="noopener">@cinerea.velas</a>
+      <p>Campos do Jordão · SP</p>
+    </div>
+  </div>
+  <div class="fim">© Cinérea · feito à mão</div>
+</footer>
 </body>
 </html>
