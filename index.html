@@ -34,17 +34,15 @@
   .passo p{font-size:14px;color:var(--smoke);margin-top:5px;max-width:none}
 .desenho{display:block;width:100%;max-width:470px;height:auto;margin:26px 0 6px}
   #chip .desenho{max-width:470px}
-  @media(max-width:560px){
-    /* Em tela estreita as chamadas laterais ficariam ilegíveis: o texto delas
-       some, porque o parágrafo já diz a mesma coisa. As LINHAS de chamada vão
-       junto — senão sobra um tracinho apontando para nada. */
-    .desenho text,.desenho .chamada{display:none}
-    .desenho{margin-left:auto;margin-right:auto}
-    /* Sem os rótulos, o quadro largo deixaria metade do desenho vazia à
-       direita. O recorte vem do script no fim da página. */
-    #areia .desenho{max-width:180px}
-    #chip .desenho{max-width:300px}
-  }
+  @media(max-width:560px){ .desenho{margin-left:auto;margin-right:auto} }
+
+  /* Tudo que muda quando o desenho é recortado pende de UMA classe, posta pelo
+     script junto com o viewBox. Já tentei separar (media query esconde o rótulo,
+     script recorta o quadro) e os dois dessincronizaram: rótulo visível dentro
+     de um quadro que não o contém. Uma decisão, um lugar. */
+  .desenho.cortado text,.desenho.cortado .chamada{display:none}
+  .desenho.cortado{max-width:300px}
+  #areia .desenho.cortado{max-width:180px}
 
   /* Em tela larga o desenho anda AO LADO do texto. Empilhado, ele virava uma
      interrupção no meio de uma coluna estreita, com meia tela vazia à direita. */
@@ -321,21 +319,30 @@
 // SVG não se muda por CSS. Os dois desenhos têm quadro largo para caber os
 // rótulos laterais; no celular esses rótulos somem e sobraria metade do quadro
 // vazia à direita. Aqui o quadro é recortado para só a ilustração.
-// Sem JavaScript a página fica como está hoje — desenho menor, não quebrado.
+//
+// Escuta o `change` do matchMedia, não o `resize` da janela: o primeiro dispara
+// exatamente quando o limite é cruzado. Com `resize` a troca já foi perdida
+// (viewBox recortado, rótulos visíveis — texto fora do quadro).
+//
+// Sem JavaScript nada é escondido e o quadro fica o largo: desenho pequeno no
+// celular, com os rótulos miúdos. Menos bonito, e inteiro.
 (function () {
   var recortes = [
     ['#areia .desenho', '0 0 470 372', '76 44 148 282'],
     ['#chip .desenho',  '0 0 470 320', '40 108 270 180']
   ];
+  var estreito = window.matchMedia('(max-width:560px)');
   function ajusta() {
-    var estreito = window.matchMedia('(max-width:560px)').matches;
     recortes.forEach(function (r) {
       var el = document.querySelector(r[0]);
-      if (el) el.setAttribute('viewBox', estreito ? r[2] : r[1]);
+      if (!el) return;
+      // A classe e o viewBox andam juntos — é o que impede a dessincronia.
+      el.classList.toggle('cortado', estreito.matches);
+      el.setAttribute('viewBox', estreito.matches ? r[2] : r[1]);
     });
   }
   ajusta();
-  window.addEventListener('resize', ajusta);
+  estreito.addEventListener('change', ajusta);
 })();
 </script>
 
