@@ -57,7 +57,9 @@
 
   /* Os sete tipos de conteúdo: dizer "a peça diz o que você quiser" e mostrar
      sete pictogramas não é a mesma coisa. */
-  .tipos{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+  /* 92px e o que faz caber 3 colunas num celular de 375px (2 deixava quatro
+     fileiras) sem tirar as 7 numa linha so no desktop. */
+  .tipos{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));
          gap:20px 12px;margin-top:30px;padding-top:28px;border-top:1px solid var(--line)}
   .tipo{text-align:center}
   .tipo svg{width:38px;height:38px;display:block;margin:0 auto 8px}
