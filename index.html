@@ -38,6 +38,28 @@
     .desenho text{display:none}
     .desenho{max-width:300px;margin-left:auto;margin-right:auto}
   }
+
+  /* Em tela larga o desenho anda AO LADO do texto. Empilhado, ele virava uma
+     interrupção no meio de uma coluna estreita, com meia tela vazia à direita. */
+  .dupla{display:grid;gap:30px;align-items:center;margin-top:24px}
+  .dupla p{max-width:52ch}
+  @media(min-width:880px){
+    .dupla{grid-template-columns:430px 1fr;gap:46px}
+    .dupla .desenho{margin:0}
+  }
+
+  /* Os três passos são uma sequência física — desenhada explica melhor que
+     numerada. O mesmo copo nos três, mudando só o que acontece com ele. */
+  .passo .fig{display:block;width:62px;height:62px;margin-bottom:8px}
+  .passo .n{font-family:'Fraunces';font-size:17px;color:var(--ember);margin-right:3px}
+
+  /* Os sete tipos de conteúdo: dizer "a peça diz o que você quiser" e mostrar
+     sete pictogramas não é a mesma coisa. */
+  .tipos{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+         gap:20px 12px;margin-top:30px;padding-top:28px;border-top:1px solid var(--line)}
+  .tipo{text-align:center}
+  .tipo svg{width:38px;height:38px;display:block;margin:0 auto 8px}
+  .tipo span{font-size:13px;color:var(--smoke)}
   .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 </style>
 </head>
@@ -68,6 +90,7 @@
     <section class="ideia" id="areia">
       <div class="rot">A vela de areia</div>
       <h2>A vela acaba. A escultura, não.</h2>
+      <div class="dupla">
       <svg class="desenho" viewBox="0 0 470 372" role="img" aria-label="Corte de uma vela Cinérea: a escultura de gesso sustenta uma taça com camadas de areia perfumada e um pavio aceso.">
         <path d="M150 54 C150 54,140 71,140 80 a10 10 0 0 0 20 0 C160 71,150 54,150 54Z" fill="#B5462A"/>
         <path d="M150 82 L150 146" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
@@ -95,17 +118,50 @@
           <text x="250" y="305">essa fica para sempre</text>
         </g>
       </svg>
-      <p>Vela comum se consome inteira: quando a cera acaba, acabou o objeto
-         também. A nossa separa as duas coisas. A escultura é de gesso e fica
-         para sempre; o que queima é a areia perfumada que você põe dentro.</p>
-      <p>Sem molde, sem cera grudada no vidro, sem raspar nada. Acabou, você
-         repõe a areia e o pavio, e recomeça.</p>
+      <div>
+        <p>Vela comum se consome inteira: quando a cera acaba, acabou o objeto
+           também. A nossa separa as duas coisas. A escultura é de gesso e fica
+           para sempre; o que queima é a areia perfumada que você põe dentro.</p>
+        <p>Sem molde, sem cera grudada no vidro, sem raspar nada. Acabou, você
+           repõe a areia e o pavio, e recomeça.</p>
+      </div>
+      </div>
       <div class="passos">
-        <div class="passo"><div class="n">1</div><h3>Preencha</h3>
+        <div class="passo">
+          <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="Areia perfumada caindo dentro da taça.">
+            <g fill="#C9BCA8"><circle cx="26" cy="11" r="1.7"/><circle cx="34" cy="6" r="1.7"/><circle cx="39" cy="15" r="1.7"/><circle cx="30" cy="20" r="1.7"/><circle cx="37" cy="25" r="1.7"/></g>
+            <clipPath id="c1"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
+            <g clip-path="url(#c1)">
+              <rect x="17" y="44" width="30" height="6" fill="#E7E3DC"/>
+              <rect x="17" y="50" width="30" height="8" fill="#C9BCA8"/>
+            </g>
+            <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          </svg>
+          <h3><span class="n">1</span> Preencha</h3>
           <p>Areia perfumada na taça, em camadas de cor à sua escolha.</p></div>
-        <div class="passo"><div class="n">2</div><h3>Acenda</h3>
+        <div class="passo">
+          <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="O pavio aceso sobre a taça cheia de areia.">
+            <path d="M32 8 C32 8,27 17,27 22 a5 5 0 0 0 10 0 C37 17,32 8,32 8Z" fill="#B5462A"/>
+            <path d="M32 24 L32 30" stroke="#1C1A17" stroke-width="2.2" stroke-linecap="round"/>
+            <clipPath id="c2"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
+            <g clip-path="url(#c2)">
+              <rect x="17" y="34" width="30" height="8" fill="#E7E3DC"/>
+              <rect x="17" y="42" width="30" height="8" fill="#C9BCA8"/>
+              <rect x="17" y="50" width="30" height="8" fill="#8A7E70" fill-opacity=".42"/>
+            </g>
+            <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          </svg>
+          <h3><span class="n">2</span> Acenda</h3>
           <p>Fixe o pavio e acenda. O aroma sobe, a escultura fica intacta.</p></div>
-        <div class="passo"><div class="n">3</div><h3>Reponha</h3>
+        <div class="passo">
+          <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="A taça quase vazia e a seta do recomeço: repõe-se a areia.">
+            <path d="M40 15 A11 11 0 1 1 32 4" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M28 1 L32.6 4.3 L28 7.8" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <clipPath id="c3"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
+            <g clip-path="url(#c3)"><rect x="17" y="52" width="30" height="6" fill="#C9BCA8"/></g>
+            <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          </svg>
+          <h3><span class="n">3</span> Reponha</h3>
           <p>Quando a fragrância se esgotar, troque só a areia.</p></div>
       </div>
       <a class="linkinho" href="/loja/">Ver os refis de areia perfumada →</a>
@@ -114,6 +170,7 @@
     <section class="ideia" id="chip">
       <div class="rot">O chip</div>
       <h2>A peça diz o que você quiser.</h2>
+      <div class="dupla">
       <svg class="desenho" viewBox="0 0 470 300" role="img" aria-label="Um celular encostado na base de uma peça Cinérea abre o conteúdo guardado no chip.">
         <path d="M74 118 L118 118 L128 172 L64 172 Z" stroke="#1C1A17" stroke-width="2.5" fill="#FFFFFF" fill-opacity=".45"/>
         <path d="M68 176 C50 192,50 222,72 230" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
@@ -138,11 +195,65 @@
           <text x="332" y="223">sem instalar nada</text>
         </g>
       </svg>
-      <p>Dentro de cada peça há um chip. Quem encostar o celular nela abre o que
-         você escolheu deixar ali — uma playlist, a rede de wi-fi da casa, um
-         recado, um endereço. Sem aplicativo, sem cadastro: encostou, abriu.</p>
-      <p>E quando você quiser dizer outra coisa, é só trocar. A peça continua a
-         mesma.</p>
+      <div>
+        <p>Dentro de cada peça há um chip. Quem encostar o celular nela abre o que
+           você escolheu deixar ali — uma playlist, a rede de wi-fi da casa, um
+           recado, um endereço. Sem aplicativo, sem cadastro: encostou, abriu.</p>
+        <p>E quando você quiser dizer outra coisa, é só trocar. A peça continua a
+           mesma.</p>
+      </div>
+      </div>
+      <div class="tipos">
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 23 v6 a2 2 0 0 1 -2 2 H10 a2 2 0 0 1 -2 -2 V13 a2 2 0 0 1 2 -2 h6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M23 8 H32 V17" stroke="#B5462A" stroke-width="2.1"/>
+            <path d="M32 8 L20 20" stroke="#B5462A" stroke-width="2.1"/>
+          </svg><span>link</span>
+        </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13" cy="29" r="3.6" fill="#B5462A" stroke="none"/>
+            <circle cx="27" cy="26" r="3.6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M16.6 29 V12 M30.6 26 V9" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M16.6 12.6 L30.6 9.6" stroke="#1C1A17" stroke-width="3"/>
+          </svg><span>playlist</span>
+        </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round">
+            <path d="M4 14 a22.5 22.5 0 0 1 32 0" stroke="#1C1A17" stroke-width="2.1" opacity=".3"/>
+            <path d="M8.5 19.5 a16 16 0 0 1 23 0" stroke="#1C1A17" stroke-width="2.1" opacity=".6"/>
+            <path d="M13 25 a10 10 0 0 1 14 0" stroke="#1C1A17" stroke-width="2.1"/>
+            <circle cx="20" cy="31" r="2.6" fill="#B5462A" stroke="none"/>
+          </svg><span>wi-fi</span>
+        </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6 h16 l6 6 v20 a2 2 0 0 1 -2 2 H11 a2 2 0 0 1 -2 -2 Z" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M25 6 v6 h6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M14 21 h12" stroke="#1C1A17" stroke-width="2.1" opacity=".35"/>
+            <path d="M14 27 h8" stroke="#B5462A" stroke-width="2.1"/>
+          </svg><span>recado</span>
+        </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 9 h22 a5 5 0 0 1 5 5 v11 a5 5 0 0 1 -5 5 H17 l-6 5 v-5 H9 a5 5 0 0 1 -5 -5 V14 a5 5 0 0 1 5 -5 Z" stroke="#1C1A17" stroke-width="2.1"/>
+            <g fill="#B5462A"><circle cx="14" cy="19.5" r="1.9"/><circle cx="20" cy="19.5" r="1.9"/><circle cx="26" cy="19.5" r="1.9"/></g>
+          </svg><span>WhatsApp</span>
+        </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 35 C20 35,31 24,31 16 A11 11 0 0 0 9 16 C9 24,20 35,20 35 Z" stroke="#1C1A17" stroke-width="2.1"/>
+            <circle cx="20" cy="16" r="4" fill="#B5462A" stroke="none"/>
+          </svg><span>lugar</span>
+        </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round">
+            <circle cx="20" cy="14" r="5.6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M9 32 a11 11 0 0 1 22 0" stroke="#B5462A" stroke-width="2.1"/>
+          </svg><span>contato</span>
+        </div>
+      </div>
       <div class="frisa">O gesso permanece. O conteúdo se renova.</div>
     </section>
 
