@@ -35,10 +35,15 @@
 .desenho{display:block;width:100%;max-width:470px;height:auto;margin:26px 0 6px}
   #chip .desenho{max-width:470px}
   @media(max-width:560px){
-    /* Em tela estreita as chamadas laterais ficariam ilegíveis: o desenho
-       cresce e o texto delas some, porque o parágrafo já diz a mesma coisa. */
-    .desenho text{display:none}
-    .desenho{max-width:300px;margin-left:auto;margin-right:auto}
+    /* Em tela estreita as chamadas laterais ficariam ilegíveis: o texto delas
+       some, porque o parágrafo já diz a mesma coisa. As LINHAS de chamada vão
+       junto — senão sobra um tracinho apontando para nada. */
+    .desenho text,.desenho .chamada{display:none}
+    .desenho{margin-left:auto;margin-right:auto}
+    /* Sem os rótulos, o quadro largo deixaria metade do desenho vazia à
+       direita. O recorte vem do script no fim da página. */
+    #areia .desenho{max-width:180px}
+    #chip .desenho{max-width:300px}
   }
 
   /* Em tela larga o desenho anda AO LADO do texto. Empilhado, ele virava uma
@@ -111,7 +116,7 @@
         <path d="M188 240 C208 254,210 288,184 296" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
         <path d="M116 296 h68" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
         <rect x="86" y="296" width="128" height="20" rx="5" stroke="#1C1A17" stroke-width="2.5" fill="none"/>
-        <g stroke="#C9BCA8" stroke-width="1.3">
+        <g class="chamada" stroke="#C9BCA8" stroke-width="1.3">
           <path d="M158 88 h84"/><path d="M214 186 h28"/><path d="M220 292 h22"/>
         </g>
         <g font-family="Inter" font-size="13" fill="#6E6862">
@@ -192,7 +197,7 @@
         <rect x="226" y="210" width="42" height="7" rx="3.5" fill="#D8D2C8"/>
         <rect x="226" y="232" width="60" height="24" rx="6" fill="#1C1A17"/>
         <text x="256" y="248" font-family="Inter" font-size="10.5" fill="#F2EFEA" text-anchor="middle">ouvir</text>
-        <g stroke="#C9BCA8" stroke-width="1.3"><path d="M96 250 V286"/><path d="M306 210 h20"/></g>
+        <g class="chamada" stroke="#C9BCA8" stroke-width="1.3"><path d="M96 250 V286"/><path d="M306 210 h20"/></g>
         <g font-family="Inter" font-size="13" fill="#6E6862">
           <text x="96" y="302" text-anchor="middle">o chip fica na base</text>
           <text x="332" y="206">abre sozinho,</text>
@@ -308,6 +313,29 @@
   </div>
   <div class="fim">© Cinérea · feito à mão</div>
 </footer>
+
+<script>
+// O único script da página, e existe por um motivo estreito: o `viewBox` de um
+// SVG não se muda por CSS. Os dois desenhos têm quadro largo para caber os
+// rótulos laterais; no celular esses rótulos somem e sobraria metade do quadro
+// vazia à direita. Aqui o quadro é recortado para só a ilustração.
+// Sem JavaScript a página fica como está hoje — desenho menor, não quebrado.
+(function () {
+  var recortes = [
+    ['#areia .desenho', '0 0 470 372', '76 44 148 282'],
+    ['#chip .desenho',  '0 0 470 320', '40 108 270 180']
+  ];
+  function ajusta() {
+    var estreito = window.matchMedia('(max-width:560px)').matches;
+    recortes.forEach(function (r) {
+      var el = document.querySelector(r[0]);
+      if (el) el.setAttribute('viewBox', estreito ? r[2] : r[1]);
+    });
+  }
+  ajusta();
+  window.addEventListener('resize', ajusta);
+})();
+</script>
 
 </body>
 </html>
