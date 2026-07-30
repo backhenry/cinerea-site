@@ -80,10 +80,18 @@ function mostrar(v, cert){
   } else if (v.tipo === 'recado') {
     bloco = `<p class="rot">Recado</p><p class="recado" style="margin-top:14px">${esc(v.dados)}</p>`;
   } else if (v.tipo === 'wifi') {
-    // A senha nunca chega aqui — a regra do Firestore recusa. Ela vive só no
-    // chip, onde é preciso encostar o celular para pegar.
-    bloco = `<p class="rot">Rede de wi-fi</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>
-      <p class="nota">Encoste o celular na peça para conectar — a senha fica só nela.</p>`;
+    // A senha vem junto (decisão do dono, jul/2026): a Apple não implementa o
+    // registro de wi-fi do NFC, então sem ela um convidado de iPhone não teria
+    // como conectar. No Android o chip já conecta sozinho e esta página é só
+    // reforço.
+    const senha = v.senha
+      ? `<p class="rot" style="margin-top:18px">Senha</p>
+         <button class="cta" type="button" id="copiarSenha" data-senha="${esc(v.senha)}">
+           ${esc(v.senha)}
+         </button>
+         <p class="nota" style="margin-top:8px">Toque para copiar.</p>`
+      : `<p class="nota">Encoste o celular na peça para conectar.</p>`;
+    bloco = `<p class="rot">Rede de wi-fi</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>${senha}`;
   } else if (v.tipo === 'contato') {
     bloco = `<p class="rot">Contato</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>`;
   } else {
@@ -108,6 +116,24 @@ function mostrar(v, cert){
   }
 
   corpo.innerHTML = `<div class="conteudo">${bloco}</div>${selo}`;
+
+  // Copiar a senha do wi-fi. `writeText` exige contexto seguro (temos HTTPS) e
+  // um gesto do usuário — por isso vive no clique, e não no carregamento.
+  const botao = document.getElementById('copiarSenha');
+  if (botao) {
+    botao.addEventListener('click', async () => {
+      const original = botao.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(botao.dataset.senha);
+        botao.textContent = 'copiada';
+      } catch {
+        // Navegador sem permissão de área de transferência: a senha continua
+        // visível na tela, que é o que importa. Não fingir que copiou.
+        botao.textContent = 'selecione e copie';
+      }
+      setTimeout(() => { botao.textContent = original; }, 1800);
+    });
+  }
 }
 
 if (!chip) {
