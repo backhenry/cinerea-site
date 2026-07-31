@@ -12,6 +12,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/comum.css">
 <style>
+  /* As âncoras do menu deslizam em vez de saltar. */
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
   .capa{text-align:center;padding:78px 22px 66px}
   .capa svg{width:58px;height:58px;overflow:visible}
   /* Compassos diferentes de propósito: em fase, os dois pareceriam um pisca-pisca.
@@ -124,8 +128,19 @@
     .fogo animate,.calor animate{display:none}
     .capa .aura,.capa .brasa{animation:none!important}
     .onda,.graos circle,.chaminha,.recomeco{animation:none!important;opacity:1;transform:none}
+    .pavio .cinzas i,.acoes text{animation:none!important}
+    .acoes .a1{opacity:1}
     .ideia{animation:none!important;transform:none}
   }
+  /* O menu marca em que seção você está. Decoração pura: não disparando, o
+     menu fica como sempre foi. */
+  .topo nav a.lendo{color:var(--char)}
+  .topo nav a.lendo::after{
+    content:'';display:block;height:1px;margin-top:3px;background:var(--ember);
+    animation:risca .4s ease-out both;
+  }
+  @keyframes risca{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
   .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 
   /* ---- O PAVIO ----------------------------------------------------------
@@ -174,12 +189,39 @@
   }
   @keyframes calor{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(.9)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
 
+  /* Cinzas subindo da chama. Cinérea é cinza — e até agora não havia nenhuma
+     no site. Sobem, esfriam e somem, cada uma no seu tempo. */
+  .pavio .cinzas{position:absolute;left:50%;top:calc(var(--p,0) * 100%);width:0;height:0}
+  .pavio .cinzas i{
+    position:absolute;left:0;top:0;width:2px;height:2px;border-radius:50%;
+    background:var(--smoke);opacity:0;animation:cinza 5.5s ease-out infinite;
+  }
+  .pavio .cinzas i:nth-child(2){animation-delay:1.9s;width:1.5px;height:1.5px}
+  .pavio .cinzas i:nth-child(3){animation-delay:3.6s}
+  @keyframes cinza{
+    0%{opacity:0;transform:translate(-50%,0) scale(1)}
+    12%{opacity:.55}
+    100%{opacity:0;transform:translate(calc(-50% + 9px),-46px) scale(.6)}
+  }
+
   /* No celular ele encolhe e encosta na borda: ali a largura é preciosa. */
   @media(max-width:700px){
     .pavio{left:6px;width:2px;top:14vh;bottom:14vh}
     .pavio .chama{width:11px;height:16px}
     .pavio .chama::after{width:32px;height:32px}
   }
+
+  /* Cada rótulo aparece por um terço do ciclo. A primeira começa visível. */
+  .acoes text{opacity:0;animation:reveza 6.6s steps(1,end) infinite}
+  .acoes .a1{opacity:1;animation-delay:0s}
+  .acoes .a2{animation-delay:2.2s}
+  .acoes .a3{animation-delay:4.4s}
+  @keyframes reveza{0%{opacity:1}33.3%{opacity:0}100%{opacity:0}}
+
+  /* Os pictogramas respondem ao toque e ao ponteiro. */
+  .tipo{transition:transform .2s ease}
+  .tipo:hover{transform:translateY(-3px)}
+  .tipo:hover span{color:var(--ember)}
 
   /* ---- a seção acende ao chegar -----------------------------------------
      Uma brasa no rótulo, como se o pavio tivesse acendido aquela parte. Só
@@ -202,7 +244,7 @@
 
 <!-- A vela que queima enquanto se lê. `aria-hidden`: é imagem, não informação —
      quem usa leitor de tela não perde nada. -->
-<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="chama"></span></div>
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
 
 <header class="topo"><div class="topo-in">
   <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
@@ -384,7 +426,14 @@
         <rect x="226" y="196" width="60" height="7" rx="3.5" fill="#D8D2C8"/>
         <rect x="226" y="210" width="42" height="7" rx="3.5" fill="#D8D2C8"/>
         <rect x="226" y="232" width="60" height="24" rx="6" fill="#1C1A17"/>
-        <text x="256" y="248" font-family="Inter" font-size="10.5" fill="#F2EFEA" text-anchor="middle">ouvir</text>
+        <g font-family="Inter" font-size="10.5" fill="#F2EFEA" text-anchor="middle" class="acoes">
+          <!-- O celular do desenho troca o que oferece. Explica os sete tipos
+               sem uma linha de texto. A primeira repousa VISÍVEL: travando a
+               animação, o botão continua dizendo alguma coisa. -->
+          <text x="256" y="248" class="a1">ouvir</text>
+          <text x="256" y="248" class="a2">conectar</text>
+          <text x="256" y="248" class="a3">abrir</text>
+        </g>
         <g class="chamada" stroke="#C9BCA8" stroke-width="1.3"><path d="M96 250 V286"/><path d="M306 210 h20"/></g>
         <g font-family="Inter" font-size="13" fill="#6E6862">
           <text x="96" y="302" text-anchor="middle">o chip fica na base</text>
@@ -583,6 +632,37 @@
     });
   }, { rootMargin: '0px 0px -18% 0px' });
   secoes.forEach(function (e) { olho.observe(e); });
+})();
+
+// O menu marca a seção que está sendo lida.
+//
+// Decoração, como o resto: se nada disto rodar, o menu fica exatamente como
+// sempre foi. A faixa central (-45% em cima e embaixo) faz a marcação trocar
+// quando a seção cruza o MEIO da tela, e não a borda — pela borda ela piscaria
+// entre duas seções na transição.
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var links = {};
+  document.querySelectorAll('.topo nav a[href^="#"]').forEach(function (a) {
+    links[a.getAttribute('href').slice(1)] = a;
+  });
+  if (!Object.keys(links).length) return;
+
+  var olho = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      var a = links[e.target.id];
+      if (!a) return;
+      if (e.isIntersecting) {
+        Object.keys(links).forEach(function (k) { links[k].classList.remove('lendo'); });
+        a.classList.add('lendo');
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+
+  Object.keys(links).forEach(function (id) {
+    var sec = document.getElementById(id);
+    if (sec) olho.observe(sec);
+  });
 })();
 </script>
 
