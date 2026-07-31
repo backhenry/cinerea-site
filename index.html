@@ -66,6 +66,18 @@
   .tipo{text-align:center}
   .tipo svg{width:38px;height:38px;display:block;margin:0 auto 8px}
   .tipo span{font-size:13px;color:var(--smoke)}
+  /* O esticar da chama vem por CSS, e não por `animateTransform`: aquele escala
+     a partir da origem do SVG e a chama sairia do lugar. `transform-box:fill-box`
+     faz a origem ser a própria forma, e daí ela cresce de onde o fogo nasce —
+     a base do pavio. Fora de compasso com o halo, de propósito. */
+  .fogo{transform-box:fill-box;transform-origin:50% 100%;animation:subir 2.7s ease-in-out infinite}
+  @keyframes subir{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,1.09)}}
+
+  /* Fogo é movimento contínuo: quem pediu menos movimento não quer isto. */
+  @media (prefers-reduced-motion:reduce){
+    .fogo{filter:none!important;animation:none!important}
+    .fogo animate,.calor animate{display:none}
+  }
   .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 </style>
 </head>
@@ -100,7 +112,45 @@
       <h2>A vela acaba. A&nbsp;escultura, não.</h2>
       <div class="dupla">
       <svg class="desenho" viewBox="0 0 470 372" role="img" aria-label="Corte de uma vela Cinérea: a escultura de gesso sustenta uma taça com camadas de areia perfumada e um pavio aceso.">
-        <path d="M150 54 C150 54,140 71,140 80 a10 10 0 0 0 20 0 C160 71,150 54,150 54Z" fill="#B5462A"/>
+        <!-- A chama viva. Sem biblioteca: `feTurbulence` gera um ruído orgânico e
+             `feDisplacementMap` empurra os contornos com ele, o que dá o bruxuleio
+             que uma animação de forma nunca acerta — fogo não repete o movimento.
+             A `baseFrequency` anima devagar para o ruído não parecer um laço. -->
+        <defs>
+          <filter id="bruxuleio" x="-60%" y="-30%" width="220%" height="180%">
+            <!-- O ruído é ESTÁTICO de propósito. Animar a `baseFrequency` obriga o
+                 navegador a gerar a textura de novo a cada quadro, que é a parte
+                 cara do efeito; animando só o deslocamento, o mesmo ruído é
+                 reaproveitado e o bruxuleio sai igual. -->
+            <feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="2" seed="7" result="ruido"/>
+            <feDisplacementMap in="SourceGraphic" in2="ruido" xChannelSelector="R" yChannelSelector="G" scale="2.6">
+              <animate attributeName="scale" dur="3.1s" values="2.2;4.4;2.6;4.0;2.2"
+                       keyTimes="0;0.3;0.55;0.8;1" repeatCount="indefinite"/>
+            </feDisplacementMap>
+          </filter>
+          <radialGradient id="calor">
+            <stop offset="0%" stop-color="#B5462A" stop-opacity=".30"/>
+            <stop offset="100%" stop-color="#B5462A" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="chama" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#B5462A"/>
+            <stop offset="65%" stop-color="#D9663F"/>
+            <stop offset="100%" stop-color="#E8A15C"/>
+          </linearGradient>
+        </defs>
+
+        <!-- O halo respira em outro compasso que a chama: em fase, os dois
+             pareceriam uma coisa só piscando. -->
+        <circle class="calor" cx="150" cy="74" r="34" fill="url(#calor)">
+          <animate attributeName="r" dur="4.3s" values="30;36;30" repeatCount="indefinite"/>
+          <animate attributeName="opacity" dur="4.3s" values=".75;1;.75" repeatCount="indefinite"/>
+        </circle>
+
+        <g class="fogo" filter="url(#bruxuleio)">
+          <path d="M150 54 C150 54,140 71,140 80 a10 10 0 0 0 20 0 C160 71,150 54,150 54Z" fill="url(#chama)"/>
+          <!-- O núcleo claro é o que faz parecer quente por dentro. -->
+          <path d="M150 66 C150 66,145 74,145 79 a5 5 0 0 0 10 0 C155 74,150 66,150 66Z" fill="#F2EFEA" opacity=".55"/>
+        </g>
         <path d="M150 82 L150 146" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
         <path d="M98 124 L108 232 a8 8 0 0 0 8 7 h68 a8 8 0 0 0 8 -7 L202 124 Z" stroke="#1C1A17" stroke-width="2.5" fill="#FFFFFF" fill-opacity=".5"/>
         <clipPath id="taca"><path d="M100 128 L109 230 a6 6 0 0 0 6 5 h70 a6 6 0 0 0 6 -5 L200 128 Z"/></clipPath>
@@ -327,7 +377,9 @@
 // celular, com os rótulos miúdos. Menos bonito, e inteiro.
 (function () {
   var recortes = [
-    ['#areia .desenho', '0 0 470 372', '76 44 148 282'],
+    // O topo subiu de 44 para 36 para caber o halo da chama, que chega a y=38
+    // quando o raio está no máximo. Antes ele era cortado em 6px no celular.
+    ['#areia .desenho', '0 0 470 372', '76 36 148 290'],
     ['#chip .desenho',  '0 0 470 320', '40 108 270 180']
   ];
   var estreito = window.matchMedia('(max-width:560px)');
