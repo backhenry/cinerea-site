@@ -4,41 +4,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aplicações · Cinérea</title>
-<meta name="description" content="Uma peça Cinérea guarda um endereço que nunca muda e um conteúdo que muda sempre. Convite de casamento, cardápio de restaurante, wi-fi da pousada, homenagem. O que a peça diz é você quem escolhe.">
+<meta name="description" content="Peças de gesso feitas à mão no ateliê, com um chip dentro: guardam um endereço que nunca muda e um conteúdo que muda sempre. Convite de casamento, cardápio de restaurante, wi-fi da pousada, homenagem. O que a peça diz é você quem escolhe.">
 <meta property="og:title" content="Aplicações · Cinérea">
 <meta property="og:description" content="A base permanece, o conteúdo se renova.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/comum.css">
 <style>
-  .capa{text-align:center;padding:66px 22px 40px;max-width:640px;margin:0 auto}
+  .capa{text-align:center;padding:66px 22px 40px;max-width:660px;margin:0 auto}
   .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
   .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px;text-wrap:balance}
   .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke)}
 
+  /* ---- como nasce a peça ------------------------------------------------
+     Esta faixa existe para dizer, antes dos casos, que nada aqui é escolhido
+     de prateleira: cada peça é encomendada e moldada para o uso. É o que separa
+     uma Cinérea de um adesivo com QR, e é o que sustenta o preço. */
+  .trilho{padding:40px 0 8px;border-top:1px solid var(--line)}
+  .trilho h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,30px);line-height:1.15}
+  .trilho .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
+  .passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;margin-top:28px;counter-reset:p}
+  .passo{position:relative;padding-left:40px}
+  .passo::before{
+    counter-increment:p;content:counter(p);position:absolute;left:0;top:-1px;
+    width:27px;height:27px;border-radius:50%;border:1px solid var(--line);
+    display:grid;place-items:center;font-size:12px;color:var(--ember);
+  }
+  .passo h3{font-family:'Fraunces';font-weight:400;font-size:17.5px;line-height:1.25}
+  .passo p{margin-top:7px;font-size:14.5px;color:var(--smoke);line-height:1.55}
+
   .grupo{padding:44px 0;border-top:1px solid var(--line)}
   .grupo h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);line-height:1.15}
-  .grupo .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:58ch}
+  .grupo .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
 
   /* Os casos são cartões porque a lista é longa: em texto corrido ninguém
      acharia o próprio caso. Em cartão, a pessoa varre e para no dela. */
-  .casos{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px;margin-top:26px}
+  .casos{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:16px;margin-top:26px}
   .caso{
     background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:14px;
     padding:20px 20px 18px;transition:border-color .2s ease,transform .2s ease;
   }
   .caso:hover{border-color:var(--ember);transform:translateY(-3px)}
-  /* O cartão virou link para o contato, com o assunto já escolhido — quem se
+  /* O cartão virou link para o contato, com o assunto já escolhido: quem se
      reconhece num caso quer falar sobre AQUELE caso. */
   .caso{display:block;text-decoration:none;color:inherit}
   .caso .fig{display:block;width:56px;height:56px;margin-bottom:14px;color:var(--char);overflow:visible}
   .caso h3{font-family:'Fraunces';font-weight:400;font-size:18px;line-height:1.25}
 
   /* ---- vocabulário de animação -----------------------------------------
-     Seis movimentos para 27 desenhos. Um repertório pequeno é o que faz a
-     página parecer uma coisa só, em vez de 27 enfeites diferentes.
-     TODOS repousam visíveis: travando a animação, o desenho continua inteiro —
-     é a regra que ficou da rodada das seções. */
+     Um punhado de movimentos para 36 desenhos. Um repertório pequeno é o que
+     faz a página parecer uma coisa só, em vez de 36 enfeites diferentes.
+     TODOS repousam visíveis: travando a animação, o desenho continua inteiro,
+     que é a regra que ficou da rodada das seções. */
 
   .pulsa{animation:apulsa 3.2s ease-in-out infinite}
   @keyframes apulsa{0%,100%{opacity:1}50%{opacity:.45}}
@@ -90,16 +107,36 @@
   @keyframes atoldo{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.08)}}
   .abre-porta{transform-box:fill-box;transform-origin:0% 100%;animation:aporta 5.4s ease-in-out infinite}
   @keyframes aporta{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.62)}}
+  /* A areia da cápsula do tempo cai devagar: é o desenho em que o movimento
+     conta o assunto inteiro. */
+  .areia{animation:aareia 3.6s ease-in-out infinite}
+  @keyframes aareia{0%{transform:translateY(-3px);opacity:0}25%{opacity:1}75%{opacity:1}100%{transform:translateY(7px);opacity:0}}
+  .gira-chave{transform-box:fill-box;transform-origin:22% 50%;animation:achave 5s ease-in-out infinite}
+  @keyframes achave{0%,100%{transform:rotate(0)}55%{transform:rotate(-16deg)}}
+  .senta{animation:asenta 4.4s ease-in-out infinite}
+  .s2{animation-delay:.5s} .s3{animation-delay:1s}
+  @keyframes asenta{0%,100%{opacity:.35}45%{opacity:1}}
+  .confere{stroke-dasharray:22;animation:aconfere 4.2s ease-in-out infinite}
+  @keyframes aconfere{0%,100%{stroke-dashoffset:0}45%{stroke-dashoffset:22}}
 
   @media (prefers-reduced-motion:reduce){
     .caso .fig *{animation:none!important;transform:none!important;opacity:1!important;stroke-dashoffset:0!important}
   }
   .caso p{margin-top:7px;font-size:14px;color:var(--smoke);line-height:1.55}
-  /* O que a peça guarda naquele caso — é o que torna o exemplo concreto. */
-  .caso .guarda{
-    display:inline-block;margin-top:12px;font-size:11.5px;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--ember);
+
+  /* ---- a ficha do caso ---------------------------------------------------
+     Duas linhas: o que a peça guarda hoje e no que ela vira depois. A segunda
+     é a que importa, e é a que faltava: sem ela o cartão descreve uma
+     etiqueta de QR. Com ela, descreve um objeto que sobrevive à data. */
+  .caso .ficha{
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:baseline;
   }
+  .caso .ficha i{
+    font-style:normal;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ember);white-space:nowrap;
+  }
+  .caso .ficha b{font-weight:400;font-size:12.5px;line-height:1.45;color:var(--smoke)}
 
   .frisa{
     font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(19px,4.6vw,23px);
@@ -107,7 +144,7 @@
   }
   .fecho{padding:44px 0 10px;border-top:1px solid var(--line);margin-top:44px;text-align:center}
   .fecho h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px)}
-  .fecho p{margin-top:12px;color:var(--smoke);max-width:48ch;margin-left:auto;margin-right:auto}
+  .fecho p{margin-top:12px;color:var(--smoke);max-width:52ch;margin-left:auto;margin-right:auto}
   .botoes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
   .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;font-weight:500;transition:.15s}
   .bt:hover{background:var(--ember)}
@@ -133,24 +170,58 @@
   <section class="capa">
     <div class="rot">Aplicações</div>
     <h1>A peça é uma só. O que ela diz muda quantas vezes você quiser.</h1>
-    <p>Dentro de cada Cinérea há um chip. Quem encostar o celular abre o que você
-       deixou ali. E você troca depois, de onde estiver, sem tocar na peça.</p>
+    <p>Cada Cinérea sai do ateliê moldada à mão, uma por vez, com um chip dentro.
+       Quem encostar o celular abre o que você deixou ali. E você troca depois,
+       de onde estiver, sem tocar na peça.</p>
   </section>
 
   <div class="envolve">
 
+    <section class="trilho">
+      <h2>Uma peça de uso não se escolhe de prateleira.</h2>
+      <p class="intro">Todos os casos desta página começaram como encomenda. O que
+         muda de um para o outro não é só o conteúdo: é o formato, o tamanho e onde
+         a peça vai ficar. Por isso o caminho é sempre o mesmo, e começa por
+         conversa.</p>
+      <div class="passos">
+        <div class="passo">
+          <h3>A conversa</h3>
+          <p>Você conta o que a peça vai precisar dizer e onde ela vai ficar. Mesa
+             de restaurante, entrada de casa e mão de convidado pedem peças
+             diferentes.</p>
+        </div>
+        <div class="passo">
+          <h3>O ateliê</h3>
+          <p>Moldada, curada e acabada à mão, uma por vez, em Campos do Jordão.
+             Nenhuma sai igual à outra. As numeradas levam série e certidão de
+             origem dentro do próprio chip.</p>
+        </div>
+        <div class="passo">
+          <h3>O conteúdo</h3>
+          <p>Entra pelo aplicativo, em um minuto, e sai quando você quiser. A peça
+             continua a mesma. É por isso que ela não vence.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="grupo">
       <h2>Em casa</h2>
-      <p class="intro">A peça fica na entrada, na sala ou no quarto de hóspedes, e responde o que todo mundo pergunta.</p>
+      <p class="intro">A peça fica na entrada, na sala ou no quarto de hóspedes, e
+         responde o que todo mundo pergunta.</p>
       <div class="casos">
-        <a class="caso" href="/contato/?sobre=refil">
+        <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="A rede de wi-fi"><path class="onda3" d="M8 22 a26 26 0 0 1 40 0" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="onda2" d="M14 30 a18 18 0 0 1 28 0" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="onda1" d="M20 38 a10 10 0 0 1 16 0" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="brasa pulsa" cx="28" cy="46" r="3.2" fill="#B5462A"/></svg>
           <h3>A rede de wi-fi</h3>
-          <p>Ninguém mais soletra senha. Encostou, conectou. E quando você trocar a senha, troca no app, não na peça.</p>
-          <span class="guarda">guarda: rede e senha</span>
+          <p>Ninguém mais soletra senha na porta. Encostou, conectou. E no dia em
+             que você trocar a senha, troca no aplicativo: a peça na estante já
+             está certa antes da próxima visita chegar.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o nome da rede e a senha</b>
+            <i>depois</i><b>o mapa do bairro, quando a visita for dormir</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Recado para quem chega"><path d="M12 10 h22 l10 10 v26 a2 2 0 0 1 -2 2 H14 a2 2 0 0 1 -2 -2 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -158,16 +229,39 @@
 <path d="M19 28 h18 M19 35 h18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".38"/>
 <path class="escreve" d="M19 42 h12" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round"/></svg>
           <h3>Recado para quem chega</h3>
-          <p>Onde ficam as toalhas, a que horas é o café, o que fazer com a chave. A pousada da sua casa, sem bilhete na geladeira.</p>
-          <span class="guarda">guarda: um recado</span>
+          <p>Onde ficam as toalhas, a que horas é o café, o que fazer com a chave.
+             A pousada da sua casa, sem bilhete preso na geladeira com ímã.</p>
+          <div class="ficha">
+            <i>guarda</i><b>um recado escrito por você</b>
+            <i>depois</i><b>outro recado, para a próxima pessoa</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="A trilha da casa"><path d="M22 42 V16 l18 -5 v26" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="nota1" cx="17" cy="42" r="5" fill="#B5462A"/>
 <circle class="nota2" cx="35" cy="37" r="5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <h3>A trilha da casa</h3>
-          <p>A playlist que toca no jantar. O convidado encosta e leva embora o que estava tocando.</p>
-          <span class="guarda">guarda: uma playlist</span>
+          <p>A playlist que toca no jantar. Em vez de soletrar o nome dela para
+             quem perguntou, a pessoa encosta o celular e leva embora exatamente o
+             que estava tocando.</p>
+          <div class="ficha">
+            <i>guarda</i><b>uma playlist</b>
+            <i>depois</i><b>a trilha do próximo jantar</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="O manual da casa"><rect x="13" y="10" width="30" height="36" rx="3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M23 10 v-2 a2 2 0 0 1 2 -2 h6 a2 2 0 0 1 2 2 v2Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 32 h16 M20 39 h11" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".38"/>
+<path class="pulsa" d="M20 25 l8 -7 8 7" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>O manual da casa</h3>
+          <p>A cor exata da tinta da sala, o telefone do eletricista que fez a
+             instalação, a garantia da geladeira, a data da última dedetização.
+             Tudo o que você procura na gaveta errada, no dia errado.</p>
+          <div class="ficha">
+            <i>guarda</i><b>os dados que a casa exige e ninguém decora</b>
+            <i>depois</i><b>o que a próxima reforma mudar</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Quarto de hóspedes"><path d="M8 40 v-8 a4 4 0 0 1 4 -4 h32 a4 4 0 0 1 4 4 v8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -176,67 +270,123 @@
 <path class="onda1" d="M34 22 a9 9 0 0 1 12 0" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
 <circle class="pulsa" cx="40" cy="26" r="2.4" fill="#B5462A"/></svg>
           <h3>Quarto de hóspedes</h3>
-          <p>Wi-fi, o mapa do bairro, o número do seu WhatsApp. Tudo numa peça só, na mesa de cabeceira.</p>
-          <span class="guarda">guarda: o que fizer falta</span>
+          <p>Wi-fi, o mapa do bairro, a padaria que abre cedo, o seu WhatsApp para
+             o caso de alguma coisa. Uma peça só na mesa de cabeceira, no lugar de
+             quatro avisos colados.</p>
+          <div class="ficha">
+            <i>guarda</i><b>vários endereços numa página só</b>
+            <i>depois</i><b>o que o próximo hóspede precisar</b>
+          </div>
         </a>
       </div>
     </section>
+
     <section class="grupo">
       <h2>Presente e afeto</h2>
-      <p class="intro">Aqui a peça faz o que nenhum cartão faz: ela continua falando depois que a data passou.</p>
+      <p class="intro">Aqui a peça faz o que nenhum cartão faz: continua falando
+         depois que a data passou, e diz outra coisa no ano seguinte.</p>
       <div class="casos">
         <a class="caso" href="/contato/?sobre=casamento">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Casamento"><circle class="gira" cx="23" cy="30" r="11" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="gira lenta" cx="35" cy="30" r="11" stroke="#B5462A" stroke-width="2.2" fill="none"/></svg>
           <h3>Casamento</h3>
-          <p>A lembrança que os convidados levam abre o recado dos noivos. Um ano depois, vocês trocam pela foto do primeiro aniversário, e a peça conta a história junto.</p>
-          <span class="guarda">guarda: um recado, depois fotos</span>
+          <p>A lembrança que os convidados levam abre o recado dos noivos, gravado
+             na voz de vocês. Um ano depois, vocês trocam pela foto do primeiro
+             aniversário, e a peça na estante do convidado conta a história junto,
+             sem pedir nada de volta.</p>
+          <div class="ficha">
+            <i>guarda</i><b>um recado dos noivos</b>
+            <i>depois</i><b>as fotos, a cada aniversário de casamento</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Nascimento"><path class="cresce" d="M28 46 V24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="cresce" d="M28 30 c-10 0,-13 -8,-13 -13 c9 -1,13 5,13 13Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="cresce atrasa" d="M28 26 c9 0,12 -7,12 -12 c-8 -1,-12 5,-12 12Z" fill="#B5462A" opacity=".85" stroke="none"/></svg>
           <h3>Nascimento</h3>
-          <p>A escultura acompanha a criança. O conteúdo muda a cada ano, e o objeto continua o mesmo na estante.</p>
-          <span class="guarda">guarda: o que aquele ano foi</span>
+          <p>A escultura acompanha a criança de quarto em quarto. O conteúdo muda a
+             cada ano: a foto do primeiro passo, depois o vídeo da escola, depois o
+             que ela mesma quiser guardar ali.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o que aquele ano foi</b>
+            <i>depois</i><b>o ano seguinte, e o seguinte</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Cápsula do tempo"><path d="M16 8 h24 M16 48 h24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M18 8 c0 12,10 16,10 20 c0 -4,10 -8,10 -20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18 48 c0 -12,10 -16,10 -20 c0 4,10 8,10 20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle class="areia" cx="28" cy="30" r="2.6" fill="#B5462A"/></svg>
+          <h3>Cápsula do tempo</h3>
+          <p>Uma carta escrita hoje para ser lida daqui a quinze anos. A peça fica à
+             vista o tempo inteiro, como objeto, e ninguém precisa lembrar onde
+             guardou o envelope, porque o envelope é a escultura.</p>
+          <div class="ficha">
+            <i>guarda</i><b>uma carta com data para abrir</b>
+            <i>depois</i><b>a resposta de quem leu</b>
+          </div>
         </a>
         <a class="caso" href="/contato/?sobre=homenagem">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Homenagem"><path d="M20 46 h16 M22 46 V30 h12 v16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M28 30 V22" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="chamica" d="M28 8 C28 8,22 16,22 20 a6 6 0 0 0 12 0 C34 16,28 8,28 8Z" fill="#B5462A"/></svg>
           <h3>Homenagem</h3>
-          <p>Para quem partiu: a peça guarda a voz, as fotos, a história. Fica na sala como objeto, e abre como memória quando alguém quiser.</p>
-          <span class="guarda">guarda: uma memória</span>
+          <p>Para quem partiu: a peça guarda a voz, as fotos, a história contada
+             por quem conviveu. Fica na sala como objeto, e abre como memória
+             quando alguém da família quiser, sem precisar procurar pasta em
+             computador nenhum.</p>
+          <div class="ficha">
+            <i>guarda</i><b>uma voz, fotos, uma história</b>
+            <i>depois</i><b>o que os outros forem acrescentando</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Bodas"><rect x="10" y="14" width="36" height="28" rx="3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M10 34 l10 -9 8 7 7 -6 11 9" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="pulsa" cx="20" cy="23" r="3.4" fill="#B5462A"/></svg>
           <h3>Bodas</h3>
-          <p>Vinte e cinco anos numa peça que abre o álbum. E que no ano seguinte abre outra coisa.</p>
-          <span class="guarda">guarda: o álbum</span>
+          <p>Vinte e cinco anos numa peça que abre o álbum inteiro, do casamento até
+             ontem. Sem caixa de sapato, sem álbum que ninguém tira da prateleira
+             porque pesa três quilos.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o álbum, do começo ao fim</b>
+            <i>depois</i><b>as fotos que ainda vão existir</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Presente com remetente"><rect x="10" y="22" width="36" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M10 30 h36 M28 22 v24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="balanca" d="M28 22 c0 -6,-8 -10,-8 -4 c0 3,4 4,8 4 c4 0,8 -1,8 -4 c0 -6,-8 0,-8 4Z" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
           <h3>Presente com remetente</h3>
-          <p>Quem deu fica gravado. Meses depois, quem recebeu encosta o celular e tem o contato de volta.</p>
-          <span class="guarda">guarda: um contato</span>
+          <p>Quem deu fica gravado dentro do presente. Meses depois, quando a pessoa
+             quiser agradecer de novo ou perguntar onde você achou aquilo, ela
+             encosta o celular e tem o seu contato de volta.</p>
+          <div class="ficha">
+            <i>guarda</i><b>quem deu, e como falar com você</b>
+            <i>depois</i><b>o que fizer sentido no próximo ano</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Formatura"><path d="M28 14 L48 22 28 30 8 22Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M14 26 v10 c0 4,28 4,28 0 V26" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="balanca" d="M46 23 v10" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round"/></svg>
           <h3>Formatura</h3>
-          <p>O discurso, a foto da turma, o grupo da galera. A peça na estante do escritório, dez anos depois.</p>
-          <span class="guarda">guarda: o dia</span>
+          <p>O discurso, a foto da turma inteira, o grupo que continua vivo dez anos
+             depois. A peça fica na estante do escritório, e quando a turma se
+             reencontrar é ela que tem o link do reencontro.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o dia, e a turma</b>
+            <i>depois</i><b>o próximo reencontro</b>
+          </div>
         </a>
       </div>
     </section>
+
     <section class="grupo">
       <h2>Restaurantes, bares e hotéis</h2>
-      <p class="intro">Trocar o que a peça diz não custa impressão, nem tempo, nem uma peça nova. É aqui que ela se paga.</p>
+      <p class="intro">Trocar o que a peça diz não custa impressão, nem tempo, nem
+         uma peça nova. É aqui que ela se paga, e costuma se pagar na primeira
+         mudança de cardápio.</p>
       <div class="casos">
         <a class="caso" href="/contato/?sobre=cardapio">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Cardápio na mesa"><circle cx="28" cy="30" r="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -244,16 +394,27 @@
 <path class="talher" d="M8 16 v12 M12 16 v12 M10 28 v14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="talher atrasa" d="M46 16 c4 0,4 12,0 12 v14" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
           <h3>Cardápio na mesa</h3>
-          <p>Uma escultura em cada mesa abre o cardápio do dia. Mudou o preço ou o prato? Muda no app. Nenhuma reimpressão, nenhum adesivo torto.</p>
-          <span class="guarda">guarda: o cardápio</span>
+          <p>Uma escultura em cada mesa abre o cardápio do dia. Mudou o preço, saiu
+             um prato, chegou a safra? Muda no aplicativo, e todas as mesas mudam
+             juntas. Nenhuma reimpressão, nenhum adesivo de preço novo colado
+             torto por cima do antigo.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o cardápio de hoje</b>
+            <i>depois</i><b>o do jantar, o da semana, o do inverno</b>
+          </div>
         </a>
         <a class="caso" href="/contato/?sobre=cardapio">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Carta de vinhos"><path d="M18 10 h20 l-2 14 a8 8 0 0 1 -16 0Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M28 32 v12 M20 46 h16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="enche" d="M19.4 17 h17.2 l-1 7 a8 8 0 0 1 -15.2 0Z" fill="#B5462A" opacity=".8" stroke="none"/></svg>
           <h3>Carta de vinhos</h3>
-          <p>A peça no balcão abre a carta com as fichas de cada rótulo. Some com o calhamaço plastificado.</p>
-          <span class="guarda">guarda: a carta</span>
+          <p>A peça no balcão abre a carta com a ficha de cada rótulo, a uva, a
+             harmonização e a foto da garrafa. Some o calhamaço plastificado, e a
+             garrafa que acabou sai da carta no mesmo minuto em que acaba.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a carta com o que existe na adega hoje</b>
+            <i>depois</i><b>a carta de amanhã, sem reimprimir</b>
+          </div>
         </a>
         <a class="caso" href="/contato/?sobre=pousada">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Quarto de pousada"><path d="M10 42 v-8 a4 4 0 0 1 4 -4 h28 a4 4 0 0 1 4 4 v8 M10 42 h36" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -261,8 +422,28 @@
 <path class="onda1" d="M36 20 a8 8 0 0 1 10 0" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
 <circle class="brasa pulsa" cx="41" cy="26" r="2.6" fill="#B5462A"/></svg>
           <h3>Quarto de pousada</h3>
-          <p>Wi-fi do quarto, horário do café, o mapa das trilhas. Substitui aquele cartão feio ao lado da TV.</p>
-          <span class="guarda">guarda: rede e informações</span>
+          <p>Wi-fi do quarto, horário do café, o mapa das trilhas, o telefone da
+             recepção. Substitui aquele cartão plastificado ao lado da TV, e cada
+             quarto pode dizer uma coisa diferente, porque cada peça tem endereço
+             próprio.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a rede e o que o hóspede pergunta</b>
+            <i>depois</i><b>a programação da temporada</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/?sobre=pousada">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Aluguel por temporada"><g class="gira-chave"><circle cx="18" cy="30" r="9" stroke="currentColor" stroke-width="2.2" fill="none"/>
+<path d="M27 30 h20 M40 30 v7 M46 30 v6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<circle class="pulsa" cx="18" cy="30" r="3.4" fill="#B5462A"/></svg>
+          <h3>Aluguel por temporada</h3>
+          <p>Tudo o que você responde por mensagem cinco vezes por mês: como
+             funciona o chuveiro, onde fica o lixo, a senha do portão, o horário do
+             check-out. E no último dia, a peça passa a abrir a página de
+             avaliação, que é quando o hóspede ainda está de bom humor.</p>
+          <div class="ficha">
+            <i>guarda</i><b>as regras da casa e a rede</b>
+            <i>depois</i><b>o pedido de avaliação, no dia da saída</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Reservas"><path d="M10 14 h36 a3 3 0 0 1 3 3 v18 a3 3 0 0 1 -3 3 H24 l-9 8 v-8 h-5 a3 3 0 0 1 -3 -3 V17 a3 3 0 0 1 3 -3Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -270,44 +451,88 @@
 <circle class="ponto p2" cx="28" cy="26" r="2.6" fill="#B5462A"/>
 <circle class="ponto p3" cx="36" cy="26" r="2.6" fill="#B5462A"/></svg>
           <h3>Reservas</h3>
-          <p>A peça na recepção abre o WhatsApp da casa, já com a conversa aberta.</p>
-          <span class="guarda">guarda: um WhatsApp</span>
+          <p>A peça na recepção ou na vitrine abre o WhatsApp da casa com a conversa
+             já começada, dizendo de onde a pessoa veio. Quem passou na porta e
+             gostou não precisa procurar o perfil depois, quando já esqueceu.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o WhatsApp, com a mensagem pronta</b>
+            <i>depois</i><b>a agenda direta, quando você tiver uma</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Avaliação"><path class="brilha" d="M28 10 l5.6 11.6 12.4 1.8 -9 8.9 2.2 12.7L28 39l-11.2 6 2.2 -12.7 -9 -8.9 12.4 -1.8Z" fill="#B5462A" stroke="none"/></svg>
           <h3>Avaliação</h3>
-          <p>No balcão, ao lado da máquina: encostou, abriu a página de avaliação. Sem pedir, sem constranger.</p>
-          <span class="guarda">guarda: um link</span>
+          <p>No balcão, ao lado da maquininha: encostou, abriu a página de
+             avaliação. O pedido acontece no melhor momento possível, logo depois da
+             sobremesa, sem garçom precisar pedir e sem ninguém se constranger.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o link da avaliação</b>
+            <i>depois</i><b>o clube de fidelidade, a newsletter</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Ambiente"><path d="M12 22 h8 l10 -8 v32 l-10 -8 h-8Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="onda1" d="M36 22 a10 10 0 0 1 0 16" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
 <path class="onda2" d="M42 16 a18 18 0 0 1 0 28" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
           <h3>Ambiente</h3>
-          <p>A playlist que toca no salão, para quem perguntar. Já perguntaram.</p>
-          <span class="guarda">guarda: uma playlist</span>
+          <p>A playlist que toca no salão, para quem perguntar. Já perguntaram, e
+             hoje a resposta é o garçom tentando lembrar o nome. Do lado da caixa de
+             som, a peça responde melhor que ele.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a playlist da casa</b>
+            <i>depois</i><b>a do verão, a da noite de sexta</b>
+          </div>
         </a>
       </div>
     </section>
+
     <section class="grupo">
       <h2>Eventos e convites</h2>
-      <p class="intro">O convite que ninguém joga fora, porque ele é um objeto, e que depois do evento vira outra coisa.</p>
+      <p class="intro">O convite que ninguém joga fora, porque ele é um objeto. E
+         que depois do evento vira outra coisa, em vez de virar lixo bonito.</p>
       <div class="casos">
         <a class="caso" href="/contato/?sobre=casamento">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Convite de casamento"><rect x="8" y="16" width="40" height="26" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="abre" d="M8 18 L28 32 48 18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="pulsa" d="M28 30 c0 -5,-7 -8,-7 -3 c0 3,4 4,7 6 c3 -2,7 -3,7 -6 c0 -5,-7 -2,-7 3Z" fill="#B5462A" stroke="none"/></svg>
           <h3>Convite de casamento</h3>
-          <p>Entregue como peça, não como papel. Abre a lista de presentes, o mapa da cerimônia e a confirmação. Depois vira decoração, e lembrança.</p>
-          <span class="guarda">guarda: tudo do dia</span>
+          <p>Entregue como peça, não como papel. Abre a lista de presentes, o mapa
+             da cerimônia, o dress code e a confirmação de presença. Convite
+             impresso custa uma vez e morre no dia; este muda de conteúdo até a
+             véspera, se o local mudar.</p>
+          <div class="ficha">
+            <i>guarda</i><b>tudo o que o convidado precisa saber</b>
+            <i>depois</i><b>as fotos da festa, na semana seguinte</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Save the date"><rect x="9" y="14" width="38" height="32" rx="3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 24 h38 M19 10 v8 M37 10 v8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="marca-dia" cx="28" cy="35" r="5" fill="#B5462A"/></svg>
           <h3>Save the date</h3>
-          <p>Chega antes, guarda a data no calendário de quem recebe, e continua na estante até a festa.</p>
-          <span class="guarda">guarda: a data</span>
+          <p>Chega meses antes e já entra no calendário de quem recebeu, com um
+             toque. Fica na estante até a festa, e nesse meio tempo é ele que abre
+             o convite completo, quando o convite ficar pronto.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a data, para salvar no calendário</b>
+            <i>depois</i><b>o convite inteiro, quando sair</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/?sobre=casamento">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Uma peça por mesa"><circle cx="28" cy="30" r="12" stroke="currentColor" stroke-width="2.2" fill="none"/>
+<circle class="senta" cx="28" cy="12" r="3.4" fill="#B5462A"/>
+<circle class="senta s2" cx="44" cy="30" r="3.4" stroke="currentColor" stroke-width="2.2" fill="none"/>
+<circle class="senta s3" cx="28" cy="48" r="3.4" stroke="currentColor" stroke-width="2.2" fill="none"/>
+<circle class="senta s2" cx="12" cy="30" r="3.4" stroke="currentColor" stroke-width="2.2" fill="none"/></svg>
+          <h3>Uma peça por mesa</h3>
+          <p>Cada mesa recebe uma peça, e cada peça diz uma coisa diferente: como os
+             noivos conheceram aquele grupo, a foto da viagem com aqueles amigos, o
+             recado para a mesa da família. O centro de mesa deixa de ser enfeite e
+             vira a conversa da noite.</p>
+          <div class="ficha">
+            <i>guarda</i><b>uma história por mesa</b>
+            <i>depois</i><b>cada convidado leva a sua para casa</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Aniversário"><path d="M12 44 v-10 a3 3 0 0 1 3 -3 h26 a3 3 0 0 1 3 3 v10Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -315,62 +540,117 @@
 <path d="M28 31 V24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="chamica" d="M28 12 C28 12,24 18,24 21 a4 4 0 0 0 8 0 C32 18,28 12,28 12Z" fill="#B5462A"/></svg>
           <h3>Aniversário</h3>
-          <p>O convite abre o local, o horário e a lista. E no dia seguinte, as fotos da festa.</p>
-          <span class="guarda">guarda: o convite, depois as fotos</span>
+          <p>O convite abre o local, o horário e a lista de presentes. No dia
+             seguinte, a mesma peça abre o álbum da festa, e quem levou para casa
+             recebe as fotos sem você ter que mandar nada para ninguém.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o convite e a lista</b>
+            <i>depois</i><b>as fotos, no dia seguinte</b>
+          </div>
         </a>
         <a class="caso" href="/contato/?sobre=empresa">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Lembrança corporativa"><rect x="9" y="22" width="38" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 30 h38 M28 22 v24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="balanca" d="M28 22 c-8 -10,-16 -2,-8 0 M28 22 c8 -10,16 -2,8 0" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
           <h3>Lembrança corporativa</h3>
-          <p>Brinde de fim de ano que abre a retrospectiva da empresa, em vez de mais uma caneta.</p>
-          <span class="guarda">guarda: o que a empresa quer dizer</span>
+          <p>O brinde de fim de ano que abre a retrospectiva da empresa, em vez de
+             mais uma caneta na gaveta. E que no ano seguinte abre o balanço novo,
+             sem custo de brinde novo: você comprou o objeto uma vez e continua
+             falando com aquela pessoa todo dezembro.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o que a empresa quer dizer este ano</b>
+            <i>depois</i><b>o que ela vai querer dizer no próximo</b>
+          </div>
         </a>
         <a class="caso" href="/contato/?sobre=empresa">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Feira e estande"><path d="M10 22 h36 v20 a2 2 0 0 1 -2 2 H12 a2 2 0 0 1 -2 -2Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M8 22 l4 -10 h32 l4 10" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="onda1" d="M22 32 h12 M22 38 h8" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
           <h3>Feira e estande</h3>
-          <p>A peça no balcão abre seu portfólio. O visitante leva o link sem pegar um cartão que vai se perder.</p>
-          <span class="guarda">guarda: o portfólio</span>
+          <p>A peça no balcão abre o seu portfólio. O visitante leva o link sem
+             pegar um cartão que vai amassar no bolso junto com outros quarenta. E
+             na feira seguinte, a mesma peça abre o catálogo novo.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o portfólio e o contato</b>
+            <i>depois</i><b>o catálogo da próxima feira</b>
+          </div>
         </a>
       </div>
     </section>
+
     <section class="grupo">
       <h2>Trabalho e ofício</h2>
-      <p class="intro">Para quem vende o que faz, e precisa que o trabalho continue falando depois que a conversa acabou.</p>
+      <p class="intro">Para quem vende o que faz, e precisa que o trabalho continue
+         falando depois que a conversa acabou e o cliente foi embora.</p>
       <div class="casos">
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Ateliê e galeria"><rect x="10" y="12" width="36" height="32" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M14 38 l9 -11 7 8 5 -5 7 8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="pulsa" cx="36" cy="22" r="3.6" fill="#B5462A"/></svg>
           <h3>Ateliê e galeria</h3>
-          <p>Ao lado da obra, a peça abre o áudio do artista contando o que aquilo é. Uma exposição que se explica sozinha.</p>
-          <span class="guarda">guarda: a história da obra</span>
+          <p>Ao lado da obra, a peça abre o áudio do artista contando o que aquilo
+             é. Uma exposição que se explica sozinha, sem plaquinha de acrílico e
+             sem monitor. Trocou a mostra? Troca o áudio, e as peças ficam.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a história da obra, na voz de quem fez</b>
+            <i>depois</i><b>a próxima exposição</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Fotógrafo"><path d="M8 20 h9 l4 -6 h14 l4 6 h9 a2 2 0 0 1 2 2 v20 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2V22 a2 2 0 0 1 2 -2Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="obturador" cx="28" cy="32" r="9" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="flash" cx="28" cy="32" r="4" fill="#B5462A"/></svg>
           <h3>Fotógrafo</h3>
-          <p>Entregue o álbum dentro de uma escultura, não num pen drive. E troque a galeria quando quiser, sem pedir a peça de volta.</p>
-          <span class="guarda">guarda: a galeria</span>
+          <p>Entregue o álbum dentro de uma escultura, não num pen drive que vai
+             para a gaveta. O cliente ganha um objeto que fica à vista, e você
+             troca a galeria quando quiser sem pedir a peça de volta, o que
+             transforma a entrega num contato que não acaba.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a galeria do ensaio</b>
+            <i>depois</i><b>o ensaio seguinte, do mesmo cliente</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Consultório e terapia"><circle class="respira" cx="28" cy="29" r="15" stroke="#B5462A" stroke-width="2.2" fill="none"/>
 <circle cx="28" cy="29" r="8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M28 44 v4" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/></svg>
           <h3>Consultório e terapia</h3>
-          <p>Na sala de espera: a meditação, o áudio de respiração, o agendamento da próxima sessão.</p>
-          <span class="guarda">guarda: o que acalma</span>
+          <p>Na sala de espera: o áudio de respiração para os cinco minutos antes da
+             sessão, o agendamento da próxima, o material que você recomenda entre
+             uma consulta e outra. Uma peça de gesso combina com a sala; um cartaz
+             plastificado, não.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o que acalma, e a próxima sessão</b>
+            <i>depois</i><b>o material daquela semana</b>
+          </div>
         </a>
-        <a class="caso" href="/contato/">
+        <a class="caso" href="/contato/?sobre=empresa">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Obra entregue"><rect x="9" y="11" width="38" height="34" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 27 h20 M29 11 v34 M29 34 h18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".45"/>
+<path class="abre-porta" d="M13 27 v-9 h9" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Obra entregue</h3>
+          <p>O arquiteto entrega a casa com uma peça no hall que guarda a planta
+             final, as cores exatas, os fornecedores, as garantias e o contato do
+             escritório. Dois anos depois, quando o cliente for reformar a área
+             gourmet, o telefone que ele acha primeiro é o seu.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a planta, as cores, os fornecedores</b>
+            <i>depois</i><b>o próximo projeto do escritório</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/?sobre=empresa">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Imóvel decorado"><path d="M9 27 L28 11 47 27" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M14 25 v19 h28 V25" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="abre-porta" d="M24 44 V32 h8 v12" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linejoin="round"/></svg>
           <h3>Imóvel decorado</h3>
-          <p>A peça no apartamento modelo abre o tour, a planta e o contato do corretor. Fica bonita, e trabalha.</p>
-          <span class="guarda">guarda: o tour</span>
+          <p>A peça no apartamento modelo abre o tour em vídeo, a planta e o contato
+             do corretor que está de plantão hoje. Fica bonita na bancada, e
+             trabalha: quem visitou no domingo leva o link em vez de um folder que
+             some no carro.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o tour, a planta, o corretor da vez</b>
+            <i>depois</i><b>o próximo lançamento</b>
+          </div>
         </a>
         <a class="caso" href="/contato/?sobre=parceria">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Marca e loja"><path d="M11 24 v20 h34 V24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -378,16 +658,90 @@
 <path d="M22 44 V32 h12 v12" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
 <circle class="brasa pulsa" cx="28" cy="19" r="2.8" fill="#B5462A"/></svg>
           <h3>Marca e loja</h3>
-          <p>No balcão, abrindo seu catálogo. Um cartão de visitas que ninguém perde porque ninguém joga fora uma escultura.</p>
-          <span class="guarda">guarda: o catálogo</span>
+          <p>No balcão, abrindo o seu catálogo, a coleção da estação e o cupom de
+             quem encostou o celular ali dentro. Um cartão de visitas que ninguém
+             perde, porque ninguém joga fora uma escultura.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o catálogo e a coleção da estação</b>
+            <i>depois</i><b>a coleção seguinte, sem material novo</b>
+          </div>
         </a>
         <a class="caso" href="/contato/">
           <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Músico"><circle class="gira" cx="28" cy="30" r="17" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <circle class="gira" cx="28" cy="30" r="9" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/>
 <circle cx="28" cy="30" r="3.4" fill="#B5462A"/></svg>
           <h3>Músico</h3>
-          <p>A peça que abre o disco novo, e que no próximo lançamento abre o próximo, sem virar lixo.</p>
-          <span class="guarda">guarda: o álbum</span>
+          <p>A peça vendida na mesa do show abre o disco novo, e no próximo
+             lançamento abre o próximo, sem virar lixo. É o merchandise que não
+             envelhece: quem comprou em 2026 continua ouvindo o que sai em 2030.</p>
+          <div class="ficha">
+            <i>guarda</i><b>o álbum e as datas da turnê</b>
+            <i>depois</i><b>o próximo disco, para o mesmo fã</b>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="grupo">
+      <h2>O que vai junto com o que você vende</h2>
+      <p class="intro">Aqui a peça não é o presente: ela acompanha o produto. Sai da
+         sua loja dentro da caixa, entra na casa do cliente e fica lá, com a sua
+         marca dentro, dizendo o que o papel dizia e depois deixava de dizer.</p>
+      <div class="casos">
+        <a class="caso" href="/contato/?sobre=parceria">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Ficha de cuidado"><g class="balanca"><path d="M28 8 L46 24 30 42 12 26Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="21" cy="19" r="3" stroke="currentColor" stroke-width="2.2" fill="none"/></g>
+<path class="escreve" d="M26 26 h12" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <h3>Ficha de cuidado</h3>
+          <p>Móvel de madeira, cerâmica, joia, peça de couro: como limpar, o que
+             nunca usar, de quanto em quanto tempo passar óleo. A etiqueta de papel
+             se perde na primeira semana; a peça fica na estante ao lado do
+             objeto.</p>
+          <div class="ficha">
+            <i>guarda</i><b>como conservar o que você vendeu</b>
+            <i>depois</i><b>o aviso de manutenção, no prazo certo</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/?sobre=parceria">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Procedência da obra"><circle cx="28" cy="24" r="13" stroke="currentColor" stroke-width="2.2" fill="none"/>
+<path d="M21 35 l-3 13 10 -5 10 5 -3 -13" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<circle class="brilha" cx="28" cy="24" r="5.4" fill="#B5462A"/></svg>
+          <h3>Procedência da obra</h3>
+          <p>O certificado de autenticidade que não se imita numa gráfica. O chip
+             fica dentro da própria obra, e a página de origem só pode ser escrita
+             por quem fez. Vale para arte, para peça de coleção e para série
+             limitada.</p>
+          <div class="ficha">
+            <i>guarda</i><b>autor, série, data e a história</b>
+            <i>depois</i><b>o histórico de quem foi dono</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/?sobre=parceria">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Garantia e assistência"><path class="respira" d="M28 8 l17 6 v14 c0 11,-8 17,-17 20 -9 -3,-17 -9,-17 -20V14Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="confere" d="M20 27 l6 6 11 -12" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Garantia e assistência</h3>
+          <p>A nota, o prazo, o número de série e o telefone da assistência certa,
+             dentro do produto. Ninguém mais liga para a loja procurando um papel
+             que ficou na caixa que já foi para o lixo, e você deixa de perder o
+             cliente para o primeiro concorrente que ele encontrar buscando.</p>
+          <div class="ficha">
+            <i>guarda</i><b>nota, prazo e quem consertar</b>
+            <i>depois</i><b>a oferta de troca, quando a garantia vencer</b>
+          </div>
+        </a>
+        <a class="caso" href="/contato/?sobre=parceria">
+          <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Origem e preparo"><path d="M17 20 h22 a3 3 0 0 1 3 3 v21 a3 3 0 0 1 -3 3 H17 a3 3 0 0 1 -3 -3V23 a3 3 0 0 1 3 -3Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22 20 v-5 a3 3 0 0 1 3 -3 h6 a3 3 0 0 1 3 3 v5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="pulsa" d="M14 30 h28 v7 H14Z" fill="#B5462A" opacity=".85" stroke="none"/></svg>
+          <h3>Origem e preparo</h3>
+          <p>Café, azeite, mel, geleia, cachaça: quem plantou, em que altitude, como
+             preparar, com o que combina. O rótulo tem espaço para oito palavras; a
+             peça que vai junto com a caixa tem espaço para a história inteira, e
+             muda a cada safra.</p>
+          <div class="ficha">
+            <i>guarda</i><b>a origem, o modo de preparo, o produtor</b>
+            <i>depois</i><b>a safra nova, e onde comprar de novo</b>
+          </div>
         </a>
       </div>
     </section>
@@ -396,12 +750,13 @@
 
     <section class="fecho">
       <h2>Tem uma ideia que não está aqui?</h2>
-      <p>A maioria dos usos acima nasceu de alguém perguntando. Se o seu caso é
-         outro, conte. Encomendas especiais e quantidade para empresas a gente
-         combina.</p>
+      <p>A maioria dos usos desta página nasceu de alguém perguntando se dava. O
+         ateliê trabalha por encomenda, então o seu caso não precisa caber em
+         nenhum destes: conte o que a peça vai precisar dizer, e a gente desenha
+         a partir daí. Quantidade para empresa a gente combina.</p>
       <div class="botoes">
-        <a class="bt" href="/contato/">Falar com a Cinérea</a>
-        <a class="bt bt2" href="/loja/">Ver as peças</a>
+        <a class="bt" href="/contato/">Encomendar no ateliê</a>
+        <a class="bt bt2" href="/loja/">Ver as peças prontas</a>
       </div>
     </section>
   </div>
@@ -411,8 +766,8 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Esculturas de gesso feitas à mão em Campos do Jordão. A base permanece,
-         o conteúdo se renova.</p>
+      <p>Ateliê de esculturas de gesso em Campos do Jordão. Cada peça moldada à
+         mão, uma por vez. A base permanece, o conteúdo se renova.</p>
     </div>
     <div>
       <h3>Navegar</h3>

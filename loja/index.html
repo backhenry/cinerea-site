@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Loja · Cinérea</title>
-<meta name="description" content="Esculturas de gesso feitas à mão. Cada peça guarda o que você escolher dizer.">
+<meta name="description" content="As peças prontas do ateliê Cinérea, em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Cada peça guarda o que você escolher dizer.">
 <link rel="stylesheet" href="/comum.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -21,7 +21,15 @@
   .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 26px;justify-content:center}
   .linhas button{padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;font-size:12.5px;color:var(--smoke);cursor:pointer}
   .linhas button.on{background:var(--char);color:var(--paper);border-color:var(--char)}
-.buscar{margin:26px 0 6px}
+  /* A loja abria direto no campo de busca, sem dizer de onde as peças vêm.
+     Quem chega pelo Instagram cai aqui primeiro, e uma vitrine sem voz parece
+     revenda. Duas linhas resolvem, e dizem que encomenda existe. */
+  .capa-loja{padding:52px 0 4px;text-align:center}
+  .capa-loja h1{font-family:'Fraunces';font-weight:300;font-size:clamp(27px,7vw,38px);line-height:1.15}
+  .capa-loja p{margin:14px auto 0;max-width:50ch;font-size:15.5px;color:var(--smoke)}
+  .capa-loja a{color:var(--ember)}
+
+  .buscar{margin:26px 0 6px}
   .buscar input{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-family:'Inter';font-size:14.5px;color:var(--char)}
   .buscar input:focus{outline:none;border-color:var(--char)}
   .secao{margin-bottom:56px;scroll-margin-top:80px}
@@ -91,6 +99,15 @@
     <a href="/contato/">Contato</a>
   </nav>
 </div></header>
+
+<section class="capa-loja">
+  <div class="envolve">
+    <h1>O que está pronto no ateliê.</h1>
+    <p>Peças moldadas à mão, uma por vez, prontas para sair agora. O que não
+       está aqui a gente faz sob encomenda: <a href="/contato/">é só contar o
+       que você precisa</a>.</p>
+  </div>
+</section>
 
 <div class="envolve">
   <div class="buscar">
@@ -260,7 +277,8 @@ catch { document.getElementById('grade').innerHTML='<p class="vazio">Não conseg
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Esculturas de gesso e velas de areia perfumada, feitas à mão.</p>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos
+         do Jordão. Cada peça feita à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>
     <div>

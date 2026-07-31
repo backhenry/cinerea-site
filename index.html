@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cinérea · esculturas que guardam o que você quiser dizer</title>
-<meta name="description" content="Esculturas de gesso feitas à mão em Campos do Jordão. Você preenche com areia perfumada e repõe quando acabar. A escultura fica. E um chip dentro dela guarda o que você escolher dizer.">
+<meta name="description" content="Ateliê em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Você preenche com areia perfumada e repõe quando acabar. A escultura fica. E um chip dentro dela guarda o que você escolher dizer.">
 <meta property="og:title" content="Cinérea">
 <meta property="og:description" content="A base permanece, o conteúdo se renova.">
 <meta property="og:type" content="website">
@@ -28,8 +28,13 @@
   .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(42px,11vw,64px);margin-top:22px;letter-spacing:.01em}
   .capa .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:clamp(16px,4.4vw,20px);margin-top:4px}
   .capa p{max-width:38ch;margin:30px auto 0;font-size:16.5px}
-  .bt{display:inline-block;margin-top:30px;padding:15px 30px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+  .bt{display:inline-block;margin:30px 5px 0;padding:15px 30px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
   .bt:hover{background:var(--ember)}
+  /* Dois caminhos na capa: comprar o que existe, ou encomendar o que não
+     existe. O segundo é o do ateliê, e por isso não compete visualmente com
+     o primeiro: contorno, não bloco. */
+  .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
+  .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
 
   .ideia{padding:56px 0;border-top:1px solid var(--line)}
   .ideia .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
@@ -231,9 +236,10 @@
     </svg>
     <h1>Cinérea</h1>
     <p class="lema">a base permanece, o conteúdo se renova</p>
-    <p>Esculturas de gesso feitas à mão em Campos do Jordão. O que elas guardam
-       muda. A escultura, não.</p>
+    <p>Ateliê em Campos do Jordão. Cada escultura de gesso é moldada, curada e
+       acabada à mão, uma por vez. O que elas guardam muda. A escultura, não.</p>
     <a class="bt" href="/loja/">Ver as peças</a>
+    <a class="bt bt2" href="/contato/">Encomendar no ateliê</a>
   </section>
 
   <div class="envolve">
@@ -501,13 +507,18 @@
     </section>
 
     <section class="ideia" id="marca">
-      <div class="rot">A marca</div>
+      <div class="rot">O ateliê</div>
       <h2>Feito à mão, em Campos do Jordão.</h2>
-      <p>A Cinérea nasce da vontade de fazer objetos que durem mais que o seu
-         conteúdo. Cada peça é moldada, curada e acabada à mão, uma por vez,
-         e por isso nenhuma sai exatamente igual à outra.</p>
+      <p>A Cinérea é um ateliê, não uma fábrica. Cada peça é moldada, curada e
+         acabada à mão, uma por vez, e por isso nenhuma sai exatamente igual à
+         outra. É essa a razão de existir da marca: fazer objetos que durem mais
+         que o próprio conteúdo.</p>
       <p>As peças numeradas trazem certidão de origem: encostando o celular,
-         aparece o modelo, o número da série e quando ela foi feita.</p>
+         aparece o modelo, o número da série e quando ela foi feita. Quem faz
+         assina o que fez.</p>
+      <p>Boa parte do que sai daqui nasce de encomenda: um formato para um
+         lugar, uma peça para uma data, uma quantidade para uma empresa. Se o
+         que você precisa não está na loja, é porque ainda não foi feito.</p>
       <a class="linkinho" href="https://instagram.com/cinerea.velas" rel="noopener">Acompanhar no Instagram →</a>
       <a class="linkinho" href="https://www.tiktok.com/@cinerea.velas" rel="noopener">Ver o processo no TikTok →</a>
     </section>
@@ -519,7 +530,8 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Esculturas de gesso e velas de areia perfumada, feitas à mão.</p>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos
+         do Jordão. Cada peça feita à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>
     <div>
