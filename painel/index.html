@@ -75,6 +75,17 @@
   .previa .p-rot{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
   .previa .p-txt{font-family:'Fraunces';font-style:italic;font-size:16px;line-height:1.4}
   .previa .p-bt{align-self:center;padding:9px 20px;border-radius:8px;font-size:13px;margin-top:4px}
+  .previa .p-logo{max-width:100%;height:auto;object-fit:contain;align-self:center}
+
+  .logolinha{display:flex;gap:14px;align-items:flex-start}
+  .logopreview{
+    width:78px;height:78px;flex:0 0 auto;border:1px dashed var(--line);border-radius:10px;
+    display:grid;place-items:center;overflow:hidden;color:var(--smoke);font-size:11px;text-align:center;
+  }
+  .logopreview img{max-width:100%;max-height:100%;object-fit:contain}
+  .logoacoes{flex:1 1 auto;min-width:0}
+  .logoacoes .sub{margin-top:8px}
+  input[type=range]{padding:0;border:none;background:none;accent-color:var(--ember)}
 </style>
 </head>
 <body>
@@ -148,6 +159,8 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendP
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, serverTimestamp, Timestamp }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ", authDomain: "cinerea1.firebaseapp.com",
@@ -156,6 +169,7 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const fdb = getFirestore(app);
+const armazem = getStorage(app);
 const tela = document.getElementById('tela');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -352,8 +366,10 @@ function pintarLista(){
  * aparência é para a peça caber na identidade de quem comprou, não para apagar
  * de onde ela veio: é a mesma assinatura que dá crédito à certidão logo acima.
  */
-const ESTILO_PADRAO = { cor:'#B5462A', fundo:'claro', marca:'' };
+const ESTILO_PADRAO = { cor:'#B5462A', fundo:'claro', marca:'', logo:'', logoTam:56 };
 let estilo = { ...ESTILO_PADRAO };
+let logoAtual = '';      // endereço já enviado, ou vazio
+let pecaAberta = '';     // tagUid da peça em edição: dá nome ao arquivo
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
@@ -375,6 +391,59 @@ function contraste(cor, fundo){
   return (a + .05) / (b + .05);
 }
 
+/**
+ * Encolhe a imagem ANTES de enviar.
+ *
+ * Um logo é servido a cada convidado que encosta o celular, então gordura aqui
+ * é banda paga mil vezes. 400px de lado já é o dobro do que a página usa, e
+ * WebP a 0,85 costuma sair abaixo de 40 KB.
+ *
+ * SVG passa direto: já é vetorial e leve, e rasterizar destruiria a qualidade
+ * que é justamente a razão de alguém mandar um SVG.
+ */
+function encolher(arquivo, ladoMax = 400){
+  if (arquivo.type === 'image/svg+xml') return Promise.resolve(arquivo);
+  return new Promise((ok, erro) => {
+    const img = new Image();
+    img.onload = () => {
+      const escala = Math.min(1, ladoMax / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * escala);
+      c.height = Math.round(img.height * escala);
+      // `alpha: true` é o padrão, e é o que preserva o fundo transparente do
+      // PNG. Sem isso o logo ganharia um retângulo preto no fundo escuro.
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(b => b ? ok(b) : erro(new Error('não consegui preparar a imagem')),
+               'image/webp', 0.85);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => erro(new Error('não consegui ler essa imagem'));
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
+
+/**
+ * O endereço do logo tem de ser DO NOSSO Storage.
+ *
+ * A regra do Firestore confere tipo e tamanho, e não prefixo. Sem esta trava,
+ * alguém apontaria a imagem para um servidor próprio: um pixel de rastreamento
+ * na página que o convidado abre, ou um arquivo de 20 MB servido do domínio da
+ * marca. Vale aqui e vale de novo na página do convidado.
+ */
+const NOSSO_ARMAZEM = /^https:\/\/firebasestorage\.googleapis\.com\//;
+
+async function enviarLogo(arquivo){
+  if (!arquivo) return;
+  if (!/^image\//.test(arquivo.type)) throw new Error('Escolha um arquivo de imagem.');
+  const menor = await encolher(arquivo);
+  if (menor.size > 512 * 1024) throw new Error('Mesmo encolhida a imagem ficou grande demais.');
+  const ext = arquivo.type === 'image/svg+xml' ? 'svg' : 'webp';
+  // Um arquivo por peça: publicar de novo substitui, e não acumula lixo pago.
+  const caminho = `logos/${usuario.uid}/${pecaAberta}.${ext}`;
+  await uploadBytes(ref(armazem, caminho), menor, { contentType: menor.type || arquivo.type });
+  return await getDownloadURL(ref(armazem, caminho));
+}
+
 function lerAparencia(){
   const v = id => (document.getElementById(id)?.value || '').trim();
   const cor = v('e_corTexto');
@@ -382,6 +451,8 @@ function lerAparencia(){
     cor: HEX.test(cor) ? cor.toUpperCase() : ESTILO_PADRAO.cor,
     fundo: v('e_fundo') === 'escuro' ? 'escuro' : 'claro',
     marca: v('e_marca').slice(0,40),
+    logo: NOSSO_ARMAZEM.test(logoAtual) ? logoAtual : '',
+    logoTam: Math.min(Math.max(Number(v('e_logoTam')) || 56, 32), 140),
   };
 }
 
@@ -395,6 +466,11 @@ function pintarPrevia(){
   const tinta = escuro ? '#F2EFEA' : '#1C1A17';
   box.style.background = papel;
   box.style.color = tinta;
+  const logoBox = box.querySelector('.p-logo');
+  if (e.logo){ logoBox.src = e.logo; logoBox.style.height = e.logoTam + 'px'; logoBox.classList.remove('some'); }
+  else logoBox.classList.add('some');
+  const tam = document.getElementById('e_tamValor');
+  if (tam) tam.textContent = e.logo ? `· ${e.logoTam}px` : '· sem logo, a marca da Cinérea aparece';
   box.querySelector('.p-marca').textContent = e.marca || 'Cinérea';
   box.querySelector('.p-rot').style.color = e.cor;
   box.querySelector('.p-bt').style.background = e.cor;
@@ -411,6 +487,13 @@ function pintarPrevia(){
   } else aviso.classList.add('some');
 }
 
+function pintarLogoBox(){
+  const box = document.getElementById('e_logoBox');
+  if (!box) return;
+  box.innerHTML = logoAtual ? `<img src="${esc(logoAtual)}" alt="">` : 'sem logo';
+  document.getElementById('e_tirarLogo').classList.toggle('some', !logoAtual);
+}
+
 function ligarAparencia(){
   const cor = document.getElementById('e_cor');
   const txt = document.getElementById('e_corTexto');
@@ -419,12 +502,47 @@ function ligarAparencia(){
   txt.oninput = () => { if (HEX.test(txt.value)) cor.value = txt.value; pintarPrevia(); };
   document.getElementById('e_fundo').onchange = pintarPrevia;
   document.getElementById('e_marca').oninput = pintarPrevia;
+  document.getElementById('e_logoTam').oninput = pintarPrevia;
+
+  const arq = document.getElementById('e_arquivo');
+  const btEnviar = document.getElementById('e_enviar');
+  btEnviar.onclick = ev => { ev.preventDefault(); arq.click(); };
+  arq.onchange = async () => {
+    const f = arq.files[0];
+    if (!f) return;
+    const nota = document.getElementById('e_logoNota');
+    btEnviar.disabled = true; nota.textContent = 'enviando…';
+    try{
+      logoAtual = await enviarLogo(f);
+      nota.textContent = 'Logo no ar. Publique para valer na peça.';
+      pintarLogoBox(); pintarPrevia();
+    }catch(e){
+      console.error(e);
+      // `unauthorized` aqui quase sempre é a regra do Storage não publicada.
+      nota.textContent = e.code === 'storage/unauthorized'
+        ? 'O envio foi recusado. As regras do Storage podem não estar publicadas.'
+        : (e.message || 'Não consegui enviar a imagem.');
+    }
+    btEnviar.disabled = false; arq.value = '';
+  };
+  document.getElementById('e_tirarLogo').onclick = ev => {
+    ev.preventDefault();
+    // Não apaga o arquivo do Storage aqui: publicar de novo o substitui, e
+    // apagar antes de publicar deixaria a peça no ar apontando para o nada.
+    logoAtual = '';
+    document.getElementById('e_logoNota').textContent = 'Sem logo. Publique para valer na peça.';
+    pintarLogoBox(); pintarPrevia();
+  };
+  pintarLogoBox();
+
   document.getElementById('e_padrao').onclick = ev => {
     ev.preventDefault();
     cor.value = ESTILO_PADRAO.cor; txt.value = ESTILO_PADRAO.cor;
     document.getElementById('e_fundo').value = 'claro';
     document.getElementById('e_marca').value = '';
-    pintarPrevia();
+    document.getElementById('e_logoTam').value = 56;
+    logoAtual = '';
+    pintarLogoBox(); pintarPrevia();
   };
   pintarPrevia();
 }
@@ -502,6 +620,8 @@ async function pintarEditor(i){
   // já tiver começado a digitar.
   let publicado = null;
   estilo = { ...ESTILO_PADRAO };
+  logoAtual = '';
+  pecaAberta = p.tagUid;
   try {
     const d = await getDoc(doc(fdb,'vitrines',p.tagUid));
     if (d.exists()){
@@ -509,12 +629,14 @@ async function pintarEditor(i){
       const e = d.data().estilo;
       if (e) estilo = { cor: e.cor || ESTILO_PADRAO.cor,
                         fundo: e.fundo === 'escuro' ? 'escuro' : 'claro',
-                        marca: e.marca || '' };
+                        marca: e.marca || '',
+                        logo: e.logo || '', logoTam: Number(e.logoTam) || 56 };
     }
   } catch(e){ console.error(e); }
 
   const tipoAtual = publicado?.tipo
     || (p.conteudoAtual?.tipo && TIPOS[p.conteudoAtual.tipo] ? p.conteudoAtual.tipo : 'link');
+  logoAtual = estilo.logo || '';
   itens = publicado?.tipo === 'links' && publicado.itens.length
     ? publicado.itens
     : [{rotulo:'',url:'',icone:'instagram'}];
@@ -532,6 +654,19 @@ async function pintarEditor(i){
       <input id="e_marca" maxlength="40" placeholder="Cinérea" value="${esc(estilo.marca || '')}">
       <p class="sub">Quem encostar vê este nome. Em branco, aparece Cinérea.</p>
 
+      <label>Logo</label>
+      <div class="logolinha">
+        <div class="logopreview" id="e_logoBox"></div>
+        <div class="logoacoes">
+          <input type="file" id="e_arquivo" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="some">
+          <button class="bt bt2" id="e_enviar">Escolher imagem</button>
+          <button class="btfrouxo some" id="e_tirarLogo">tirar o logo</button>
+          <p class="sub" id="e_logoNota">PNG com fundo transparente fica melhor. Até 512 KB.</p>
+        </div>
+      </div>
+      <label>Tamanho do logo <span id="e_tamValor" class="sub" style="text-transform:none;letter-spacing:0"></span></label>
+      <input type="range" id="e_logoTam" min="32" max="140" step="4" value="${Number(estilo.logoTam) || 56}">
+
       <label>Cor de destaque</label>
       <div class="cores">
         <input id="e_cor" type="color" value="${esc(estilo.cor || '#B5462A')}">
@@ -547,6 +682,7 @@ async function pintarEditor(i){
 
       <div class="erro some" id="e_contraste"></div>
       <div class="previa" id="e_previa">
+        <img class="p-logo some" alt="">
         <span class="p-marca"></span>
         <span class="p-rot">Recado</span>
         <span class="p-txt">Assim fica a página de quem encostar na peça.</span>
@@ -685,6 +821,7 @@ async function publicar(i){
     if (ap.cor !== ESTILO_PADRAO.cor) proprio.cor = ap.cor;
     if (ap.fundo !== 'claro') proprio.fundo = ap.fundo;
     if (ap.marca) proprio.marca = ap.marca;
+    if (ap.logo){ proprio.logo = ap.logo; proprio.logoTam = ap.logoTam; }
     if (Object.keys(proprio).length) publico.estilo = proprio;
 
     if (c.tipo === 'wifi') publico.senha = c.senha;

@@ -122,7 +122,12 @@
   .caminho:hover{border-color:var(--ember);color:var(--ember)}
   .caminho .sub{display:block;font-size:12px;font-weight:400;color:var(--smoke);margin-top:3px}
 
-  /* O nome de quem é a peça, logo abaixo da marca. */
+  /* O logo de quem é a peça, no lugar da marca da Cinérea. `object-fit:contain`
+     e altura fixa: o dono escolhe a altura e a largura acompanha, então logo
+     comprido não estoura a tela nem quadrado vira retângulo. */
+  .logodono{max-width:min(72vw,300px);width:auto;object-fit:contain;display:block}
+
+  /* O nome de quem é a peça, logo abaixo da marca ou do logo. */
   .donome{
     margin-top:14px;font-family:'Fraunces';font-weight:400;
     font-size:clamp(17px,4.6vw,21px);line-height:1.2;letter-spacing:.01em;
@@ -271,11 +276,27 @@ function vestir(estilo){
     raiz.setProperty('--surface','rgba(255,255,255,.55)');
     raiz.setProperty('--shadow','rgba(28,26,23,.07)');
   }
-  // O nome é identidade, então fica no ALTO, junto da marca — e não no pé, onde
-  // eu havia posto primeiro e ele virava rodapé de rodapé.
-  if (estilo.marca){
+  // O LOGO SUBSTITUI a marca da Cinérea no alto. A assinatura embaixo continua,
+  // e é ela que diz de quem é a peça — trocar o símbolo do topo é vestir a
+  // página, não apagar a procedência.
+  //
+  // O endereço precisa ser do NOSSO Storage. A regra do Firestore confere tipo e
+  // tamanho, não prefixo: sem esta trava, alguém apontaria a imagem para um
+  // servidor próprio e teria um pixel de rastreamento rodando no domínio da
+  // marca, em toda peça que alguém encostasse.
+  const nosso = /^https:\/\/firebasestorage\.googleapis\.com\//;
+  if (estilo.logo && nosso.test(estilo.logo)){
     const logo = document.querySelector('svg.marca');
-    if (logo) logo.insertAdjacentHTML('afterend',
+    const alt = Math.min(Math.max(Number(estilo.logoTam) || 56, 32), 140);
+    if (logo) logo.outerHTML =
+      `<img class="logodono" src="${esc(estilo.logo)}" alt="" style="height:${alt}px">`;
+  }
+  if (estilo.marca){
+    // O que está no topo pode já ter virado o logo do dono, e aí `svg.marca`
+    // não existe mais. Procurar os dois é o que impede o nome de sumir
+    // justamente para quem personalizou mais.
+    const topo = document.querySelector('img.logodono') || document.querySelector('svg.marca');
+    if (topo) topo.insertAdjacentHTML('afterend',
       `<p class="donome">${esc(String(estilo.marca).slice(0,40))}</p>`);
   }
   // A cor de destaque precisa APARECER. Numa peça de recado não há botão, e o
