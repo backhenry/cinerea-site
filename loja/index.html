@@ -28,9 +28,27 @@
   .secao-nome{font-family:'Fraunces';font-weight:300;font-size:27px;margin-bottom:6px}
   .secao-desc{color:var(--smoke);font-size:14.5px;max-width:60ch;margin-bottom:26px}
   .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:30px 22px}
-  .peca{cursor:pointer}
-  .moldura{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash);border:1px solid var(--line);position:relative}
-  .moldura img{width:100%;height:100%;object-fit:cover;display:block}
+  /* O cartão responde ao ponteiro: sobe um pouco e a foto se aproxima. É a
+     diferença entre uma grade de imagens e uma vitrine em que dá vontade de
+     pegar. `overflow:hidden` na moldura é o que segura a foto ampliada. */
+  .peca{cursor:pointer;transition:transform .22s cubic-bezier(.2,.7,.3,1)}
+  .peca:hover{transform:translateY(-4px)}
+  .moldura{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash);
+           border:1px solid var(--line);position:relative;
+           transition:border-color .22s ease, box-shadow .22s ease}
+  .peca:hover .moldura{border-color:var(--ember);box-shadow:0 10px 26px -14px rgba(28,26,23,.4)}
+  .moldura img{width:100%;height:100%;object-fit:cover;display:block;
+               transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+  .peca:hover .moldura img{transform:scale(1.06)}
+  .peca:hover .nome{color:var(--ember)}
+  .peca .nome{transition:color .22s ease}
+  /* No toque não existe ponteiro: o cartão reage ao ser pressionado. */
+  .peca:active{transform:scale(.985)}
+  @media (prefers-reduced-motion:reduce){
+    .peca,.peca .nome,.moldura,.moldura img{transition:none!important}
+    .peca:hover{transform:none}
+    .peca:hover .moldura img{transform:none}
+  }
   .breve{position:absolute;top:12px;left:12px;background:var(--char);color:var(--paper);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
   .nome{font-family:'Fraunces';font-size:19px;margin-top:13px}
   .desc{font-size:13.5px;color:var(--smoke);margin-top:3px}
@@ -60,6 +78,10 @@
 </style>
 </head>
 <body>
+
+<!-- A mesma vela da página inicial. `aria-hidden`: é imagem, não informação. -->
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
 <header class="topo"><div class="topo-in">
   <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
   <nav>
@@ -237,5 +259,6 @@ catch { document.getElementById('grade').innerHTML='<p class="vazio">Não conseg
   </div>
   <div class="fim">© Cinérea · feito à mão</div>
 </footer>
+<script src="/vivo.js" defer></script>
 </body>
 </html>
