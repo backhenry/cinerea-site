@@ -132,7 +132,7 @@ async function carregar(){
   produtos = (d?.itens||[]).map((p,i)=>({
     id:String(p.id??i), nome:p.nome||'Peça', preco:Number(p.preco)||0, foto:p.foto||'',
     linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
-    desc:p.desc||'', longa:p.longa||'', ficha:Array.isArray(p.ficha)?p.ficha:[],
+    desc:p.desc||'', longa:p.longa||'', ficha:lerFicha(p.ficha),
     colecao:p.colecao||'', destaque:!!p.destaque, pronto:Number(p.pronto)||0,
   }));
   // Sem reordenar: a gestão publica já na ordem em que a loja mostra. Ordenar
@@ -142,6 +142,23 @@ async function carregar(){
 }
 
 function marca(){ return '<div class="moldura"><div style="display:flex;align-items:center;justify-content:center;height:100%"><svg width="42" height="42" viewBox="0 0 150 150" fill="none"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="10" fill="#B5462A"/></svg></div></div>'; }
+
+/**
+ * A ficha técnica vem como TEXTO, uma linha `rótulo: valor`.
+ *
+ * Era array de pares, e o Firestore recusa array dentro de array — `itens` já
+ * é um array, então nada lá dentro pode ser lista. Publicar quebrava com
+ * "Nested arrays are not supported".
+ *
+ * Aceita o formato antigo também: quem já tem a loja aberta não pode ver a
+ * ficha sumir por causa de uma mudança nossa.
+ */
+function lerFicha(f){
+  if (Array.isArray(f)) return f;                       // formato antigo
+  return String(f || '').split('\n')
+    .map(l => l.trim()).filter(Boolean)
+    .map(l => { const i = l.indexOf(':'); return i < 0 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
+}
 
 function cartao(p){
   const foto = p.foto ? `<div class="moldura"><img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">${p.situacao==='embreve'?'<span class="breve">em breve</span>':''}</div>` : marca();
