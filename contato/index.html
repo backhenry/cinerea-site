@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contato — Cinérea</title>
+<meta name="description" content="Encomendas especiais, quantidade para empresas, parcerias e dúvidas. Fale direto com quem faz as peças.">
+<meta property="og:title" content="Contato — Cinérea">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  .capa{text-align:center;padding:66px 22px 34px;max-width:600px;margin:0 auto}
+  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px}
+  .capa p{margin-top:16px;font-size:16.5px;color:var(--smoke)}
+
+  /* O WhatsApp é o caminho principal porque é como a casa já atende — e porque
+     a mensagem já vai escrita, que é o que faz a pessoa mandar em vez de
+     desistir na frente do campo em branco. */
+  .canais{display:grid;gap:14px;max-width:520px;margin:8px auto 0}
+  .canal{
+    display:block;padding:20px 22px;border:1px solid var(--line);border-radius:14px;
+    background:rgba(255,255,255,.5);text-decoration:none;color:var(--char);
+    transition:border-color .2s ease,transform .2s ease;
+  }
+  .canal:hover{border-color:var(--ember);transform:translateY(-2px)}
+  .canal strong{display:block;font-family:'Fraunces';font-weight:400;font-size:19px}
+  .canal span{display:block;margin-top:5px;font-size:14px;color:var(--smoke);line-height:1.5}
+  .canal.destaque{background:var(--char);border-color:var(--char);color:var(--paper)}
+  .canal.destaque span{color:rgba(242,239,234,.72)}
+  .canal.destaque:hover{background:var(--ember);border-color:var(--ember)}
+
+  .assuntos{margin-top:46px;padding-top:34px;border-top:1px solid var(--line)}
+  .assuntos h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,29px);text-align:center}
+  .lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px;margin-top:26px}
+  .item{padding:18px 20px;border-left:2px solid var(--line)}
+  .item h3{font-family:'Fraunces';font-weight:400;font-size:17px}
+  .item p{margin-top:6px;font-size:14px;color:var(--smoke);line-height:1.55}
+
+  .nota{margin-top:40px;text-align:center;font-size:14px;color:var(--smoke)}
+</style>
+</head>
+<body>
+
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/loja/">Loja</a>
+    <a href="/aplicacoes/">Aplicações</a>
+    <a href="/#marca">A marca</a>
+    <a href="/contato/" class="aqui">Contato</a>
+  </nav>
+</div></header>
+
+<main>
+  <section class="capa">
+    <div class="rot">Contato</div>
+    <h1>Fale com quem faz.</h1>
+    <p>Não há atendimento terceirizado: quem responde é quem molda, cura e acaba
+       cada peça à mão.</p>
+  </section>
+
+  <div class="envolve">
+    <div class="canais">
+      <a class="canal destaque" id="zap" href="https://wa.me/5511958280174" rel="noopener">
+        <strong>WhatsApp</strong>
+        <span>O caminho mais rápido. A conversa já abre com o assunto escrito.</span>
+      </a>
+      <a class="canal" href="https://instagram.com/cinerea.velas" rel="noopener">
+        <strong>@cinerea.velas</strong>
+        <span>As peças que saíram do ateliê, e o que está em produção.</span>
+      </a>
+      <a class="canal" href="/loja/">
+        <strong>Comprar uma peça</strong>
+        <span>Para encomenda comum, a loja resolve sem conversa nenhuma.</span>
+      </a>
+    </div>
+
+    <section class="assuntos">
+      <h2>Do que costumam falar</h2>
+      <div class="lista">
+        <div class="item"><h3>Encomenda especial</h3>
+          <p>Uma peça feita para uma data, um nome, um formato que não está na loja.</p></div>
+        <div class="item"><h3>Quantidade para empresa</h3>
+          <p>Lembrança de evento, brinde de fim de ano, peça de mesa para
+             restaurante ou pousada — com o conteúdo do chip já configurado.</p></div>
+        <div class="item"><h3>Convite de casamento</h3>
+          <p>O convite como objeto, que depois da festa vira lembrança. Costuma
+             pedir conversa antes, porque cada casamento é um.</p></div>
+        <div class="item"><h3>Homenagem</h3>
+          <p>Peça para guardar a memória de alguém. Fazemos com calma e sem pressa
+             de orçamento.</p></div>
+        <div class="item"><h3>Refil de areia</h3>
+          <p>Sua peça acabou a fragrância e você não sabe qual repor. Diga o modelo
+             que a gente indica.</p></div>
+        <div class="item"><h3>Parceria</h3>
+          <p>Lojas, pousadas e ateliês que querem trabalhar com as peças, ou usar
+             o chip nos próprios produtos.</p></div>
+      </div>
+    </section>
+
+    <p class="nota">Campos do Jordão · São Paulo<br>Respondemos em até um dia útil.</p>
+  </div>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Esculturas de gesso feitas à mão em Campos do Jordão. A base permanece,
+         o conteúdo se renova.</p>
+    </div>
+    <div>
+      <h3>Navegar</h3>
+      <a href="/">Início</a>
+      <a href="/aplicacoes/">Aplicações</a>
+      <a href="/loja/">Loja</a>
+    </div>
+    <div>
+      <h3>Falar</h3>
+      <a href="https://instagram.com/cinerea.velas" rel="noopener">@cinerea.velas</a>
+      <p>Campos do Jordão · SP</p>
+    </div>
+  </div>
+  <div class="fim">© Cinérea · feito à mão</div>
+</footer>
+
+<script>
+  // A mensagem já vai escrita: campo em branco é onde a intenção morre.
+  // Se a pessoa chegou de uma aplicação específica (/contato/?sobre=cardapio),
+  // o assunto vem junto — e você sabe de onde ela veio sem perguntar.
+  (function () {
+    var ASSUNTOS = {
+      cardapio:  'Oi! Quero peças com cardápio para o meu restaurante.',
+      casamento: 'Oi! Quero peças para o meu casamento.',
+      empresa:   'Oi! Quero peças em quantidade para a minha empresa.',
+      homenagem: 'Oi! Gostaria de uma peça de homenagem.',
+      pousada:   'Oi! Quero peças para os quartos da minha pousada.',
+      refil:     'Oi! Preciso repor a areia perfumada da minha peça.',
+      parceria:  'Oi! Gostaria de falar sobre uma parceria.',
+    };
+    var pedido = new URLSearchParams(location.search).get('sobre');
+    var texto = ASSUNTOS[pedido] || 'Oi! Vim pelo site da Cinérea e gostaria de falar sobre uma peça.';
+    var zap = document.getElementById('zap');
+    if (zap) zap.href = 'https://wa.me/5511958280174?text=' + encodeURIComponent(texto);
+  })();
+</script>
+<script src="/vivo.js" defer></script>
+</body>
+</html>

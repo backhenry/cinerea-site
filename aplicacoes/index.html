@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aplicações — Cinérea</title>
+<meta name="description" content="Uma peça Cinérea guarda um endereço que nunca muda e um conteúdo que muda sempre. Convite de casamento, cardápio de restaurante, wi-fi da pousada, homenagem — o que a peça diz é você quem escolhe.">
+<meta property="og:title" content="Aplicações — Cinérea">
+<meta property="og:description" content="A base permanece, o conteúdo se renova.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  .capa{text-align:center;padding:66px 22px 40px;max-width:640px;margin:0 auto}
+  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px;text-wrap:balance}
+  .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke)}
+
+  .grupo{padding:44px 0;border-top:1px solid var(--line)}
+  .grupo h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);line-height:1.15}
+  .grupo .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:58ch}
+
+  /* Os casos são cartões porque a lista é longa: em texto corrido ninguém
+     acharia o próprio caso. Em cartão, a pessoa varre e para no dela. */
+  .casos{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px;margin-top:26px}
+  .caso{
+    background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:14px;
+    padding:20px 20px 18px;transition:border-color .2s ease,transform .2s ease;
+  }
+  .caso:hover{border-color:var(--ember);transform:translateY(-3px)}
+  .caso h3{font-family:'Fraunces';font-weight:400;font-size:18px;line-height:1.25}
+  .caso p{margin-top:7px;font-size:14px;color:var(--smoke);line-height:1.55}
+  /* O que a peça guarda naquele caso — é o que torna o exemplo concreto. */
+  .caso .guarda{
+    display:inline-block;margin-top:12px;font-size:11.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ember);
+  }
+
+  .frisa{
+    font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(19px,4.6vw,23px);
+    line-height:1.45;margin:0 auto;padding:38px 0 0;max-width:46ch;text-align:center;
+  }
+  .fecho{padding:44px 0 10px;border-top:1px solid var(--line);margin-top:44px;text-align:center}
+  .fecho h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px)}
+  .fecho p{margin-top:12px;color:var(--smoke);max-width:48ch;margin-left:auto;margin-right:auto}
+  .botoes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
+  .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;font-weight:500;transition:.15s}
+  .bt:hover{background:var(--ember)}
+  .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
+  .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
+</style>
+</head>
+<body>
+
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/loja/">Loja</a>
+    <a href="/aplicacoes/" class="aqui">Aplicações</a>
+    <a href="/#marca">A marca</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+</div></header>
+
+<main>
+  <section class="capa">
+    <div class="rot">Aplicações</div>
+    <h1>A peça é uma só. O que ela diz muda quantas vezes você quiser.</h1>
+    <p>Dentro de cada Cinérea há um chip. Quem encostar o celular abre o que você
+       deixou ali — e você troca depois, de onde estiver, sem tocar na peça.</p>
+  </section>
+
+  <div class="envolve">
+
+    <section class="grupo">
+      <h2>Em casa</h2>
+      <p class="intro">A peça fica na entrada, na sala ou no quarto de hóspedes — e
+         responde o que todo mundo pergunta.</p>
+      <div class="casos">
+        <div class="caso"><h3>A rede de wi-fi</h3>
+          <p>Ninguém mais soletra senha. Encostou, conectou — e quando você trocar
+             a senha, troca no app, não na peça.</p>
+          <span class="guarda">guarda: rede e senha</span></div>
+        <div class="caso"><h3>Recado para quem chega</h3>
+          <p>Onde ficam as toalhas, a que horas é o café, o que fazer com a chave.
+             A pousada da sua casa, sem bilhete na geladeira.</p>
+          <span class="guarda">guarda: um recado</span></div>
+        <div class="caso"><h3>A trilha da casa</h3>
+          <p>A playlist que toca no jantar. O convidado encosta e leva embora o
+             que estava tocando.</p>
+          <span class="guarda">guarda: uma playlist</span></div>
+        <div class="caso"><h3>Quarto de hóspedes</h3>
+          <p>Wi-fi, o mapa do bairro, o número do seu WhatsApp. Tudo numa peça só,
+             na mesa de cabeceira.</p>
+          <span class="guarda">guarda: o que fizer falta</span></div>
+      </div>
+    </section>
+
+    <section class="grupo">
+      <h2>Presente e afeto</h2>
+      <p class="intro">Aqui a peça faz o que nenhum cartão faz: ela continua falando
+         depois que a data passou.</p>
+      <div class="casos">
+        <div class="caso"><h3>Casamento</h3>
+          <p>A lembrança que os convidados levam abre o recado dos noivos. Um ano
+             depois, vocês trocam pela foto do primeiro aniversário — e a peça
+             conta a história junto.</p>
+          <span class="guarda">guarda: um recado, depois fotos</span></div>
+        <div class="caso"><h3>Nascimento</h3>
+          <p>A escultura acompanha a criança. O conteúdo muda a cada ano, e o
+             objeto continua o mesmo na estante.</p>
+          <span class="guarda">guarda: o que aquele ano foi</span></div>
+        <div class="caso"><h3>Homenagem</h3>
+          <p>Para quem partiu: a peça guarda a voz, as fotos, a história. Fica na
+             sala como objeto, e abre como memória quando alguém quiser.</p>
+          <span class="guarda">guarda: uma memória</span></div>
+        <div class="caso"><h3>Bodas</h3>
+          <p>Vinte e cinco anos numa peça que abre o álbum. E que no ano seguinte
+             abre outra coisa.</p>
+          <span class="guarda">guarda: o álbum</span></div>
+        <div class="caso"><h3>Presente com remetente</h3>
+          <p>Quem deu fica gravado. Meses depois, quem recebeu encosta o celular e
+             tem o contato de volta.</p>
+          <span class="guarda">guarda: um contato</span></div>
+        <div class="caso"><h3>Formatura</h3>
+          <p>O discurso, a foto da turma, o grupo da galera. A peça na estante do
+             escritório, dez anos depois.</p>
+          <span class="guarda">guarda: o dia</span></div>
+      </div>
+    </section>
+
+    <section class="grupo">
+      <h2>Restaurantes, bares e hotéis</h2>
+      <p class="intro">Trocar o que a peça diz não custa impressão, nem tempo, nem
+         uma peça nova. É aqui que ela se paga.</p>
+      <div class="casos">
+        <div class="caso"><h3>Cardápio na mesa</h3>
+          <p>Uma escultura em cada mesa abre o cardápio do dia. Mudou o preço ou o
+             prato? Muda no app — nenhuma reimpressão, nenhum adesivo torto.</p>
+          <span class="guarda">guarda: o cardápio</span></div>
+        <div class="caso"><h3>Carta de vinhos</h3>
+          <p>A peça no balcão abre a carta com as fichas de cada rótulo. Some com o
+             calhamaço plastificado.</p>
+          <span class="guarda">guarda: a carta</span></div>
+        <div class="caso"><h3>Quarto de pousada</h3>
+          <p>Wi-fi do quarto, horário do café, o mapa das trilhas. Substitui aquele
+             cartão feio ao lado da TV.</p>
+          <span class="guarda">guarda: rede e informações</span></div>
+        <div class="caso"><h3>Reservas</h3>
+          <p>A peça na recepção abre o WhatsApp da casa, já com a conversa aberta.</p>
+          <span class="guarda">guarda: um WhatsApp</span></div>
+        <div class="caso"><h3>Avaliação</h3>
+          <p>No balcão, ao lado da máquina: encostou, abriu a página de avaliação.
+             Sem pedir, sem constranger.</p>
+          <span class="guarda">guarda: um link</span></div>
+        <div class="caso"><h3>Ambiente</h3>
+          <p>A playlist que toca no salão, para quem perguntar. Já perguntaram.</p>
+          <span class="guarda">guarda: uma playlist</span></div>
+      </div>
+    </section>
+
+    <section class="grupo">
+      <h2>Eventos e convites</h2>
+      <p class="intro">O convite que ninguém joga fora, porque ele é um objeto —
+         e que depois do evento vira outra coisa.</p>
+      <div class="casos">
+        <div class="caso"><h3>Convite de casamento</h3>
+          <p>Entregue como peça, não como papel. Abre a lista de presentes, o mapa
+             da cerimônia e a confirmação. Depois vira decoração — e lembrança.</p>
+          <span class="guarda">guarda: tudo do dia</span></div>
+        <div class="caso"><h3>Save the date</h3>
+          <p>Chega antes, guarda a data no calendário de quem recebe, e continua
+             na estante até a festa.</p>
+          <span class="guarda">guarda: a data</span></div>
+        <div class="caso"><h3>Aniversário</h3>
+          <p>O convite abre o local, o horário e a lista. E no dia seguinte, as
+             fotos da festa.</p>
+          <span class="guarda">guarda: o convite, depois as fotos</span></div>
+        <div class="caso"><h3>Lembrança corporativa</h3>
+          <p>Brinde de fim de ano que abre a retrospectiva da empresa — em vez de
+             mais uma caneta.</p>
+          <span class="guarda">guarda: o que a empresa quer dizer</span></div>
+        <div class="caso"><h3>Feira e estande</h3>
+          <p>A peça no balcão abre seu portfólio. O visitante leva o link sem
+             pegar um cartão que vai se perder.</p>
+          <span class="guarda">guarda: o portfólio</span></div>
+      </div>
+    </section>
+
+    <section class="grupo">
+      <h2>Trabalho e ofício</h2>
+      <p class="intro">Para quem vende o que faz — e precisa que o trabalho continue
+         falando depois que a conversa acabou.</p>
+      <div class="casos">
+        <div class="caso"><h3>Ateliê e galeria</h3>
+          <p>Ao lado da obra, a peça abre o áudio do artista contando o que aquilo
+             é. Uma exposição que se explica sozinha.</p>
+          <span class="guarda">guarda: a história da obra</span></div>
+        <div class="caso"><h3>Fotógrafo</h3>
+          <p>Entregue o álbum dentro de uma escultura, não num pen drive. E troque
+             a galeria quando quiser, sem pedir a peça de volta.</p>
+          <span class="guarda">guarda: a galeria</span></div>
+        <div class="caso"><h3>Consultório e terapia</h3>
+          <p>Na sala de espera: a meditação, o áudio de respiração, o agendamento
+             da próxima sessão.</p>
+          <span class="guarda">guarda: o que acalma</span></div>
+        <div class="caso"><h3>Imóvel decorado</h3>
+          <p>A peça no apartamento modelo abre o tour, a planta e o contato do
+             corretor. Fica bonita, e trabalha.</p>
+          <span class="guarda">guarda: o tour</span></div>
+        <div class="caso"><h3>Marca e loja</h3>
+          <p>No balcão, abrindo seu catálogo. Um cartão de visitas que ninguém
+             perde porque ninguém joga fora uma escultura.</p>
+          <span class="guarda">guarda: o catálogo</span></div>
+        <div class="caso"><h3>Músico</h3>
+          <p>A peça que abre o disco novo — e que no próximo lançamento abre o
+             próximo, sem virar lixo.</p>
+          <span class="guarda">guarda: o álbum</span></div>
+      </div>
+    </section>
+
+    <p class="frisa">Todas essas são a mesma peça.<br>O que muda é o que ela guarda.</p>
+
+    <section class="fecho">
+      <h2>Tem uma ideia que não está aqui?</h2>
+      <p>A maioria dos usos acima nasceu de alguém perguntando. Se o seu caso é
+         outro, conte — encomendas especiais e quantidade para empresas a gente
+         combina.</p>
+      <div class="botoes">
+        <a class="bt" href="/contato/">Falar com a Cinérea</a>
+        <a class="bt bt2" href="/loja/">Ver as peças</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Esculturas de gesso feitas à mão em Campos do Jordão. A base permanece,
+         o conteúdo se renova.</p>
+    </div>
+    <div>
+      <h3>Navegar</h3>
+      <a href="/">Início</a>
+      <a href="/loja/">Loja</a>
+      <a href="/contato/">Contato</a>
+    </div>
+    <div>
+      <h3>Falar</h3>
+      <a href="https://instagram.com/cinerea.velas" rel="noopener">@cinerea.velas</a>
+      <p>Campos do Jordão · SP</p>
+    </div>
+  </div>
+  <div class="fim">© Cinérea · feito à mão</div>
+</footer>
+
+<script src="/vivo.js" defer></script>
+</body>
+</html>
