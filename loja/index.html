@@ -11,7 +11,7 @@
 <style>
   :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:90px}
+  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
   a{color:inherit}
   header{padding:26px 22px 8px;text-align:center}
   header svg{width:38px;height:38px}
@@ -67,7 +67,7 @@
   .ficha.abre{display:block}
   .fechar{position:sticky;top:0;background:var(--paper);padding:14px 22px;border-bottom:1px solid var(--line);z-index:2}
   .fechar button{background:none;border:none;font-size:14px;color:var(--smoke);cursor:pointer}
-  .fmiolo{max-width:620px;margin:0 auto;padding:22px}
+  .fmiolo{max-width:620px;margin:0 auto;padding:22px 22px 60px}
   .fmiolo .moldura{margin-bottom:22px}
   .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
   .ftitulo{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:6px}
@@ -79,31 +79,83 @@
   .bt{display:block;width:100%;margin-top:24px;padding:16px;border:none;border-radius:10px;background:var(--char);color:var(--paper);font-size:15px;cursor:pointer}
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;border:1px solid var(--line);color:var(--char)}
-  /* barra da sacola */
-  /* A barra virou duas fileiras: o cupom mexe no valor, e o lugar de mexer no
-     valor é ao lado do valor. Em tela larga as duas cabem lado a lado. */
-  .barra{position:fixed;left:0;right:0;bottom:0;background:var(--char);color:var(--paper);padding:14px 22px;display:none;flex-direction:column;gap:10px;z-index:40}
-  .barra.abre{display:flex}
-  .barra-fim{display:flex;justify-content:space-between;align-items:center;gap:16px}
-  .barra button{background:var(--paper);color:var(--char);border:none;border-radius:8px;padding:11px 18px;font-size:14px;cursor:pointer}
-  .barra button.fraco{background:transparent;color:var(--paper);border:1px solid rgba(255,255,255,.35);padding:9px 15px}
-  .barra button.fraco:hover{border-color:var(--paper)}
-  .barra-cupom{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .barra-cupom input{
-    flex:1 1 150px;min-width:0;background:transparent;border:1px solid rgba(255,255,255,.35);
-    border-radius:8px;padding:10px 13px;color:var(--paper);font-family:'Inter';font-size:14px;
+  /* ---- a sacola ---------------------------------------------------------
+     Era uma BARRA FIXA no rodapé, e ela cobria o botão "Colocar na sacola" de
+     dentro da ficha da peça: a ficha é `position:fixed` e rola por dentro, então
+     não herdava o `padding-bottom` do corpo. Resultado: depois de pôr a primeira
+     peça na sacola, não dava para pôr a segunda.
+
+     A gaveta não ocupa o rodapé de ninguém, e ainda cabe o que a barra não
+     comportava — quantidade por item e remover, que antes não existiam. */
+  .sacola-bt{
+    display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0;
+    background:none;border:1px solid var(--line);border-radius:22px;
+    padding:7px 14px 7px 11px;cursor:pointer;font-family:'Inter';font-size:13.5px;
+    color:var(--char);transition:border-color .18s ease;
   }
-  .barra-cupom input::placeholder{color:rgba(255,255,255,.5)}
-  .barra-cupom input:focus{outline:none;border-color:var(--paper)}
-  /* Recado do cupom: some quando não há nada a dizer, para a barra não crescer
-     por causa de uma linha vazia. */
-  .barra-recado{font-size:12.5px;color:rgba(255,255,255,.72);flex-basis:100%}
-  .barra-recado.ok{color:#F0B49C}
-  @media(min-width:720px){
-    .barra{flex-direction:row;align-items:center;gap:22px;padding:16px 22px}
-    .barra-cupom{flex:0 1 340px}
-    .barra-fim{flex:1}
+  .sacola-bt:hover{border-color:var(--ember)}
+  .sacola-bt svg{width:17px;height:17px;flex:0 0 auto}
+  .sacola-bt .n{
+    background:var(--ember);color:#fff;border-radius:11px;min-width:20px;
+    padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;
   }
+  .sacola-bt .n.vazia{display:none}
+
+  .gaveta-fundo{
+    position:fixed;inset:0;background:rgba(28,26,23,.42);z-index:45;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .gaveta-fundo.abre{opacity:1;pointer-events:auto}
+  .gaveta{
+    position:fixed;top:0;right:0;bottom:0;width:min(390px,92vw);z-index:50;
+    background:var(--paper);border-left:1px solid var(--line);
+    display:flex;flex-direction:column;
+    transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.7,.3,1);
+    box-shadow:-18px 0 40px -30px rgba(28,26,23,.5);
+  }
+  .gaveta.abre{transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .gaveta,.gaveta-fundo{transition:none}
+  }
+  .gaveta-topo{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:18px 20px;border-bottom:1px solid var(--line);flex:0 0 auto;
+  }
+  .gaveta-topo strong{font-family:'Fraunces';font-weight:400;font-size:19px}
+  .gaveta-topo button{background:none;border:none;color:var(--smoke);font-size:13.5px;cursor:pointer;text-decoration:underline}
+  .gaveta-itens{flex:1 1 auto;overflow-y:auto;padding:8px 20px}
+  .gitem{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .gitem .gnome{font-family:'Fraunces';font-size:16px;line-height:1.25}
+  .gitem .gpreco{font-size:14px;text-align:right;white-space:nowrap}
+  .gitem .gqtd{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .gitem .gqtd button{
+    width:28px;height:28px;border:1px solid var(--line);border-radius:50%;
+    background:none;color:var(--char);font-size:15px;line-height:1;cursor:pointer;
+  }
+  .gitem .gqtd button:hover{border-color:var(--ember);color:var(--ember)}
+  .gitem .gtirar{background:none;border:none;color:var(--smoke);font-size:12.5px;cursor:pointer;text-decoration:underline;justify-self:end;align-self:center}
+  .gvazia{color:var(--smoke);text-align:center;padding:50px 10px;font-size:14.5px}
+  .gaveta-pe{flex:0 0 auto;padding:18px 20px;border-top:1px solid var(--line)}
+  .gcupom{display:flex;gap:8px}
+  .gcupom input{
+    flex:1 1 auto;min-width:0;padding:11px 13px;border:1px solid var(--line);
+    border-radius:9px;background:var(--paper);font-family:'Inter';font-size:14px;color:var(--char);
+  }
+  .gcupom input:focus{outline:none;border-color:var(--ember)}
+  .gcupom button{padding:11px 16px;border:1px solid var(--line);border-radius:9px;background:none;font-size:14px;cursor:pointer;color:var(--char)}
+  .gcupom button:hover{border-color:var(--ember);color:var(--ember)}
+  .grecado{font-size:12.5px;color:var(--smoke);margin-top:8px}
+  .grecado.ok{color:var(--ember)}
+  .gtotais{margin-top:14px;font-size:14px}
+  .gtotais div{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
+  .gtotais .gfim{border-top:1px solid var(--line);margin-top:8px;padding-top:10px;font-size:16px}
+  .gfechar{
+    display:block;width:100%;margin-top:14px;padding:15px;border:none;border-radius:10px;
+    background:var(--char);color:var(--paper);font-family:'Inter';font-size:15px;cursor:pointer;
+  }
+  .gfechar:hover{background:var(--ember)}
+  .gfechar[disabled]{opacity:.4;cursor:default}
+  .gfechar[disabled]:hover{background:var(--char)}
 </style>
 </head>
 <body>
@@ -118,8 +170,15 @@
     <a href="/aplicacoes/">Aplicações</a>
     <a href="/loja/" class="aqui">Loja</a>
     <a href="/contato/">Contato</a>
-      <a href="/painel/">Minhas peças</a>
   </nav>
+  <button class="sacola-bt" onclick="abrirGaveta()" aria-label="Abrir a sacola">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z"
+            stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+    <span class="rot-sacola">Sacola</span><span class="n vazia" id="sacolaN">0</span>
+  </button>
 </div></header>
 
 <section class="capa-loja">
@@ -143,16 +202,23 @@
 </div>
 
 <div class="ficha" id="ficha"><div class="fechar"><button onclick="fecharFicha()">← voltar</button></div><div class="fmiolo" id="fmiolo"></div></div>
-<div class="barra" id="barra">
-  <div class="barra-cupom" id="barraCupom">
-    <input id="cupom" placeholder="Cupom de desconto" autocomplete="off" autocapitalize="characters" spellcheck="false" onkeydown="if(event.key==='Enter')usarCupom()">
-    <button class="fraco" onclick="usarCupom()">Usar</button>
+<div class="gaveta-fundo" id="gavetaFundo" onclick="fecharGaveta()"></div>
+<aside class="gaveta" id="gaveta" role="dialog" aria-modal="true" aria-label="Sua sacola" aria-hidden="true">
+  <div class="gaveta-topo">
+    <strong>Sua sacola</strong>
+    <button onclick="fecharGaveta()">fechar</button>
   </div>
-  <div class="barra-fim">
-    <span id="barraTxt"></span>
-    <button onclick="fecharPedido()">Fechar pedido</button>
+  <div class="gaveta-itens" id="gavetaItens"></div>
+  <div class="gaveta-pe" id="gavetaPe">
+    <div class="gcupom">
+      <input id="cupom" placeholder="Cupom de desconto" autocomplete="off" autocapitalize="characters" spellcheck="false" onkeydown="if(event.key==='Enter')usarCupom()">
+      <button onclick="usarCupom()" id="cupomBt">Usar</button>
+    </div>
+    <div class="grecado" id="cupomRecado" style="display:none"></div>
+    <div class="gtotais" id="gavetaTotais"></div>
+    <button class="gfechar" onclick="fecharPedido()">Fechar pedido</button>
   </div>
-</div>
+</aside>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -245,16 +311,83 @@ function somaDaSacola(){
   return Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
 }
 
+/**
+ * A sacola virou GAVETA, e não mais barra fixa no rodapé.
+ *
+ * A barra cobria o botão "Colocar na sacola" de dentro da ficha da peça: a ficha
+ * é `position:fixed` e rola por dentro, então não herdava o `padding-bottom` do
+ * corpo. Depois de pôr a primeira peça, não dava para pôr a segunda.
+ *
+ * A gaveta também resolve o que a barra não comportava: quantidade por item e
+ * remover, que simplesmente não existiam — `juntar` só sabia somar um.
+ */
 function pintarBarra(){
-  const n=Object.values(sacola).reduce((s,q)=>s+q,0);
-  const total=somaDaSacola();
-  const b=document.getElementById('barra');
-  b.classList.toggle('abre', n>0);
-  const desc = descontoDoCupom(total);
-  document.getElementById('barraTxt').textContent = desc>0
-    ? `${n} ${n===1?'peça':'peças'} · ${brl(total-desc)}  (era ${brl(total)})`
-    : `${n} ${n===1?'peça':'peças'} · ${brl(total)}`;
+  const n = Object.values(sacola).reduce((s,q)=>s+q,0);
+  const alvo = document.getElementById('sacolaN');
+  alvo.textContent = n;
+  alvo.classList.toggle('vazia', n === 0);
+  pintarGaveta();
 }
+
+function pintarGaveta(){
+  const box = document.getElementById('gavetaItens');
+  const pe = document.getElementById('gavetaPe');
+  const linhas = Object.entries(sacola).filter(([,q]) => q > 0);
+
+  if(!linhas.length){
+    box.innerHTML = '<p class="gvazia">Sua sacola está vazia.<br>Toque numa peça para começar.</p>';
+    pe.style.display = 'none';
+    return;
+  }
+  pe.style.display = '';
+
+  box.innerHTML = linhas.map(([id,q]) => {
+    const p = produtos.find(x => x.id === id);
+    if(!p) return '';
+    return `<div class="gitem">
+      <div class="gnome">${esc(p.nome)}</div>
+      <div class="gpreco">${brl(p.preco * q)}</div>
+      <div class="gqtd">
+        <button onclick="mudarQtd('${esc(id)}',-1)" aria-label="Menos um">−</button>
+        <span>${q}</span>
+        <button onclick="mudarQtd('${esc(id)}',1)" aria-label="Mais um">+</button>
+      </div>
+      <button class="gtirar" onclick="tirarDaSacola('${esc(id)}')">tirar</button>
+    </div>`;
+  }).join('');
+
+  const total = somaDaSacola();
+  const desc = descontoDoCupom(total);
+  document.getElementById('gavetaTotais').innerHTML =
+    (desc > 0
+      ? `<div><span>Peças</span><span>${brl(total)}</span></div>
+         <div><span>Cupom ${esc(cupom.codigo)}</span><span>−${brl(desc)}</span></div>`
+      : '')
+    + `<div class="gfim"><span>Total</span><span>${brl(total - desc)}</span></div>`;
+}
+
+window.mudarQtd = (id, d) => {
+  sacola[id] = Math.max(0, (sacola[id] || 0) + d);
+  if(!sacola[id]) delete sacola[id];
+  pintarBarra();
+};
+window.tirarDaSacola = id => { delete sacola[id]; pintarBarra(); };
+
+/* Abrir e fechar. O corpo trava a rolagem enquanto a gaveta está aberta, senão
+   a página de trás rola junto e a pessoa perde o lugar onde estava. */
+window.abrirGaveta = () => {
+  document.getElementById('gaveta').classList.add('abre');
+  document.getElementById('gaveta').setAttribute('aria-hidden','false');
+  document.getElementById('gavetaFundo').classList.add('abre');
+  document.body.style.overflow = 'hidden';
+};
+window.fecharGaveta = () => {
+  document.getElementById('gaveta').classList.remove('abre');
+  document.getElementById('gaveta').setAttribute('aria-hidden','true');
+  document.getElementById('gavetaFundo').classList.remove('abre');
+  document.body.style.overflow = '';
+};
+addEventListener('keydown', e => { if(e.key === 'Escape') fecharGaveta(); });
 
 /* ---------------------------------------------------------------------------
  * Cupom de vendedor.
@@ -289,17 +422,16 @@ function descontoDoCupom(total){
 }
 
 function recadoCupom(texto,bom){
-  let el=document.getElementById('cupomRecado');
-  if(!el){ el=document.createElement('div'); el.id='cupomRecado'; el.className='barra-recado';
-           document.getElementById('barraCupom').appendChild(el); }
-  el.textContent=texto||'';
-  el.classList.toggle('ok',!!bom);
-  el.style.display=texto?'':'none';
+  const el = document.getElementById('cupomRecado');
+  if(!el) return;
+  el.textContent = texto || '';
+  el.classList.toggle('ok', !!bom);
+  el.style.display = texto ? '' : 'none';
 }
 
 window.usarCupom = async () => {
   const campo=document.getElementById('cupom');
-  const bt=document.querySelector('.barra-cupom button');
+  const bt=document.getElementById('cupomBt');
   if(cupom){ cupom=null; campo.value=''; campo.disabled=false; bt.textContent='Usar';
              recadoCupom(''); pintarBarra(); return; }
 
@@ -350,7 +482,16 @@ window.abrirFicha = id => {
   window.scrollTo(0,0);
 };
 window.fecharFicha = () => document.getElementById('ficha').classList.remove('abre');
-window.juntar = id => { sacola[id]=(sacola[id]||0)+1; pintarBarra(); fecharFicha(); };
+window.juntar = id => {
+  sacola[id] = (sacola[id] || 0) + 1;
+  pintarBarra(); fecharFicha();
+  // Abre a gaveta por um instante: sem retorno nenhum, a pessoa não sabe se o
+  // toque funcionou. Fecha sozinha, para não atrapalhar quem quer continuar
+  // olhando a loja — que é justamente o que a barra fixa impedia.
+  abrirGaveta();
+  clearTimeout(window.__fechaSozinha);
+  window.__fechaSozinha = setTimeout(fecharGaveta, 1600);
+};
 
 /**
  * Estágio 1 na web: o pedido vai escrito pelo WhatsApp. Sem servidor e sem
@@ -401,6 +542,7 @@ catch { document.getElementById('grade').innerHTML='<p class="vazio">Não conseg
       <h3>Entenda a peça</h3>
       <a href="/#areia">A vela que se repõe</a>
       <a href="/#chip">O chip dentro dela</a>
+      <a href="/painel/">Minhas peças</a>
       <a href="/#app">O aplicativo</a>
     </div>
     <div>
