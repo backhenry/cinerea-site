@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minhas peças · Cinérea</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Troque o que a sua peça Cinérea diz, de onde você estiver.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  .envolve{max-width:760px;margin:0 auto;padding:0 22px}
+  .capa{text-align:center;padding:52px 22px 8px}
+  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(28px,7vw,40px);line-height:1.15;margin-top:10px}
+  .capa p{margin-top:14px;color:var(--smoke);font-size:15.5px;max-width:46ch;margin-left:auto;margin-right:auto}
+
+  .cartao{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px}
+  .cartao h3{font-family:'Fraunces';font-weight:400;font-size:19px;line-height:1.25}
+  .cartao .sub{font-size:13px;color:var(--smoke);margin-top:4px}
+
+  label{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--smoke);margin:16px 0 6px}
+  input,select,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;
+    background:var(--paper);font-family:'Inter';font-size:15px;color:var(--char);
+  }
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ember)}
+  textarea{min-height:92px;resize:vertical;line-height:1.5}
+
+  .bt{display:inline-block;padding:13px 24px;background:var(--char);color:var(--paper);border:none;
+      border-radius:9px;font-family:'Inter';font-size:14.5px;cursor:pointer;text-decoration:none}
+  .bt:hover{background:var(--ember)}
+  .bt[disabled]{opacity:.45;cursor:default}
+  .bt[disabled]:hover{background:var(--char)}
+  .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
+  .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
+  .btfrouxo{background:none;border:none;color:var(--smoke);text-decoration:underline;cursor:pointer;font-size:13.5px;padding:0}
+  .btfrouxo:hover{color:var(--ember)}
+  .botoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+
+  .aviso{border:1px solid var(--line);border-left:2px solid var(--ember);border-radius:0 9px 9px 0;
+         padding:14px 16px;font-size:14px;color:var(--smoke);line-height:1.55;margin-top:14px}
+  .erro{color:var(--ember);font-size:14px;margin-top:12px}
+  .vazio{color:var(--smoke);text-align:center;padding:40px 0}
+
+  /* Meus links: uma linha por endereço */
+  .linkitem{display:grid;grid-template-columns:130px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+  .linkitem input,.linkitem select{padding:9px 11px;font-size:14px}
+  @media(max-width:560px){
+    .linkitem{grid-template-columns:1fr auto;grid-template-areas:'i x' 'r r' 'u u'}
+    .linkitem select{grid-area:i} .linkitem button{grid-area:x}
+    .linkitem .rot{grid-area:r} .linkitem .url{grid-area:u}
+  }
+  .some{display:none}
+</style>
+</head>
+<body>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/">A marca</a>
+    <a href="/aplicacoes/">Aplicações</a>
+    <a href="/loja/">Loja</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+</div></header>
+
+<main>
+  <section class="capa">
+    <div class="rot">Minhas peças</div>
+    <h1 id="titulo">Troque o que a sua peça diz.</h1>
+    <p id="chamada">De onde você estiver, sem encostar nela.</p>
+  </section>
+  <div class="envolve"><div id="tela"><p class="vazio">abrindo…</p></div></div>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Ateliê de esculturas de gesso em Campos do Jordão. Cada peça moldada à
+         mão, uma por vez.</p>
+    </div>
+    <div>
+      <h3>Navegar</h3>
+      <a href="/">Início</a>
+      <a href="/loja/">Loja</a>
+      <a href="/contato/">Contato</a>
+    </div>
+    <div>
+      <h3>Falar</h3>
+      <a href="https://instagram.com/cinerea.velas" rel="noopener">Instagram · @cinerea.velas</a>
+      <a href="https://www.tiktok.com/@cinerea.velas" rel="noopener">TikTok · @cinerea.velas</a>
+    </div>
+  </div>
+  <div class="fim">© Cinérea · feito à mão</div>
+</footer>
+
+<script type="module">
+/**
+ * O painel do dono, na web.
+ *
+ * POR QUE ELE EXISTE, e por que não é o aplicativo: o chip guarda o ENDEREÇO
+ * PERMANENTE da peça, não o conteúdo. Quem gravou uma vez nunca mais precisa de
+ * NFC para trocar o que a peça diz — basta mudar o que aquele endereço mostra,
+ * que é um documento no Firestore. Ou seja, esta página faz tudo o que o app faz
+ * DEPOIS da primeira gravação.
+ *
+ * Isso resolve o cliente de iPhone, que hoje não consegue gravar NFC (o time
+ * gratuito da Apple recusa o entitlement) e por isso não configurava a peça de
+ * jeito nenhum. O ateliê grava a primeira vez antes de despachar; daí em diante
+ * o dono troca por aqui, de qualquer aparelho.
+ *
+ * É HTML estático de propósito, como a loja e a página do convidado. Trazer o
+ * empacotador do aplicativo para cá por causa de um formulário seria pagar caro
+ * por reuso que não se paga: o site não tem etapa de build, e isso é qualidade,
+ * não falta.
+ *
+ * O que ele NÃO faz, e não tem como fazer: reconhecer peça nova e gravar chip.
+ * Os dois exigem NFC, que só existe no aplicativo, no Android.
+ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, serverTimestamp, Timestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ", authDomain: "cinerea1.firebaseapp.com",
+  projectId: "cinerea1", storageBucket: "cinerea1.firebasestorage.app",
+  messagingSenderId: "458519504441", appId: "1:458519504441:web:b66d6dd2d8a2d497654fe8",
+});
+const auth = getAuth(app);
+const fdb = getFirestore(app);
+const tela = document.getElementById('tela');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* --------------------------------------------------------------------------
+ * Os oito tipos.
+ *
+ * ESTA CONTA EXISTE DUAS VEZES: aqui e em `cinerea-app/src/nfc/registros.ts`,
+ * que é a versão com 21 testes rodando contra o codificador de verdade. Aqui
+ * ela está reescrita à mão porque o site é HTML estático, sem empacotador.
+ * Mudou lá, olhar aqui — e é por isso que o formato do documento publicado está
+ * escrito por extenso logo abaixo, em vez de sair de uma função esperta.
+ * ------------------------------------------------------------------------ */
+const TIPOS = {
+  link:     { nome:'Link',          explica:'Um endereço qualquer da internet.' },
+  playlist: { nome:'Playlist',      explica:'Spotify, YouTube, o que estiver tocando.' },
+  whatsapp: { nome:'WhatsApp',      explica:'Quem encostar abre uma conversa com você.' },
+  local:    { nome:'Lugar',         explica:'Um endereço que abre no mapa.' },
+  wifi:     { nome:'Rede de wi-fi', explica:'A rede da casa, sem ditar a senha.' },
+  recado:   { nome:'Recado',        explica:'Um texto que aparece ao encostar.' },
+  contato:  { nome:'Contato',       explica:'Nome e telefone de quem encostar deve guardar.' },
+  links:    { nome:'Meus links',    explica:'Vários endereços numa peça: redes, canal, portfólio.' },
+};
+const ICONES = ['instagram','youtube','tiktok','x','facebook','linkedin','spotify','whatsapp','pinterest','site','email','loja'];
+const LIMITE_LINKS = 12;
+const LIMITE_HISTORICO = 20;
+
+const digitos = s => String(s||'').replace(/\D/g,'');
+
+/** Mesma lista fechada de esquemas do app: uma regra genérica aceitaria `palavra:`. */
+function normalizarUrl(bruto){
+  const t = String(bruto||'').trim();
+  if (!t) return null;
+  const achado = t.match(/https?:\/\/\S+/i);
+  if (achado) return achado[0];
+  if (/^(https?|tel|mailto|sms|geo|spotify):\S*$/i.test(t)) return t;
+  if (/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(t)) return 'https://' + t;
+  return null;
+}
+
+/** O endereço que os tipos-de-endereço viram. Os outros não têm endereço. */
+function enderecoDe(c){
+  if (c.tipo === 'link' || c.tipo === 'playlist'){
+    const u = normalizarUrl(c.url);
+    if (!u) throw new Error('Não encontrei um endereço aí. Cole o link inteiro, começando com https://');
+    return u;
+  }
+  if (c.tipo === 'whatsapp'){
+    const n = digitos(c.telefone);
+    if (n.length < 10) throw new Error('Telefone incompleto. Inclua o DDD.');
+    const t = (c.recado||'').trim();
+    return 'https://wa.me/' + n + (t ? '?text=' + encodeURIComponent(t) : '');
+  }
+  if (c.tipo === 'local'){
+    if (!(c.endereco||'').trim()) throw new Error('Escreva o endereço do lugar.');
+    return 'https://maps.google.com/?q=' + encodeURIComponent(c.endereco.trim());
+  }
+  return null;   // wifi, recado, contato e links não são UM endereço
+}
+
+/** Frase curta para a lista e para o histórico. */
+function resumir(c){
+  switch(c.tipo){
+    case 'link': case 'playlist': return c.url;
+    case 'whatsapp': return c.telefone;
+    case 'local': return c.endereco;
+    case 'wifi': return c.rede;
+    case 'recado': return c.texto;
+    case 'contato': return c.nome + (c.telefone ? ' · ' + c.telefone : '');
+    case 'links': return (c.itens||[]).length + ' endereços';
+  }
+  return '';
+}
+
+/* ---------------------------------------------------------------- sessão --- */
+let usuario = null, pecas = [];
+
+onAuthStateChanged(auth, async u => {
+  usuario = u;
+  if (!u) { pintarEntrada(); return; }
+  await carregarPecas();
+});
+
+async function carregarPecas(){
+  tela.innerHTML = '<p class="vazio">buscando suas peças…</p>';
+  try{
+    const snap = await getDocs(collection(fdb,'clientes',usuario.uid,'pecas'));
+    pecas = snap.docs.map(d => ({ tagUid:d.id, ...d.data() }))
+      .sort((a,b) => (b.adicionadaEm?.toMillis?.()||0) - (a.adicionadaEm?.toMillis?.()||0));
+    pintarLista();
+  }catch(e){
+    console.error(e);
+    tela.innerHTML = `<div class="cartao"><h3>Não consegui buscar suas peças</h3>
+      <p class="sub">Confira a internet e recarregue. Se persistir, fale com a gente.</p></div>`;
+  }
+}
+
+function pintarEntrada(){
+  document.getElementById('titulo').textContent = 'Troque o que a sua peça diz.';
+  document.getElementById('chamada').textContent = 'Entre com a mesma conta do aplicativo.';
+  tela.innerHTML = `<div class="cartao">
+    <label>E-mail</label><input id="email" type="email" autocomplete="username">
+    <label>Senha</label><input id="senha" type="password" autocomplete="current-password">
+    <div class="botoes">
+      <button class="bt" id="entrar">Entrar</button>
+      <button class="btfrouxo" id="esqueci">Esqueci a senha</button>
+    </div>
+    <div class="erro some" id="erroEntrada"></div>
+    <div class="aviso">Esta página troca o conteúdo de peças que já foram gravadas
+      uma vez. Reconhecer uma peça nova e gravar o chip continuam só no aplicativo,
+      no Android, porque exigem NFC.</div>
+  </div>`;
+  document.getElementById('entrar').onclick = entrar;
+  document.getElementById('senha').onkeydown = e => { if(e.key==='Enter') entrar(); };
+  document.getElementById('esqueci').onclick = async () => {
+    const em = document.getElementById('email').value.trim();
+    if(!em) return falha('erroEntrada','Escreva seu e-mail primeiro.');
+    try{ await sendPasswordResetEmail(auth, em); falha('erroEntrada','Enviei um e-mail para você trocar a senha.'); }
+    catch{ falha('erroEntrada','Não consegui enviar agora.'); }
+  };
+}
+
+function falha(id, msg){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.remove('some');
+}
+
+async function entrar(){
+  const bt = document.getElementById('entrar');
+  bt.disabled = true;
+  try{
+    await signInWithEmailAndPassword(auth,
+      document.getElementById('email').value.trim(),
+      document.getElementById('senha').value);
+  }catch(e){
+    // Mensagem única de propósito: dizer "esse e-mail não existe" conta a
+    // estranhos quais e-mails têm conta aqui.
+    falha('erroEntrada','E-mail ou senha não conferem.');
+    bt.disabled = false;
+  }
+}
+
+/* ----------------------------------------------------------------- lista --- */
+function pintarLista(){
+  document.getElementById('titulo').textContent = 'Suas peças';
+  document.getElementById('chamada').textContent =
+    pecas.length ? 'Toque numa peça para trocar o que ela diz.' : '';
+
+  if(!pecas.length){
+    tela.innerHTML = `<div class="cartao">
+      <h3>Nenhuma peça nesta conta ainda</h3>
+      <p class="sub">Peça aparece aqui depois que o aplicativo a reconhece pela
+        primeira vez, encostando o celular nela. É o único passo que exige NFC.</p>
+      <div class="botoes"><a class="bt bt2" href="/loja/">Ver a loja</a>
+      <button class="btfrouxo" id="sair">Sair</button></div>
+    </div>`;
+    document.getElementById('sair').onclick = () => signOut(auth);
+    return;
+  }
+
+  tela.innerHTML = pecas.map((p,i) => {
+    const atual = p.conteudoAtual;
+    const diz = atual ? `${esc(atual.titulo)} · ${esc(String(atual.dados||'').slice(0,60))}` : 'não diz nada ainda';
+    // Peça NÃO permanente tem o conteúdo dentro do chip, e não no endereço.
+    // Trocar aqui não mudaria o que o convidado vê: seria mentira na tela.
+    const podeAqui = !!p.permanente;
+    return `<div class="cartao">
+      <h3>${esc(p.nome || 'Peça sem nome')}</h3>
+      <p class="sub">${diz}</p>
+      ${podeAqui
+        ? `<div class="botoes"><button class="bt" data-editar="${i}">Trocar o conteúdo</button>
+           <a class="bt bt2" href="/p/?c=${encodeURIComponent(p.tagUid)}" target="_blank" rel="noopener">Ver como o convidado vê</a></div>`
+        : `<div class="aviso">O conteúdo desta peça está gravado <b>dentro do chip</b>,
+             e não num endereço. Para trocar é preciso o aplicativo e a peça na mão.
+             Gravando uma vez no modo <b>“trocar de onde eu estiver”</b>, ela passa a
+             aparecer aqui para sempre.</div>`}
+    </div>`;
+  }).join('') + `<div class="botoes"><button class="btfrouxo" id="sair">Sair da conta</button></div>`;
+
+  tela.querySelectorAll('[data-editar]').forEach(b =>
+    b.onclick = () => pintarEditor(Number(b.dataset.editar)));
+  document.getElementById('sair').onclick = () => signOut(auth);
+}
+
+/* ---------------------------------------------------------------- editor --- */
+let itens = [];   // só do tipo "Meus links"
+
+function pintarEditor(i){
+  const p = pecas[i];
+  const tipoAtual = p.conteudoAtual?.tipo && TIPOS[p.conteudoAtual.tipo] ? p.conteudoAtual.tipo : 'link';
+  itens = [{rotulo:'',url:'',icone:'instagram'}];
+
+  document.getElementById('titulo').textContent = p.nome || 'Peça';
+  document.getElementById('chamada').textContent = 'O que ela vai dizer a partir de agora.';
+
+  tela.innerHTML = `<div class="cartao">
+    <label>Tipo de conteúdo</label>
+    <select id="tipo">${Object.entries(TIPOS).map(([k,v]) =>
+      `<option value="${k}" ${k===tipoAtual?'selected':''}>${esc(v.nome)}</option>`).join('')}</select>
+    <p class="sub" id="explica" style="margin-top:8px"></p>
+    <div id="campos"></div>
+    <div class="erro some" id="erroEditor"></div>
+    <div class="botoes">
+      <button class="bt" id="publicar">Publicar na peça</button>
+      <button class="bt bt2" id="voltar">Voltar</button>
+      <button class="btfrouxo" id="mudo">Deixar a peça muda</button>
+    </div>
+    <div class="aviso">Publicar troca o que a peça mostra na hora, para qualquer
+      pessoa que encostar o celular. O chip não muda: ele guarda o endereço, e o
+      endereço passa a mostrar isto.</div>
+  </div>`;
+
+  const sel = document.getElementById('tipo');
+  sel.onchange = () => pintarCampos(sel.value);
+  document.getElementById('voltar').onclick = pintarLista;
+  document.getElementById('publicar').onclick = () => publicar(i);
+  document.getElementById('mudo').onclick = () => emudecer(i);
+  pintarCampos(tipoAtual);
+}
+
+function pintarCampos(tipo){
+  document.getElementById('explica').textContent = TIPOS[tipo].explica;
+  const c = document.getElementById('campos');
+  const campos = {
+    link:     `<label>Endereço</label><input id="f_url" placeholder="https://exemplo.com">`,
+    playlist: `<label>Endereço da playlist</label><input id="f_url" placeholder="https://open.spotify.com/...">`,
+    whatsapp: `<label>Telefone com DDD</label><input id="f_tel" placeholder="12 99123-4567" inputmode="tel">
+               <label>Mensagem já escrita (opcional)</label><input id="f_msg" placeholder="Oi! Vi sua peça Cinérea">`,
+    local:    `<label>Endereço do lugar</label><input id="f_end" placeholder="Rua, número, cidade">`,
+    wifi:     `<label>Nome da rede</label><input id="f_rede" placeholder="Casa_Cinerea">
+               <label>Senha</label><input id="f_senha">
+               <div class="aviso">A senha aparece na página de quem encostar. É o
+                 único jeito de um convidado de iPhone conectar, porque a Apple não
+                 implementa o registro de wi-fi do NFC. Quem receber o link
+                 encaminhado também vê.</div>`,
+    recado:   `<label>O recado</label><textarea id="f_texto" placeholder="Que esta chama acompanhe vocês dois."></textarea>`,
+    contato:  `<label>Nome</label><input id="f_nome">
+               <label>Telefone</label><input id="f_tel" inputmode="tel">`,
+    links:    `<label>Título da página</label><input id="f_titulo" placeholder="Meus links" maxlength="40">
+               <label>Endereços</label><div id="lista"></div>
+               <div class="botoes" style="margin-top:10px"><button class="bt bt2" id="maisLink">+ Endereço</button></div>`,
+  }[tipo];
+  c.innerHTML = campos;
+  if (tipo === 'links'){ pintarItens(); document.getElementById('maisLink').onclick = e => {
+    e.preventDefault();
+    if (itens.length >= LIMITE_LINKS) return falha('erroEditor', `São no máximo ${LIMITE_LINKS} endereços.`);
+    itens.push({rotulo:'',url:'',icone:'instagram'}); pintarItens();
+  };}
+}
+
+function pintarItens(){
+  const box = document.getElementById('lista');
+  box.innerHTML = itens.map((l,n) => `<div class="linkitem">
+    <select data-i="${n}" class="ic">${ICONES.map(i => `<option ${i===l.icone?'selected':''}>${i}</option>`).join('')}</select>
+    <input class="rot" data-i="${n}" placeholder="Como aparece" value="${esc(l.rotulo)}" maxlength="40">
+    <input class="url" data-i="${n}" placeholder="https://…" value="${esc(l.url)}">
+    <button class="btfrouxo" data-x="${n}">tirar</button>
+  </div>`).join('');
+  box.querySelectorAll('.ic').forEach(s => s.onchange = e => itens[e.target.dataset.i].icone = e.target.value);
+  box.querySelectorAll('.rot').forEach(s => s.oninput = e => itens[e.target.dataset.i].rotulo = e.target.value);
+  box.querySelectorAll('.url').forEach(s => s.oninput = e => itens[e.target.dataset.i].url = e.target.value);
+  box.querySelectorAll('[data-x]').forEach(b => b.onclick = e => {
+    e.preventDefault(); itens.splice(Number(b.dataset.x),1);
+    if(!itens.length) itens.push({rotulo:'',url:'',icone:'instagram'});
+    pintarItens();
+  });
+}
+
+/** Monta o conteúdo a partir do formulário, do jeito que o app monta. */
+function lerFormulario(){
+  const v = id => (document.getElementById(id)?.value ?? '').trim();
+  const tipo = document.getElementById('tipo').value;
+  switch(tipo){
+    case 'link': case 'playlist': return {tipo, url:v('f_url')};
+    case 'whatsapp': return {tipo, telefone:v('f_tel'), recado:v('f_msg')};
+    case 'local': return {tipo, endereco:v('f_end')};
+    case 'wifi': return {tipo, rede:v('f_rede'), senha:v('f_senha')};
+    case 'recado': return {tipo, texto:v('f_texto')};
+    case 'contato': return {tipo, nome:v('f_nome'), telefone:v('f_tel')};
+    case 'links': return {tipo, titulo:v('f_titulo') || 'Meus links',
+      itens: itens.map(l => ({...l, url:normalizarUrl(l.url)})).filter(l => l.url)};
+  }
+}
+
+function conferir(c){
+  if (c.tipo === 'wifi' && !c.rede) throw new Error('Escreva o nome da rede.');
+  if (c.tipo === 'recado' && !c.texto) throw new Error('Escreva o recado.');
+  if (c.tipo === 'contato' && !c.nome) throw new Error('Escreva ao menos o nome.');
+  if (c.tipo === 'links' && !c.itens.length) throw new Error('Coloque pelo menos um endereço válido.');
+  if (c.tipo === 'links' && c.itens.length > LIMITE_LINKS) throw new Error(`São no máximo ${LIMITE_LINKS} endereços.`);
+  // Os tetos são os mesmos da regra do Firestore. Conferir aqui é para o dono
+  // ver a mensagem em vez de um erro de permissão sem explicação.
+  if ((c.texto||'').length > 600 || (c.endereco||'').length > 600) throw new Error('Texto longo demais: o limite é 600 caracteres.');
+  if ((c.senha||'').length > 80) throw new Error('Senha longa demais.');
+}
+
+async function publicar(i){
+  const p = pecas[i];
+  const bt = document.getElementById('publicar');
+  document.getElementById('erroEditor').classList.add('some');
+  let c, endereco;
+  try{
+    c = lerFormulario();
+    conferir(c);
+    endereco = enderecoDe(c);
+  }catch(e){ return falha('erroEditor', e.message); }
+
+  bt.disabled = true; bt.textContent = 'publicando…';
+  try{
+    // A VITRINE SAI PRIMEIRO. Ela é o que o convidado vê; o registro na conta é
+    // memória do dono. Se o segundo passo falhar, a peça já está certa para quem
+    // encostar, e o histórico é que fica um item atrás.
+    const publico = {
+      dono: usuario.uid,
+      tipo: c.tipo,
+      titulo: TIPOS[c.tipo].nome,
+      dados: c.tipo === 'wifi' ? c.rede : (endereco ?? resumir(c)),
+      atualizadoEm: serverTimestamp(),
+    };
+    if (c.tipo === 'wifi') publico.senha = c.senha;
+    if (c.tipo === 'links'){
+      publico.titulo = (c.titulo || 'Meus links').slice(0,40);
+      publico.itens = c.itens.map(l => ({rotulo:(l.rotulo||'').slice(0,40), url:l.url, icone:l.icone}));
+    }
+    await setDoc(doc(fdb,'vitrines',p.tagUid), publico);
+
+    // E agora o registro na conta, com o histórico limitado a 20, igual ao app.
+    const registro = {
+      tipo: c.tipo, titulo: TIPOS[c.tipo].nome,
+      dados: c.tipo === 'wifi' ? `${c.rede} · ${c.senha}` : resumir(c),
+      // `serverTimestamp()` não vai dentro de array, e o histórico é array.
+      gravadoEm: Timestamp.now(),
+    };
+    const ref = doc(fdb,'clientes',usuario.uid,'pecas',p.tagUid);
+    const atual = await getDoc(ref);
+    const antes = Array.isArray(atual.data()?.historico) ? atual.data().historico : [];
+    await setDoc(ref, {
+      conteudoAtual: registro,
+      historico: [registro, ...antes].slice(0, LIMITE_HISTORICO),
+      atualizadaEm: serverTimestamp(),
+    }, {merge:true});
+
+    pecas[i] = {...p, conteudoAtual: registro};
+    pintarLista();
+  }catch(e){
+    console.error(e);
+    falha('erroEditor','Não consegui publicar. Confira a internet e tente de novo.');
+    bt.disabled = false; bt.textContent = 'Publicar na peça';
+  }
+}
+
+async function emudecer(i){
+  const p = pecas[i];
+  if(!confirm('A peça deixa de dizer qualquer coisa para quem encostar. O histórico continua aqui. Confirmar?')) return;
+  try{
+    await deleteDoc(doc(fdb,'vitrines',p.tagUid));
+    await setDoc(doc(fdb,'clientes',usuario.uid,'pecas',p.tagUid),
+      {conteudoAtual:null, atualizadaEm:serverTimestamp()}, {merge:true});
+    pecas[i] = {...p, conteudoAtual:null};
+    pintarLista();
+  }catch(e){ console.error(e); falha('erroEditor','Não consegui deixar a peça muda agora.'); }
+}
+</script>
+</body>
+</html>
