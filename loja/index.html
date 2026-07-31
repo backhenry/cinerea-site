@@ -10,6 +10,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
+  /* A calha da barra de rolagem fica reservada SEMPRE. Sem isto, travar a
+     rolagem para abrir a gaveta faz a barra sumir e a página inteira pular
+     ~15px para o lado — onde a barra ocupa espaço de verdade (Windows, e Mac
+     com "mostrar sempre"). Aqui a barra é sobreposta e mede 0, então o defeito
+     não aparece: é o tipo de coisa que só quebra na máquina do outro. */
+  html{scrollbar-gutter:stable}
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
   a{color:inherit}
@@ -87,19 +93,26 @@
 
      A gaveta não ocupa o rodapé de ninguém, e ainda cabe o que a barra não
      comportava — quantidade por item e remover, que antes não existiam. */
+  /* Em brasa, e cheio. É o único botão de ação do cabeçalho e precisa ser
+     achado de primeira — vale o acento aqui. */
   .sacola-bt{
     display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0;
-    background:none;border:1px solid var(--line);border-radius:22px;
-    padding:7px 14px 7px 11px;cursor:pointer;font-family:'Inter';font-size:13.5px;
-    color:var(--char);transition:border-color .18s ease;
+    background:var(--ember);border:1px solid var(--ember);border-radius:22px;
+    padding:8px 16px 8px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;
+    color:#fff;transition:background .18s ease,border-color .18s ease;
   }
-  .sacola-bt:hover{border-color:var(--ember)}
+  .sacola-bt:hover{background:#9C3B23;border-color:#9C3B23}
   .sacola-bt svg{width:17px;height:17px;flex:0 0 auto}
   .sacola-bt .n{
-    background:var(--ember);color:#fff;border-radius:11px;min-width:20px;
-    padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;
+    background:#fff;color:var(--ember);border-radius:11px;min-width:20px;
+    padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;font-weight:500;
   }
   .sacola-bt .n.vazia{display:none}
+  /* O retorno de "entrou na sacola": o botão pulsa uma vez. Movimento de um
+     botão, e não da loja inteira. */
+  .sacola-bt.pulsa{animation:pulsaSacola .5s ease}
+  @keyframes pulsaSacola{0%,100%{transform:scale(1)}40%{transform:scale(1.12)}}
+  @media (prefers-reduced-motion:reduce){ .sacola-bt.pulsa{animation:none} }
 
   .gaveta-fundo{
     position:fixed;inset:0;background:rgba(28,26,23,.42);z-index:45;
@@ -485,13 +498,20 @@ window.fecharFicha = () => document.getElementById('ficha').classList.remove('ab
 window.juntar = id => {
   sacola[id] = (sacola[id] || 0) + 1;
   pintarBarra(); fecharFicha();
-  // Abre a gaveta por um instante: sem retorno nenhum, a pessoa não sabe se o
-  // toque funcionou. Fecha sozinha, para não atrapalhar quem quer continuar
-  // olhando a loja — que é justamente o que a barra fixa impedia.
-  abrirGaveta();
-  clearTimeout(window.__fechaSozinha);
-  window.__fechaSozinha = setTimeout(fecharGaveta, 1600);
+  // A GAVETA NÃO ABRE SOZINHA. Ela abria por 1,6s para dar retorno, e o efeito
+  // era a página inteira se mexer a cada peça posta na sacola, sem ninguém
+  // pedir. Quem manda abrir é o botão. O retorno vem do contador, que pisca no
+  // cabeçalho — movimento de um número, não da loja inteira.
+  piscarContador();
 };
+
+function piscarContador(){
+  const bt = document.querySelector('.sacola-bt');
+  if (!bt) return;
+  bt.classList.remove('pulsa');
+  void bt.offsetWidth;          // reinicia a animação quando se toca em seguida
+  bt.classList.add('pulsa');
+}
 
 /**
  * Estágio 1 na web: o pedido vai escrito pelo WhatsApp. Sem servidor e sem
