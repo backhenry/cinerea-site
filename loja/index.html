@@ -80,9 +80,30 @@
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;border:1px solid var(--line);color:var(--char)}
   /* barra da sacola */
-  .barra{position:fixed;left:0;right:0;bottom:0;background:var(--char);color:var(--paper);padding:16px 22px;display:none;justify-content:space-between;align-items:center;gap:16px;z-index:40}
+  /* A barra virou duas fileiras: o cupom mexe no valor, e o lugar de mexer no
+     valor é ao lado do valor. Em tela larga as duas cabem lado a lado. */
+  .barra{position:fixed;left:0;right:0;bottom:0;background:var(--char);color:var(--paper);padding:14px 22px;display:none;flex-direction:column;gap:10px;z-index:40}
   .barra.abre{display:flex}
+  .barra-fim{display:flex;justify-content:space-between;align-items:center;gap:16px}
   .barra button{background:var(--paper);color:var(--char);border:none;border-radius:8px;padding:11px 18px;font-size:14px;cursor:pointer}
+  .barra button.fraco{background:transparent;color:var(--paper);border:1px solid rgba(255,255,255,.35);padding:9px 15px}
+  .barra button.fraco:hover{border-color:var(--paper)}
+  .barra-cupom{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .barra-cupom input{
+    flex:1 1 150px;min-width:0;background:transparent;border:1px solid rgba(255,255,255,.35);
+    border-radius:8px;padding:10px 13px;color:var(--paper);font-family:'Inter';font-size:14px;
+  }
+  .barra-cupom input::placeholder{color:rgba(255,255,255,.5)}
+  .barra-cupom input:focus{outline:none;border-color:var(--paper)}
+  /* Recado do cupom: some quando não há nada a dizer, para a barra não crescer
+     por causa de uma linha vazia. */
+  .barra-recado{font-size:12.5px;color:rgba(255,255,255,.72);flex-basis:100%}
+  .barra-recado.ok{color:#F0B49C}
+  @media(min-width:720px){
+    .barra{flex-direction:row;align-items:center;gap:22px;padding:16px 22px}
+    .barra-cupom{flex:0 1 340px}
+    .barra-fim{flex:1}
+  }
 </style>
 </head>
 <body>
@@ -121,11 +142,20 @@
 </div>
 
 <div class="ficha" id="ficha"><div class="fechar"><button onclick="fecharFicha()">← voltar</button></div><div class="fmiolo" id="fmiolo"></div></div>
-<div class="barra" id="barra"><span id="barraTxt"></span><button onclick="fecharPedido()">Fechar pedido</button></div>
+<div class="barra" id="barra">
+  <div class="barra-cupom" id="barraCupom">
+    <input id="cupom" placeholder="Cupom de desconto" autocomplete="off" autocapitalize="characters" spellcheck="false" onkeydown="if(event.key==='Enter')usarCupom()">
+    <button class="fraco" onclick="usarCupom()">Usar</button>
+  </div>
+  <div class="barra-fim">
+    <span id="barraTxt"></span>
+    <button onclick="fecharPedido()">Fechar pedido</button>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey:"AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ", authDomain:"cinerea1.firebaseapp.com",
@@ -210,13 +240,92 @@ function pintar(){
   pintarBarra();
 }
 
+function somaDaSacola(){
+  return Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
+}
+
 function pintarBarra(){
   const n=Object.values(sacola).reduce((s,q)=>s+q,0);
-  const total=Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
+  const total=somaDaSacola();
   const b=document.getElementById('barra');
   b.classList.toggle('abre', n>0);
-  document.getElementById('barraTxt').textContent = `${n} ${n===1?'peça':'peças'} · ${brl(total)}`;
+  const desc = descontoDoCupom(total);
+  document.getElementById('barraTxt').textContent = desc>0
+    ? `${n} ${n===1?'peça':'peças'} · ${brl(total-desc)}  (era ${brl(total)})`
+    : `${n} ${n===1?'peça':'peças'} · ${brl(total)}`;
 }
+
+/* ---------------------------------------------------------------------------
+ * Cupom de vendedor.
+ *
+ * O cliente digita o CÓDIGO; o desconto vem do documento que a casa publicou em
+ * `cupons/{codigo}`. Ler por id, e nunca listar a coleção, é o que impede
+ * alguém de baixar todos os cupons e escolher o maior desconto — a regra do
+ * Firestore libera `get` e proíbe `list`.
+ *
+ * Nem esta conta nem a do aplicativo mandam: as duas são PRÉVIA. Quem fecha o
+ * valor é a gestão, quando o pedido chega. Aqui, no estágio 1, o pedido vai
+ * escrito pelo WhatsApp e o código do cupom vai junto na mensagem — é assim que
+ * a comissão do vendedor fica registrada.
+ *
+ * A versão testada desta conta é `cinerea-app/src/loja/cupom.ts`, que roda em
+ * Node contra 15 testes. Aqui ela está reescrita à mão porque o site é HTML
+ * estático, sem empacotador. Mudou lá, olhar aqui.
+ * ------------------------------------------------------------------------- */
+let cupom=null;
+
+function normalizarCodigo(bruto){
+  return String(bruto||'').normalize('NFD').replace(/[^A-Za-z0-9-]/g,'').toUpperCase().slice(0,24);
+}
+
+function descontoDoCupom(total){
+  if(!cupom||total<=0) return 0;
+  const bruto = cupom.tipo==='valor'
+    ? Math.max(Number(cupom.valor)||0,0)
+    : total*Math.min(Math.max(Number(cupom.valor)||0,0),100)/100;
+  // Nunca passa do total: cupom de R$100 numa sacola de R$80 não devolve troco.
+  return Math.round(Math.min(bruto,total)*100)/100;
+}
+
+function recadoCupom(texto,bom){
+  let el=document.getElementById('cupomRecado');
+  if(!el){ el=document.createElement('div'); el.id='cupomRecado'; el.className='barra-recado';
+           document.getElementById('barraCupom').appendChild(el); }
+  el.textContent=texto||'';
+  el.classList.toggle('ok',!!bom);
+  el.style.display=texto?'':'none';
+}
+
+window.usarCupom = async () => {
+  const campo=document.getElementById('cupom');
+  const bt=document.querySelector('.barra-cupom button');
+  if(cupom){ cupom=null; campo.value=''; campo.disabled=false; bt.textContent='Usar';
+             recadoCupom(''); pintarBarra(); return; }
+
+  const codigo=normalizarCodigo(campo.value);
+  if(!codigo) return;
+  const total=somaDaSacola();
+  if(total<=0){ recadoCupom('Coloque alguma peça na sacola antes.'); return; }
+
+  recadoCupom('conferindo…');
+  let d=null;
+  try{ d=await getDoc(doc(fdb,'cupons',codigo)); }
+  catch{ recadoCupom('Não consegui conferir o cupom agora.'); return; }
+
+  if(!d.exists()){ recadoCupom('Não encontrei esse cupom. Confira as letras.'); return; }
+  const x=d.data();
+  if(x.ativo===false){ recadoCupom('Esse cupom não está mais valendo.'); return; }
+  const ate = x.ate?.toMillis ? x.ate.toMillis() : (typeof x.ate==='number'?x.ate:null);
+  if(ate && Date.now()>ate){ recadoCupom('Esse cupom já passou da validade.'); return; }
+  const minimo=Number(x.minimo)||0;
+  if(total<minimo){ recadoCupom(`Esse cupom vale a partir de ${brl(minimo)}.`); return; }
+
+  cupom={codigo, tipo:x.tipo==='valor'?'valor':'percentual', valor:Number(x.valor)||0};
+  campo.value=codigo; campo.disabled=true;
+  bt.textContent='Tirar';
+  recadoCupom(`Cupom ${codigo} aplicado: −${brl(descontoDoCupom(total))}`,true);
+  pintarBarra();
+};
 
 window.filtrar = l => { linhaAtiva=l; pintar(); };
 window.filtrarTexto = t => { termo=String(t||'').trim().toLowerCase(); pintar(); };
@@ -252,9 +361,15 @@ window.fecharPedido = () => {
     const p=produtos.find(x=>x.id===id);
     return `• ${q}× ${p.nome} — ${brl(p.preco*q)}`;
   });
-  const total=Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
+  const total=somaDaSacola();
+  const desc=descontoDoCupom(total);
   const numero = whats.length>=12?whats:'55'+whats;
-  const txt = 'Olá! Quero encomendar pela Cinérea:\n\n'+linhas.join('\n')+`\n\nTotal: ${brl(total)}`;
+  // O CÓDIGO do cupom vai escrito na mensagem, e é por ele que a comissão do
+  // vendedor fica registrada. O valor do desconto vai junto só para o cliente
+  // conferir: quem fecha a conta é a gestão, pelo cadastro dela.
+  const txt = 'Olá! Quero encomendar pela Cinérea:\n\n'+linhas.join('\n')
+    + (desc>0 ? `\n\nSubtotal: ${brl(total)}\nCupom ${cupom.codigo}: −${brl(desc)}` : '')
+    + `\n\nTotal: ${brl(total-desc)}`;
   location.href = `https://wa.me/${numero}?text=${encodeURIComponent(txt)}`;
 };
 
