@@ -36,6 +36,26 @@
   .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
   .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
 
+  /* O verbete. Tratamento de dicionário, e não de seção: é uma definição, e
+     lida como definição ela convence sem precisar afirmar nada. Centrado e
+     estreito para ninguém confundir com o corpo do texto. */
+  .verbete{padding:52px 0 48px;border-top:1px solid var(--line);text-align:center}
+  .verbete .palavra{font-family:'Fraunces';font-weight:300;font-size:clamp(34px,9vw,50px);line-height:1}
+  .verbete .classe{margin-top:12px;font-size:12.5px;color:var(--smoke);letter-spacing:.02em}
+  .verbete .classe i{font-style:italic}
+  .verbete .def{
+    font-family:'Fraunces';font-style:italic;font-weight:300;
+    font-size:clamp(19px,4.8vw,25px);line-height:1.4;
+    margin:22px auto 0;max-width:26ch;
+  }
+  .verbete .nota{margin:22px auto 0;max-width:48ch;font-size:15.5px;color:var(--smoke);line-height:1.6}
+  /* O ponto de brasa entre a definição e a nota: a mesma marca da capa, do
+     tamanho de um pingo. É a única cor do bloco. */
+  .verbete .def::after{
+    content:'';display:block;width:5px;height:5px;border-radius:50%;
+    background:var(--ember);margin:22px auto 0;
+  }
+
   .ideia{padding:56px 0;border-top:1px solid var(--line)}
   .ideia .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
   /* `balance` evita a linha órfã: com 18ch o título quebrava deixando um "A"
@@ -243,6 +263,20 @@
   </section>
 
   <div class="envolve">
+
+    <!-- O nome, antes de qualquer coisa. Quem chega aqui leu "Cinérea" no
+         Instagram e não sabe o que a palavra quer dizer: sem isso, o nome é só
+         um som bonito. Com isso, ele é a marca inteira em uma palavra. Fica
+         ANTES da vela de areia de propósito, porque explica por que a vela
+         acaba e a escultura não. -->
+    <section class="verbete">
+      <p class="palavra">cinérea</p>
+      <p class="classe">ci·né·re·a &nbsp;·&nbsp; adjetivo &nbsp;·&nbsp; do latim <i>cinereus</i>, de <i>cinis</i>, cinza</p>
+      <p class="def">Da cor da cinza. Que tem cinzas, ou que delas se formou.</p>
+      <p class="nota">A vela queima até o fim e vira cinza. O gesso que a
+         sustenta continua ali, pronto para receber areia nova. O nome não
+         descreve a peça: descreve o que acontece com ela.</p>
+    </section>
 
     <section class="ideia" id="areia">
       <div class="rot">A vela de areia</div>
