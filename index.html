@@ -80,11 +80,51 @@
   .fogo{transform-box:fill-box;transform-origin:50% 100%;animation:subir 2.7s ease-in-out infinite}
   @keyframes subir{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,1.09)}}
 
+  /* ---- movimento que EXPLICA ----------------------------------------
+     Regra que segui: cada animação diz o que a coisa faz. A onda sai da peça
+     porque é isso que o chip faz; a areia cai porque é assim que se enche; a
+     seta gira porque o ciclo recomeça. Nenhuma existe só para se mexer. */
+
+  /* As ondas saem em sequência — o atraso é o que dá a direção. */
+  /* Repousam VISÍVEIS: travando a animação, as ondas continuam desenhadas —
+     o mesmo cuidado das seções. O ciclo só modula em volta desse repouso. */
+  .onda{opacity:.5;animation:pulso 3.4s ease-out infinite}
+  .o1{animation-delay:0s} .o2{animation-delay:.42s} .o3{animation-delay:.84s}
+  @keyframes pulso{0%{opacity:.22}18%{opacity:.9}55%{opacity:.3}100%{opacity:.22}}
+
+  /* A areia cai e recomeça. Cada grão com seu tempo: em bloco pareceria chuva. */
+  .graos circle{animation:cair 2.6s ease-in infinite}
+  .graos circle:nth-child(2){animation-delay:.5s}
+  .graos circle:nth-child(3){animation-delay:.9s}
+  .graos circle:nth-child(4){animation-delay:1.4s}
+  .graos circle:nth-child(5){animation-delay:1.9s}
+  /* Idem: o grão nunca chega a opacidade 0 no repouso do ciclo. */
+  @keyframes cair{0%{transform:translateY(-6px);opacity:.15}25%{opacity:1}100%{transform:translateY(22px);opacity:.15}}
+
+  .chaminha{transform-box:fill-box;transform-origin:50% 100%;animation:subir 2.9s ease-in-out infinite}
+
+  /* Uma volta a cada ciclo, com pausa longa: girar sem parar viraria carrossel. */
+  .recomeco{transform-box:fill-box;transform-origin:50% 78%;animation:volta 6s cubic-bezier(.5,0,.2,1) infinite}
+  @keyframes volta{0%,55%{transform:rotate(0)}85%,100%{transform:rotate(360deg)}}
+
+  /* As seções entram subindo — SÓ deslocamento, nunca opacidade.
+     A diferença não é estética, é de modo de falha. Animar opacidade esconde o
+     texto para mostrá-lo depois, e qualquer coisa que trave a animação (aba
+     oculta, `IntersectionObserver` que não dispara, erro de script) deixa a
+     página em branco. Medi isso acontecendo. Animando só o `translateY`, o pior
+     caso é a seção ficar 14px fora do lugar — e ninguém percebe. */
+  .ideia{animation:sobe .8s cubic-bezier(.2,.7,.3,1) both}
+  #areia{animation-delay:.05s} #chip{animation-delay:.14s}
+  #app{animation-delay:.23s}   #marca{animation-delay:.32s}
+  @keyframes sobe{from{transform:translateY(14px)}to{transform:none}}
+
   /* Fogo é movimento contínuo: quem pediu menos movimento não quer isto. */
   @media (prefers-reduced-motion:reduce){
     .fogo{filter:none!important;animation:none!important}
     .fogo animate,.calor animate{display:none}
     .capa .aura,.capa .brasa{animation:none!important}
+    .onda,.graos circle,.chaminha,.recomeco{animation:none!important;opacity:1;transform:none}
+    .ideia{animation:none!important;transform:none}
   }
   .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 </style>
@@ -209,7 +249,7 @@
       <div class="passos">
         <div class="passo">
           <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="Areia perfumada caindo dentro da taça.">
-            <g fill="#C9BCA8"><circle cx="26" cy="11" r="1.7"/><circle cx="34" cy="6" r="1.7"/><circle cx="39" cy="15" r="1.7"/><circle cx="30" cy="20" r="1.7"/><circle cx="37" cy="25" r="1.7"/></g>
+            <g class="graos" fill="#C9BCA8"><circle cx="26" cy="11" r="1.7"/><circle cx="34" cy="6" r="1.7"/><circle cx="39" cy="15" r="1.7"/><circle cx="30" cy="20" r="1.7"/><circle cx="37" cy="25" r="1.7"/></g>
             <clipPath id="c1"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
             <g clip-path="url(#c1)">
               <rect x="17" y="44" width="30" height="6" fill="#E7E3DC"/>
@@ -221,7 +261,7 @@
           <p>Areia perfumada na taça, em camadas de cor à sua escolha.</p></div>
         <div class="passo">
           <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="O pavio aceso sobre a taça cheia de areia.">
-            <path d="M32 8 C32 8,27 17,27 22 a5 5 0 0 0 10 0 C37 17,32 8,32 8Z" fill="#B5462A"/>
+            <path class="chaminha" d="M32 8 C32 8,27 17,27 22 a5 5 0 0 0 10 0 C37 17,32 8,32 8Z" fill="#B5462A"/>
             <path d="M32 24 L32 30" stroke="#1C1A17" stroke-width="2.2" stroke-linecap="round"/>
             <clipPath id="c2"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
             <g clip-path="url(#c2)">
@@ -235,8 +275,10 @@
           <p>Fixe o pavio e acenda. O aroma sobe, a escultura fica intacta.</p></div>
         <div class="passo">
           <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="A taça quase vazia e a seta do recomeço: repõe-se a areia.">
-            <path d="M40 15 A11 11 0 1 1 32 4" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-            <path d="M28 1 L32.6 4.3 L28 7.8" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <g class="recomeco">
+              <path d="M40 15 A11 11 0 1 1 32 4" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <path d="M28 1 L32.6 4.3 L28 7.8" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
             <clipPath id="c3"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
             <g clip-path="url(#c3)"><rect x="17" y="52" width="30" height="6" fill="#C9BCA8"/></g>
             <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
@@ -258,9 +300,11 @@
         <path d="M74 228 h44" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
         <rect x="50" y="228" width="92" height="18" rx="5" stroke="#1C1A17" stroke-width="2.5" fill="none"/>
         <rect x="84" y="231" width="24" height="12" rx="3" fill="#B5462A" fill-opacity=".2" stroke="#B5462A" stroke-width="1.4"/>
-        <path d="M160 228 a24 24 0 0 0 0 -32" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M173 240 a40 40 0 0 0 0 -56" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round" opacity=".55"/>
-        <path d="M186 252 a56 56 0 0 0 0 -80" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round" opacity=".26"/>
+        <!-- As ondas saem em sequência, da peça para o celular: é literalmente
+             o que o chip faz. O atraso entre elas é o que dá a direção. -->
+        <path class="onda o1" d="M160 228 a24 24 0 0 0 0 -32" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path class="onda o2" d="M173 240 a40 40 0 0 0 0 -56" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path class="onda o3" d="M186 252 a56 56 0 0 0 0 -80" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
         <rect x="212" y="142" width="88" height="136" rx="13" stroke="#1C1A17" stroke-width="2.5" fill="#F2EFEA"/>
         <rect x="242" y="151" width="28" height="5" rx="2.5" fill="#D8D2C8"/>
         <circle cx="256" cy="176" r="9" fill="none" stroke="#B5462A" stroke-width="2"/>
