@@ -27,6 +27,28 @@
   .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 26px;justify-content:center}
   .linhas button{padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;font-size:12.5px;color:var(--smoke);cursor:pointer}
   .linhas button.on{background:var(--char);color:var(--paper);border-color:var(--char)}
+  /* ---- banner de promoção -----------------------------------------------
+     Vem do cadastro da gestão e sobe junto com o catálogo. A loja NÃO tem
+     banner próprio de propósito: seria a segunda lista de verdade sobre a loja,
+     e duas listas divergem. */
+  .banner{
+    display:block;text-decoration:none;padding:16px 22px;text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  .banner.brasa{background:var(--ember);color:#fff;border-color:var(--ember)}
+  .banner.carvao{background:var(--char);color:var(--paper);border-color:var(--char)}
+  .banner.areia{background:var(--ash);color:var(--char)}
+  .banner strong{font-family:'Fraunces';font-weight:400;font-size:clamp(16px,3.6vw,19px);display:block}
+  .banner .btexto{font-size:13.5px;opacity:.85;margin-top:3px;display:block}
+  .banner .bcupom{
+    display:inline-block;margin-top:9px;padding:5px 13px;border-radius:20px;
+    border:1px dashed currentColor;font-size:13px;letter-spacing:.08em;
+    font-family:ui-monospace,monospace;
+  }
+  .banner.usavel{cursor:pointer}
+  .banner.usavel:hover .bcupom{background:rgba(255,255,255,.16)}
+  .banner.areia.usavel:hover .bcupom{background:rgba(28,26,23,.06)}
+
   /* A loja abria direto no campo de busca, sem dizer de onde as peças vêm.
      Quem chega pelo Instagram cai aqui primeiro, e uma vitrine sem voz parece
      revenda. Duas linhas resolvem, e dizem que encomenda existe. */
@@ -194,6 +216,8 @@
   </button>
 </div></header>
 
+<div id="banner"></div>
+
 <section class="capa-loja">
   <div class="envolve">
     <h1>O que está pronto no ateliê.</h1>
@@ -246,7 +270,7 @@ const fdb = getFirestore(app);
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='';
+let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='', banner=null;
 const sacola={};   // id -> qtd
 
 /**
@@ -267,6 +291,7 @@ async function carregar(){
   // aqui de novo abriria espaço para o site e o app discordarem.
   colecoes = Array.isArray(d?.colecoes) ? d.colecoes : [];
   whats = String(d?.whats||'').replace(/\D/g,'')||null;
+  banner = d?.banner || null;
 }
 
 function marca(){ return '<div class="moldura"><div style="display:flex;align-items:center;justify-content:center;height:100%"><svg width="42" height="42" viewBox="0 0 150 150" fill="none"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="10" fill="#B5462A"/></svg></div></div>'; }
@@ -319,6 +344,44 @@ function pintar(){
   document.getElementById('grade').outerHTML = `<div id="grade">${html||(termo?`<p class="vazio">Nada encontrado para “${esc(termo)}”.</p>`:'<p class="vazio">A vitrine está sendo montada.</p>')}</div>`;
   pintarBarra();
 }
+
+/**
+ * O banner da promoção.
+ *
+ * A VALIDADE É CONFERIDA AQUI TAMBÉM, e não só na gestão: o catálogo publicado
+ * hoje continua no ar amanhã, e ninguém republica a loja todo dia. Sem esta
+ * conferência, uma promoção de sexta continuaria anunciada na segunda.
+ */
+function pintarBanner(){
+  const box = document.getElementById('banner');
+  if(!box) return;
+  const b = banner;
+  if(!b || !b.titulo){ box.innerHTML=''; return; }
+  if(b.ate){
+    // Comparação de texto em ISO, que ordena igual a data. `T23:59` não entra:
+    // o dia do "até" vale inteiro.
+    const hoje = new Date().toISOString().slice(0,10);
+    if(hoje > b.ate){ box.innerHTML=''; return; }
+  }
+  const cor = {brasa:'brasa','carvão':'carvao',carvao:'carvao',areia:'areia'}[b.cor] || 'brasa';
+  const usavel = !!b.cupom;
+  box.innerHTML = `<${usavel?'button':'div'} class="banner ${cor}${usavel?' usavel':''}"
+      ${usavel?`onclick="usarCupomDoBanner('${esc(b.cupom)}')"`:''} style="width:100%;border-left:none;border-right:none;border-top:none;font-family:inherit">
+    <strong>${esc(b.titulo)}</strong>
+    ${b.texto?`<span class="btexto">${esc(b.texto)}</span>`:''}
+    ${usavel?`<span class="bcupom">${esc(b.cupom)}</span>`:''}
+  </${usavel?'button':'div'}>`;
+}
+
+/** Tocar no cupom do banner já abre a sacola com ele preenchido. */
+window.usarCupomDoBanner = codigo => {
+  const campo = document.getElementById('cupom');
+  abrirGaveta();
+  if(cupom){ return; }              // já há um cupom aplicado: não atropela
+  campo.value = codigo;
+  // A sacola vazia recusa o cupom, e com razão. Aí só deixa preenchido.
+  if(Object.keys(sacola).length) usarCupom();
+};
 
 function somaDaSacola(){
   return Object.entries(sacola).reduce((s,[id,q])=>s+(produtos.find(p=>p.id===id)?.preco||0)*q,0);
@@ -547,7 +610,7 @@ function colecaoPedida(){
   return achada ? achada.nome : null;
 }
 
-try { await carregar(); linhaAtiva = colecaoPedida(); pintar(); }
+try { await carregar(); linhaAtiva = colecaoPedida(); pintarBanner(); pintar(); }
 catch { document.getElementById('grade').innerHTML='<p class="vazio">Não consegui abrir a loja agora. Tente de novo com internet.</p>'; }
 </script>
 <footer class="rodape">
