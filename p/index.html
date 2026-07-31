@@ -4,28 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Uma peça Cinérea</title>
-<link rel="stylesheet" href="/comum.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
+  :root{
+    --paper:#F2EFEA; --ash:#E7E3DC; --char:#1C1A17; --ember:#B5462A;
+    --smoke:#6E6862; --line:#D8D2C8;
+    --surface:rgba(255,255,255,.55); --shadow:rgba(28,26,23,.07);
+  }
+  /* A peça é objeto de fim de tarde: o modo escuro não é um tema à parte, é a
+     mesma paleta virada do avesso. A brasa continua sendo a brasa. */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#141311; --ash:#1F1D1A; --char:#F0EDE7; --smoke:#9A938A;
+      --line:#312D28; --surface:rgba(255,255,255,.04); --shadow:rgba(0,0,0,.4);
+    }
+  }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-  .tudo{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
-  svg.marca{width:44px;height:44px}
-  .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
-  .titulo{font-family:'Fraunces';font-weight:300;font-size:clamp(30px,9vw,44px);line-height:1.1;margin-top:10px;word-break:break-word}
-  .conteudo{margin-top:34px;width:100%;max-width:400px}
-  .cta{display:block;margin-top:18px;padding:17px 22px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+  body{
+    background:var(--paper); color:var(--char);
+    font-family:'Inter',sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;
+    /* Um halo quente no topo, como a luz de uma vela acesa acima da peça. */
+    background-image:radial-gradient(120% 55% at 50% -8%, rgba(181,70,42,.09), transparent 62%);
+    background-attachment:fixed;
+  }
+  .tudo{
+    min-height:100svh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:40px 22px 32px; text-align:center; gap:0;
+  }
+  svg.marca{width:40px;height:40px}
+  /* A brasa respira enquanto a peça abre — é o único movimento da página. */
+  svg.marca circle{transform-origin:center; animation:brasa 2.6s ease-in-out infinite}
+  .pronto svg.marca circle{animation:none}
+  @keyframes brasa{0%,100%{opacity:1}50%{opacity:.35}}
+
+  /* O `align-items:center` do pai faz os filhos encolherem para o conteúdo.
+     Sem isto o cartão media 223px numa tela de 390 — e o `width:100%` dele
+     passava a valer sobre uma largura já encolhida. */
+  #corpo{width:100%;display:flex;flex-direction:column;align-items:center}
+
+  .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .titulo{font-family:'Fraunces';font-weight:300;font-size:clamp(30px,9vw,44px);line-height:1.1;word-break:break-word}
+
+  /* O conteúdo ganha superfície: separa a mensagem da peça do resto da página. */
+  .conteudo{
+    margin-top:30px; width:100%; max-width:420px;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:18px; padding:30px 24px;
+    box-shadow:0 1px 2px var(--shadow), 0 12px 32px -18px var(--shadow);
+  }
+  .conteudo .rot{margin-bottom:14px}
+
+  .cta{
+    display:block; margin-top:22px; padding:17px 22px;
+    background:var(--char); color:var(--paper); text-decoration:none;
+    border-radius:12px; font-size:15px; font-weight:500; letter-spacing:.01em;
+    border:none; width:100%; cursor:pointer; font-family:inherit;
+    transition:background .18s ease, transform .18s ease;
+  }
   .cta:hover{background:var(--ember)}
-  .recado{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(19px,5.4vw,24px);line-height:1.45;color:var(--char)}
-  .nota{margin-top:16px;font-size:13.5px;color:var(--smoke)}
-  .certidao{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);width:100%;max-width:400px}
-  .proc{font-family:'Fraunces';font-size:17px;margin-top:8px}
-  .refil{display:inline-block;margin-top:16px;color:var(--ember);font-size:14px}
-  .rodape{margin-top:40px;font-size:12px;color:var(--smoke)}
-  .rodape a{color:var(--smoke)}
-  .carregando{color:var(--smoke);font-size:14px}
+  .cta:active{transform:scale(.985)}
+  .cta:focus-visible{outline:2px solid var(--ember); outline-offset:3px}
+
+  .recado{
+    font-family:'Fraunces'; font-style:italic; font-weight:300;
+    font-size:clamp(20px,5.6vw,26px); line-height:1.45;
+  }
+  /* Aspas tipográficas grandes, em brasa, para o recado parecer dito e não exibido. */
+  .recado::before{
+    content:'\201C'; display:block; font-size:40px; line-height:.85;
+    margin:2px 0 6px; color:var(--ember); opacity:.45;
+  }
+  .rede{font-family:'Fraunces';font-weight:400;font-size:clamp(24px,6.4vw,30px);line-height:1.2;word-break:break-word}
+  .senha{
+    margin-top:16px; font-family:ui-monospace,'SF Mono',Menlo,monospace;
+    font-size:19px; letter-spacing:.06em; word-break:break-all;
+  }
+  .nota{margin-top:14px;font-size:13px;color:var(--smoke);line-height:1.5}
+
+  /* A certidão é um selo, não mais uma seção: recuada e em superfície de cinza. */
+  .certidao{
+    margin-top:26px; width:100%; max-width:420px;
+    background:var(--ash); border-radius:14px; padding:22px 24px;
+  }
+  .proc{font-family:'Fraunces';font-weight:400;font-size:18px;margin-top:8px;line-height:1.3}
+  .refil{display:inline-block;margin-top:14px;color:var(--ember);font-size:14px;font-weight:500}
+  .assinatura{margin-top:34px;font-size:12px;color:var(--smoke)}
+  .assinatura a{color:var(--smoke)}
+  .assinatura a.loja{color:var(--ember)}
+  .carregando{color:var(--smoke);font-size:14px;margin-top:26px}
+
+  /* Entrada suave: a peça "abre" em vez de aparecer de estalo. */
+  .surge{animation:surge .5s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes surge{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    .surge,svg.marca circle{animation:none}
+  }
 </style>
 </head>
 <body>
@@ -35,9 +110,9 @@
     <circle cx="112" cy="75" r="11" fill="#B5462A"/>
   </svg>
   <div id="corpo"><p class="carregando" style="margin-top:28px">abrindo a peça…</p></div>
-  <p class="rodape" style="margin-top:40px;font-size:12px;color:var(--smoke)">
-    <a href="/" style="color:var(--smoke)">Cinérea</a> · Campos do Jordão ·
-    <a href="/loja/" style="color:var(--ember)">ver as peças</a>
+  <p class="assinatura">
+    <a href="/">Cinérea</a> · Campos do Jordão ·
+    <a href="/loja/" class="loja">ver as peças</a>
   </p>
 </main>
 
@@ -76,27 +151,27 @@ function mostrar(v, cert){
   let bloco = '';
   if (!v) {
     bloco = `<p class="rot">Esta peça ainda não diz nada</p>
-      <p class="nota" style="margin-top:12px">Quem tem a peça escolhe o que ela guarda.</p>`;
+      <p class="nota" style="margin-top:0">Quem tem a peça escolhe o que ela guarda.</p>`;
   } else if (v.tipo === 'recado') {
-    bloco = `<p class="rot">Recado</p><p class="recado" style="margin-top:14px">${esc(v.dados)}</p>`;
+    bloco = `<p class="rot">Recado</p><p class="recado">${esc(v.dados)}</p>`;
   } else if (v.tipo === 'wifi') {
     // A senha vem junto (decisão do dono, jul/2026): a Apple não implementa o
     // registro de wi-fi do NFC, então sem ela um convidado de iPhone não teria
-    // como conectar. No Android o chip já conecta sozinho e esta página é só
+    // como conectar. No Android o chip já conecta sozinho e esta página é
     // reforço.
     const senha = v.senha
-      ? `<p class="rot" style="margin-top:18px">Senha</p>
+      ? `<p class="senha">${esc(v.senha)}</p>
          <button class="cta" type="button" id="copiarSenha" data-senha="${esc(v.senha)}">
-           ${esc(v.senha)}
-         </button>
-         <p class="nota" style="margin-top:8px">Toque para copiar.</p>`
+           Copiar a senha
+         </button>`
       : `<p class="nota">Encoste o celular na peça para conectar.</p>`;
-    bloco = `<p class="rot">Rede de wi-fi</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>${senha}`;
+    bloco = `<p class="rot">Rede de wi-fi</p><p class="rede">${esc(v.dados)}</p>${senha}`;
   } else if (v.tipo === 'contato') {
-    bloco = `<p class="rot">Contato</p><p class="titulo" style="font-size:28px">${esc(v.dados)}</p>`;
+    bloco = `<p class="rot">Contato</p><p class="rede">${esc(v.dados)}</p>`;
   } else {
+    const nomes   = {link:'Link', playlist:'Playlist', whatsapp:'WhatsApp', local:'Lugar'};
     const rotulos = {link:'Abrir o link', playlist:'Ouvir a playlist', whatsapp:'Falar no WhatsApp', local:'Ver no mapa'};
-    bloco = `<p class="rot">${esc({link:'Link',playlist:'Playlist',whatsapp:'WhatsApp',local:'Lugar'}[v.tipo] || 'Conteúdo')}</p>
+    bloco = `<p class="rot">${esc(nomes[v.tipo] || 'Conteúdo')}</p>
       ${abrirEm(v.dados, rotulos[v.tipo] || 'Abrir')}`;
   }
 
@@ -107,7 +182,7 @@ function mostrar(v, cert){
     const feita = cert.feitaEm?.seconds
       ? new Date(cert.feitaEm.seconds * 1000).toLocaleDateString('pt-BR', {month:'long', year:'numeric'})
       : '';
-    selo = `<div class="certidao">
+    selo = `<div class="certidao surge" style="animation-delay:.08s">
       <p class="rot">Peça original</p>
       <p class="proc">${esc(cert.modelo || 'Cinérea')}${serie ? ' · ' + esc(serie) : ''}</p>
       ${feita ? `<p class="nota" style="margin-top:4px">feita em ${esc(feita)}</p>` : ''}
@@ -115,7 +190,9 @@ function mostrar(v, cert){
     </div>`;
   }
 
-  corpo.innerHTML = `<div class="conteudo">${bloco}</div>${selo}`;
+  corpo.innerHTML = `<div class="conteudo surge">${bloco}</div>${selo}`;
+  // Para a brasa da marca parar de piscar: a peça já abriu.
+  document.body.classList.add('pronto');
 
   // Copiar a senha do wi-fi. `writeText` exige contexto seguro (temos HTTPS) e
   // um gesto do usuário — por isso vive no clique, e não no carregamento.
@@ -125,18 +202,39 @@ function mostrar(v, cert){
       const original = botao.textContent.trim();
       try {
         await navigator.clipboard.writeText(botao.dataset.senha);
-        botao.textContent = 'copiada';
+        botao.textContent = 'Copiada';
       } catch {
         // Navegador sem permissão de área de transferência: a senha continua
         // visível na tela, que é o que importa. Não fingir que copiou.
-        botao.textContent = 'selecione e copie';
+        botao.textContent = 'Selecione e copie acima';
       }
       setTimeout(() => { botao.textContent = original; }, 1800);
     });
   }
 }
 
-if (!chip) {
+/**
+ * Pré-visualização dos estados, sem peça na mão: `/p/?demo=wifi`.
+ *
+ * Existe porque esta página só se vê com uma vitrine publicada, e desenhar às
+ * cegas foi o que produziu os erros de layout deste projeto. Só responde quando
+ * NÃO há `?c=` — nunca interfere numa peça de verdade.
+ */
+const DEMO = {
+  link:     { tipo:'link',     dados:'https://exemplo.com' },
+  playlist: { tipo:'playlist', dados:'https://open.spotify.com/playlist/37i9dQ' },
+  whatsapp: { tipo:'whatsapp', dados:'https://wa.me/5512991234567' },
+  local:    { tipo:'local',    dados:'https://maps.google.com/?q=Campos+do+Jord%C3%A3o' },
+  wifi:     { tipo:'wifi',     dados:'Cinerea_Casa', senha:'gesso2026' },
+  recado:   { tipo:'recado',   dados:'Que esta chama acompanhe vocês dois.' },
+  contato:  { tipo:'contato',  dados:'Henrique Martins' },
+  vazia:    null,
+};
+
+const demo = new URLSearchParams(location.search).get('demo');
+if (!chip && demo && demo in DEMO) {
+  mostrar(DEMO[demo], { modelo:'Apolo', serie:12, total:40, feitaEm:{ seconds: 1774000000 }, refil:'https://cinerea.com.br/loja/' });
+} else if (!chip) {
   vazio('Encoste o celular numa peça Cinérea para abri-la.');
 } else {
   try {
