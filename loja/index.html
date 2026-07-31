@@ -57,7 +57,9 @@
   .capa-loja p{margin:14px auto 0;max-width:50ch;font-size:15.5px;color:var(--smoke)}
   .capa-loja a{color:var(--ember)}
 
-  .buscar{margin:26px 0 6px}
+  /* O campo tem largura máxima de 420px e vivia encostado na esquerda, sob um
+     título centrado. `justify-content` centra sem mexer na largura. */
+  .buscar{margin:26px 0 6px;display:flex;justify-content:center}
   .buscar input{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-family:'Inter';font-size:14.5px;color:var(--char)}
   .buscar input:focus{outline:none;border-color:var(--char)}
   .secao{margin-bottom:56px;scroll-margin-top:80px}
