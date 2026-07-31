@@ -18,6 +18,9 @@
     :root{
       --paper:#141311; --ash:#1F1D1A; --char:#F0EDE7; --smoke:#9A938A;
       --line:#312D28; --surface:rgba(255,255,255,.04); --shadow:rgba(0,0,0,.4);
+      /* A brasa clareia no escuro. O #B5462A sobre este fundo dá 2,4:1 —
+         serve para um ponto decorativo, não para um link que se lê. */
+      --ember:#D9663F;
     }
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -33,7 +36,10 @@
     align-items:center; justify-content:center;
     padding:40px 22px 32px; text-align:center; gap:0;
   }
-  svg.marca{width:40px;height:40px}
+  /* `currentColor` no traço + esta cor: a marca vira clara no modo escuro
+     sozinha. Com a cor fixa no SVG ela ficava carvão sobre carvão — invisível.
+     A brasa do ponto continua brasa: ela funciona nos dois fundos. */
+  svg.marca{width:40px;height:40px;color:var(--char)}
   /* A brasa respira enquanto a peça abre — é o único movimento da página. */
   svg.marca circle{transform-origin:center; animation:brasa 2.6s ease-in-out infinite}
   .pronto svg.marca circle{animation:none}
@@ -118,7 +124,7 @@
 <body>
 <main class="tudo">
   <svg class="marca" viewBox="0 0 150 150" fill="none" aria-hidden="true">
-    <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/>
     <circle cx="112" cy="75" r="11" fill="#B5462A"/>
   </svg>
   <div id="corpo"><p class="carregando" style="margin-top:28px">abrindo a peça…</p></div>
