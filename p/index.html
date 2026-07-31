@@ -89,7 +89,19 @@
     background:var(--ash); border-radius:14px; padding:22px 24px;
   }
   .proc{font-family:'Fraunces';font-weight:400;font-size:18px;margin-top:8px;line-height:1.3}
-  .refil{display:inline-block;margin-top:14px;color:var(--ember);font-size:14px;font-weight:500}
+  /* Os dois caminhos que a peça abre para quem a recebeu: comprar a sua, e
+     repor a areia quando esta acabar. Secundários de propósito — o conteúdo
+     que o dono deixou é o assunto, isto é o convite. */
+  .caminhos{margin-top:14px;width:100%;max-width:420px;display:flex;flex-wrap:wrap;gap:10px}
+  .caminho{
+    flex:1 1 auto; padding:15px 18px; border-radius:12px;
+    border:1px solid var(--line); background:transparent; color:var(--char);
+    text-decoration:none; font-size:14px; font-weight:500; text-align:center;
+    transition:border-color .18s ease, color .18s ease;
+  }
+  .caminho:hover{border-color:var(--ember);color:var(--ember)}
+  .caminho .sub{display:block;font-size:12px;font-weight:400;color:var(--smoke);margin-top:3px}
+
   .assinatura{margin-top:34px;font-size:12px;color:var(--smoke)}
   .assinatura a{color:var(--smoke)}
   .assinatura a.loja{color:var(--ember)}
@@ -111,8 +123,7 @@
   </svg>
   <div id="corpo"><p class="carregando" style="margin-top:28px">abrindo a peça…</p></div>
   <p class="assinatura">
-    <a href="/">Cinérea</a> · Campos do Jordão ·
-    <a href="/loja/" class="loja">ver as peças</a>
+    <a href="/">Cinérea</a> · feito à mão em Campos do Jordão
   </p>
 </main>
 
@@ -186,11 +197,22 @@ function mostrar(v, cert){
       <p class="rot">Peça original</p>
       <p class="proc">${esc(cert.modelo || 'Cinérea')}${serie ? ' · ' + esc(serie) : ''}</p>
       ${feita ? `<p class="nota" style="margin-top:4px">feita em ${esc(feita)}</p>` : ''}
-      ${cert.refil ? `<a class="refil" href="${esc(cert.refil)}" rel="noopener">Repor a areia perfumada</a>` : ''}
     </div>`;
   }
 
-  corpo.innerHTML = `<div class="conteudo surge">${bloco}</div>${selo}`;
+  // Onde repor a areia: o link da própria certidão quando a peça tem um (ele é
+  // específico do modelo), e a coleção de refis da loja quando não tem.
+  const ondeRepor = cert?.refil || '/loja/?colecao=Areia';
+  const caminhos = `<div class="caminhos surge" style="animation-delay:.16s">
+    <a class="caminho" href="${esc(ondeRepor)}" rel="noopener">
+      Repor a areia<span class="sub">quando a fragrância acabar</span>
+    </a>
+    <a class="caminho" href="/loja/">
+      Ver as peças<span class="sub">a loja da Cinérea</span>
+    </a>
+  </div>`;
+
+  corpo.innerHTML = `<div class="conteudo surge">${bloco}</div>${selo}${caminhos}`;
   // Para a brasa da marca parar de piscar: a peça já abriu.
   document.body.classList.add('pronto');
 
@@ -233,7 +255,11 @@ const DEMO = {
 
 const demo = new URLSearchParams(location.search).get('demo');
 if (!chip && demo && demo in DEMO) {
-  mostrar(DEMO[demo], { modelo:'Apolo', serie:12, total:40, feitaEm:{ seconds: 1774000000 }, refil:'https://cinerea.com.br/loja/' });
+  // `&sem=cert` mostra a peça sem certidão: é o caso de quem ainda não teve a
+  // procedência registrada, e o que faz o botão de refil cair na coleção da loja.
+  const semCert = new URLSearchParams(location.search).get('sem') === 'cert';
+  mostrar(DEMO[demo], semCert ? null
+    : { modelo:'Apolo', serie:12, total:40, feitaEm:{ seconds: 1774000000 }, refil:'https://cinerea.com.br/loja/' });
 } else if (!chip) {
   vazio('Encoste o celular numa peça Cinérea para abri-la.');
 } else {

@@ -201,7 +201,19 @@ window.fecharPedido = () => {
   location.href = `https://wa.me/${numero}?text=${encodeURIComponent(txt)}`;
 };
 
-try { await carregar(); pintar(); }
+// Link direto para uma coleção: /loja/?colecao=Areia. É o que permite à página
+// do convidado mandar alguém direto para os refis, em vez de largá-lo na loja
+// inteira para procurar. Casa sem diferenciar maiúsculas nem acentos, porque
+// o nome vem digitado à mão no cadastro.
+function colecaoPedida(){
+  const q = new URLSearchParams(location.search).get('colecao');
+  if (!q) return null;
+  const limpa = t => String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  const achada = colecoes.find(c => limpa(c.nome).includes(limpa(q)));
+  return achada ? achada.nome : null;
+}
+
+try { await carregar(); linhaAtiva = colecaoPedida(); pintar(); }
 catch { document.getElementById('grade').innerHTML='<p class="vazio">Não consegui abrir a loja agora. Tente de novo com internet.</p>'; }
 </script>
 <footer class="rodape">
