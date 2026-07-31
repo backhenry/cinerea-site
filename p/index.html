@@ -174,8 +174,34 @@ function vazio(msg){
     <p class="titulo">Uma peça</p><p class="nota">${esc(msg)}</p>`;
 }
 
+/**
+ * O endereço só vira link se o esquema for de abrir página.
+ *
+ * `esc()` impede quebrar o atributo, mas NÃO impede `javascript:` dentro de um
+ * href: escapado ou não, ele executa no clique. E o app não é o único que
+ * escreve na vitrine — quem tem uma peça pode gravar direto no Firestore, e a
+ * regra não consegue conferir esquema de URL. Ou seja: sem esta função, um
+ * cliente publicava script executável NO DOMÍNIO DA MARCA, disparado em quem
+ * encostasse o celular na peça dele.
+ *
+ * A lista é a mesma de `normalizarUrl` no app, menos os esquemas que não fazem
+ * sentido aqui. Fechada de propósito: regra genérica aceitaria `palavra:`.
+ */
+const ESQUEMAS = /^(https?|tel|mailto|sms|geo):/i;
+
+function enderecoSeguro(url){
+  const t = String(url ?? '').trim();
+  return ESQUEMAS.test(t) ? t : null;
+}
+
 function abrirEm(url, rotulo){
-  return `<a class="cta" href="${esc(url)}" rel="noopener">${esc(rotulo)}</a>`;
+  const seguro = enderecoSeguro(url);
+  // Sem esquema conhecido, mostra o texto em vez de um link que não se sabe
+  // para onde vai. O convidado continua vendo o conteúdo; o que ele não ganha
+  // é um botão para clicar.
+  return seguro
+    ? `<a class="cta" href="${esc(seguro)}" rel="noopener">${esc(rotulo)}</a>`
+    : `<p class="rede">${esc(url)}</p>`;
 }
 
 /**
@@ -225,12 +251,18 @@ function mostrar(v, cert){
     // Vários endereços numa peça. Só existe no modo permanente — o chip guarda
     // esta página, e é aqui que a lista mora.
     const itens = Array.isArray(v.itens) ? v.itens.slice(0, 12) : [];
+    // Cada endereço da lista passa pelo mesmo filtro. A regra do Firestore
+    // limita a QUANTIDADE de itens mas não consegue olhar dentro deles: regra
+    // não itera lista. Então o filtro tem de estar aqui, item por item.
     bloco = `<p class="rot">${esc(v.titulo || 'Meus links')}</p>
-      <div class="links">${itens.map(l => `
-        <a class="lk" href="${esc(l.url)}" rel="noopener">
+      <div class="links">${itens.map(l => {
+        const u = enderecoSeguro(l.url);
+        if (!u) return '';
+        return `<a class="lk" href="${esc(u)}" rel="noopener">
           ${SIMBOLOS[l.icone] || SIMBOLOS.site}
           <span>${esc(l.rotulo || l.icone || 'Abrir')}</span>
-        </a>`).join('')}</div>`;
+        </a>`;
+      }).join('')}</div>`;
   } else if (v.tipo === 'contato') {
     bloco = `<p class="rot">Contato</p><p class="rede">${esc(v.dados)}</p>`;
   } else {
@@ -256,7 +288,10 @@ function mostrar(v, cert){
 
   // Onde repor a areia: o link da própria certidão quando a peça tem um (ele é
   // específico do modelo), e a coleção de refis da loja quando não tem.
-  const ondeRepor = cert?.refil || '/loja/?colecao=Areia';
+  // `refil` vem da certidão, que só a casa escreve, então o risco aqui é bem
+  // menor. Passa pelo mesmo filtro assim mesmo: um dia alguém amplia quem
+  // escreve na certidão e ninguém vai lembrar deste link.
+  const ondeRepor = (cert?.refil && enderecoSeguro(cert.refil)) || '/loja/?colecao=Areia';
   const caminhos = `<div class="caminhos surge" style="animation-delay:.16s">
     <a class="caminho" href="${esc(ondeRepor)}" rel="noopener">
       Repor a areia<span class="sub">quando a fragrância acabar</span>
