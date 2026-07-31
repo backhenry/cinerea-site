@@ -218,7 +218,11 @@ function mostrar(v, cert){
     </a>
   </div>`;
 
-  corpo.innerHTML = `<div class="conteudo surge">${bloco}</div>${selo}${caminhos}`;
+  // `?pv=1` é a prévia da página inicial: mostra só o conteúdo. Os caminhos para
+  // a loja não cabem num celular desenhado de 264px, e ali não são o assunto.
+  const previa = new URLSearchParams(location.search).get('pv') === '1';
+  corpo.innerHTML = `<div class="conteudo surge">${bloco}</div>${selo}${previa ? '' : caminhos}`;
+  if (previa) document.querySelector('.assinatura')?.remove();
   // Para a brasa da marca parar de piscar: a peça já abriu.
   document.body.classList.add('pronto');
 
@@ -263,8 +267,18 @@ const demo = new URLSearchParams(location.search).get('demo');
 if (!chip && demo && demo in DEMO) {
   // `&sem=cert` mostra a peça sem certidão: é o caso de quem ainda não teve a
   // procedência registrada, e o que faz o botão de refil cair na coleção da loja.
-  const semCert = new URLSearchParams(location.search).get('sem') === 'cert';
-  mostrar(DEMO[demo], semCert ? null
+  const busca = new URLSearchParams(location.search);
+  const semCert = busca.get('sem') === 'cert';
+
+  // `&t=` troca o conteúdo pelo texto de quem está experimentando. É o que
+  // permite à página inicial mostrar a peça DELA, com as palavras DELA, dentro
+  // de um celular desenhado. O texto entra pelo mesmo `esc()` do resto — vem
+  // da barra de endereço, então é entrada não confiável como qualquer outra.
+  const proprio = busca.get('t');
+  const base = DEMO[demo];
+  const conteudo = (proprio && base) ? { ...base, dados: proprio.slice(0, 220) } : base;
+
+  mostrar(conteudo, semCert ? null
     : { modelo:'Apolo', serie:12, total:40, feitaEm:{ seconds: 1774000000 }, refil:'https://cinerea.com.br/loja/' });
 } else if (!chip) {
   vazio('Encoste o celular numa peça Cinérea para abri-la.');

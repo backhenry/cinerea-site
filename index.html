@@ -143,6 +143,40 @@
 
   .linkinho{display:inline-block;margin-top:22px;color:var(--ember);font-size:15px}
 
+  /* ---- experimente ------------------------------------------------------ */
+  .experimente{display:grid;gap:30px;margin-top:36px;padding-top:30px;border-top:1px solid var(--line);align-items:center}
+  @media(min-width:880px){.experimente{grid-template-columns:1fr 300px;gap:44px}}
+  .exp-titulo{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,29px);margin-top:8px;line-height:1.15}
+  .exp-nota{color:var(--smoke);font-size:15px;margin-top:10px;max-width:44ch}
+  .exp-rot{display:block;font-size:12px;color:var(--smoke);margin:22px 0 6px}
+  #expTexto{
+    width:100%;max-width:44ch;padding:13px 15px;border:1px solid var(--line);
+    border-radius:10px;background:rgba(255,255,255,.5);color:var(--char);
+    font-family:inherit;font-size:15px;line-height:1.5;resize:vertical;
+  }
+  #expTexto:focus{outline:2px solid var(--ember);outline-offset:1px;border-color:transparent}
+  .exp-tipos{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .exp-tipo{
+    padding:8px 15px;border-radius:20px;border:1px solid var(--line);
+    background:transparent;color:var(--smoke);font-family:inherit;font-size:13.5px;
+    cursor:pointer;transition:.18s;
+  }
+  .exp-tipo:hover{border-color:var(--ember);color:var(--ember)}
+  .exp-tipo.on{background:var(--char);border-color:var(--char);color:var(--paper)}
+
+  /* O celular é desenhado em CSS: nenhuma imagem para carregar, e ele se ajusta
+     ao que estiver dentro. A tela guarda um iframe da página de verdade. */
+  .aparelho{
+    width:264px;max-width:100%;margin:0 auto;padding:11px;border-radius:32px;
+    background:var(--char);box-shadow:0 20px 44px -22px rgba(28,26,23,.55);
+  }
+  .aparelho-tela{position:relative;border-radius:22px;overflow:hidden;background:var(--paper);aspect-ratio:9/17}
+  .aparelho-tela::before{
+    content:'';position:absolute;left:50%;top:7px;transform:translateX(-50%);
+    width:52px;height:5px;border-radius:3px;background:rgba(242,239,234,.35);z-index:2;
+  }
+  #expQuadro{width:100%;height:100%;border:0;display:block}
+
   /* ---- a seção acende ao chegar -----------------------------------------
      Uma brasa no rótulo, como se o pavio tivesse acendido aquela parte. Só
      DECORAÇÃO: se o observador nunca disparar, o rótulo fica como sempre foi. */
@@ -420,6 +454,35 @@
           </svg><span>contato</span>
         </div>
       </div>
+      <!-- EXPERIMENTE. Explicar que a peça guarda um recado é uma coisa; ver o
+           SEU recado dentro de um celular é outra. O quadro é um iframe da
+           página do convidado de verdade — não uma imitação dela, que
+           envelheceria em separado. -->
+      <div class="experimente">
+        <div class="exp-lado">
+          <p class="rot">Experimente</p>
+          <h3 class="exp-titulo">O que a sua peça diria?</h3>
+          <p class="exp-nota">Escreva e veja, ao lado, o que apareceria no celular
+             de quem encostasse nela.</p>
+          <label class="exp-rot" for="expTexto">Seu recado</label>
+          <textarea id="expTexto" rows="3" maxlength="160"
+                    placeholder="Que esta chama acompanhe vocês dois."></textarea>
+          <div class="exp-tipos" role="group" aria-label="tipo de conteúdo">
+            <button type="button" class="exp-tipo on" data-tipo="recado">Recado</button>
+            <button type="button" class="exp-tipo" data-tipo="wifi">Wi-fi</button>
+            <button type="button" class="exp-tipo" data-tipo="link">Link</button>
+          </div>
+          <a class="linkinho" href="/loja/">Quero uma peça assim →</a>
+        </div>
+
+        <div class="aparelho" aria-label="prévia da página da peça">
+          <div class="aparelho-tela">
+            <iframe id="expQuadro" title="prévia" loading="lazy"
+                    src="/p/?demo=recado&amp;sem=cert&amp;pv=1"></iframe>
+          </div>
+        </div>
+      </div>
+
       <div class="frisa">O gesso permanece. O conteúdo se renova.</div>
     </section>
 

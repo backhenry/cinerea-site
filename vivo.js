@@ -88,3 +88,54 @@
     if (sec) olho.observe(sec);
   });
 })();
+
+
+// O experimentador: o texto de quem visita aparece dentro do celular desenhado.
+//
+// O quadro é um iframe da PÁGINA DO CONVIDADO de verdade, e não uma imitação
+// dela — imitação envelheceria em separado, e a prévia passaria a mentir.
+//
+// Sai calado se o bloco não existir: a loja carrega o mesmo arquivo.
+(function () {
+  var campo = document.getElementById('expTexto');
+  var quadro = document.getElementById('expQuadro');
+  if (!campo || !quadro) return;
+
+  var botoes = [].slice.call(document.querySelectorAll('.exp-tipo'));
+  var tipo = 'recado';
+  var relogio = null;
+
+  // Cada tipo pede uma coisa diferente. O rótulo e o exemplo mudam junto, senão
+  // "Seu recado" ficaria pedindo uma senha de wi-fi.
+  var MOLDES = {
+    recado: { rot: 'Seu recado',        exemplo: 'Que esta chama acompanhe vocês dois.' },
+    wifi:   { rot: 'Nome da sua rede',  exemplo: 'Casa da Ana' },
+    link:   { rot: 'Seu endereço',      exemplo: 'https://open.spotify.com/playlist/…' },
+  };
+
+  function pintar() {
+    var texto = campo.value.trim() || MOLDES[tipo].exemplo;
+    // `encodeURIComponent` porque isto vai numa URL: sem ele, um `&` no texto
+    // do visitante viraria outro parâmetro.
+    quadro.src = '/p/?demo=' + tipo + '&sem=cert&pv=1&t=' + encodeURIComponent(texto);
+  }
+
+  // Espera a digitação parar. Sem isto, cada tecla recarregaria o iframe.
+  function agendar() {
+    clearTimeout(relogio);
+    relogio = setTimeout(pintar, 420);
+  }
+
+  campo.addEventListener('input', agendar);
+
+  botoes.forEach(function (b) {
+    b.addEventListener('click', function () {
+      tipo = b.dataset.tipo;
+      botoes.forEach(function (o) { o.classList.toggle('on', o === b); });
+      var molde = MOLDES[tipo];
+      document.querySelector('.exp-rot').textContent = molde.rot;
+      campo.placeholder = molde.exemplo;
+      pintar();
+    });
+  });
+})();
