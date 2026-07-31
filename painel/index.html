@@ -53,6 +53,28 @@
     .linkitem .rot{grid-area:r} .linkitem .url{grid-area:u}
   }
   .some{display:none}
+
+  /* Aparência: fechada por padrão. A maioria vai querer só trocar o conteúdo,
+     e um formulário de cor aberto no caminho de todo mundo é ruído. */
+  .aparencia{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+  .aparencia summary{cursor:pointer;font-size:14px;color:var(--ember);list-style:none}
+  .aparencia summary::-webkit-details-marker{display:none}
+  .aparencia summary::before{content:'▸ ';font-size:11px}
+  .aparencia[open] summary::before{content:'▾ '}
+  .cores{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .cores input[type=color]{width:52px;height:42px;padding:3px;flex:0 0 auto;cursor:pointer}
+  .cores input[type=text]{flex:1 1 110px;min-width:0;font-family:ui-monospace,monospace}
+
+  /* A prévia mostra a página do convidado em miniatura. Sem ela, escolher cor
+     é apostar: o resultado só apareceria depois de publicar numa peça real. */
+  .previa{
+    margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:20px;
+    display:flex;flex-direction:column;gap:9px;text-align:center;
+  }
+  .previa .p-marca{font-family:'Fraunces';font-size:15px;letter-spacing:.02em}
+  .previa .p-rot{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+  .previa .p-txt{font-family:'Fraunces';font-style:italic;font-size:16px;line-height:1.4}
+  .previa .p-bt{align-self:center;padding:9px 20px;border-radius:8px;font-size:13px;margin-top:4px}
 </style>
 </head>
 <body>
@@ -319,16 +341,183 @@ function pintarLista(){
   document.getElementById('sair').onclick = () => signOut(auth);
 }
 
+/* -------------------------------------------------------------- aparência --- */
+/**
+ * Cor, fundo e nome que o dono escolhe para a página dele.
+ *
+ * Nenhum destes campos vira endereço, então nada aqui pode virar link — o que
+ * mantém o filtro de esquema da página do convidado fora deste assunto.
+ *
+ * A ASSINATURA DA CINÉREA CONTINUA no rodapé da página, sempre. Personalizar a
+ * aparência é para a peça caber na identidade de quem comprou, não para apagar
+ * de onde ela veio: é a mesma assinatura que dá crédito à certidão logo acima.
+ */
+const ESTILO_PADRAO = { cor:'#B5462A', fundo:'claro', marca:'' };
+let estilo = { ...ESTILO_PADRAO };
+
+const HEX = /^#[0-9a-f]{6}$/i;
+
+/** Luminância relativa, para saber se a cor some no fundo escolhido. */
+function luz(hex){
+  const c = HEX.test(hex) ? hex.slice(1) : 'B5462A';
+  const v = [0,2,4].map(i => {
+    const x = parseInt(c.slice(i,i+2),16)/255;
+    return x <= .03928 ? x/12.92 : Math.pow((x+.055)/1.055, 2.4);
+  });
+  return .2126*v[0] + .7152*v[1] + .0722*v[2];
+}
+
+/** Razão de contraste entre a cor de destaque e o fundo. */
+function contraste(cor, fundo){
+  const lf = fundo === 'escuro' ? luz('#1C1A17') : luz('#F2EFEA');
+  const lc = luz(cor);
+  const [a,b] = lc > lf ? [lc,lf] : [lf,lc];
+  return (a + .05) / (b + .05);
+}
+
+function lerAparencia(){
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const cor = v('e_corTexto');
+  return {
+    cor: HEX.test(cor) ? cor.toUpperCase() : ESTILO_PADRAO.cor,
+    fundo: v('e_fundo') === 'escuro' ? 'escuro' : 'claro',
+    marca: v('e_marca').slice(0,40),
+  };
+}
+
+/** Pinta a prévia e avisa quando a cor escolhida some no fundo. */
+function pintarPrevia(){
+  const e = lerAparencia();
+  const box = document.getElementById('e_previa');
+  if (!box) return;
+  const escuro = e.fundo === 'escuro';
+  const papel = escuro ? '#1C1A17' : '#F2EFEA';
+  const tinta = escuro ? '#F2EFEA' : '#1C1A17';
+  box.style.background = papel;
+  box.style.color = tinta;
+  box.querySelector('.p-marca').textContent = e.marca || 'Cinérea';
+  box.querySelector('.p-rot').style.color = e.cor;
+  box.querySelector('.p-bt').style.background = e.cor;
+  // O texto do botão acompanha o fundo do botão, não o da página: cor clara
+  // pede letra escura, e vice-versa.
+  box.querySelector('.p-bt').style.color = luz(e.cor) > .45 ? '#1C1A17' : '#FFFFFF';
+
+  const r = contraste(e.cor, e.fundo);
+  const aviso = document.getElementById('e_contraste');
+  if (r < 3) {
+    aviso.textContent = `Essa cor quase some no fundo ${escuro ? 'escuro' : 'claro'}. `
+      + `Dá para publicar, mas quem encostar vai ler com dificuldade.`;
+    aviso.classList.remove('some');
+  } else aviso.classList.add('some');
+}
+
+function ligarAparencia(){
+  const cor = document.getElementById('e_cor');
+  const txt = document.getElementById('e_corTexto');
+  if (!cor) return;
+  cor.oninput = () => { txt.value = cor.value.toUpperCase(); pintarPrevia(); };
+  txt.oninput = () => { if (HEX.test(txt.value)) cor.value = txt.value; pintarPrevia(); };
+  document.getElementById('e_fundo').onchange = pintarPrevia;
+  document.getElementById('e_marca').oninput = pintarPrevia;
+  document.getElementById('e_padrao').onclick = ev => {
+    ev.preventDefault();
+    cor.value = ESTILO_PADRAO.cor; txt.value = ESTILO_PADRAO.cor;
+    document.getElementById('e_fundo').value = 'claro';
+    document.getElementById('e_marca').value = '';
+    pintarPrevia();
+  };
+  pintarPrevia();
+}
+
 /* ---------------------------------------------------------------- editor --- */
 let itens = [];   // só do tipo "Meus links"
 
-function pintarEditor(i){
-  const p = pecas[i];
-  const tipoAtual = p.conteudoAtual?.tipo && TIPOS[p.conteudoAtual.tipo] ? p.conteudoAtual.tipo : 'link';
-  itens = [{rotulo:'',url:'',icone:'instagram'}];
+/**
+ * Traz de volta o que já está publicado, para o formulário nascer preenchido.
+ *
+ * A FONTE É A VITRINE, e não `conteudoAtual` da peça. O documento da peça guarda
+ * um RESUMO (`resumir()`), que para "Meus links" vira "3 endereços" e não tem
+ * como virar formulário de volta. A vitrine guarda o que foi publicado de
+ * verdade, inclusive a lista inteira e a senha do wi-fi separada do nome da rede.
+ *
+ * Dois tipos precisam do caminho de volta, porque o que foi publicado é o
+ * ENDEREÇO montado e não o que o dono digitou. A conta é determinística, e tem
+ * teste de ida e volta: montar a URL e desmontar tem de devolver o mesmo.
+ */
+function doPublicado(v){
+  if (!v || !TIPOS[v.tipo]) return null;
+  const d = String(v.dados || '');
+  switch (v.tipo){
+    case 'link': case 'playlist':
+      return { tipo: v.tipo, url: d };
+    case 'whatsapp': {
+      // https://wa.me/12991234567?text=Oi%20tudo%20bem
+      const m = d.match(/wa\.me\/(\d+)(?:\?text=(.*))?$/);
+      if (!m) return { tipo: 'whatsapp', telefone: d, recado: '' };
+      let recado = '';
+      try { recado = m[2] ? decodeURIComponent(m[2]) : ''; } catch { recado = ''; }
+      return { tipo: 'whatsapp', telefone: m[1], recado };
+    }
+    case 'local': {
+      const m = d.match(/[?&]q=([^&]*)/);
+      let endereco = d;
+      if (m) { try { endereco = decodeURIComponent(m[1]); } catch { endereco = m[1]; } }
+      return { tipo: 'local', endereco };
+    }
+    case 'wifi':
+      return { tipo: 'wifi', rede: d, senha: String(v.senha || '') };
+    case 'recado':
+      return { tipo: 'recado', texto: d };
+    case 'contato': {
+      // `nome · telefone`, como o app publica. Sem o separador, é só o nome.
+      const [nome, ...resto] = d.split(' · ');
+      return { tipo: 'contato', nome, telefone: resto.join(' · ') };
+    }
+    case 'links':
+      return { tipo: 'links', titulo: v.titulo || 'Meus links',
+               itens: Array.isArray(v.itens) ? v.itens.map(l => ({
+                 rotulo: l.rotulo || '', url: l.url || '',
+                 icone: ICONES.includes(l.icone) ? l.icone : 'site' })) : [] };
+  }
+  return null;
+}
 
+/** Põe no formulário o que voltou do publicado. */
+function preencher(c){
+  if (!c) return;
+  const põe = (id, val) => { const e = document.getElementById(id); if (e) e.value = val ?? ''; };
+  põe('f_url', c.url); põe('f_tel', c.telefone); põe('f_msg', c.recado);
+  põe('f_end', c.endereco); põe('f_rede', c.rede); põe('f_senha', c.senha);
+  põe('f_texto', c.texto); põe('f_nome', c.nome); põe('f_titulo', c.titulo);
+}
+
+async function pintarEditor(i){
+  const p = pecas[i];
   document.getElementById('titulo').textContent = p.nome || 'Peça';
   document.getElementById('chamada').textContent = 'O que ela vai dizer a partir de agora.';
+  tela.innerHTML = '<p class="vazio">buscando o que está publicado…</p>';
+
+  // Lê o publicado ANTES de desenhar o formulário: nascer vazio e preencher
+  // depois faria o campo piscar, e num campo de texto isso apaga o que a pessoa
+  // já tiver começado a digitar.
+  let publicado = null;
+  estilo = { ...ESTILO_PADRAO };
+  try {
+    const d = await getDoc(doc(fdb,'vitrines',p.tagUid));
+    if (d.exists()){
+      publicado = doPublicado(d.data());
+      const e = d.data().estilo;
+      if (e) estilo = { cor: e.cor || ESTILO_PADRAO.cor,
+                        fundo: e.fundo === 'escuro' ? 'escuro' : 'claro',
+                        marca: e.marca || '' };
+    }
+  } catch(e){ console.error(e); }
+
+  const tipoAtual = publicado?.tipo
+    || (p.conteudoAtual?.tipo && TIPOS[p.conteudoAtual.tipo] ? p.conteudoAtual.tipo : 'link');
+  itens = publicado?.tipo === 'links' && publicado.itens.length
+    ? publicado.itens
+    : [{rotulo:'',url:'',icone:'instagram'}];
 
   tela.innerHTML = `<div class="cartao">
     <label>Tipo de conteúdo</label>
@@ -336,6 +525,35 @@ function pintarEditor(i){
       `<option value="${k}" ${k===tipoAtual?'selected':''}>${esc(v.nome)}</option>`).join('')}</select>
     <p class="sub" id="explica" style="margin-top:8px"></p>
     <div id="campos"></div>
+
+    <details class="aparencia">
+      <summary>Aparência da página</summary>
+      <label>Nome no topo</label>
+      <input id="e_marca" maxlength="40" placeholder="Cinérea" value="${esc(estilo.marca || '')}">
+      <p class="sub">Quem encostar vê este nome. Em branco, aparece Cinérea.</p>
+
+      <label>Cor de destaque</label>
+      <div class="cores">
+        <input id="e_cor" type="color" value="${esc(estilo.cor || '#B5462A')}">
+        <input id="e_corTexto" maxlength="7" value="${esc(estilo.cor || '#B5462A')}" spellcheck="false">
+        <button class="btfrouxo" id="e_padrao">voltar ao padrão</button>
+      </div>
+
+      <label>Fundo</label>
+      <select id="e_fundo">
+        <option value="claro"  ${estilo.fundo !== 'escuro' ? 'selected' : ''}>Claro</option>
+        <option value="escuro" ${estilo.fundo === 'escuro' ? 'selected' : ''}>Escuro</option>
+      </select>
+
+      <div class="erro some" id="e_contraste"></div>
+      <div class="previa" id="e_previa">
+        <span class="p-marca"></span>
+        <span class="p-rot">Recado</span>
+        <span class="p-txt">Assim fica a página de quem encostar na peça.</span>
+        <span class="p-bt">Um botão</span>
+      </div>
+    </details>
+
     <div class="erro some" id="erroEditor"></div>
     <div class="botoes">
       <button class="bt" id="publicar">Publicar na peça</button>
@@ -348,11 +566,16 @@ function pintarEditor(i){
   </div>`;
 
   const sel = document.getElementById('tipo');
+  // Trocar de tipo NÃO reaproveita o preenchido: os campos de "recado" e de
+  // "lugar" não são os mesmos, e herdar texto de um no outro confunde mais do
+  // que ajuda. Só o tipo que já estava publicado nasce cheio.
   sel.onchange = () => pintarCampos(sel.value);
   document.getElementById('voltar').onclick = pintarLista;
   document.getElementById('publicar').onclick = () => publicar(i);
   document.getElementById('mudo').onclick = () => emudecer(i);
   pintarCampos(tipoAtual);
+  preencher(publicado);
+  ligarAparencia();
 }
 
 function pintarCampos(tipo){
@@ -454,6 +677,16 @@ async function publicar(i){
       dados: c.tipo === 'wifi' ? c.rede : (endereco ?? resumir(c)),
       atualizadoEm: serverTimestamp(),
     };
+    // A aparência só entra no documento quando é diferente do padrão: gravar
+    // "#B5462A, claro, sem nome" em toda peça seria sujar o documento para
+    // dizer exatamente nada.
+    const ap = lerAparencia();
+    const proprio = {};
+    if (ap.cor !== ESTILO_PADRAO.cor) proprio.cor = ap.cor;
+    if (ap.fundo !== 'claro') proprio.fundo = ap.fundo;
+    if (ap.marca) proprio.marca = ap.marca;
+    if (Object.keys(proprio).length) publico.estilo = proprio;
+
     if (c.tipo === 'wifi') publico.senha = c.senha;
     if (c.tipo === 'links'){
       publico.titulo = (c.titulo || 'Meus links').slice(0,40);

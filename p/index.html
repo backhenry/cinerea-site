@@ -122,6 +122,15 @@
   .caminho:hover{border-color:var(--ember);color:var(--ember)}
   .caminho .sub{display:block;font-size:12px;font-weight:400;color:var(--smoke);margin-top:3px}
 
+  /* O nome de quem é a peça, logo abaixo da marca. */
+  .donome{
+    margin-top:14px;font-family:'Fraunces';font-weight:400;
+    font-size:clamp(17px,4.6vw,21px);line-height:1.2;letter-spacing:.01em;
+  }
+  /* Quando o dono escolhe uma cor, o rótulo do conteúdo a assume. É o pedaço de
+     texto mais visível do cartão, e o que faz a escolha dele se ver. */
+  .conteudo .rot{color:var(--acento-rot,var(--smoke))}
+
   .assinatura{margin-top:34px;font-size:12px;color:var(--smoke)}
   .assinatura a{color:var(--smoke)}
   .assinatura a.loja{color:var(--ember)}
@@ -139,7 +148,7 @@
 <main class="tudo">
   <svg class="marca" viewBox="0 0 150 150" fill="none" aria-hidden="true">
     <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/>
-    <circle cx="112" cy="75" r="11" fill="#B5462A"/>
+    <circle cx="112" cy="75" r="11" fill="var(--ember)"/>
   </svg>
   <div id="corpo"><p class="carregando" style="margin-top:28px">abrindo a peça…</p></div>
   <p class="assinatura">
@@ -228,6 +237,52 @@ const SIMBOLOS = {
   loja:      `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9.5V19a1.5 1.5 0 0 0 1.5 1.5h12A1.5 1.5 0 0 0 19.5 19V9.5" ${S}/><path d="M3 9.5 5 4h14l2 5.5Z" ${S}/><path d="M9.5 20.5V14h5v6.5" ${S}/></svg>`,
 };
 
+/**
+ * A aparência que o dono escolheu.
+ *
+ * Aplicada por VARIÁVEL CSS, e não por regra nova: o `--ember` e o par
+ * paper/char já mandam na página inteira, então trocar os três valores veste
+ * tudo de uma vez, sem uma segunda folha de estilo para manter em dia.
+ *
+ * O `estilo` chega da vitrine, escrito pelo dono. Nada aqui vira endereço, mas
+ * uma cor inválida quebraria o CSS calado — daí o filtro de `#rrggbb`.
+ *
+ * A ASSINATURA DA CINÉREA CONTINUA no rodapé, sempre. Personalizar é para a
+ * peça caber na identidade de quem comprou, não para apagar de onde ela veio:
+ * é a mesma assinatura que dá crédito à certidão logo acima dela.
+ */
+function vestir(estilo){
+  if (!estilo) return;
+  const raiz = document.documentElement.style;
+  const hex = /^#[0-9a-f]{6}$/i;
+  if (hex.test(estilo.cor || '')) raiz.setProperty('--ember', estilo.cor);
+  if (estilo.fundo === 'escuro'){
+    // Os mesmos valores do modo escuro que a página já tinha: escolher "escuro"
+    // é fixar aquele tema, e não inventar um terceiro.
+    raiz.setProperty('--paper','#141311'); raiz.setProperty('--ash','#1F1D1A');
+    raiz.setProperty('--char','#F0EDE7');  raiz.setProperty('--smoke','#9A938A');
+    raiz.setProperty('--line','#312D28');
+    raiz.setProperty('--surface','rgba(255,255,255,.04)');
+    raiz.setProperty('--shadow','rgba(0,0,0,.4)');
+  } else if (estilo.fundo === 'claro'){
+    raiz.setProperty('--paper','#F2EFEA'); raiz.setProperty('--ash','#E7E3DC');
+    raiz.setProperty('--char','#1C1A17');  raiz.setProperty('--smoke','#6E6862');
+    raiz.setProperty('--line','#D8D2C8');
+    raiz.setProperty('--surface','rgba(255,255,255,.55)');
+    raiz.setProperty('--shadow','rgba(28,26,23,.07)');
+  }
+  // O nome é identidade, então fica no ALTO, junto da marca — e não no pé, onde
+  // eu havia posto primeiro e ele virava rodapé de rodapé.
+  if (estilo.marca){
+    const logo = document.querySelector('svg.marca');
+    if (logo) logo.insertAdjacentHTML('afterend',
+      `<p class="donome">${esc(String(estilo.marca).slice(0,40))}</p>`);
+  }
+  // A cor de destaque precisa APARECER. Numa peça de recado não há botão, e o
+  // acento ficava só nas aspas: a pessoa escolhia a cor dela e não via nada.
+  if (hex.test(estilo.cor || '')) raiz.setProperty('--acento-rot', estilo.cor);
+}
+
 function mostrar(v, cert){
   let bloco = '';
   if (!v) {
@@ -304,6 +359,7 @@ function mostrar(v, cert){
   // `?pv=1` é a prévia da página inicial: mostra só o conteúdo. Os caminhos para
   // a loja não cabem num celular desenhado de 264px, e ali não são o assunto.
   const previa = new URLSearchParams(location.search).get('pv') === '1';
+  vestir(v && v.estilo);
   corpo.innerHTML = `<div class="conteudo surge">${bloco}</div>${selo}${previa ? '' : caminhos}`;
   if (previa) document.querySelector('.assinatura')?.remove();
   // Para a brasa da marca parar de piscar: a peça já abriu.
