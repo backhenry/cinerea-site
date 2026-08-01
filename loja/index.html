@@ -391,6 +391,10 @@ async function carregar(){
   const d = snap.docs[0]?.data();
   produtos = (d?.itens||[]).map((p,i)=>({
     id:String(p.id??i), nome:p.nome||'Peça', preco:Number(p.preco)||0, foto:p.foto||'',
+    // A SEGUNDA FOTO PRECISA ESTAR AQUI. Este mapa é uma lista explícita de
+    // campos, então campo novo que a gestão publique e não apareça nesta
+    // linha é simplesmente descartado — sem erro, sem aviso.
+    foto2:p.foto2||'',
     linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
     desc:p.desc||'', longa:p.longa||'', ficha:lerFicha(p.ficha),
     colecao:p.colecao||'', destaque:!!p.destaque, pronto:Number(p.pronto)||0,
