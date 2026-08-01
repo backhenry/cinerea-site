@@ -77,6 +77,30 @@
   .buscar{margin:26px 0 6px;display:flex;justify-content:center}
   .buscar input{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-family:'Inter';font-size:14.5px;color:var(--char)}
   .buscar input:focus{outline:none;border-color:var(--char)}
+  /* Controles de ordenação e filtro. Rolam de lado no celular, como os chips
+     de coleção: quebrar em duas linhas empurra a vitrine para baixo da dobra. */
+  .controles{
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;
+    margin:16px 0 4px;
+  }
+  .ctrl{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--smoke)}
+  .ctrl select{
+    padding:8px 12px;border:1px solid var(--line);border-radius:20px;background:var(--paper);
+    font-family:'Inter';font-size:12.5px;color:var(--char);cursor:pointer;
+  }
+  .ctrl select:focus{outline:none;border-color:var(--ember)}
+  .marca-ctrl{
+    padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;
+    font-family:'Inter';font-size:12.5px;color:var(--smoke);cursor:pointer;transition:.15s;
+  }
+  .marca-ctrl:hover{border-color:var(--ember);color:var(--ember)}
+  .marca-ctrl.on{background:var(--char);border-color:var(--char);color:var(--paper)}
+  .btfrouxo{background:none;border:none;color:var(--smoke);text-decoration:underline;
+            cursor:pointer;font-size:12.5px;font-family:'Inter'}
+  .btfrouxo:hover{color:var(--ember)}
+  .contagem{text-align:center;font-size:12.5px;color:var(--smoke);margin:10px 0 0;min-height:1.2em}
+  .some{display:none}
+
   .secao{margin-bottom:56px;scroll-margin-top:80px}
   .secao-nome{font-family:'Fraunces';font-weight:300;font-size:27px;margin-bottom:6px}
   .secao-desc{color:var(--smoke);font-size:14.5px;max-width:60ch;margin-bottom:26px}
@@ -147,6 +171,12 @@
     padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;font-weight:500;
   }
   .sacola-bt .n.vazia{display:none}
+  /* No celular o botão fica só com o símbolo e o contador. A palavra "Sacola"
+     custava 43px num cabeçalho que já não fechava a conta. */
+  @media(max-width:560px){
+    .sacola-bt .rot-sacola{display:none}
+    .sacola-bt{padding:8px 12px}
+  }
   /* O retorno de "entrou na sacola": o botão pulsa uma vez. Movimento de um
      botão, e não da loja inteira. */
   .sacola-bt.pulsa{animation:pulsaSacola .5s ease}
@@ -247,8 +277,23 @@
 
 <div class="envolve">
   <div class="buscar">
-    <input id="busca" type="search" placeholder="Buscar uma peça" oninput="filtrarTexto(this.value)" autocomplete="off">
+    <input id="busca" type="search" placeholder="Buscar por nome, coleção ou material" oninput="filtrarTexto(this.value)" autocomplete="off">
   </div>
+  <div class="controles">
+    <label class="ctrl">
+      <span>Ordenar</span>
+      <select id="ordem" onchange="ordenarPor(this.value)">
+        <option value="vitrine">Como na vitrine</option>
+        <option value="nomeAZ">Nome (A–Z)</option>
+        <option value="precoAsc">Preço: menor primeiro</option>
+        <option value="precoDesc">Preço: maior primeiro</option>
+      </select>
+    </label>
+    <button class="marca-ctrl" id="btEstoque" onclick="alternarEstoque()">Pronta entrega</button>
+    <button class="marca-ctrl" id="btBreve" onclick="alternarBreve()">Esconder “em breve”</button>
+    <button class="btfrouxo some" id="btLimpar" onclick="limparFiltros()">limpar filtros</button>
+  </div>
+  <p class="contagem" id="contagem"></p>
 </div>
 
 <div class="envolve">
@@ -289,6 +334,7 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='', banner=null;
+let ordem='vitrine', soEstoque=false, semBreve=false, termoCru='';
 const sacola={};   // id -> qtd
 
 /**
@@ -345,22 +391,87 @@ function pintar(){
     ? `<button class="${!linhaAtiva?'on':''}" onclick="filtrar(null)">Tudo</button>`+
       linhas.map(l=>`<button class="${linhaAtiva===l?'on':''}" onclick="filtrar('${esc(l)}')">${esc(l)}</button>`).join('')
     : '';
-  // A busca corre nome, frase curta e coleção — é o que a pessoa lembra.
-  const casa = p => !termo || [p.nome,p.desc,p.linha].join(' ').toLowerCase().includes(termo);
-  const secoes = colecoes.length
-    ? colecoes.filter(c=>!linhaAtiva||c.nome===linhaAtiva)
-    : [{id:'', nome:'', desc:''}];
-  const html = secoes.map(c=>{
-    const itens = produtos.filter(p=> (colecoes.length ? p.colecao===c.id : true) && casa(p));
-    if(!itens.length) return '';
-    return `<section class="secao">
-      ${c.nome?`<h2 class="secao-nome">${esc(c.nome)}</h2>`:''}
-      ${c.desc?`<p class="secao-desc">${esc(c.desc)}</p>`:''}
-      <div class="grade">${itens.map(cartao).join('')}</div>
-    </section>`;
-  }).join('');
-  document.getElementById('grade').outerHTML = `<div id="grade">${html||(termo?`<p class="vazio">Nada encontrado para “${esc(termo)}”.</p>`:'<p class="vazio">A vitrine está sendo montada.</p>')}</div>`;
+  // A busca corre nome, frase curta, descrição longa, coleção e ficha técnica —
+  // é onde estão as palavras que a pessoa lembra ("gesso", "busto", "22 cm").
+  const casa = p => !termo || limpar(
+    [p.nome, p.desc, p.longa, p.linha, (p.ficha||[]).map(l=>l.join(' ')).join(' ')].join(' ')
+  ).includes(termo);
+
+  // "Pronta entrega" exige estoque E estar à venda. Peça "em breve" com estoque
+  // registrado não é pronta entrega: ela nem entra na sacola, e mostrá-la aqui
+  // prometeria o que a loja recusa no clique seguinte.
+  const passa = p => casa(p)
+    && (!soEstoque || (Number(p.pronto) > 0 && p.situacao !== 'embreve'))
+    && (!semBreve  || p.situacao !== 'embreve');
+
+  // A ordenação é aplicada DENTRO de cada coleção, não sobre a vitrine inteira.
+  // Ordenar por preço atravessando as seções misturaria refil com escultura, e
+  // a divisão por coleção é justamente o que a loja usa para se explicar.
+  const ordenar = itens => {
+    const c = itens.slice();
+    if(ordem === 'nomeAZ')    c.sort((a,b) => a.nome.localeCompare(b.nome,'pt-BR'));
+    if(ordem === 'precoAsc')  c.sort((a,b) => (a.preco||0) - (b.preco||0));
+    if(ordem === 'precoDesc') c.sort((a,b) => (b.preco||0) - (a.preco||0));
+    return c;   // 'vitrine' mantém a ordem que a gestão publicou
+  };
+
+  // ESCOLHER UMA ORDEM DESFAZ AS SEÇÕES, e é o que a pessoa espera: "preço
+  // menor primeiro" é um pedido sobre a loja inteira, não sobre cada coleção
+  // separadamente. Ordenando dentro das seções, com uma peça em cada, a escolha
+  // não mudava nada na tela — medido, e foi assim que este caso apareceu.
+  let achados = 0, html;
+  if(ordem !== 'vitrine'){
+    const itens = ordenar(produtos.filter(p =>
+      (!linhaAtiva || colecoes.some(c => c.nome === linhaAtiva && c.id === p.colecao)) && passa(p)));
+    achados = itens.length;
+    html = itens.length
+      ? `<section class="secao"><div class="grade">${itens.map(cartao).join('')}</div></section>` : '';
+  } else {
+    const secoes = colecoes.length
+      ? colecoes.filter(c=>!linhaAtiva||c.nome===linhaAtiva)
+      : [{id:'', nome:'', desc:''}];
+    html = secoes.map(c=>{
+      const itens = produtos.filter(p=> (colecoes.length ? p.colecao===c.id : true) && passa(p));
+      if(!itens.length) return '';
+      achados += itens.length;
+      return `<section class="secao">
+        ${c.nome?`<h2 class="secao-nome">${esc(c.nome)}</h2>`:''}
+        ${c.desc?`<p class="secao-desc">${esc(c.desc)}</p>`:''}
+        <div class="grade">${itens.map(cartao).join('')}</div>
+      </section>`;
+    }).join('');
+  }
+
+  document.getElementById('grade').outerHTML =
+    `<div id="grade">${html || `<p class="vazio">${esc(nadaEncontrado())}</p>`}</div>`;
+
+  // Os controles mostram o que está ligado, e o contador só aparece quando há
+  // filtro: numa vitrine inteira, "12 peças" é ruído.
+  const filtrando = !!(termo || linhaAtiva || soEstoque || semBreve || ordem !== 'vitrine');
+  document.getElementById('btEstoque').classList.toggle('on', soEstoque);
+  document.getElementById('btBreve').classList.toggle('on', semBreve);
+  document.getElementById('btLimpar').classList.toggle('some', !filtrando);
+  document.getElementById('contagem').textContent =
+    filtrando && achados ? `${achados} peça${achados>1?'s':''}` : '';
+
   pintarBarra();
+}
+
+/**
+ * O vazio precisa dizer QUAL filtro escondeu tudo.
+ *
+ * "Nada encontrado" faz a pessoa achar que a loja não tem o que ela quer,
+ * quando na verdade ela mesma ligou "pronta entrega" três cliques atrás.
+ */
+function nadaEncontrado(){
+  if(!produtos.length) return 'A vitrine está sendo montada.';
+  const motivos = [];
+  if(termo)      motivos.push('a busca por “' + termoCru + '”');
+  if(linhaAtiva) motivos.push('a coleção ' + linhaAtiva);
+  if(soEstoque)  motivos.push('pronta entrega');
+  if(semBreve)   motivos.push('esconder as peças em breve');
+  if(!motivos.length) return 'Nada por aqui.';
+  return 'Nada com ' + motivos.join(' e ') + '. Toque em “limpar filtros” para ver tudo.';
 }
 
 /**
@@ -561,7 +672,27 @@ window.usarCupom = async () => {
 };
 
 window.filtrar = l => { linhaAtiva=l; pintar(); };
-window.filtrarTexto = t => { termo=String(t||'').trim().toLowerCase(); pintar(); };
+window.filtrarTexto = t => { termoCru = String(t||'').trim(); termo = limpar(t); pintar(); };
+window.ordenarPor = o => { ordem = o; pintar(); };
+window.alternarEstoque = () => { soEstoque = !soEstoque; pintar(); };
+window.alternarBreve = () => { semBreve = !semBreve; pintar(); };
+window.limparFiltros = () => {
+  termo = ''; termoCru = ''; linhaAtiva = null; ordem = 'vitrine'; soEstoque = false; semBreve = false;
+  document.getElementById('busca').value = '';
+  document.getElementById('ordem').value = 'vitrine';
+  pintar();
+};
+
+/**
+ * Busca sem acento e sem caixa.
+ *
+ * Quem procura "ceramica" tem de achar "cerâmica", e quem digita "AFRODITE"
+ * tem de achar "Afrodite". Sem isto a busca falha justamente nos nomes que a
+ * marca usa, que são acentuados quase todos.
+ */
+function limpar(t){
+  return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
 
 window.abrirFicha = id => {
   const p=produtos.find(x=>x.id===id); if(!p)return;

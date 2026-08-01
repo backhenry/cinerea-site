@@ -11,7 +11,15 @@ a{color:inherit}
 .topo .marca{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
 .topo .marca svg{width:26px;height:26px}
 .topo .marca span{font-family:'Fraunces';font-size:19px}
-.topo nav{display:flex;gap:16px;margin-left:auto;align-items:center}
+/* O menu ROLA DE LADO quando não cabe, em vez de empurrar o cabeçalho para
+   fora da tela. Passou a importar quando "Meu perfil" virou o quinto item: na
+   loja, que ainda tem o botão da sacola, o cabeçalho media 485px numa tela de
+   375 e a página inteira ganhava rolagem horizontal. */
+.topo nav{
+  display:flex;gap:16px;margin-left:auto;align-items:center;
+  overflow-x:auto;min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.topo nav::-webkit-scrollbar{display:none}
 .topo nav a{text-decoration:none;font-size:14px;color:var(--smoke);white-space:nowrap}
 .topo nav a:hover,.topo nav a.aqui{color:var(--char)}
 @media(max-width:620px){
