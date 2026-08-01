@@ -16,7 +16,26 @@
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
-  .capa{text-align:center;padding:78px 22px 66px}
+  .capa{text-align:center;padding:78px 22px 66px;position:relative;isolation:isolate}
+  /* O vídeo cobre a capa inteira, atrás de tudo. `object-fit:cover` porque a
+     proporção da tela nunca é a do arquivo, e distorcer rosto de escultura é
+     pior que cortar. */
+  .capa-video,.capa-veu{
+    position:absolute;inset:0;width:100%;height:100%;z-index:-1;
+    opacity:0;transition:opacity .8s ease;pointer-events:none;
+  }
+  .capa-video{object-fit:cover}
+  /* O véu garante a leitura sobre qualquer quadro do vídeo. Sem ele, a
+     legibilidade fica refém do que estiver passando na tela naquele segundo. */
+  .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.42),rgba(20,19,17,.68))}
+  .capa.com-video .capa-video,.capa.com-video .capa-veu{opacity:1}
+  .capa.com-video{color:#fff}
+  .capa.com-video h1,.capa.com-video .lema,.capa.com-video p{color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.4)}
+  .capa.com-video .lema{opacity:.92}
+  .capa.com-video .selo{filter:drop-shadow(0 1px 10px rgba(0,0,0,.45))}
+  .capa.com-video .selo path{stroke:#fff}
+  .capa.com-video .bt2{color:#fff;border-color:rgba(255,255,255,.55)}
+  .capa.com-video .bt2:hover{border-color:#fff;color:#fff}
   .capa svg{width:58px;height:58px;overflow:visible}
   /* Compassos diferentes de propósito: em fase, os dois pareceriam um pisca-pisca.
      A aura respira devagar; a brasa varia pouco, só o bastante para não parecer
@@ -234,12 +253,35 @@
     <a href="/aplicacoes/">Aplicações</a>
     <a href="/loja/">Loja</a>
     <a href="/contato/">Contato</a>
-    <a href="/perfil/">Meu perfil</a>
   </nav>
+  <div class="topo-acoes">
+    <a href="https://wa.me/5511958280174" target="_blank" rel="noopener"
+       aria-label="Falar no WhatsApp" title="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M20 12a8 8 0 1 1-3.4-6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M20 4v4.2h-4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4.6 19.4 6 15.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+    </a>
+    <a href="/perfil/" aria-label="Meu perfil" title="Meu perfil">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M4.8 20c.6-3.6 3.6-6 7.2-6s6.6 2.4 7.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span class="rot-acao">Perfil</span>
+    </a>
+  </div>
 </div></header>
 
 <main>
-  <section class="capa">
+  <section class="capa" id="capa">
+    <!-- O VÍDEO É OPCIONAL E SÓ APARECE QUANDO CARREGA.
+         Se o arquivo não existir, ou a rede for ruim, ou a pessoa pedir menos
+         movimento, esta capa continua exatamente como sempre foi. É a mesma
+         regra das animações daqui: efeito nenhum pode esconder o conteúdo. -->
+    <video class="capa-video" id="capaVideo" muted loop playsinline preload="metadata"
+           poster="/capa.jpg" aria-hidden="true" tabindex="-1"></video>
+    <div class="capa-veu" aria-hidden="true"></div>
     <!-- A marca da capa acende. Nenhum desenho novo: o ponto de brasa do logo
          já era fogo, só nunca tinha queimado. É o gesto mais contido possível
          aqui — a primeira tela precisa de presença, não de espetáculo. -->

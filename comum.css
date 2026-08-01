@@ -7,7 +7,22 @@ a{color:inherit}
 
 /* ---- cabeçalho ---- */
 .topo{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
-.topo-in{max-width:1000px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:18px}
+/* TRÊS COLUNAS, e não flex com margem automática. Com `margin-left:auto` o
+   menu encostava à direita nas páginas sem botão de sacola e ficava no meio na
+   loja — a mesma barra parecia duas. Em grade, a coluna do meio é o centro da
+   página, tenha ou não algo à direita. */
+.topo-in{
+  max-width:1000px;margin:0 auto;padding:14px 22px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;
+}
+.topo-acoes{display:flex;align-items:center;gap:12px;justify-self:end}
+.topo-acoes a,.topo-acoes button{
+  display:flex;align-items:center;gap:7px;color:var(--smoke);text-decoration:none;
+  background:none;border:none;padding:0;cursor:pointer;font-family:'Inter';font-size:13.5px;
+  transition:color .15s ease;
+}
+.topo-acoes a:hover,.topo-acoes button:hover,.topo-acoes a.aqui{color:var(--ember)}
+.topo-acoes svg{width:20px;height:20px;flex:0 0 auto}
 .topo .marca{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
 .topo .marca svg{width:26px;height:26px}
 .topo .marca span{font-family:'Fraunces';font-size:19px}
@@ -16,7 +31,7 @@ a{color:inherit}
    loja, que ainda tem o botão da sacola, o cabeçalho media 485px numa tela de
    375 e a página inteira ganhava rolagem horizontal. */
 .topo nav{
-  display:flex;gap:16px;margin-left:auto;align-items:center;
+  display:flex;gap:16px;align-items:center;justify-content:center;
   overflow-x:auto;min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .topo nav::-webkit-scrollbar{display:none}
@@ -24,6 +39,8 @@ a{color:inherit}
 .topo nav a:hover,.topo nav a.aqui{color:var(--char)}
 @media(max-width:620px){
   .topo .marca span{display:none}
+  .topo-acoes .rot-acao{display:none}
+  .topo-acoes{gap:10px}
   .topo-in{gap:10px;padding:12px 16px}
   .topo nav{gap:12px}
   .topo nav a{font-size:13px}

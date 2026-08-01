@@ -139,3 +139,55 @@
     });
   });
 })();
+
+
+/**
+ * O vídeo da capa, quando existir.
+ *
+ * Ele NÃO vem no HTML com `src`: quem põe o endereço é este script, e só depois
+ * de o navegador dizer que consegue tocar. Assim, arquivo ausente, rede ruim ou
+ * formato não suportado deixam a capa exatamente como ela é hoje — em vez de um
+ * retângulo preto no lugar da primeira coisa que a pessoa vê.
+ *
+ * PARA PUBLICAR UM VÍDEO: ponha `capa.mp4` na raiz do site (e, se quiser,
+ * `capa.jpg` com o primeiro quadro). Nada mais precisa mudar.
+ *
+ *   formato   MP4, H.264, sem áudio (o laço toca mudo de qualquer jeito)
+ *   tamanho   1920×1080 ou 1600×900, deitado
+ *   duração   6 a 12 segundos, em laço, sem corte brusco no fim
+ *   peso      até ~4 MB — ele baixa para TODO visitante da página inicial
+ *   conteúdo  o texto fica no meio e por cima; deixe o centro calmo, e conte
+ *             que as bordas somem no celular
+ *
+ * Ele fica no repositório, servido pelo GitHub Pages, e não no Cloud Storage:
+ * aqui a banda é de graça, lá seria conta no fim do mês.
+ */
+(function () {
+  var v = document.getElementById('capaVideo');
+  var capa = document.getElementById('capa');
+  if (!v || !capa) return;
+
+  // Quem pediu menos movimento não recebe vídeo nenhum. O pôster também não
+  // entra: sem o vídeo tocando, ele seria só uma foto escura sem propósito.
+  var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (quieto) return;
+
+  // `saveData` é a pessoa dizendo ao navegador que está economizando dados.
+  // Um laço de vídeo na capa é exatamente o que ela não quer baixar.
+  var con = navigator.connection;
+  if (con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
+
+  v.addEventListener('canplay', function () {
+    capa.classList.add('com-video');
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {
+      // Autoplay recusado pelo navegador: tira o vídeo de cena em vez de deixar
+      // um quadro congelado passando por decisão de design.
+      capa.classList.remove('com-video');
+    });
+  }, { once: true });
+
+  v.addEventListener('error', function () { capa.classList.remove('com-video'); });
+
+  v.src = '/capa.mp4';
+})();
