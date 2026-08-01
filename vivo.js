@@ -177,17 +177,40 @@
   var con = navigator.connection;
   if (con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
 
-  v.addEventListener('canplay', function () {
+  // NÃO ESPERAR SÓ POR `canplay`. Com `preload="metadata"` o navegador baixa só
+  // o cabeçalho, e `canplay` exige dados suficientes para tocar — vários
+  // navegadores não bufferizam isso sem uma tentativa de reprodução, e o evento
+  // simplesmente nunca chega. O vídeo ficava invisível sem erro nenhum.
+  //
+  // Agora: pede para tocar assim que houver o primeiro quadro, e revela no
+  // primeiro dos três eventos que chegar. Mudo + `playsinline` é o que os
+  // navegadores permitem tocar sozinho.
+  var revelado = false;
+  function revelar() {
+    if (revelado) return;
+    revelado = true;
     capa.classList.add('com-video');
-    var p = v.play();
-    if (p && p.catch) p.catch(function () {
-      // Autoplay recusado pelo navegador: tira o vídeo de cena em vez de deixar
-      // um quadro congelado passando por decisão de design.
-      capa.classList.remove('com-video');
-    });
-  }, { once: true });
+  }
 
-  v.addEventListener('error', function () { capa.classList.remove('com-video'); });
+  ['loadeddata', 'canplay', 'playing'].forEach(function (ev) {
+    v.addEventListener(ev, function () {
+      revelar();
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {
+        // Autoplay recusado de verdade: tira o vídeo de cena em vez de deixar
+        // um quadro congelado passando por decisão de design.
+        capa.classList.remove('com-video');
+        revelado = false;
+      });
+    });
+  });
+
+  v.addEventListener('error', function () {
+    capa.classList.remove('com-video');
+  });
 
   v.src = '/capa.mp4';
+  // `load()` explícito: sem ele, mudar o `src` depois do parse não recomeça o
+  // carregamento em todos os navegadores.
+  v.load();
 })();
