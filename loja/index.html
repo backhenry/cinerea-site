@@ -117,6 +117,34 @@
   .moldura img{width:100%;height:100%;object-fit:cover;display:block;
                transition:transform .5s cubic-bezier(.2,.7,.3,1)}
   .peca:hover .moldura img{transform:scale(1.06)}
+
+  /* A segunda foto fica por cima, invisível, e aparece no hover. Não troco o
+     `src`: trocar dá um piscar branco enquanto a nova imagem carrega. Duas
+     imagens empilhadas fazem a passagem sem buraco. */
+  .moldura .segunda{
+    position:absolute;inset:0;opacity:0;
+    transition:opacity .45s ease, transform .5s cubic-bezier(.2,.7,.3,1);
+  }
+  .moldura.tem-dupla:hover .segunda,
+  .peca:hover .moldura.tem-dupla .segunda{opacity:1}
+  /* Com duas fotos, quem se aproxima é a de cima: manter o zoom nas duas faria
+     as bordas dançarem durante a troca. */
+  .peca:hover .moldura.tem-dupla img{transform:none}
+  .peca:hover .moldura.tem-dupla .segunda{transform:scale(1.04)}
+
+  /* Rodapé do cartão: preço à esquerda, sacola à direita. */
+  .pe{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:7px}
+  .cartao-bt{
+    flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);
+    background:var(--paper);color:var(--char);cursor:pointer;display:grid;place-items:center;
+    transition:.18s;opacity:0;
+  }
+  .cartao-bt svg{width:17px;height:17px}
+  .peca:hover .cartao-bt,.cartao-bt:focus-visible{opacity:1}
+  .cartao-bt:hover{background:var(--ember);border-color:var(--ember);color:#fff}
+  /* No toque não existe hover: o botão fica sempre visível, senão ninguém o
+     alcança no celular. */
+  @media(hover:none){ .cartao-bt{opacity:1} }
   .peca:hover .nome{color:var(--ember)}
   .peca .nome{transition:color .22s ease}
   /* No toque não existe ponteiro: o cartão reage ao ser pressionado. */
@@ -129,7 +157,7 @@
   .breve{position:absolute;top:12px;left:12px;background:var(--char);color:var(--paper);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
   .nome{font-family:'Fraunces';font-size:19px;margin-top:13px}
   .desc{font-size:13.5px;color:var(--smoke);margin-top:3px}
-  .preco{margin-top:7px;font-size:15px}
+  .preco{font-size:15px}
   .vazio{text-align:center;color:var(--smoke);padding:60px 0}
   /* ficha da peça */
   .ficha{position:fixed;inset:0;background:var(--paper);overflow-y:auto;z-index:30;display:none}
@@ -394,11 +422,34 @@ function lerFicha(f){
 }
 
 function cartao(p){
-  const foto = p.foto ? `<div class="moldura"><img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">${p.situacao==='embreve'?'<span class="breve">em breve</span>':''}</div>` : marca();
+  const breve = p.situacao === 'embreve';
+  // A SEGUNDA FOTO SÓ ENTRA SE EXISTIR. Sem ela o cartão volta ao que sempre
+  // foi: uma imagem que se aproxima devagar. Duplicar a primeira para "ter o
+  // efeito" seria pior que não ter — a pessoa passa o mouse e nada muda.
+  const foto = p.foto
+    ? `<div class="moldura${p.foto2?' tem-dupla':''}">
+         <img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">
+         ${p.foto2?`<img class="segunda" src="${esc(p.foto2)}" alt="" loading="lazy" aria-hidden="true">`:''}
+         ${breve?'<span class="breve">em breve</span>':''}
+       </div>`
+    : marca();
+
+  // Botão de sacola no próprio cartão, como em loja de verdade: quem já sabe o
+  // que quer não precisa abrir a ficha. `stopPropagation` porque o cartão
+  // inteiro abre a ficha, e o clique no botão não pode fazer as duas coisas.
+  const juntar = breve ? '' : `<button class="cartao-bt" title="Colocar na sacola"
+      aria-label="Colocar ${esc(p.nome)} na sacola"
+      onclick="event.stopPropagation();juntar('${esc(p.id)}')">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z"
+              stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg></button>`;
+
   return `<div class="peca" onclick="abrirFicha('${esc(p.id)}')">${foto}
     <div class="nome">${esc(p.nome)}</div>
     ${p.desc?`<div class="desc">${esc(p.desc)}</div>`:''}
-    <div class="preco">${brl(p.preco)}</div></div>`;
+    <div class="pe"><span class="preco">${brl(p.preco)}</span>${juntar}</div></div>`;
 }
 
 function pintar(){
@@ -788,24 +839,40 @@ catch { document.getElementById('grade').innerHTML='<p class="vazio">Não conseg
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos
-         do Jordão. Cada peça feita à mão, uma por vez.</p>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+         Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>A loja</h3>
+      <a href="/loja/">Todas as peças</a>
+      <a href="/loja/?colecao=Areia">Refis de areia</a>
+      <a href="/aplicacoes/">Aplicações</a>
+      <a href="/contato/?sobre=empresa">Quantidade para empresa</a>
     </div>
     <div>
       <h3>Entenda a peça</h3>
       <a href="/#areia">A vela que se repõe</a>
       <a href="/#chip">O chip dentro dela</a>
-      <a href="/#app">O aplicativo</a>
+      <a href="/perfil/">Minhas peças</a>
+      <a href="/contato/?sobre=refil">Qual refil é o meu</a>
     </div>
     <div>
-      <h3>Falar com a gente</h3>
-      <a href="https://instagram.com/cinerea.velas" rel="noopener">Instagram · @cinerea.velas</a>
-      <a href="https://www.tiktok.com/@cinerea.velas" rel="noopener">TikTok · @cinerea.velas</a>
-      <p>Campos do Jordão · SP</p>
+      <h3>Falar com o ateliê</h3>
+      <a href="https://wa.me/5511958280174" rel="noopener">WhatsApp</a>
+      <a href="/contato/">Encomenda especial</a>
+      <a class="rede" href="https://instagram.com/cinerea.velas" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+        <span>@cinerea.velas</span></a>
+      <a class="rede" href="https://www.tiktok.com/@cinerea.velas" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4v10.2a3.4 3.4 0 1 1-2.8-3.35" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 4c.4 2.2 1.9 3.7 4.2 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>@cinerea.velas</span></a>
     </div>
   </div>
-  <div class="fim">© Cinérea · feito à mão</div>
+  <div class="fim">
+    <span>© Cinérea · feito à mão em Campos do Jordão · SP</span>
+    <span class="direita"><a href="/perfil/">Meu perfil</a></span>
+  </div>
 </footer>
 <script src="/vivo.js" defer></script>
 </body>
