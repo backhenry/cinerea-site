@@ -45,6 +45,21 @@
     border:1px dashed currentColor;font-size:13px;letter-spacing:.08em;
     font-family:ui-monospace,monospace;
   }
+  /* Com arte de fundo, o texto precisa de um VÉU. Sem ele a legibilidade fica
+     refém da imagem que subirem, e uma foto clara apaga a chamada inteira. O
+     véu escurece o suficiente e não some com a arte. */
+  .banner.comArte{
+    background-size:cover;background-position:center;color:#fff;
+    border-color:transparent;position:relative;padding:34px 22px;
+  }
+  .banner.comArte::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(20,19,17,.28),rgba(20,19,17,.62));
+  }
+  .banner.comArte > *{position:relative}
+  .banner.comArte strong{font-size:clamp(19px,4.4vw,26px);text-shadow:0 1px 12px rgba(0,0,0,.35)}
+  .banner.comArte .btexto{opacity:.95;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+
   .banner.usavel{cursor:pointer}
   .banner.usavel:hover .bcupom{background:rgba(255,255,255,.16)}
   .banner.areia.usavel:hover .bcupom{background:rgba(28,26,23,.06)}
@@ -367,8 +382,14 @@ function pintarBanner(){
   }
   const cor = {brasa:'brasa','carvão':'carvao',carvao:'carvao',areia:'areia'}[b.cor] || 'brasa';
   const usavel = !!b.cupom;
-  box.innerHTML = `<${usavel?'button':'div'} class="banner ${cor}${usavel?' usavel':''}"
-      ${usavel?`onclick="usarCupomDoBanner('${esc(b.cupom)}')"`:''} style="width:100%;border-left:none;border-right:none;border-top:none;font-family:inherit">
+  // A arte só entra se vier do NOSSO Storage. Mesma trava do logo da peça: sem
+  // ela, alguém aponta a imagem para servidor próprio e passa a ver quem abriu
+  // a loja, no domínio da marca.
+  const nosso = /^https:\/\/firebasestorage\.googleapis\.com\//;
+  const arte = nosso.test(b.imagem||'') ? b.imagem : '';
+  const fundo = arte ? `background-image:url('${esc(arte)}');` : '';
+  box.innerHTML = `<${usavel?'button':'div'} class="banner ${arte?'comArte':cor}${usavel?' usavel':''}"
+      ${usavel?`onclick="usarCupomDoBanner('${esc(b.cupom)}')"`:''} style="width:100%;border-left:none;border-right:none;border-top:none;font-family:inherit;${fundo}">
     <strong>${esc(b.titulo)}</strong>
     ${b.texto?`<span class="btexto">${esc(b.texto)}</span>`:''}
     ${usavel?`<span class="bcupom">${esc(b.cupom)}</span>`:''}
