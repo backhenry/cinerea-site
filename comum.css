@@ -149,12 +149,20 @@ a{color:inherit}
      contorno irregular que exigiria soltar o recorte e um relevo desenhado por
      dentro, o relevo custa menos e lê igual a 9px. */
   .pavio .cera::after{
-    content:''; position:absolute; left:0; right:0; top:0; height:74px;
+    content:''; position:absolute; inset:0;
     background:
+      /* os veios, medidos do TOPO, ou seja da linha que derrete agora */
       radial-gradient(ellipse 2.2px 15px at 22% 14px, rgba(255,255,255,.85), transparent 70%),
       radial-gradient(ellipse 1.8px 11px at 76% 26px, rgba(255,255,255,.7),  transparent 70%),
       radial-gradient(ellipse 2.4px 18px at 34% 44px, rgba(214,206,192,.55), transparent 72%),
-      radial-gradient(ellipse 1.6px 9px  at 66% 58px, rgba(255,255,255,.55), transparent 70%);
+      radial-gradient(ellipse 1.6px 9px  at 66% 58px, rgba(255,255,255,.55), transparent 70%),
+      /* E A CERA EMPOÇADA NA BASE, medida de BAIXO: é o destino de tudo que
+         escorreu. Sem ela os fios chegam lá embaixo e somem no nada, e vela que
+         pinga a noite toda não tem a base limpa. Fica presa ao pé da coluna, que
+         é o único ponto da peça que não se move com a rolagem. */
+      radial-gradient(ellipse 7px 5px at 50% 100%, rgba(255,255,255,.8), rgba(238,232,220,.4) 52%, transparent 76%),
+      radial-gradient(ellipse 4px 3px at 26% 100%, rgba(255,255,255,.55), transparent 72%),
+      radial-gradient(ellipse 3px 4px at 74% 100%, rgba(228,221,206,.6),  transparent 74%);
   }
 
   /* A ZONA QUENTE: o trecho logo abaixo da chama onde a cera está derretida.
@@ -203,12 +211,23 @@ a{color:inherit}
        ancorada em cima, como quem se estende, e não a partir do meio. */
     transform-origin:50% 0;
   }
+  /* O PERCURSO É EM PORCENTAGEM, não em pixels, e essa é a diferença entre
+     "escorre um pouco" e "escorre até a base".
+     Em pixels o fio parava a 18 ou 42px do topo — sempre no mesmo ponto, e no
+     começo da página isso é um dedo de cera numa vela de 600px. Em porcentagem
+     o alvo é a altura QUE A VELA TEM AGORA, e ela muda a cada rolagem: alto na
+     página o fio corre a coluna inteira; perto do fim, quando resta um toco, ele
+     tem poucos pixels para correr. Nos dois casos chega embaixo, que é o que
+     cera faz.
+     `top` anima layout e não composição, mas o custo fica preso aqui dentro: é
+     um elemento de 2px dentro de um `position:fixed`, e nada disso reflui a
+     página. */
   /* O RASTRO: o caminho molhado que a gota deixa atrás. É ele que liga o pingo
      à boca derretida — sem rastro cada gota é um objeto solto descendo, e
      objeto solto descendo não é cera, é uma bolinha. */
   .pavio .cera i::before{
     content:''; position:absolute; left:50%; bottom:60%;
-    width:1.2px; height:26px; transform:translateX(-50%);
+    width:1.2px; height:34px; transform:translateX(-50%);
     background:linear-gradient(0deg, rgba(255,255,255,.8), rgba(255,255,255,0));
     border-radius:1px;
   }
@@ -243,45 +262,50 @@ a{color:inherit}
     animation:escorre4 6.7s infinite; animation-delay:-3.9s;
   }
 
-  /* A longa: desce quase tudo, hesita no meio, e termina em gota gorda. */
+  /* A longa: corre de uma vez, hesita na metade, e chega inteira embaixo. */
   @keyframes escorre1{
-    0%  {opacity:0;   transform:translateY(0)   scale(1,.5);   animation-timing-function:cubic-bezier(.35,0,.9,.45)}
-    4%  {opacity:.95; transform:translateY(3px) scale(.85,1.7); animation-timing-function:linear}
-    13% {              transform:translateY(19px) scale(.8,1.9); animation-timing-function:cubic-bezier(.3,.7,.6,1)}
-    18% {              transform:translateY(24px) scale(1,1.15); animation-timing-function:cubic-bezier(.5,0,.85,.5)}
+    0%  {top:0;    opacity:0;   transform:translateY(-100%) scale(1,.5);   animation-timing-function:cubic-bezier(.35,0,.9,.45)}
+    4%  {top:4%;   opacity:.95; transform:translateY(-100%) scale(.85,1.7); animation-timing-function:linear}
+    22% {top:46%;               transform:translateY(-100%) scale(.8,1.9);  animation-timing-function:cubic-bezier(.3,.7,.6,1)}
+    /* a hesitação no meio da queda, quando o fio esfria um instante */
+    30% {top:58%;               transform:translateY(-100%) scale(1,1.15);  animation-timing-function:cubic-bezier(.5,0,.85,.5)}
     /* o arranco: mais cera chega por cima e ela volta a correr */
-    26% {              transform:translateY(38px) scale(.9,1.5); animation-timing-function:cubic-bezier(.2,.85,.3,1)}
-    33% {opacity:.95; transform:translateY(42px) scale(1.25,.85)}
-    88% {opacity:.85; transform:translateY(42px) scale(1.25,.85)}
-    100%{opacity:0;   transform:translateY(42px) scale(1.25,.85)}
+    44% {top:92%;               transform:translateY(-100%) scale(.9,1.5);  animation-timing-function:cubic-bezier(.2,.85,.3,1)}
+    /* chegou na base e virou gota gorda */
+    52% {top:100%; opacity:.95; transform:translateY(-100%) scale(1.35,.8)}
+    88% {top:100%; opacity:.85; transform:translateY(-100%) scale(1.35,.8)}
+    100%{top:100%; opacity:0;   transform:translateY(-100%) scale(1.35,.8)}
   }
-  /* A curta e tímida: para cedo, quase não estica. */
+  /* A hesitante: para duas vezes no caminho e ainda assim termina embaixo. */
   @keyframes escorre2{
-    0%  {opacity:0;   transform:translateY(0)   scale(1,.6);   animation-timing-function:cubic-bezier(.4,0,.85,.5)}
-    5%  {opacity:.9;  transform:translateY(4px) scale(.9,1.45); animation-timing-function:cubic-bezier(.25,.8,.35,1)}
-    15% {opacity:.9;  transform:translateY(18px) scale(1.2,.9)}
-    82% {opacity:.8;  transform:translateY(18px) scale(1.2,.9)}
-    100%{opacity:0;   transform:translateY(18px) scale(1.2,.9)}
+    0%  {top:0;    opacity:0;   transform:translateY(-100%) scale(1,.6);   animation-timing-function:cubic-bezier(.4,0,.85,.5)}
+    6%  {top:5%;   opacity:.9;  transform:translateY(-100%) scale(.9,1.45); animation-timing-function:cubic-bezier(.25,.8,.35,1)}
+    18% {top:28%;               transform:translateY(-100%) scale(1.15,.95);animation-timing-function:cubic-bezier(.5,0,.9,.5)}
+    32% {top:56%;               transform:translateY(-100%) scale(.9,1.5);  animation-timing-function:cubic-bezier(.3,.8,.4,1)}
+    42% {top:74%;               transform:translateY(-100%) scale(1.1,1);   animation-timing-function:cubic-bezier(.5,0,.85,.5)}
+    56% {top:100%; opacity:.9;  transform:translateY(-100%) scale(1.3,.85)}
+    84% {top:100%; opacity:.78; transform:translateY(-100%) scale(1.3,.85)}
+    100%{top:100%; opacity:0;   transform:translateY(-100%) scale(1.3,.85)}
   }
-  /* A fina e rápida: o fio mais comprido, quase sem gota no fim. */
+  /* A fina e rápida: vai embora num fio só, quase sem gota no fim. */
   @keyframes escorre3{
-    0%  {opacity:0;   transform:translateY(0)   scale(1,.5);   animation-timing-function:cubic-bezier(.3,0,.9,.4)}
-    3%  {opacity:.92; transform:translateY(2px) scale(.75,2);   animation-timing-function:linear}
-    16% {opacity:.92; transform:translateY(34px) scale(.75,1.9); animation-timing-function:cubic-bezier(.2,.9,.3,1)}
-    22% {opacity:.92; transform:translateY(39px) scale(1.05,1)}
-    90% {opacity:.8;  transform:translateY(39px) scale(1.05,1)}
-    100%{opacity:0;   transform:translateY(39px) scale(1.05,1)}
+    0%  {top:0;    opacity:0;   transform:translateY(-100%) scale(1,.5);   animation-timing-function:cubic-bezier(.3,0,.9,.4)}
+    3%  {top:3%;   opacity:.92; transform:translateY(-100%) scale(.75,2);   animation-timing-function:linear}
+    26% {top:88%;  opacity:.92; transform:translateY(-100%) scale(.75,1.9); animation-timing-function:cubic-bezier(.2,.9,.3,1)}
+    34% {top:100%; opacity:.92; transform:translateY(-100%) scale(1.1,1)}
+    90% {top:100%; opacity:.78; transform:translateY(-100%) scale(1.1,1)}
+    100%{top:100%; opacity:0;   transform:translateY(-100%) scale(1.1,1)}
   }
-  /* A preguiçosa: demora a soltar, e aí desce de uma vez. */
+  /* A preguiçosa: fica pendurada engordando, larga de uma vez e despenca. */
   @keyframes escorre4{
-    0%  {opacity:0;   transform:translateY(0)   scale(1.15,.7); animation-timing-function:ease-out}
-    6%  {opacity:.85; transform:translateY(2px) scale(1.2,.95);  animation-timing-function:ease-in}
-    /* fica pendurada, engordando, antes de largar */
-    17% {opacity:.85; transform:translateY(5px) scale(1.3,1.1);  animation-timing-function:cubic-bezier(.45,0,.85,.45)}
-    24% {              transform:translateY(21px) scale(.85,1.6); animation-timing-function:cubic-bezier(.2,.85,.3,1)}
-    30% {opacity:.85; transform:translateY(27px) scale(1.2,.9)}
-    86% {opacity:.75; transform:translateY(27px) scale(1.2,.9)}
-    100%{opacity:0;   transform:translateY(27px) scale(1.2,.9)}
+    0%  {top:0;    opacity:0;   transform:translateY(-100%) scale(1.15,.7); animation-timing-function:ease-out}
+    7%  {top:2%;   opacity:.85; transform:translateY(-100%) scale(1.2,.95);  animation-timing-function:ease-in}
+    20% {top:6%;   opacity:.85; transform:translateY(-100%) scale(1.35,1.15);animation-timing-function:cubic-bezier(.45,0,.8,.4)}
+    /* largou */
+    38% {top:82%;               transform:translateY(-100%) scale(.8,1.75);  animation-timing-function:cubic-bezier(.2,.85,.3,1)}
+    46% {top:100%; opacity:.85; transform:translateY(-100%) scale(1.3,.85)}
+    86% {top:100%; opacity:.72; transform:translateY(-100%) scale(1.3,.85)}
+    100%{top:100%; opacity:0;   transform:translateY(-100%) scale(1.3,.85)}
   }
 
   /* A boca derretida: o anel de cera líquida logo abaixo da chama. É o que
