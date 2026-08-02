@@ -66,6 +66,14 @@
   .abas{
     display:flex;gap:6px;overflow-x:auto;margin:0 0 22px;padding-bottom:4px;
     scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    /* Centradas, como o título e a chamada logo acima — alinhadas à esquerda
+       sob um título centrado, elas pareciam de outra página.
+
+       `safe center` e não `center`: com `center` puro, o que não cabe sai pela
+       ESQUERDA e não volta, porque `scrollLeft` não vai abaixo de zero. São
+       quatro seções que não cabem em 375px, então este caso é o comum, não a
+       exceção. O `safe` centra quando cabe e alinha ao início quando não. */
+    justify-content:safe center;
   }
   .abas::-webkit-scrollbar{display:none}
   .abas button{

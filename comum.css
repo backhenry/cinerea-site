@@ -31,7 +31,13 @@ a{color:inherit}
    loja, que ainda tem o botão da sacola, o cabeçalho media 485px numa tela de
    375 e a página inteira ganhava rolagem horizontal. */
 .topo nav{
-  display:flex;gap:16px;align-items:center;justify-content:center;
+  display:flex;gap:16px;align-items:center;
+  /* `safe center` E NAO `center`. Com `center` puro, o que nao cabe sai pela
+     ESQUERDA e nao volta: `scrollLeft` nao vai abaixo de zero, entao o primeiro
+     item fica fora da area visivel e inalcancavel. Medido na loja em 375px, o
+     "A marca" ficava a 31px a esquerda do menu, sem jeito de chegar nele.
+     O `safe` centra quando cabe e alinha ao inicio quando nao cabe. */
+  justify-content:safe center;
   overflow-x:auto;min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .topo nav::-webkit-scrollbar{display:none}
