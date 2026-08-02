@@ -96,6 +96,84 @@ a{color:inherit}
       var(--line) 0 4px, rgba(200,193,182,.9) 4px 7px);
     border-radius:2px;
   }
+  /* ------------------------------------------------------------------ cera --
+     O CORPO DA VELA, e é ele que faz a peça derreter em vez de só queimar.
+     Antes havia pavio e chama e nenhuma vela: a chama descia por um cordão
+     solto, o que lê como estopim, não como a peça que a marca vende.
+
+     Ele existe SÓ ABAIXO DA CHAMA (`top` acompanha `--p`, `bottom:0` fixo), e é
+     essa assimetria que conta a história inteira sem escrever nada: embaixo, a
+     vela que ainda há; acima, só o cordão carbonizado do que já foi.
+
+     O MIOLO É TRANSPARENTE de propósito. A cera vai dos dois lados e o cordão
+     aparece no meio, que é o corte real de uma vela. Tapar o meio deixaria uma
+     barra clara sem leitura nenhuma.
+
+     Tons de papel e cinza, sem brasa: a brasa é acento e já está toda gasta na
+     chama, que fica a menos de um dedo daqui. */
+  .pavio .cera{
+    position:absolute; left:50%; transform:translateX(-50%);
+    top:calc(var(--p,0) * 100%); bottom:0; width:9px;
+    border-radius:0 0 4px 4px;
+    /* Cilindro, e não uma fita: penumbra nas duas bordas, luz no terço da
+       esquerda. Cera clara sobre papel claro só ganha forma pela modelagem.
+
+       O PAVIO É PINTADO AQUI DENTRO, e a primeira tentativa deixava o miolo
+       transparente para o cordão de verdade aparecer. Não funcionou: as duas
+       faixas de cera sobravam com 3px cada, e 3px de creme sobre creme não é
+       nada. Uma coluna cheia com o pavio desenhado dentro tem silhueta, que é
+       o que faz ler como vela. A textura de fibra se perde abaixo da chama, e
+       ninguém vê fibra dentro da cera mesmo. */
+    background:
+      linear-gradient(90deg, transparent 0 37%, rgba(110,104,98,.5) 37% 63%, transparent 63%),
+      linear-gradient(90deg,
+        #D5CDBE 0 8%,
+        #FDFCFA 8% 30%,
+        #F8F4EC 30% 62%,
+        #EDE7DA 62% 86%,
+        #CBC2B1 86% 100%);
+    /* O fio de contorno separa a vela do fundo; a sombra deitada à direita a
+       levanta da página. Ambos discretos: isto é enfeite de canto. */
+    box-shadow:0 0 0 .5px rgba(28,26,23,.13), 3px 0 7px -4px rgba(28,26,23,.24);
+    /* Prende os escorridos ao corpo: no fim da página a vela tem altura zero e
+       sem isto a cera continuaria pingando no vazio, abaixo do nada. */
+    overflow:hidden;
+  }
+  /* Cera escorrendo pela lateral, que é o que uma vela acesa faz. Nascem na
+     boca e endurecem descendo. */
+  /* Estreitos e encostados na borda, porque numa coluna de 9px um pingo de 4px
+     é quase metade da vela e lê como borrão, não como cera. Descem pela lateral
+     iluminada, que é onde o olho já espera brilho. */
+  .pavio .cera i{
+    position:absolute; top:0; left:1.5px; width:2px; height:6px;
+    border-radius:60% 60% 50% 50% / 30% 30% 70% 70%;
+    background:linear-gradient(180deg, #FFFFFF, #E6E0D2);
+    opacity:0; animation:escorrer 7.4s ease-in infinite;
+  }
+  .pavio .cera i:nth-child(2){
+    animation-delay:3.9s; left:auto; right:1.5px; width:1.5px; height:5px;
+  }
+  @keyframes escorrer{
+    0%  {opacity:0;   transform:translateY(0)    scaleY(.55)}
+    12% {opacity:.85}
+    68% {opacity:.85; transform:translateY(26px) scaleY(1)}
+    100%{opacity:0;   transform:translateY(36px) scaleY(.9)}
+  }
+
+  /* A boca derretida: o anel de cera líquida logo abaixo da chama. É o que
+     separa "vela acesa" de "vela cortada ao meio" — sem ele a coluna termina
+     num corte reto, que nenhuma vela tem.
+
+     Fica MAIS LARGA que a chama e um pouco abaixo dela, senão a chama a cobre
+     inteira e o trabalho não aparece: foi o que aconteceu na primeira versão. */
+  .pavio .poca{
+    position:absolute; left:50%; top:calc(var(--p,0) * 100%);
+    width:16px; height:7px; transform:translate(-50%,-10%);
+    border-radius:50%;
+    background:radial-gradient(ellipse at 50% 32%,
+      #FFFDF8 0%, #F0E7D4 40%, rgba(203,194,177,.85) 66%, rgba(203,194,177,0) 100%);
+  }
+
   /* O que já queimou. Fica acima da chama e é mais escuro que o cordão. */
   .pavio .queimado{
     position:absolute; left:0; right:0; top:0; border-radius:2px;
@@ -140,11 +218,47 @@ a{color:inherit}
     100%{opacity:0;transform:translate(calc(-50% + 9px),-46px) scale(.6)}
   }
 
-  /* No celular ele encolhe e encosta na borda: ali a largura é preciosa. */
+  /* No celular ele encolhe e encosta na borda: ali a largura é preciosa.
+     A vela some junto — a 6px da borda, uma coluna de 9px encostaria no texto,
+     e a leitura vale mais que o enfeite. Fica o pavio com a chama, que é o que
+     ela sempre foi no telefone. */
   @media(max-width:700px){
     .pavio{left:6px;width:2px;top:14vh;bottom:14vh}
     .pavio .chama{width:11px;height:16px}
     .pavio .chama::after{width:32px;height:32px}
+    .pavio .cera i{display:none}
+  }
+
+  /* A VELA LARGA SÓ EXISTE COM ESPAÇO PARA ELA, e o limite é conta, não gosto.
+     A coluna fica centrada em 15,5px e ocupa de 11 a 20. O conteúdo mora num
+     `.envolve` de 1000px com 22px de padding, então começa em
+     `max(22, (tela - 1000) / 2 + 22)`: em qualquer janela abaixo de ~1016px ele
+     encosta nos 22px e sobram DOIS pixels de respiro, que não são respiro.
+
+     Medido em 920px: a folga dava 2px em cinco das seis alturas da página. Daí
+     o corte em 1040, que garante ~22px. Abaixo disso ela vira um filete, e
+     continua lendo como vela porque a boca derretida e a chama continuam lá. */
+  @media(max-width:1040px){
+    .pavio .cera{width:5px;border-radius:0 0 3px 3px;box-shadow:0 0 0 .5px rgba(28,26,23,.08)}
+    .pavio .poca{width:8px;height:5px}
+  }
+  /* Na faixa do meio (tablet, janela de laptop encolhida) o conteúdo já encosta
+     nos 22px e o pavio ficava a 4,5px dele — apertado desde antes desta vela.
+     Quatro pixels para a esquerda dobram a folga, e ninguém nota um enfeite de
+     canto mudar de lugar. A regra é de FAIXA e não `max-width`: fosse
+     `max-width`, ela venceria a do telefone logo acima e desfaria o `left:6px`
+     que ali existe justamente porque a largura é preciosa. */
+  @media(min-width:701px) and (max-width:1040px){
+    .pavio{left:10px}
+  }
+
+  /* Quem pede menos movimento não perde a vela, perde o que se mexe sozinho.
+     A chama continua andando com a rolagem, porque isso é resposta ao gesto da
+     pessoa e não animação de fundo — e é a única função útil que ela tem. */
+  @media (prefers-reduced-motion: reduce){
+    .pavio .chama, .pavio .chama::after,
+    .pavio .cinzas i, .pavio .cera i{ animation:none }
+    .pavio .cinzas i, .pavio .cera i{ opacity:0 }
   }
 
   /* Cada rótulo aparece por um terço do ciclo. A primeira começa visível. */
