@@ -124,16 +124,23 @@ a{color:inherit}
        o que faz ler como vela. A textura de fibra se perde abaixo da chama, e
        ninguém vê fibra dentro da cera mesmo. */
     background:
-      linear-gradient(90deg, transparent 0 37%, rgba(110,104,98,.5) 37% 63%, transparent 63%),
+      linear-gradient(90deg, transparent 0 37%, rgba(92,86,78,.62) 37% 63%, transparent 63%),
       linear-gradient(90deg,
-        #D5CDBE 0 8%,
-        #FDFCFA 8% 30%,
-        #F8F4EC 30% 62%,
-        #EDE7DA 62% 86%,
-        #CBC2B1 86% 100%);
-    /* O fio de contorno separa a vela do fundo; a sombra deitada à direita a
-       levanta da página. Ambos discretos: isto é enfeite de canto. */
-    box-shadow:0 0 0 .5px rgba(28,26,23,.13), 3px 0 7px -4px rgba(28,26,23,.24);
+        #A69B85 0 7%,
+        #FFFFFF 7% 24%,
+        #FAF7F1 24% 52%,
+        #E3DBCB 52% 80%,
+        #9E9481 80% 100%);
+    /* O CONTORNO E A SOMBRA CARREGAM O DESENHO, e não a cor do corpo. Vela é
+       branca, e branco sobre papel creme não tem contraste nenhum: medido, o
+       miolo antigo ficava a 0,04 de luminância do fundo, ou seja invisível em
+       54% da largura da peça. Não adianta escurecer o corpo, porque aí deixa
+       de ser vela. O que dá volume é a BORDA escura dos dois lados enquadrando
+       um corpo claro, e a sombra projetada que a levanta da página. */
+    box-shadow:
+      0 0 0 .5px rgba(28,26,23,.3),
+      4px 0 9px -3px rgba(28,26,23,.4),
+      inset -1px 0 2px rgba(70,64,56,.35);
     /* Prende os escorridos ao corpo: no fim da página a vela tem altura zero e
        sem isto a cera continuaria pingando no vazio, abaixo do nada. */
     overflow:hidden;
@@ -151,18 +158,24 @@ a{color:inherit}
   .pavio .cera::after{
     content:''; position:absolute; inset:0;
     background:
-      /* os veios, medidos do TOPO, ou seja da linha que derrete agora */
-      radial-gradient(ellipse 2.2px 15px at 22% 14px, rgba(255,255,255,.85), transparent 70%),
-      radial-gradient(ellipse 1.8px 11px at 76% 26px, rgba(255,255,255,.7),  transparent 70%),
-      radial-gradient(ellipse 2.4px 18px at 34% 44px, rgba(214,206,192,.55), transparent 72%),
-      radial-gradient(ellipse 1.6px 9px  at 66% 58px, rgba(255,255,255,.55), transparent 70%),
+      /* Os veios, medidos do TOPO, ou seja da linha que derrete agora. Cada um
+         tem o par claro e escuro: relevo é luz de um lado e sombra do outro, e
+         só com o lado claro eles sumiam junto com o resto do branco. */
+      radial-gradient(ellipse 1px 15px   at 27% 14px, rgba(96,89,79,.5),      transparent 70%),
+      radial-gradient(ellipse 2.2px 15px at 22% 14px, rgba(255,255,255,.95),  transparent 70%),
+      radial-gradient(ellipse .9px 11px  at 80% 26px, rgba(96,89,79,.45),     transparent 70%),
+      radial-gradient(ellipse 1.8px 11px at 76% 26px, rgba(255,255,255,.9),   transparent 70%),
+      radial-gradient(ellipse 1.2px 18px at 39% 44px, rgba(96,89,79,.42),     transparent 72%),
+      radial-gradient(ellipse 2.4px 18px at 34% 44px, rgba(252,250,246,.9),   transparent 72%),
+      radial-gradient(ellipse 1.6px 9px  at 66% 58px, rgba(255,255,255,.8),   transparent 70%),
       /* E A CERA EMPOÇADA NA BASE, medida de BAIXO: é o destino de tudo que
          escorreu. Sem ela os fios chegam lá embaixo e somem no nada, e vela que
          pinga a noite toda não tem a base limpa. Fica presa ao pé da coluna, que
          é o único ponto da peça que não se move com a rolagem. */
-      radial-gradient(ellipse 7px 5px at 50% 100%, rgba(255,255,255,.8), rgba(238,232,220,.4) 52%, transparent 76%),
-      radial-gradient(ellipse 4px 3px at 26% 100%, rgba(255,255,255,.55), transparent 72%),
-      radial-gradient(ellipse 3px 4px at 74% 100%, rgba(228,221,206,.6),  transparent 74%);
+      radial-gradient(ellipse 8px 7px  at 50% 104%, rgba(84,77,68,.55), transparent 72%),
+      radial-gradient(ellipse 7px 5px  at 50% 100%, rgba(255,255,255,.95), rgba(233,226,212,.6) 52%, transparent 78%),
+      radial-gradient(ellipse 4px 3px  at 26% 100%, rgba(255,255,255,.8),  transparent 74%),
+      radial-gradient(ellipse 3px 4px  at 74% 100%, rgba(206,197,181,.75), transparent 76%);
   }
 
   /* A ZONA QUENTE: o trecho logo abaixo da chama onde a cera está derretida.
@@ -204,8 +217,10 @@ a{color:inherit}
   .pavio .cera i{
     position:absolute; top:0; left:1.5px; width:2.5px; height:8px;
     border-radius:60% 60% 50% 50% / 28% 28% 72% 72%;
-    background:linear-gradient(180deg, #FFFFFF, #F6F2E9 58%, #D9D0BE);
-    box-shadow:0 1px 2px rgba(28,26,23,.3), 0 0 3px rgba(255,255,255,.9);
+    background:linear-gradient(180deg, #FFFFFF, #F4EFE4 52%, #BFB5A0);
+    /* A gota tem barriga: escura embaixo, e uma sombra projetada que a
+       descola da coluna. Sem isso ela e um risco branco sobre branco. */
+    box-shadow:0 1.5px 3px rgba(28,26,23,.5), 0 0 4px rgba(255,255,255,.75);
     opacity:0;
     /* O ponto de deformação é o TOPO: cera que escorre estica para baixo
        ancorada em cima, como quem se estende, e não a partir do meio. */
@@ -228,7 +243,8 @@ a{color:inherit}
   .pavio .cera i::before{
     content:''; position:absolute; left:50%; bottom:60%;
     width:1.2px; height:34px; transform:translateX(-50%);
-    background:linear-gradient(0deg, rgba(255,255,255,.8), rgba(255,255,255,0));
+    background:linear-gradient(0deg, rgba(255,255,255,.95), rgba(255,255,255,0));
+    box-shadow:.8px 0 1.5px rgba(84,77,68,.4);
     border-radius:1px;
   }
 
@@ -322,10 +338,11 @@ a{color:inherit}
      que é o que uma vela acesa tem de verdade. */
   .pavio .poca{
     position:absolute; left:50%; top:calc(var(--p,0) * 100%);
-    width:11px; height:5px; transform:translate(-50%,-10%);
+    width:9px; height:5px; transform:translate(-50%,-10%);
     border-radius:50%;
     background:radial-gradient(ellipse at 50% 32%,
-      #FFFDF8 0%, #F0E7D4 40%, rgba(203,194,177,.85) 66%, rgba(203,194,177,0) 100%);
+      #FFFFFF 0%, #F6EEDC 42%, rgba(168,157,138,.75) 74%, rgba(168,157,138,0) 100%);
+    box-shadow:0 1.5px 2px -1px rgba(84,77,68,.5);
     /* Cera LÍQUIDA se mexe. Parada, a boca vira um adesivo oval no topo da
        coluna; ondulando de leve, vira poça. O compasso é o mesmo do calor e do
        amolecer, para as três coisas respirarem juntas em vez de brigarem. */
@@ -409,7 +426,7 @@ a{color:inherit}
      continua lendo como vela porque a boca derretida e a chama continuam lá. */
   @media(max-width:1040px){
     .pavio .cera{width:5px;border-radius:0 0 3px 3px;box-shadow:0 0 0 .5px rgba(28,26,23,.08)}
-    .pavio .poca{width:6.5px;height:4px}
+    .pavio .poca{width:5px;height:4px}
   }
   /* Na faixa do meio (tablet, janela de laptop encolhida) o conteúdo já encosta
      nos 22px e o pavio ficava a 4,5px dele — apertado desde antes desta vela.
@@ -428,7 +445,7 @@ a{color:inherit}
      de 120px de respiro — de longe o caso mais folgado. */
   @media(min-width:1241px){
     .pavio .cera{width:13px;border-radius:0 0 6px 6px}
-    .pavio .poca{width:15px;height:6px}
+    .pavio .poca{width:13px;height:6px}
   }
 
   /* Quem pede menos movimento não perde a vela, perde o que se mexe sozinho.
