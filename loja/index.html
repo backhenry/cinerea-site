@@ -30,8 +30,14 @@
   h1{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:10px}
   .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:15px}
   .envolve{max-width:1000px;margin:0 auto;padding:0 22px}
-  .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 26px;justify-content:center}
-  .linhas button{padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;font-size:12.5px;color:var(--smoke);cursor:pointer}
+  /* As coleções respondem a OUTRA pergunta que os controles acima: lá é como
+     ver, aqui é o que ver. O ar entre as duas faixas é o que separa os dois
+     assuntos sem precisar de traço nem de título. */
+  .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 28px;justify-content:center}
+  .linhas button{height:36px;padding:0 16px;border-radius:20px;border:1px solid var(--line);
+                 background:none;font-family:'Inter';font-size:12.5px;color:var(--smoke);
+                 cursor:pointer;transition:background .15s ease,border-color .15s ease,color .15s ease}
+  .linhas button:hover{border-color:var(--ember);color:var(--ember)}
   .linhas button.on{background:var(--char);color:var(--paper);border-color:var(--char)}
   /* ---- banner de promoção -----------------------------------------------
      Vem do cadastro da gestão e sobe junto com o catálogo. A loja NÃO tem
@@ -86,24 +92,72 @@
   /* Controles de ordenação e filtro. Rolam de lado no celular, como os chips
      de coleção: quebrar em duas linhas empurra a vitrine para baixo da dobra. */
   .controles{
-    display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;
-    margin:16px 0 4px;
+    display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:center;
+    margin:20px 0 4px;
   }
-  .ctrl{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--smoke)}
+  /* UMA LINGUAGEM SÓ para todos os controles: mesma altura, mesmo raio, mesma
+     borda, mesmo corpo de texto. Antes o `<select>` guardava a aparência do
+     sistema — cantos quase retos, altura própria e a seta dupla do macOS — ao
+     lado de pílulas arredondadas. Duas gramáticas na mesma linha, e a barra
+     inteira parecia montada por acaso. */
+  .controles > *{ height:36px }
+
+  /* O rótulo e o campo dentro da MESMA pílula, e não um texto solto ao lado.
+     "Ordenar" não é uma legenda da página, é parte do controle. */
+  .ctrl{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:0 4px 0 15px;border:1px solid var(--line);border-radius:20px;
+    background:var(--paper);font-size:12.5px;color:var(--smoke);
+    transition:border-color .15s ease;
+  }
+  .ctrl:hover{ border-color:var(--ember) }
+  .ctrl:focus-within{ border-color:var(--char) }
   .ctrl select{
-    padding:8px 12px;border:1px solid var(--line);border-radius:20px;background:var(--paper);
+    appearance:none;-webkit-appearance:none;
+    border:none;background:transparent;height:100%;
+    padding:0 27px 0 0;margin:0;
     font-family:'Inter';font-size:12.5px;color:var(--char);cursor:pointer;
+    /* A seta é desenhada aqui, no traço fino dos outros símbolos do site. A
+       nativa do macOS são duas setas empilhadas dentro de uma caixa cinza, que
+       é a peça que mais destoava. */
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.6 4.6 6 8l3.4-3.4' stroke='%236E6862' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 9px center;background-size:11px;
   }
-  .ctrl select:focus{outline:none;border-color:var(--ember)}
+  .ctrl select:focus{ outline:none }
+
   .marca-ctrl{
-    padding:8px 15px;border-radius:20px;border:1px solid var(--line);background:none;
-    font-family:'Inter';font-size:12.5px;color:var(--smoke);cursor:pointer;transition:.15s;
+    display:inline-flex;align-items:center;
+    padding:0 16px;border-radius:20px;border:1px solid var(--line);background:none;
+    font-family:'Inter';font-size:12.5px;color:var(--smoke);cursor:pointer;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+    white-space:nowrap;
   }
   .marca-ctrl:hover{border-color:var(--ember);color:var(--ember)}
   .marca-ctrl.on{background:var(--char);border-color:var(--char);color:var(--paper)}
-  .btfrouxo{background:none;border:none;color:var(--smoke);text-decoration:underline;
-            cursor:pointer;font-size:12.5px;font-family:'Inter'}
-  .btfrouxo:hover{color:var(--ember)}
+  .marca-ctrl.on:hover{background:var(--ember);border-color:var(--ember);color:var(--paper)}
+
+  /* Sem pílula de propósito: limpar não é um filtro, é desfazer. Pílula igual
+     às outras faria dele mais uma opção a considerar. */
+  .btfrouxo{
+    background:none;border:none;padding:0 12px;color:var(--smoke);
+    cursor:pointer;font-size:12.5px;font-family:'Inter';
+    text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line);
+    transition:color .15s ease,text-decoration-color .15s ease;
+  }
+  .btfrouxo:hover{color:var(--ember);text-decoration-color:var(--ember)}
+
+  /* No celular a palavra "Ordenar" sai, e a pílula encolhe de 237 para ~137px.
+     Medido: com ela, a barra quebrava em TRÊS linhas (126px de altura) porque
+     sobravam 90px na primeira, e "Pronta entrega" precisa de 121. Sem ela,
+     cabem duas linhas e a vitrine sobe 45px.
+
+     O rótulo não some para quem usa leitor de tela: ele mudou de lugar, do
+     <span> para o `aria-label` do próprio campo. A seta e o texto da opção já
+     dizem, para quem enxerga, que aquilo escolhe uma ordem. */
+  @media(max-width:520px){
+    .ctrl > span{ display:none }
+    .ctrl{ padding-left:6px }
+  }
   .contagem{text-align:center;font-size:12.5px;color:var(--smoke);margin:10px 0 0;min-height:1.2em}
   .some{display:none}
 
@@ -328,7 +382,7 @@
   <div class="controles">
     <label class="ctrl">
       <span>Ordenar</span>
-      <select id="ordem" onchange="ordenarPor(this.value)">
+      <select id="ordem" aria-label="Ordenar as peças" onchange="ordenarPor(this.value)">
         <option value="vitrine">Como na vitrine</option>
         <option value="nomeAZ">Nome (A–Z)</option>
         <option value="precoAsc">Preço: menor primeiro</option>
