@@ -273,11 +273,17 @@ a{color:inherit}
     border-radius:52% 48% 46% 54% / 68% 66% 34% 32%;
     animation:tremula 1.7s ease-in-out infinite;
   }
-  /* O calor em volta, que é o que faz parecer luz e não um adesivo. */
+  /* O calor em volta, que é o que faz parecer luz e não um adesivo.
+     ELE ENCOLHEU, e essa é a correção que faltava para o derretimento aparecer.
+     Tinha 40px sobre uma vela de 13: três vezes a largura da peça inteira, um
+     borrão quente centrado bem na linha em que a cera derrete. Todo o trabalho
+     de boca ondulando, brilho quente e pingo começando a correr estava sendo
+     desenhado POR BAIXO dele. Halo maior que a vela não é luz, é névoa.
+     Agora sobe pouco acima da chama, que é para onde o calor vai de verdade. */
   .pavio .chama::after{
-    content:''; position:absolute; left:50%; top:46%;
-    width:40px; height:40px; transform:translate(-50%,-50%);
-    background:radial-gradient(circle, rgba(181,70,42,.34) 0%, rgba(181,70,42,0) 68%);
+    content:''; position:absolute; left:50%; top:30%;
+    width:22px; height:26px; transform:translate(-50%,-50%);
+    background:radial-gradient(ellipse, rgba(181,70,42,.3) 0%, rgba(181,70,42,0) 70%);
     animation:calor 3.3s ease-in-out infinite;
   }
   @keyframes tremula{
@@ -309,7 +315,7 @@ a{color:inherit}
   @media(max-width:700px){
     .pavio{left:6px;width:2px;top:14vh;bottom:14vh}
     .pavio .chama{width:11px;height:16px}
-    .pavio .chama::after{width:32px;height:32px}
+    .pavio .chama::after{width:18px;height:21px}
     .pavio .cera i{display:none}
   }
 
