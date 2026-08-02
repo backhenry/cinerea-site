@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+  <!-- Ícone da Cinérea para tela inicial, aba do navegador e atalho.
+       O "C" com a brasa, o mesmo da marca, sobre o carvão da paleta.
+
+       A transformação parece arbitrária e não é: foi medida com getBBox no
+       navegador, que é a única forma confiável de saber onde um desenho em SVG
+       realmente está. O grupo fica centrado em (75,75) com desvio de 0,04, e
+       ocupa 52% do quadro — diagonal de 110 contra o limite de 120 da zona
+       segura das máscaras do Android, que recortam o ícone em círculo.
+
+       Mexeu aqui, medir de novo. SVG transborda o viewBox sem erro nenhum. -->
+  <rect width="150" height="150" fill="#1C1A17"/>
+  <g transform="translate(75 75) scale(0.93) translate(-82.13 -75.04)">
+    <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104"
+          stroke="#F2EFEA" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <circle cx="112" cy="75" r="12" fill="#B5462A"/>
+  </g>
+</svg>
