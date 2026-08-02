@@ -112,7 +112,7 @@ a{color:inherit}
      no meio do caminho. */
   .pavio .cera{
     position:absolute; left:50%; transform:translateX(-50%);
-    top:calc(var(--p,0) * 100%); bottom:0; width:9px;
+    top:calc(var(--p,0) * 100%); bottom:0; width:18px;
     border-radius:0 0 4px 4px;
     /* Cilindro, e não uma fita: penumbra nas duas bordas, luz no terço da
        esquerda. Cera clara sobre papel claro só ganha forma pela modelagem.
@@ -338,7 +338,7 @@ a{color:inherit}
      que é o que uma vela acesa tem de verdade. */
   .pavio .poca{
     position:absolute; left:50%; top:calc(var(--p,0) * 100%);
-    width:9px; height:5px; transform:translate(-50%,-10%);
+    width:18px; height:7px; transform:translate(-50%,-10%);
     border-radius:50%;
     background:radial-gradient(ellipse at 50% 32%,
       #FFFFFF 0%, #F6EEDC 42%, rgba(168,157,138,.75) 74%, rgba(168,157,138,0) 100%);
@@ -425,8 +425,8 @@ a{color:inherit}
      o corte em 1040, que garante ~22px. Abaixo disso ela vira um filete, e
      continua lendo como vela porque a boca derretida e a chama continuam lá. */
   @media(max-width:1040px){
-    .pavio .cera{width:5px;border-radius:0 0 3px 3px;box-shadow:0 0 0 .5px rgba(28,26,23,.08)}
-    .pavio .poca{width:5px;height:4px}
+    .pavio .cera{width:10px;border-radius:0 0 5px 5px;box-shadow:0 0 0 .5px rgba(28,26,23,.2)}
+    .pavio .poca{width:10px;height:5px}
   }
   /* Na faixa do meio (tablet, janela de laptop encolhida) o conteúdo já encosta
      nos 22px e o pavio ficava a 4,5px dele — apertado desde antes desta vela.
@@ -444,8 +444,36 @@ a{color:inherit}
      Acima de 1240px o conteúdo começa em 142px, então 13px de vela deixam mais
      de 120px de respiro — de longe o caso mais folgado. */
   @media(min-width:1241px){
-    .pavio .cera{width:13px;border-radius:0 0 6px 6px}
-    .pavio .poca{width:13px;height:6px}
+    .pavio .cera{width:26px;border-radius:0 0 9px 9px}
+    .pavio .poca{width:26px;height:9px}
+  }
+
+  /* ---- o espaço que a vela pede ---------------------------------------
+     A cera dobrou de largura. Nas telas em que o conteúdo já encostava nos 22px
+     de padding, ela passou a disputar espaço com o texto, e aqui o layout abre
+     a esquerda para ela caber.
+
+     `:has(.pavio)` PRENDE ISTO ÀS PÁGINAS QUE TÊM VELA. O `perfil/` divide esta
+     folha e não tem pavio nenhum; sem o `:has` ele ganharia um recuo à esquerda
+     sem nada ocupando o espaço, e ficaria torto de graça.
+
+     Só a esquerda muda, e só nas telas estreitas. Nas largas o conteúdo já
+     começa a 142px e a vela termina em 28: mexer no padding ali só desalinharia
+     a centralização à toa.
+
+     Onde `:has` não existir, o pior caso é a vela a 5px do texto — apertado, e
+     não quebrado. */
+  @media(min-width:701px) and (max-width:1040px){
+    body:has(.pavio) .envolve,
+    body:has(.pavio) .topo-in,
+    body:has(.pavio) .rodape-in,
+    body:has(.pavio) .rodape .fim{ padding-left:32px }
+  }
+  @media(max-width:700px){
+    body:has(.pavio) .envolve,
+    body:has(.pavio) .topo-in,
+    body:has(.pavio) .rodape-in,
+    body:has(.pavio) .rodape .fim{ padding-left:26px }
   }
 
   /* Quem pede menos movimento não perde a vela, perde o que se mexe sozinho.
