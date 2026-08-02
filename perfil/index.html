@@ -223,7 +223,8 @@
  */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
-         updateProfile, verifyBeforeUpdateEmail }
+         updateProfile, verifyBeforeUpdateEmail,
+         EmailAuthProvider, reauthenticateWithCredential, deleteUser }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, serverTimestamp, Timestamp,
          query, where }
@@ -785,6 +786,70 @@ function pintarEncomendas(lista){
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 /* -------------------------------------------------------------- meus dados --- */
+/**
+ * Apagar a conta, de vez. A MESMA operação de `src/dados/conta.ts`, no app.
+ *
+ * Existe aqui porque o cliente de iPhone não instala o aplicativo: o time
+ * gratuito da Apple recusa o entitlement de NFC, e enquanto não houver conta
+ * paga não há como distribuir. Deixar a exclusão só no Android significaria
+ * "pede por WhatsApp", que é o contrário do que a LGPD e as lojas pedem.
+ *
+ * A ORDEM É A MESMA, e pelo mesmo motivo:
+ *
+ *   vitrine e logo  ->  registro da peça  ->  clientes/{uid}  ->  a conta
+ *
+ * A regra só deixa apagar `vitrines/{tagUid}` quem tem
+ * `clientes/{uid}/pecas/{tagUid}`, e o Storage só deixa apagar `logos/{uid}/…`
+ * quem é aquele uid. Invertido em qualquer ponto, sobra no ar uma página que
+ * ninguém no mundo tem permissão de remover -- com a senha do wi-fi de casa
+ * escrita nela.
+ *
+ * DUAS CÓPIAS, e é dívida conhecida: esta e a do app. Não dá para compartilhar
+ * módulo entre um bundle do Metro e um HTML sem etapa de build. Mudou uma,
+ * olhar a outra. O que protege as duas é o teste de regra, que vale para
+ * qualquer cliente.
+ */
+async function apagarConta(senha){
+  const u = auth.currentUser;
+  if(!u?.email) throw new Error('sem sessão');
+
+  // O Firebase recusa apagar conta com sessão velha, e faz bem: a sessão
+  // sobrevive a fechar o navegador. A senha é a confirmação.
+  await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, senha));
+
+  const snap = await getDocs(collection(fdb,'clientes',u.uid,'pecas'));
+  for(const d of snap.docs){
+    await apagarPublicoDaPeca(u.uid, d.id);
+    await deleteDoc(d.ref);
+  }
+  await deleteDoc(doc(fdb,'clientes',u.uid));
+  await deleteUser(u);
+}
+
+/**
+ * A página pública da peça e a imagem dela, antes do registro que as autoriza.
+ *
+ * Tolera UM erro só: `permission-denied` na vitrine, que quer dizer que ela é
+ * de outra pessoa. Acontece de verdade -- duas contas podem ter a mesma peça,
+ * basta terem encostado o celular nela, e quem publicou primeiro manda. Sem
+ * essa tolerância, a segunda pessoa nunca apagaria a própria conta.
+ *
+ * O logo é apagado de qualquer jeito: ele mora sob o NOSSO uid.
+ */
+async function apagarPublicoDaPeca(uid, tagUid){
+  try{
+    await deleteDoc(doc(fdb,'vitrines',tagUid));
+  }catch(e){
+    if(e?.code !== 'permission-denied') throw e;
+  }
+  // Duas extensões porque o painel converte para WebP, menos quando é SVG:
+  // rasterizar um SVG destruiria a razão de ter mandado um.
+  for(const ext of ['webp','svg']){
+    try{ await deleteObject(ref(armazem, `logos/${uid}/${tagUid}.${ext}`)); }
+    catch(e){ if(e?.code !== 'storage/object-not-found') throw e; }
+  }
+}
+
 async function pintarDados(){
   document.getElementById('chamada').textContent = 'Seu nome, seu acesso.';
   let nome = usuario.displayName || '';
@@ -817,6 +882,29 @@ async function pintarDados(){
     <h3>Sair</h3>
     <p class="sub">Suas peças continuam guardadas na conta.</p>
     <div class="botoes"><button class="btfrouxo" id="d_sair">Sair da conta</button></div>
+  </div>
+
+  <!-- Fechado por padrão, e por último na página: precisa estar aqui, e não
+       precisa convidar. Quem publicou a senha do wi-fi de casa tem de poder
+       recolher sem pedir favor a ninguém. -->
+  <div class="cartao">
+    <h3>Apagar minha conta</h3>
+    <p class="sub">Some tudo: suas peças, o histórico do que elas já disseram e
+      as páginas que elas mostram a quem encosta o celular.</p>
+    <div class="botoes"><button class="btfrouxo" id="d_apagar">Quero apagar minha conta</button></div>
+
+    <div id="d_caixaApagar" class="some" style="margin-top:16px">
+      <div class="aviso">Suas <b>encomendas ficam com o ateliê</b>: são registro
+        de venda, e nota fiscal não se apaga a pedido. As peças continuam suas,
+        o chip é físico e não é tocado aqui.</div>
+      <label>Sua senha, para confirmar</label>
+      <input id="d_senhaApagar" type="password" autocomplete="current-password">
+      <div class="botoes">
+        <button class="bt" id="d_confirmarApagar">Apagar para sempre</button>
+        <button class="btfrouxo" id="d_desistir">Deixar como está</button>
+      </div>
+      <div class="erro some" id="d_recadoApagar"></div>
+    </div>
   </div>`;
 
   try{
@@ -826,6 +914,39 @@ async function pintarDados(){
 
   document.getElementById('d_salvar').onclick = salvarDados;
   document.getElementById('d_sair').onclick = () => signOut(auth);
+
+  const caixa = document.getElementById('d_caixaApagar');
+  document.getElementById('d_apagar').onclick = () => caixa.classList.remove('some');
+  document.getElementById('d_desistir').onclick = () => {
+    caixa.classList.add('some');
+    document.getElementById('d_senhaApagar').value = '';
+    document.getElementById('d_recadoApagar').classList.add('some');
+  };
+  document.getElementById('d_confirmarApagar').onclick = async () => {
+    const senha = document.getElementById('d_senhaApagar').value;
+    if(!senha) return falha('d_recadoApagar','Escreva sua senha para confirmar.');
+    if(!confirm('Apagar sua conta? Suas peças, o histórico delas e as páginas '
+              + 'que elas mostram somem. Isto não tem volta.')) return;
+
+    const bt = document.getElementById('d_confirmarApagar');
+    bt.disabled = true; bt.textContent = 'Apagando…';
+    try{
+      await apagarConta(senha);
+      // Não há tela de "pronto": ao cair a conta, o onAuthStateChanged dispara
+      // com null e a página volta sozinha para a entrada.
+    }catch(e){
+      console.error(e);
+      bt.disabled = false; bt.textContent = 'Apagar para sempre';
+      // A senha aqui é confirmação, não login: dizer "e-mail ou senha" mandaria
+      // a pessoa conferir um e-mail que ela não digitou.
+      const credencial = ['auth/invalid-credential','auth/wrong-password',
+                          'auth/missing-password','auth/invalid-login-credentials'].includes(e?.code);
+      falha('d_recadoApagar', credencial
+        ? 'Essa senha não confere.'
+        : 'Não consegui apagar agora. Confira a internet e tente de novo: '
+          + 'repetir é seguro, cada passo aceita o que já foi apagado.');
+    }
+  };
   document.getElementById('d_senha').onclick = async () => {
     try{ await sendPasswordResetEmail(auth, usuario.email);
          falha('d_acesso','Enviei um link para '+usuario.email+'. Abra para escolher a senha nova.'); }
@@ -891,7 +1012,7 @@ function pintarAjuda(){
     <h3>Sobre a peça que não aparece aqui</h3>
     <p class="sub">Peça só entra na sua conta depois que o aplicativo a reconhece,
       encostando o celular nela uma vez. É o único passo que exige o aparelho na
-      mão — daí em diante você troca o conteúdo por aqui, de onde estiver.</p>
+      mão. Daí em diante você troca o conteúdo por aqui, de onde estiver.</p>
   </div>`;
 }
 
