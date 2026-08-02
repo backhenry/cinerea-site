@@ -105,12 +105,11 @@ a{color:inherit}
      essa assimetria que conta a história inteira sem escrever nada: embaixo, a
      vela que ainda há; acima, só o cordão carbonizado do que já foi.
 
-     O MIOLO É TRANSPARENTE de propósito. A cera vai dos dois lados e o cordão
-     aparece no meio, que é o corte real de uma vela. Tapar o meio deixaria uma
-     barra clara sem leitura nenhuma.
-
-     Tons de papel e cinza, sem brasa: a brasa é acento e já está toda gasta na
-     chama, que fica a menos de um dedo daqui. */
+     DERRETER NÃO É ENCURTAR. A primeira versão só encolhia a coluna, e isso
+     lê como barra de progresso vestida de vela. O que faz parafina parecer
+     parafina são três coisas, e todas moram abaixo: a cera AMOLECE perto da
+     chama (fica quente e translúcida), CORRE pela lateral, e ENDURECE parando
+     no meio do caminho. */
   .pavio .cera{
     position:absolute; left:50%; transform:translateX(-50%);
     top:calc(var(--p,0) * 100%); bottom:0; width:9px;
@@ -139,39 +138,104 @@ a{color:inherit}
        sem isto a cera continuaria pingando no vazio, abaixo do nada. */
     overflow:hidden;
   }
-  /* Cera escorrendo pela lateral, que é o que uma vela acesa faz. Nascem na
-     boca e endurecem descendo. */
-  /* Estreitos e encostados na borda, porque numa coluna de 9px um pingo de 4px
-     é quase metade da vela e lê como borrão, não como cera. Descem pela lateral
-     iluminada, que é onde o olho já espera brilho. */
+  /* CERA ENDURECIDA: os veios que ficam depois que o que escorreu esfriou.
+     São o que tira a silhueta de retângulo, e retângulo é justamente o que não
+     derreteu nunca. Ficam presos ao TOPO da coluna, ou seja, logo abaixo da
+     linha em que a cera está derretendo agora — que é de onde eles teriam
+     corrido. Conforme a vela encurta, eles descem com ela.
+
+     Veios e não saliências: `overflow:hidden` recorta o que passa da largura,
+     e sem ele os escorridos pingariam no vazio no fim da página. Entre um
+     contorno irregular que exigiria soltar o recorte e um relevo desenhado por
+     dentro, o relevo custa menos e lê igual a 9px. */
+  .pavio .cera::after{
+    content:''; position:absolute; left:0; right:0; top:0; height:74px;
+    background:
+      radial-gradient(ellipse 2.2px 15px at 22% 14px, rgba(255,255,255,.85), transparent 70%),
+      radial-gradient(ellipse 1.8px 11px at 76% 26px, rgba(255,255,255,.7),  transparent 70%),
+      radial-gradient(ellipse 2.4px 18px at 34% 44px, rgba(214,206,192,.55), transparent 72%),
+      radial-gradient(ellipse 1.6px 9px  at 66% 58px, rgba(255,255,255,.55), transparent 70%);
+  }
+
+  /* A ZONA QUENTE: o trecho logo abaixo da chama onde a cera está derretida.
+     É a peça que mais faz parecer parafina, porque é a única grande o bastante
+     para se ver numa coluna de 9px — cor e valor mudam num pedaço inteiro, e
+     não num detalhe de um pixel.
+
+     Translúcida e morna: a cera quente deixa a luz passar. Ela respira no mesmo
+     compasso do calor da chama, e é isso que separa "vela acesa" de "desenho de
+     vela". A brasa aqui é fraca de propósito: o acento já está todo gasto na
+     chama, a três pixels daqui. */
+  .pavio .cera::before{
+    content:''; position:absolute; left:0; right:0; top:0; height:42px;
+    background:linear-gradient(180deg,
+      rgba(217,102,63,.34) 0%,
+      rgba(232,161,92,.22) 26%,
+      rgba(242,217,168,.14) 52%,
+      rgba(242,217,168,0) 100%);
+    animation:amolecer 3.3s ease-in-out infinite;
+  }
+  @keyframes amolecer{
+    0%,100%{opacity:.72; height:38px}
+    50%    {opacity:1;   height:46px}
+  }
+
+  /* A cera correndo. Nasce na boca derretida, desce e PARA — o freio é o que
+     faz parecer que endureceu no caminho, e é por isso que a curva desacelera
+     em vez de ser linear. Ela não some ao chegar: fica parada, opaca, e só
+     apaga no fim do ciclo, quando outra já está descendo por cima.
+
+     Estreitas e encostadas na borda: numa coluna de 9px um pingo de 4px é
+     quase metade da vela e lê como borrão. */
   .pavio .cera i{
-    position:absolute; top:0; left:1.5px; width:2px; height:6px;
-    border-radius:60% 60% 50% 50% / 30% 30% 70% 70%;
-    background:linear-gradient(180deg, #FFFFFF, #E6E0D2);
-    opacity:0; animation:escorrer 7.4s ease-in infinite;
+    position:absolute; top:0; left:1.5px; width:2px; height:7px;
+    border-radius:60% 60% 50% 50% / 28% 28% 72% 72%;
+    background:linear-gradient(180deg, #FFFFFF, #EFE9DB 62%, #DDD5C4);
+    opacity:0; animation:escorrer 6.2s cubic-bezier(.16,.72,.24,1) infinite;
   }
   .pavio .cera i:nth-child(2){
-    animation-delay:3.9s; left:auto; right:1.5px; width:1.5px; height:5px;
+    animation-delay:2.4s; left:auto; right:1.5px; width:1.5px; height:6px;
+  }
+  .pavio .cera i:nth-child(3){
+    animation-delay:4.5s; left:3.5px; width:1.5px; height:5px;
   }
   @keyframes escorrer{
-    0%  {opacity:0;   transform:translateY(0)    scaleY(.55)}
-    12% {opacity:.85}
-    68% {opacity:.85; transform:translateY(26px) scaleY(1)}
-    100%{opacity:0;   transform:translateY(36px) scaleY(.9)}
+    0%  {opacity:0;   transform:translateY(0)    scaleY(.5)}
+    9%  {opacity:.95; transform:translateY(3px)  scaleY(1.25)}
+    /* Escorre depressa e vai parando: aos 55% já andou quase tudo. */
+    55% {opacity:.95; transform:translateY(30px) scaleY(1)}
+    /* Endurecida: parada no lugar, ainda visível. */
+    88% {opacity:.9;  transform:translateY(34px) scaleY(1)}
+    100%{opacity:0;   transform:translateY(34px) scaleY(1)}
   }
 
   /* A boca derretida: o anel de cera líquida logo abaixo da chama. É o que
      separa "vela acesa" de "vela cortada ao meio" — sem ele a coluna termina
      num corte reto, que nenhuma vela tem.
 
-     Fica MAIS LARGA que a chama e um pouco abaixo dela, senão a chama a cobre
-     inteira e o trabalho não aparece: foi o que aconteceu na primeira versão. */
+     Fica um pouco ABAIXO da chama, senão a chama a cobre inteira e o trabalho
+     não aparece: foi o que aconteceu na primeira versão.
+
+     E fica pouco MAIS LARGA QUE A COLUNA, não que a chama. Uma poça mais larga
+     que a própria vela não existe — a cera derretida está dentro da vela, não
+     em volta dela. Com 16px sobre uma coluna de 9 o conjunto lia como cabeça de
+     fósforo. Os 11px de agora são a boca com a beirada transbordando um fio,
+     que é o que uma vela acesa tem de verdade. */
   .pavio .poca{
     position:absolute; left:50%; top:calc(var(--p,0) * 100%);
-    width:16px; height:7px; transform:translate(-50%,-10%);
+    width:11px; height:5px; transform:translate(-50%,-10%);
     border-radius:50%;
     background:radial-gradient(ellipse at 50% 32%,
       #FFFDF8 0%, #F0E7D4 40%, rgba(203,194,177,.85) 66%, rgba(203,194,177,0) 100%);
+    /* Cera LÍQUIDA se mexe. Parada, a boca vira um adesivo oval no topo da
+       coluna; ondulando de leve, vira poça. O compasso é o mesmo do calor e do
+       amolecer, para as três coisas respirarem juntas em vez de brigarem. */
+    animation:derreter 3.3s ease-in-out infinite;
+  }
+  @keyframes derreter{
+    0%,100%{transform:translate(-50%,-10%) scale(1,1)}
+    38%    {transform:translate(-50%,-6%)  scale(1.09,.86)}
+    70%    {transform:translate(-50%,-12%) scale(.96,1.1)}
   }
 
   /* O que já queimou. Fica acima da chama e é mais escuro que o cordão. */
@@ -240,7 +304,7 @@ a{color:inherit}
      continua lendo como vela porque a boca derretida e a chama continuam lá. */
   @media(max-width:1040px){
     .pavio .cera{width:5px;border-radius:0 0 3px 3px;box-shadow:0 0 0 .5px rgba(28,26,23,.08)}
-    .pavio .poca{width:8px;height:5px}
+    .pavio .poca{width:6.5px;height:4px}
   }
   /* Na faixa do meio (tablet, janela de laptop encolhida) o conteúdo já encosta
      nos 22px e o pavio ficava a 4,5px dele — apertado desde antes desta vela.
@@ -252,13 +316,29 @@ a{color:inherit}
     .pavio{left:10px}
   }
 
+  /* Onde há margem de sobra, a vela ENGROSSA. Não é vaidade: derretimento é
+     feito de irregularidade, e irregularidade precisa de pixels. Numa coluna de
+     9px o veio de cera endurecida tem 2px e vira ruído; com 13 ele lê.
+     Acima de 1240px o conteúdo começa em 142px, então 13px de vela deixam mais
+     de 120px de respiro — de longe o caso mais folgado. */
+  @media(min-width:1241px){
+    .pavio .cera{width:13px;border-radius:0 0 6px 6px}
+    .pavio .poca{width:15px;height:6px}
+  }
+
   /* Quem pede menos movimento não perde a vela, perde o que se mexe sozinho.
      A chama continua andando com a rolagem, porque isso é resposta ao gesto da
      pessoa e não animação de fundo — e é a única função útil que ela tem. */
   @media (prefers-reduced-motion: reduce){
     .pavio .chama, .pavio .chama::after,
-    .pavio .cinzas i, .pavio .cera i{ animation:none }
+    .pavio .cinzas i, .pavio .cera i,
+    .pavio .cera::before, .pavio .poca{ animation:none }
+    /* Cinzas e escorridos somem: só existem enquanto se movem, e parados viram
+       manchas sem explicação. A ZONA QUENTE E A BOCA FICAM, paradas: elas não
+       são movimento, são o estado da cera perto da chama, e apagá-las tiraria
+       justamente o que faz aquilo ser uma vela derretendo. */
     .pavio .cinzas i, .pavio .cera i{ opacity:0 }
+    .pavio .cera::before{ opacity:.85; height:42px }
   }
 
   /* Cada rótulo aparece por um terço do ciclo. A primeira começa visível. */
