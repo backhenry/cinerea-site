@@ -214,3 +214,27 @@
   // carregamento em todos os navegadores.
   v.load();
 })();
+
+// A vela de espera, para quando algo está carregando.
+//
+// Devolve a marcação pronta, porque ela precisa nascer de UM lugar: são cinco
+// pontos de carregamento em duas páginas, e cinco cópias de HTML divergem na
+// primeira vez que a peça mudar — foi a lição das ilustrações do site.
+//
+// `role="status"` com `aria-live="polite"` faz o leitor de tela anunciar o
+// texto quando ele aparece. A vela em si é `aria-hidden`: ela não informa
+// nada que a frase já não diga, e um desenho anunciado é ruído.
+//
+// Quem chama tem de ter um plano B (ver o uso na loja e no perfil): este
+// arquivo é `defer`, e se por qualquer motivo não carregar, o texto sozinho
+// continua sendo uma espera honesta.
+window.velaDeEspera = function (texto) {
+  return '<div class="espera" role="status" aria-live="polite">'
+    + '<div class="pavio" aria-hidden="true">'
+    + '<span class="queimado"></span>'
+    + '<span class="cera"><i></i><i></i><i></i><i></i></span>'
+    + '<span class="poca"></span>'
+    + '<span class="chama"></span>'
+    + '<span class="cinzas"><i></i><i></i><i></i></span>'
+    + '</div><p>' + String(texto == null ? '' : texto) + '</p></div>';
+};

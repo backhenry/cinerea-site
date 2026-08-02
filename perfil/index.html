@@ -158,7 +158,7 @@
       <button data-secao="dados">Meus dados</button>
       <button data-secao="ajuda">Fale conosco</button>
     </nav>
-    <div id="tela"><p class="vazio">abrindo…</p></div>
+    <div id="tela"><div class="espera" role="status" aria-live="polite"><div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div><p>abrindo…</p></div></div>
   </div>
 </main>
 
@@ -357,8 +357,19 @@ async function abrirSecao(qual){
  */
 let certidoes = {};
 
+/**
+ * A espera com a vela derretendo, definida em `vivo.js`.
+ *
+ * O plano B não é zelo: `vivo.js` é `defer` e este módulo também, e se a ordem
+ * mudar ou o arquivo faltar, o texto sozinho continua sendo uma espera honesta.
+ * Melhor perder o desenho do que a página não dizer que está carregando.
+ */
+const esperando = t => (window.velaDeEspera
+  ? window.velaDeEspera(t)
+  : '<p class="vazio">' + t + '</p>');
+
 async function carregarPecas(){
-  tela.innerHTML = '<p class="vazio">buscando suas peças…</p>';
+  tela.innerHTML = esperando('buscando suas peças…');
   try{
     const snap = await getDocs(collection(fdb,'clientes',usuario.uid,'pecas'));
     pecas = snap.docs.map(d => ({ tagUid:d.id, ...d.data() }))
@@ -728,7 +739,7 @@ const SITUACAO = {
 
 async function carregarEncomendas(){
   document.getElementById('chamada').textContent = 'O andamento de cada pedido.';
-  tela.innerHTML = '<p class="vazio">buscando suas encomendas…</p>';
+  tela.innerHTML = esperando('buscando suas encomendas…');
   try{
     // Filtrar por `clienteUid` não é conveniência: é o que a regra exige. Listar
     // a coleção inteira é permissão de quem é da casa, e seria recusado aqui.
@@ -1088,7 +1099,7 @@ async function pintarEditor(i){
   const p = pecas[i];
   document.getElementById('titulo').textContent = p.nome || 'Peça';
   document.getElementById('chamada').textContent = 'O que ela vai dizer a partir de agora.';
-  tela.innerHTML = '<p class="vazio">buscando o que está publicado…</p>';
+  tela.innerHTML = esperando('buscando o que está publicado…');
 
   // Lê o publicado ANTES de desenhar o formulário: nascer vazio e preencher
   // depois faria o campo piscar, e num campo de texto isso apaga o que a pessoa

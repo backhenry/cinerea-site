@@ -510,3 +510,47 @@ a{color:inherit}
   .tipo:hover{transform:translateY(-3px)}
   .tipo:hover span{color:var(--ember)}
 
+
+  /* ---- a espera: a mesma vela, derretendo sozinha -----------------------
+     Reaproveita a peça da margem inteira — cera, boca, escorridos, chama. O
+     que muda é quem manda no `--p`: lá é a rolagem, aqui é o tempo, porque
+     carregamento não tem progresso conhecido. A vela derrete, apaga e acende
+     de novo, e o ciclo se fecha no escuro para não haver salto à vista.
+
+     `@property` é o que permite ANIMAR uma variável. Sem o registro, `--p` é
+     texto para o navegador e os quadros pulam de valor em valor: a vela
+     desceria aos trancos. Onde não houver suporte é exatamente isso que
+     acontece — mais pobre, e não quebrado.
+
+     Os TAMANHOS SÃO FIXOS AQUI, e não seguem a tela como na margem. A vela da
+     rolagem engorda em monitor grande porque tem margem sobrando; uma vela de
+     espera que mudasse de tamanho conforme a janela seria só inconstância. */
+  @property --p{ syntax:'<number>'; initial-value:0; inherits:true }
+
+  .espera{
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+    padding:56px 0 44px;
+  }
+  .espera p{ font-size:14px; color:var(--smoke); text-align:center }
+  .espera .pavio{
+    position:relative; left:auto; right:auto; top:auto; bottom:auto;
+    width:3px; height:108px; z-index:auto;
+    animation:consumir 3.6s cubic-bezier(.45,.05,.55,.95) infinite;
+  }
+  /* Três classes de especificidade: vence as regras de faixa de tela do
+     `.pavio .cera` sem precisar de `!important`. */
+  .espera .pavio .cera{ width:14px; border-radius:0 0 6px 6px }
+  .espera .pavio .poca{ width:14px; height:5px }
+  .espera .pavio .chama{ width:13px; height:23px }
+  .espera .pavio .chama::after{ width:24px; height:30px }
+  @keyframes consumir{
+    0%,3%    { --p:0;   opacity:0 }
+    11%      { --p:.06; opacity:1 }
+    87%      { --p:.93; opacity:1 }
+    97%,100% { --p:1;   opacity:0 }
+  }
+  /* Quem pede menos movimento vê a vela parada pela metade, com o texto ao
+     lado. Some o pisca-pisca, fica o símbolo. */
+  @media (prefers-reduced-motion: reduce){
+    .espera .pavio{ animation:none; --p:.45 }
+  }
