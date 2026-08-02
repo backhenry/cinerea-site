@@ -385,6 +385,16 @@ const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:
 
 let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='', banner=null;
 let ordem='vitrine', soEstoque=false, semBreve=false, termoCru='';
+/**
+ * O cupom que o banner anuncia existe de verdade?
+ *
+ * `null` = ainda conferindo · `true` = vale · `false` = não vale.
+ *
+ * Três estados, e não dois, pela mesma razão de `resumoDoDesconto` no
+ * aplicativo: enquanto a resposta não volta, "não vale" e "ainda não sei" são
+ * coisas diferentes, e tratá-las igual faz a tela piscar a coisa errada.
+ */
+let cupomDoBannerVale = null;
 const sacola={};   // id -> qtd
 
 /**
@@ -570,7 +580,20 @@ function pintarBanner(){
     if(hoje > b.ate){ box.innerHTML=''; return; }
   }
   const cor = {brasa:'brasa','carvão':'carvao',carvao:'carvao',areia:'areia'}[b.cor] || 'brasa';
-  const usavel = !!b.cupom;
+  // O CÓDIGO SÓ APARECE SE O CUPOM EXISTIR MESMO, e esta trava nasceu do pior
+  // jeito de errar isso, encontrado no ar em ago/2026: o banner dizia "15% OFF,
+  // código INAUGURA15", tocar nele preenchia a sacola sozinho, e a loja
+  // respondia "não encontrei esse cupom, confira as letras" — acusando de
+  // digitar errado quem não digitou nada, na página em que ia comprar.
+  //
+  // A gestão avisa o dono, mas isso depende de ele olhar. Aqui é automático, e
+  // protege quem está comprando.
+  //
+  // `cupomDoBannerVale` é null enquanto a resposta não voltou: nesse intervalo
+  // o banner sai SEM o código, e ganha o código quando a conferência chega.
+  // Melhor o convite aparecer sem chamada do que piscar um código que talvez
+  // não valha.
+  const usavel = !!b.cupom && cupomDoBannerVale === true;
   // A arte só entra se vier do NOSSO Storage. Mesma trava do logo da peça: sem
   // ela, alguém aponta a imagem para servidor próprio e passa a ver quem abriu
   // a loja, no domínio da marca.
@@ -583,6 +606,35 @@ function pintarBanner(){
     ${b.texto?`<span class="btexto">${esc(b.texto)}</span>`:''}
     ${usavel?`<span class="bcupom">${esc(b.cupom)}</span>`:''}
   </${usavel?'button':'div'}>`;
+}
+
+/**
+ * Confere se o cupom do banner existe antes de anunciá-lo.
+ *
+ * Uma leitura de um documento só, e ela paga por si: sem isto o banner promete
+ * um desconto que a loja recusa dois toques depois, culpando o cliente.
+ *
+ * NÃO confere o valor mínimo de propósito. Cupom que vale a partir de R$ 300 é
+ * um cupom que existe: escondê-lo de quem tem R$ 200 na sacola tiraria
+ * justamente o convite a colocar mais uma peça. O mínimo continua sendo
+ * cobrado na hora de aplicar, com a frase que diz o valor.
+ *
+ * Falha de rede deixa o código escondido. É o lado seguro: um banner sem
+ * chamada continua sendo um banner; um código que não funciona vira acusação.
+ */
+async function conferirCupomDoBanner(){
+  const cod = banner?.cupom;
+  if(!cod){ cupomDoBannerVale = false; return; }
+  try{
+    const d = await getDoc(doc(fdb,'cupons',cod));
+    if(!d.exists()){ cupomDoBannerVale = false; return; }
+    const x = d.data();
+    if(x.ativo === false){ cupomDoBannerVale = false; return; }
+    const ate = x.ate?.toMillis ? x.ate.toMillis() : (typeof x.ate === 'number' ? x.ate : null);
+    cupomDoBannerVale = !(ate && Date.now() > ate);
+  }catch{
+    cupomDoBannerVale = false;
+  }
 }
 
 /** Tocar no cupom do banner já abre a sacola com ele preenchido. */
@@ -842,7 +894,14 @@ function colecaoPedida(){
   return achada ? achada.nome : null;
 }
 
-try { await carregar(); linhaAtiva = colecaoPedida(); pintarBanner(); pintar(); }
+try {
+  await carregar(); linhaAtiva = colecaoPedida(); pintarBanner(); pintar();
+  // A conferência do cupom vem DEPOIS de a loja aparecer, e não bloqueia: as
+  // peças não podem esperar uma leitura que só decide se um código sai escrito
+  // no banner. Quando ela volta, o banner se repinta com ou sem o código.
+  await conferirCupomDoBanner();
+  pintarBanner();
+}
 catch { document.getElementById('grade').innerHTML='<p class="vazio">Não consegui abrir a loja agora. Tente de novo com internet.</p>'; }
 </script>
 <footer class="rodape">
