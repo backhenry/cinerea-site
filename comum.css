@@ -198,35 +198,90 @@ a{color:inherit}
     border-radius:60% 60% 50% 50% / 28% 28% 72% 72%;
     background:linear-gradient(180deg, #FFFFFF, #F6F2E9 58%, #D9D0BE);
     box-shadow:0 1px 2px rgba(28,26,23,.3), 0 0 3px rgba(255,255,255,.9);
-    opacity:0; animation:escorrer 3.6s cubic-bezier(.22,.85,.3,1) infinite;
+    opacity:0;
+    /* O ponto de deformação é o TOPO: cera que escorre estica para baixo
+       ancorada em cima, como quem se estende, e não a partir do meio. */
+    transform-origin:50% 0;
   }
-  /* QUATRO pingos defasados em 0,9s: corre um por segundo, e é a frequência
-     que faz a peça parecer viva de canto de olho. Um a cada segundo e meio
-     passava despercebido entre uma piscada e outra. */
+  /* O RASTRO: o caminho molhado que a gota deixa atrás. É ele que liga o pingo
+     à boca derretida — sem rastro cada gota é um objeto solto descendo, e
+     objeto solto descendo não é cera, é uma bolinha. */
+  .pavio .cera i::before{
+    content:''; position:absolute; left:50%; bottom:60%;
+    width:1.2px; height:26px; transform:translateX(-50%);
+    background:linear-gradient(0deg, rgba(255,255,255,.8), rgba(255,255,255,0));
+    border-radius:1px;
+  }
+
+  /* CADA GOTA TEM O PRÓPRIO PERCURSO, e é isso que faz a descida parecer
+     orgânica. Antes as quatro dividiam uma animação só: mesma distância, mesma
+     curva, mesma velocidade, defasadas no tempo — quatro peças de relógio, e o
+     olho reconhece repetição antes de reconhecer qualquer outra coisa.
+
+     Três coisas mudam entre elas, e nenhuma é enfeite:
+
+     - a DISTÂNCIA (18 a 42px), porque cera para onde esfria, e cada fio esfria
+       num ponto;
+     - a HESITAÇÃO: acelera, corre, quase para, volta a correr. Cera de verdade
+       anda em arranco, conforme mais cera derretida a alimenta por cima;
+     - a FORMA: afina esticada enquanto corre e ENGROSSA ao parar, virando gota.
+       Isso é viscosidade, e é o que separa cera de gota d'água.
+
+     As durações são propositalmente desalinhadas (3,7 · 4,3 · 5,1 · 6,7) para
+     que o conjunto não volte a coincidir e não nasça um compasso perceptível. */
+  .pavio .cera i:nth-child(1){ animation:escorre1 3.7s infinite }
   .pavio .cera i:nth-child(2){
-    animation-delay:.9s; left:auto; right:1.5px; width:2px; height:7px;
+    left:auto; right:1.5px; width:2px; height:7px;
+    animation:escorre2 5.1s infinite; animation-delay:-1.2s;
   }
   .pavio .cera i:nth-child(3){
-    animation-delay:1.8s; left:5px; width:2px; height:6px;
+    left:5px; width:2px; height:6px;
+    animation:escorre3 4.3s infinite; animation-delay:-2.6s;
   }
   .pavio .cera i:nth-child(4){
-    animation-delay:2.7s; left:auto; right:4px; width:1.5px; height:6px;
+    left:auto; right:4px; width:1.5px; height:6px;
+    animation:escorre4 6.7s infinite; animation-delay:-3.9s;
   }
-  /* A CORRIDA TEM DE SER RÁPIDA, e a primeira versão errou justo nisso: 32px em
-     4 segundos são 8px por segundo, e visão periférica não enxerga movimento
-     lento — a peça vive a 15px da borda da janela, longe de onde se está lendo.
-     Cera de verdade também não escorre devagar: ela corre num átimo quando
-     amolece e congela onde esfriou.
-     Agora o percurso leva 14% de um ciclo de 4,5s, ou seja ~0,6s, e o resto do
-     tempo o pingo fica parado, endurecido. Com três pingos defasados, corre um
-     a cada segundo e meio. */
-  @keyframes escorrer{
-    0%  {opacity:0;   transform:translateY(0)    scaleY(.5)}
-    3%  {opacity:.95; transform:translateY(2px)  scaleY(1.4)}
-    14% {opacity:.95; transform:translateY(31px) scaleY(1)}
-    /* Endurecida: parada no lugar, ainda visível, por quase todo o ciclo. */
-    86% {opacity:.9;  transform:translateY(33px) scaleY(1)}
-    100%{opacity:0;   transform:translateY(33px) scaleY(1)}
+
+  /* A longa: desce quase tudo, hesita no meio, e termina em gota gorda. */
+  @keyframes escorre1{
+    0%  {opacity:0;   transform:translateY(0)   scale(1,.5);   animation-timing-function:cubic-bezier(.35,0,.9,.45)}
+    4%  {opacity:.95; transform:translateY(3px) scale(.85,1.7); animation-timing-function:linear}
+    13% {              transform:translateY(19px) scale(.8,1.9); animation-timing-function:cubic-bezier(.3,.7,.6,1)}
+    18% {              transform:translateY(24px) scale(1,1.15); animation-timing-function:cubic-bezier(.5,0,.85,.5)}
+    /* o arranco: mais cera chega por cima e ela volta a correr */
+    26% {              transform:translateY(38px) scale(.9,1.5); animation-timing-function:cubic-bezier(.2,.85,.3,1)}
+    33% {opacity:.95; transform:translateY(42px) scale(1.25,.85)}
+    88% {opacity:.85; transform:translateY(42px) scale(1.25,.85)}
+    100%{opacity:0;   transform:translateY(42px) scale(1.25,.85)}
+  }
+  /* A curta e tímida: para cedo, quase não estica. */
+  @keyframes escorre2{
+    0%  {opacity:0;   transform:translateY(0)   scale(1,.6);   animation-timing-function:cubic-bezier(.4,0,.85,.5)}
+    5%  {opacity:.9;  transform:translateY(4px) scale(.9,1.45); animation-timing-function:cubic-bezier(.25,.8,.35,1)}
+    15% {opacity:.9;  transform:translateY(18px) scale(1.2,.9)}
+    82% {opacity:.8;  transform:translateY(18px) scale(1.2,.9)}
+    100%{opacity:0;   transform:translateY(18px) scale(1.2,.9)}
+  }
+  /* A fina e rápida: o fio mais comprido, quase sem gota no fim. */
+  @keyframes escorre3{
+    0%  {opacity:0;   transform:translateY(0)   scale(1,.5);   animation-timing-function:cubic-bezier(.3,0,.9,.4)}
+    3%  {opacity:.92; transform:translateY(2px) scale(.75,2);   animation-timing-function:linear}
+    16% {opacity:.92; transform:translateY(34px) scale(.75,1.9); animation-timing-function:cubic-bezier(.2,.9,.3,1)}
+    22% {opacity:.92; transform:translateY(39px) scale(1.05,1)}
+    90% {opacity:.8;  transform:translateY(39px) scale(1.05,1)}
+    100%{opacity:0;   transform:translateY(39px) scale(1.05,1)}
+  }
+  /* A preguiçosa: demora a soltar, e aí desce de uma vez. */
+  @keyframes escorre4{
+    0%  {opacity:0;   transform:translateY(0)   scale(1.15,.7); animation-timing-function:ease-out}
+    6%  {opacity:.85; transform:translateY(2px) scale(1.2,.95);  animation-timing-function:ease-in}
+    /* fica pendurada, engordando, antes de largar */
+    17% {opacity:.85; transform:translateY(5px) scale(1.3,1.1);  animation-timing-function:cubic-bezier(.45,0,.85,.45)}
+    24% {              transform:translateY(21px) scale(.85,1.6); animation-timing-function:cubic-bezier(.2,.85,.3,1)}
+    30% {opacity:.85; transform:translateY(27px) scale(1.2,.9)}
+    86% {opacity:.75; transform:translateY(27px) scale(1.2,.9)}
+    100%{opacity:0;   transform:translateY(27px) scale(1.2,.9)}
   }
 
   /* A boca derretida: o anel de cera líquida logo abaixo da chama. É o que
