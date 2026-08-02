@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacidade · Cinérea</title>
+<meta name="description" content="O que a Cinérea guarda, o que fica público na página da sua peça, e como apagar tudo. Sem rastreadores e sem intermediários.">
+<meta property="og:title" content="Privacidade · Cinérea">
+
+<!--
+  FALTA O DONO PREENCHER, e sem isso a página está honesta mas não completa
+  para a LGPD: razão social e CNPJ do ateliê, e um e-mail de contato próprio.
+  Hoje o único canal é o WhatsApp, que funciona, mas um e-mail escrito dá à
+  pessoa um registro do pedido dela — e a lei fala em resposta em 15 dias.
+  Procure "ENTRA AQUI" neste arquivo. Nada disso aparece na página: ela está
+  publicável como está, só não está completa.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  .capa{text-align:center;padding:66px 22px 20px;max-width:640px;margin:0 auto}
+  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px}
+  .capa p{margin-top:16px;font-size:16.5px;color:var(--smoke)}
+  .capa .data{margin-top:14px;font-size:13px;color:var(--smoke)}
+
+  .texto{max-width:680px;margin:0 auto;padding:0 22px 40px}
+  .texto h2{
+    font-family:'Fraunces';font-weight:300;font-size:clamp(22px,5.2vw,28px);
+    margin-top:52px;padding-top:26px;border-top:1px solid var(--line);
+  }
+  .texto h3{font-family:'Fraunces';font-weight:400;font-size:18px;margin-top:26px}
+  .texto p{margin-top:12px;font-size:16px;line-height:1.65;color:var(--char)}
+  .texto ul{margin-top:12px;padding-left:20px}
+  .texto li{margin-top:9px;font-size:16px;line-height:1.6;color:var(--char)}
+  .texto a{color:var(--ember)}
+  .fraco{color:var(--smoke)}
+
+  /* O aviso do wi-fi é o único bloco destacado da página, e é de propósito:
+     é a consequência que ninguém espera de uma escolha que parece pequena. */
+  .grave{
+    margin-top:22px;padding:22px 24px;border-radius:14px;
+    border:1px solid var(--ember);background:rgba(181,70,42,.055);
+  }
+  .grave strong{display:block;font-family:'Fraunces';font-weight:400;font-size:18px}
+  .grave p{margin-top:10px;font-size:15.5px}
+
+  .resumo{
+    max-width:680px;margin:26px auto 0;padding:0 22px;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;
+  }
+  .resumo div{padding:16px 18px;border-left:2px solid var(--line)}
+  .resumo strong{display:block;font-family:'Fraunces';font-weight:400;font-size:16px}
+  .resumo span{display:block;margin-top:5px;font-size:14px;color:var(--smoke);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/">A marca</a>
+    <a href="/aplicacoes/">Aplicações</a>
+    <a href="/loja/">Loja</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+  <div class="topo-acoes">
+    <a href="https://wa.me/5511958280174" target="_blank" rel="noopener"
+       aria-label="Falar no WhatsApp" title="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M20 12a8 8 0 1 1-3.4-6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M20 4v4.2h-4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4.6 19.4 6 15.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+    </a>
+    <a href="/perfil/" aria-label="Meu perfil" title="Meu perfil">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M4.8 20c.6-3.6 3.6-6 7.2-6s6.6 2.4 7.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span class="rot-acao">Perfil</span>
+    </a>
+  </div>
+</div></header>
+
+<section class="capa">
+  <span class="rot">Privacidade</span>
+  <h1>O que guardamos, e o que fica à vista</h1>
+  <p>Escrito para ser lido, não para ser aceito sem ler. Vale para o site
+     cinerea.com.br e para o aplicativo Cinérea.</p>
+  <p class="data">Atualizada em 1º de agosto de 2026</p>
+</section>
+
+<div class="resumo">
+  <div><strong>Sem rastreadores</strong><span>Nenhum analytics, nenhum pixel, nenhum cookie de publicidade. Nada.</span></div>
+  <div><strong>Sem venda de dados</strong><span>Não vendemos, não trocamos e não cedemos para marketing de ninguém.</span></div>
+  <div><strong>Você apaga sozinho</strong><span>Apagar a conta está dentro do aplicativo, sem precisar pedir.</span></div>
+</div>
+
+<main class="texto">
+
+  <h2>Quem é responsável</h2>
+  <p>A Cinérea, ateliê de esculturas de gesso e velas de areia perfumada em
+     Campos do Jordão, São Paulo.</p>
+  <!-- ENTRA AQUI a razão social e o CNPJ, quando o dono passar. A página é
+       verdadeira sem eles, mas a LGPD espera o controlador identificado. -->
+  <p>Para qualquer assunto desta página, inclusive pedidos sobre os seus dados,
+     fale pelo <a href="https://wa.me/5511958280174" rel="noopener">WhatsApp
+     do ateliê</a>. Respondemos em até 15 dias.</p>
+  <!-- E AQUI um e-mail de contato, que hoje não existe (`marca.email` é null).
+       O WhatsApp funciona, mas um e-mail dá à pessoa registro do pedido dela. -->
+
+  <h2>O que guardamos</h2>
+
+  <h3>Sua conta</h3>
+  <p>Nome e e-mail. A senha é guardada pelo Firebase, do Google, de forma que
+     nem nós conseguimos ver: se você esquecer, o caminho é redefinir, porque
+     ninguém aqui tem como consultá-la.</p>
+
+  <h3>Suas peças</h3>
+  <p>O nome que você deu a cada peça, o identificador de fábrica do chip dela,
+     o que ela diz hoje e as <strong>últimas 20 coisas que ela já disse</strong>.
+     Esse histórico é a memória da peça, e é o que permite voltar atrás.</p>
+  <p>Se você gravar uma rede de wi-fi, a senha entra nesse histórico junto com
+     o resto. É uma decisão consciente do ateliê: guardar tudo o que a peça já
+     disse, sem exceções escondidas.</p>
+
+  <h3>Suas encomendas</h3>
+  <p>O que você pediu, o valor, o cupom que usou, e os dados de entrega que você
+     escreveu: nome, endereço e telefone.</p>
+
+  <h3>Imagens que você envia</h3>
+  <p>Se você puser um logo na página de uma peça, o arquivo fica guardado no
+     Cloud Storage do Google, ligado à sua conta.</p>
+
+  <h2>O que fica público</h2>
+  <p>Cada peça tem um endereço permanente, do tipo
+     <span class="fraco">cinerea.com.br/p/?c=…</span>, que é o que o chip guarda.
+     Quem encosta o celular na peça abre essa página. Ela <strong>não pede
+     login</strong>, e não poderia pedir: o convidado de uma festa não vai criar
+     conta para ver a playlist que você deixou.</p>
+  <p>Ou seja: <strong>o que você publica na peça, qualquer pessoa com aquele
+     endereço vê</strong>. E o endereço se encaminha por mensagem como qualquer
+     outro link.</p>
+
+  <div class="grave">
+    <strong>A senha do wi-fi vai junto, e isso precisa estar claro</strong>
+    <p>Quando você escolhe o tipo "wi-fi", a senha da rede aparece nessa página
+       pública. Não é descuido: a Apple não implementa o padrão de NFC que
+       conecta a rede sozinho, então um convidado de iPhone não teria como
+       receber a senha pelo chip. Sem ela na página, o tipo simplesmente não
+       funcionaria em metade dos celulares.</p>
+    <p>O efeito prático é o de um cartão com a senha ao lado da porta: quem
+       recebe o link encaminhado vê a senha, mesmo sem nunca ter tocado na peça.
+       Se isso não te serve, use outro tipo de conteúdo — e, se já tiver
+       gravado, você tira do ar a qualquer momento em
+       <a href="/perfil/">Meu perfil</a> ou pelo aplicativo.</p>
+  </div>
+
+  <p>O que <em>não</em> fica público: seu nome, seu e-mail, seu endereço, suas
+     encomendas e o histórico da peça. Nada disso aparece para o convidado.</p>
+
+  <h2>O que não fazemos</h2>
+  <ul>
+    <li>Não usamos analytics, pixel de rede social nem cookie de publicidade.
+        O site não tem nenhum: dá para conferir abrindo o código, que é
+        aberto.</li>
+    <li>Não vendemos, alugamos nem cedemos seus dados para marketing.</li>
+    <li>Não mandamos e-mail de propaganda. O que sai daqui é sobre a sua
+        encomenda.</li>
+    <li>Não rastreamos onde a sua peça é usada. Não sabemos, e não temos como
+        saber, quem encostou o celular nela nem quando.</li>
+  </ul>
+
+  <h2>Quem mais tem acesso</h2>
+  <p>Três serviços, e nenhum deles é anunciante:</p>
+  <ul>
+    <li><strong>Google Firebase</strong> guarda a conta, os dados e as imagens.
+        Os servidores ficam fora do Brasil, então seus dados são transferidos
+        para o exterior.</li>
+    <li><strong>GitHub Pages</strong> serve as páginas do site. Como todo
+        servidor de internet, registra o endereço IP de quem acessa.</li>
+    <li><strong>Google Fonts</strong> entrega as fontes das páginas, e por isso
+        recebe o seu IP quando você abre o site.</li>
+  </ul>
+  <p>Se você clicar para falar no WhatsApp, a conversa passa a ser regida pela
+     política do WhatsApp, não por esta.</p>
+
+  <h2>Por quanto tempo</h2>
+  <p>Sua conta e suas peças ficam enquanto você quiser. Apagou a conta, some na
+     hora.</p>
+  <p><strong>As encomendas ficam com o ateliê mesmo depois disso.</strong> São
+     registro de venda, e a lei não deixa apagar nota fiscal a pedido de
+     ninguém. Ficam guardadas pelo prazo que a legislação exige, separadas da
+     sua conta.</p>
+
+  <h2>Como apagar tudo</h2>
+  <p>No aplicativo, em <strong>Cinérea → Apagar minha conta</strong>. Ele pede
+     sua senha para confirmar e apaga, na ordem certa, as páginas públicas das
+     suas peças, as imagens que você enviou, o registro das peças e a conta em
+     si. Não passa por aprovação de ninguém.</p>
+  <p>Se você não usa o aplicativo, peça pelo WhatsApp e fazemos o mesmo.</p>
+  <p class="fraco">As peças continuam suas: o chip é físico, está dentro do
+     gesso, e apagar a conta não o toca. Quem receber a peça depois é só
+     encostar o celular e guardá-la na conta dele.</p>
+
+  <h2>Seus direitos</h2>
+  <p>A LGPD (Lei 13.709/2018) te dá direito a saber o que guardamos sobre você,
+     corrigir o que estiver errado, pedir uma cópia, apagar o que não for
+     obrigatório manter, e retirar seu consentimento. É só pedir pelo WhatsApp
+     do ateliê, e respondemos em até 15 dias.</p>
+  <p>Boa parte disso você já faz sozinho: os dados da conta se editam em
+     <a href="/perfil/">Meu perfil</a>, e apagar está no aplicativo.</p>
+
+  <h2>Menores de idade</h2>
+  <p>O aplicativo e a loja são para maiores de 18 anos. Não pedimos e não
+     queremos dados de crianças. Se descobrirmos que uma conta é de menor,
+     apagamos.</p>
+
+  <h2>Se esta política mudar</h2>
+  <p>A data no alto da página muda junto. Se a mudança for grande, avisamos
+     quem tem conta antes de valer.</p>
+
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+         Jordão. Cada peça moldada à mão, uma por vez.</p>
+      <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>A loja</h3>
+      <a href="/loja/">Todas as peças</a>
+      <a href="/loja/?colecao=Areia">Refis de areia</a>
+      <a href="/aplicacoes/">Aplicações</a>
+      <a href="/contato/?sobre=empresa">Quantidade para empresa</a>
+    </div>
+    <div>
+      <h3>Entenda a peça</h3>
+      <a href="/#areia">A vela que se repõe</a>
+      <a href="/#chip">O chip dentro dela</a>
+      <a href="/perfil/">Minhas peças</a>
+      <a href="/contato/?sobre=refil">Qual refil é o meu</a>
+    </div>
+    <div>
+      <h3>Falar com o ateliê</h3>
+      <a href="https://wa.me/5511958280174" rel="noopener">WhatsApp</a>
+      <a href="/contato/">Encomenda especial</a>
+      <a class="rede" href="https://instagram.com/cinerea.velas" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+        <span>@cinerea.velas</span></a>
+      <a class="rede" href="https://www.tiktok.com/@cinerea.velas" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4v10.2a3.4 3.4 0 1 1-2.8-3.35" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 4c.4 2.2 1.9 3.7 4.2 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>@cinerea.velas</span></a>
+    </div>
+  </div>
+  <div class="fim">
+    <span>© Cinérea · feito à mão em Campos do Jordão · SP</span>
+    <span class="direita"><a href="/privacidade/">Privacidade</a> · <a href="/perfil/">Meu perfil</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

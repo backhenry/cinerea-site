@@ -194,7 +194,7 @@
   </div>
   <div class="fim">
     <span>© Cinérea · feito à mão em Campos do Jordão · SP</span>
-    <span class="direita"><a href="/perfil/">Meu perfil</a></span>
+    <span class="direita"><a href="/privacidade/">Privacidade</a> · <a href="/perfil/">Meu perfil</a></span>
   </div>
 </footer>
 
@@ -341,6 +341,15 @@ async function abrirSecao(qual){
   if (qual === 'ajuda')      return pintarAjuda();
 }
 
+/**
+ * A certidão de cada peça, por tagUid. Chave ausente = ainda buscando.
+ *
+ * Mora em `pecas/{tagUid}`, FORA da conta de quem comprou, porque pertence à
+ * peça e não ao dono: se a peça mudar de mãos, a procedência vai junto. A
+ * leitura é aberta, então não depende de login nenhum.
+ */
+let certidoes = {};
+
 async function carregarPecas(){
   tela.innerHTML = '<p class="vazio">buscando suas peças…</p>';
   try{
@@ -348,6 +357,20 @@ async function carregarPecas(){
     pecas = snap.docs.map(d => ({ tagUid:d.id, ...d.data() }))
       .sort((a,b) => (b.adicionadaEm?.toMillis?.()||0) - (a.adicionadaEm?.toMillis?.()||0));
     pintarLista();
+
+    // Depois da lista, e de propósito: a certidão enriquece, não pode atrasar
+    // as peças aparecerem. Peça nunca registrada na produção fica com `null` e
+    // a tela cai no caminho geral, sem buraco.
+    await Promise.all(pecas.map(async p => {
+      try{
+        const c = await getDoc(doc(fdb,'pecas',p.tagUid));
+        certidoes[p.tagUid] = c.exists() ? c.data() : null;
+      }catch{ certidoes[p.tagUid] = null; }
+    }));
+    // Só repinta se a pessoa ainda estiver olhando as peças: ela pode ter ido
+    // para encomendas enquanto isto voltava, e repintar por cima seria trocar a
+    // tela debaixo da mão dela.
+    if (secao === 'pecas') pintarLista();
   }catch(e){
     console.error(e);
     tela.innerHTML = `<div class="cartao"><h3>Não consegui buscar suas peças</h3>
@@ -403,6 +426,59 @@ async function entrar(){
   }
 }
 
+/**
+ * Repor a areia, na peça em que a pessoa já está mexendo.
+ *
+ * É aqui que a peça vira compra recorrente, e o lugar não é acidente: a pessoa
+ * vem a esta tela para trocar o que a peça diz, e não para comprar. O convite
+ * fica junto da peça de que ele fala, e não numa aba de loja que ela teria de
+ * lembrar de abrir.
+ *
+ * TRÊS ESTADOS, e confundir dois deles é mostrar a coisa errada:
+ *
+ * - chave ausente = a certidão ainda não voltou da rede. Não mostra NADA. Um
+ *   "fale com o ateliê" no primeiro quadro, trocado depois pelo link certo,
+ *   pisca na cara de quem está lendo;
+ * - `refil` preenchido = o ateliê registrou o refil DESTE modelo. É o caminho
+ *   bom, e por isso o link é do modelo, não da loja inteira: quem tem uma vela
+ *   de areia não quer procurar qual das areias serve;
+ * - sem certidão, ou certidão sem refil = manda para o contato, NÃO para a
+ *   loja. Enquanto o refil não existir como produto cadastrado, mandar para a
+ *   loja é mandar para uma prateleira vazia.
+ */
+function linhaDoRefil(tagUid){
+  if (!(tagUid in certidoes)) return '';
+  const c = certidoes[tagUid];
+  const modelo = c?.modelo ? ` do ${esc(c.modelo)}` : '';
+
+  if (c?.refil) {
+    // O endereço vem do Firestore, escrito pela casa. Passa pelo mesmo filtro
+    // de esquema da página do convidado: sem isso, um `javascript:` gravado na
+    // certidão viraria clique executável dentro da conta do cliente.
+    const url = enderecoDeConfianca(c.refil);
+    if (url) return `<p class="sub" style="margin-top:12px">
+      <a href="${esc(url)}" target="_blank" rel="noopener">Repor a areia${modelo}</a>
+    </p>`;
+  }
+
+  return `<p class="sub" style="margin-top:12px">
+    <a href="/contato/?sobre=refil">Qual refil serve nesta peça</a>
+  </p>`;
+}
+
+/**
+ * Só http e https viram link. Mesmo critério da página do convidado.
+ *
+ * `esc()` escapa aspas, o que impede sair do atributo — e não impede nada de
+ * um `javascript:`, que executa sem precisar sair de lugar nenhum.
+ */
+function enderecoDeConfianca(bruto){
+  try{
+    const u = new URL(String(bruto), location.origin);
+    return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
+  }catch{ return ''; }
+}
+
 /* ----------------------------------------------------------------- lista --- */
 function pintarLista(){
   document.getElementById('titulo').textContent = 'Suas peças';
@@ -435,6 +511,7 @@ function pintarLista(){
              e não num endereço. Para trocar é preciso o aplicativo e a peça na mão.
              Gravando uma vez no modo <b>“trocar de onde eu estiver”</b>, ela passa a
              aparecer aqui para sempre.</div>`}
+      ${linhaDoRefil(p.tagUid)}
     </div>`;
   }).join('');
 
