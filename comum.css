@@ -124,7 +124,12 @@ a{color:inherit}
        o que faz ler como vela. A textura de fibra se perde abaixo da chama, e
        ninguém vê fibra dentro da cera mesmo. */
     background:
-      linear-gradient(90deg, transparent 0 37%, rgba(92,86,78,.62) 37% 63%, transparent 63%),
+      linear-gradient(90deg,
+        transparent calc(50% - 1.5px),
+        rgba(96,90,82,.55) calc(50% - 1.5px) calc(50% - .6px),
+        rgba(74,68,60,.7)  calc(50% - .6px)  calc(50% + .6px),
+        rgba(96,90,82,.55) calc(50% + .6px)  calc(50% + 1.5px),
+        transparent calc(50% + 1.5px)),
       linear-gradient(90deg,
         #A69B85 0 7%,
         #FFFFFF 7% 24%,
@@ -364,7 +369,7 @@ a{color:inherit}
   /* A chama anda com a rolagem. O `translate(-50%,-50%)` a centra no cordão. */
   .pavio .chama{
     position:absolute; left:50%; top:calc(var(--p,0) * 100%);
-    width:11px; height:20px; transform:translate(-50%,-58%);
+    width:16px; height:28px; transform:translate(-50%,-58%);
     background:radial-gradient(ellipse at 50% 78%, #F2D9A8 0%, #E8A15C 26%, #D9663F 52%, #B5462A 74%, rgba(181,70,42,0) 78%);
     border-radius:52% 48% 46% 54% / 68% 66% 34% 32%;
     animation:tremula 1.7s ease-in-out infinite;
@@ -378,7 +383,7 @@ a{color:inherit}
      Agora sobe pouco acima da chama, que é para onde o calor vai de verdade. */
   .pavio .chama::after{
     content:''; position:absolute; left:50%; top:30%;
-    width:22px; height:26px; transform:translate(-50%,-50%);
+    width:30px; height:36px; transform:translate(-50%,-50%);
     background:radial-gradient(ellipse, rgba(181,70,42,.3) 0%, rgba(181,70,42,0) 70%);
     animation:calor 3.3s ease-in-out infinite;
   }
@@ -410,8 +415,8 @@ a{color:inherit}
      ela sempre foi no telefone. */
   @media(max-width:700px){
     .pavio{left:6px;width:2px;top:14vh;bottom:14vh}
-    .pavio .chama{width:11px;height:16px}
-    .pavio .chama::after{width:18px;height:21px}
+    .pavio .chama{width:12px;height:20px}
+    .pavio .chama::after{width:22px;height:27px}
     .pavio .cera i{display:none}
   }
 
@@ -445,6 +450,8 @@ a{color:inherit}
      de 120px de respiro — de longe o caso mais folgado. */
   @media(min-width:1241px){
     .pavio .cera{width:26px;border-radius:0 0 9px 9px}
+    .pavio .chama{width:21px;height:36px}
+    .pavio .chama::after{width:40px;height:48px}
     .pavio .poca{width:26px;height:9px}
   }
 
