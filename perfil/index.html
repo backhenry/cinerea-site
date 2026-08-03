@@ -147,6 +147,20 @@
     font-family:'Fraunces';font-size:18px;
   }
   .ck-total b{font-family:'Fraunces'}
+  .ck-dupla{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  @media(max-width:520px){ .ck-dupla{grid-template-columns:1fr} }
+  .ck-caixa{
+    display:flex;align-items:center;gap:7px;margin-top:7px;
+    font-size:12.5px;color:var(--smoke);cursor:pointer;
+  }
+  .ck-caixa input{width:auto;margin:0}
+  /* O erro fica EMBAIXO do campo que ele descreve, e a borda do campo muda
+     junto. Só a cor não bastaria: quem não distingue vermelho ficaria sem
+     saber qual dos nove campos falhou. */
+  .ck-erro{color:var(--ember);font-size:12px;margin-top:5px;line-height:1.4}
+  input.ruim{border-color:var(--ember)}
+  input.ruim:focus{outline-color:var(--ember)}
+  input:disabled{background:var(--ash);color:var(--smoke);cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -969,17 +983,54 @@ async function telaFechar(){
         <button class="ck-op" data-entrega="retirada">Retirar / entrega local</button>
       </div>
       <div id="ck_endereco">
-        <label>CEP</label>
+        <label for="ck_cep">CEP</label>
         <input id="ck_cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9">
+        <div class="ck-erro some" id="e_cep"></div>
         <div class="sub" id="ck_cepRecado" style="margin-top:4px"></div>
-        <label>Endereço</label>
-        <input id="ck_end" autocomplete="street-address" placeholder="rua, número, complemento, bairro, cidade"
-               value="${esc(dados.endereco||'')}">
+
+        <label for="ck_rua">Rua</label>
+        <input id="ck_rua" autocomplete="address-line1" placeholder="Rua das Oliveiras" maxlength="120">
+        <div class="ck-erro some" id="e_rua"></div>
+
+        <div class="ck-dupla">
+          <div>
+            <label for="ck_numero">Número</label>
+            <input id="ck_numero" inputmode="numeric" autocomplete="address-line2" placeholder="123" maxlength="10">
+            <label class="ck-caixa"><input type="checkbox" id="ck_sn"> sem número</label>
+            <div class="ck-erro some" id="e_numero"></div>
+          </div>
+          <div>
+            <label for="ck_compl">Complemento</label>
+            <input id="ck_compl" placeholder="apto 42, fundos, bloco B" maxlength="80">
+            <div class="sub" style="margin-top:4px">Opcional</div>
+          </div>
+        </div>
+
+        <label for="ck_bairro">Bairro</label>
+        <input id="ck_bairro" autocomplete="address-level3" placeholder="Centro" maxlength="80">
+        <div class="ck-erro some" id="e_bairro"></div>
+
+        <div class="ck-dupla">
+          <div>
+            <label for="ck_cidade">Cidade</label>
+            <input id="ck_cidade" autocomplete="address-level2" placeholder="São Paulo" maxlength="80">
+            <div class="ck-erro some" id="e_cidade"></div>
+          </div>
+          <div>
+            <label for="ck_uf">Estado</label>
+            <input id="ck_uf" autocomplete="address-level1" placeholder="SP" maxlength="2" style="text-transform:uppercase">
+            <div class="ck-erro some" id="e_uf"></div>
+          </div>
+        </div>
       </div>
-      <label>Telefone</label>
-      <input id="ck_tel" inputmode="tel" autocomplete="tel" placeholder="12 99123-4567" value="${esc(dados.telefone||'')}">
-      <label>Recado para o ateliê (opcional)</label>
-      <input id="ck_recado" placeholder="uma dedicatória, um detalhe da entrega…">
+
+      <label for="ck_tel">Telefone com DDD</label>
+      <input id="ck_tel" inputmode="tel" autocomplete="tel" placeholder="11 99123-4567" maxlength="20" value="${esc(dados.telefone||'')}">
+      <div class="ck-erro some" id="e_tel"></div>
+
+      <label for="ck_recado">Recado para o ateliê</label>
+      <input id="ck_recado" placeholder="uma dedicatória, um detalhe da entrega…" maxlength="500">
+      <div class="sub" style="margin-top:4px">Opcional</div>
     </div>
 
     <div class="cartao">
@@ -1000,20 +1051,67 @@ async function telaFechar(){
   });
 
   const campoCep = document.getElementById('ck_cep');
+  let buscaCep = 0;
   campoCep.oninput = async () => {
     checkout.cep = campoCep.value;
     pintarTotais();
-    if(!limparCep(checkout.cep)) return;
     const recado = document.getElementById('ck_cepRecado');
+    if(!limparCep(checkout.cep)){ recado.textContent = ''; return; }
+
+    // Cada digitação abre uma busca, e elas voltam fora de ordem: sem este
+    // contador, a resposta de um CEP incompleto chega depois e sobrescreve a
+    // do CEP certo. É o clássico da busca enquanto se digita.
+    const minha = ++buscaCep;
     recado.textContent = 'buscando o endereço…';
     const e = await buscarCep(checkout.cep);
-    if(!e){ recado.textContent = 'não achei esse CEP — confira, ou escreva o endereço à mão'; return; }
+    if(minha !== buscaCep) return;
+
+    if(!e){
+      recado.textContent = 'não achei esse CEP — confira, ou escreva o endereço à mão';
+      return;
+    }
     recado.textContent = `${e.localidade} · ${e.uf}`;
-    const campo = document.getElementById('ck_end');
-    // Só preenche o que está VAZIO: quem já escreveu o próprio endereço não
-    // pode vê-lo desaparecer porque o CEP voltou depois.
-    if(!campo.value.trim()) campo.value = [e.logradouro, e.bairro, e.localidade, e.uf].filter(Boolean).join(', ');
+    // SÓ PREENCHE O QUE ESTÁ VAZIO. Quem já escreveu o próprio endereço não
+    // pode vê-lo sumir porque o CEP voltou depois — e CEP de rua inteira volta
+    // sem logradouro, então sobrescrever apagaria o que a pessoa sabia e o
+    // ViaCEP não sabe.
+    const por = (id, valor) => {
+      const c = document.getElementById(id);
+      if(c && !c.value.trim() && valor) c.value = valor;
+    };
+    por('ck_rua', e.logradouro);
+    por('ck_bairro', e.bairro);
+    por('ck_cidade', e.localidade);
+    por('ck_uf', e.uf);
+    // O número é o único que o CEP nunca traz, e é o que mais falta em
+    // etiqueta. Depois de preencher o resto, o cursor vai para ele.
+    const num = document.getElementById('ck_numero');
+    if(num && !num.value.trim() && e.logradouro) num.focus();
   };
+
+  // "Sem número" desliga o campo em vez de escondê-lo: escondido, quem marcou
+  // por engano não acha mais onde digitar.
+  const semNum = document.getElementById('ck_sn');
+  semNum.onchange = () => {
+    const num = document.getElementById('ck_numero');
+    num.disabled = semNum.checked;
+    if(semNum.checked) num.value = '';
+  };
+
+  // A conferência roda de novo a cada saída de campo, mas SÓ para limpar o que
+  // já foi corrigido — nunca para acusar um campo que a pessoa ainda não
+  // visitou. Acusar antes da hora é o que faz formulário parecer hostil.
+  tela.querySelectorAll('#ck_endereco input, #ck_tel').forEach(campo => {
+    campo.onblur = () => {
+      if(!campo.classList.contains('ruim')) return;
+      const ainda = conferirEntrega().map(p => 'ck_' + p.campo);
+      if(!ainda.includes(campo.id)){
+        campo.classList.remove('ruim');
+        const cx = document.getElementById('e_' + campo.id.replace('ck_',''));
+        if(cx){ cx.textContent=''; cx.classList.add('some'); }
+      }
+    };
+  });
 
   document.getElementById('ck_pagar').onclick = irPagar;
   pintarItensDaSacola(); pintarTotais();
@@ -1063,6 +1161,89 @@ function pintarTotais(){
  * pelo qual o webhook reencontra a compra depois — sem documento não há como o
  * dinheiro voltar a encontrar o pedido.
  */
+/**
+ * A conferência do formulário.
+ *
+ * CAMPO A CAMPO, e não uma frase só no fim. Uma mensagem genérica ("preencha
+ * os dados") obriga a pessoa a procurar o que falta num formulário de nove
+ * campos, e quem está com o cartão na mão desiste antes de achar.
+ *
+ * Devolve a lista de problemas, cada um com o id do campo, para a tela poder
+ * marcar o campo, escrever o motivo embaixo dele e levar o foco ao primeiro.
+ */
+function conferirEntrega(){
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const problemas = [];
+  const erra = (campo, texto) => problemas.push({ campo, texto });
+
+  // Telefone é exigido sempre, inclusive na retirada: é por ele que a casa
+  // combina a hora de buscar.
+  const tel = v('ck_tel').replace(/\D/g,'');
+  if(!tel) erra('tel','Precisamos de um telefone para falar com você.');
+  else if(tel.length < 10) erra('tel','Faltou o DDD ou um dígito — são 10 ou 11 números.');
+  else if(tel.length > 11) erra('tel','Esse número tem dígitos demais.');
+
+  if(checkout.entrega === 'retirada') return problemas;
+
+  if(!limparCep(v('ck_cep'))) erra('cep','O CEP tem oito dígitos.');
+  else if(!regiaoDoCep(v('ck_cep'))) erra('cep','Não reconheci esse CEP. Confira os números.');
+
+  if(v('ck_rua').length < 3) erra('rua','Escreva o nome da rua.');
+
+  // "Sem número" existe porque endereço rural e algumas zonas realmente não
+  // têm. Sem essa saída, a pessoa inventa um "0" e a etiqueta sai errada — que
+  // é pior do que o campo vazio, porque ninguém percebe.
+  const semNumero = document.getElementById('ck_sn')?.checked;
+  if(!semNumero && !v('ck_numero')) erra('numero','Diga o número, ou marque "sem número".');
+
+  if(v('ck_bairro').length < 2) erra('bairro','Escreva o bairro.');
+  if(v('ck_cidade').length < 2) erra('cidade','Escreva a cidade.');
+  if(!/^[A-Za-z]{2}$/.test(v('ck_uf'))) erra('uf','Duas letras. Ex.: SP.');
+
+  return problemas;
+}
+
+/**
+ * O endereço numa linha só, no formato que a etiqueta vai querer.
+ *
+ * Os campos são separados na TELA e compostos aqui de propósito. Separados eles
+ * se conferem um a um; juntos eles cabem no `endereco` que a regra do Firestore
+ * já aceita, e a loja não fica esperando uma publicação de regra para voltar a
+ * fechar venda. Quando a etiqueta automática entrar, é aqui que se desmonta.
+ *
+ * OS TETOS DOS CAMPOS somam menos que os 400 caracteres da regra, de propósito.
+ * Sem eles, um endereço longo demais só seria cortado na hora de gravar — e o
+ * corte cai no FIM da string, que é onde estão a cidade e o estado. Uma
+ * etiqueta sem cidade é uma peça de gesso que vai e volta.
+ */
+function comporEndereco(){
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const numero = document.getElementById('ck_sn')?.checked ? 'S/N' : v('ck_numero');
+  const compl = v('ck_compl');
+  const rua = [v('ck_rua'), numero].filter(Boolean).join(', ');
+  return [rua + (compl ? ' — ' + compl : ''), v('ck_bairro'),
+          v('ck_cidade') + '/' + v('ck_uf').toUpperCase()].filter(Boolean).join(', ');
+}
+
+/** Marca os campos com problema e leva o foco ao primeiro. */
+function mostrarProblemas(problemas){
+  ['cep','rua','numero','bairro','cidade','uf','tel'].forEach(c=>{
+    const cx = document.getElementById('e_'+c);
+    if(cx){ cx.textContent=''; cx.classList.add('some'); }
+    document.getElementById('ck_'+c)?.classList.remove('ruim');
+  });
+  for(const p of problemas){
+    const cx = document.getElementById('e_'+p.campo);
+    if(cx){ cx.textContent = p.texto; cx.classList.remove('some'); }
+    document.getElementById('ck_'+p.campo)?.classList.add('ruim');
+  }
+  if(problemas.length){
+    const primeiro = document.getElementById('ck_'+problemas[0].campo);
+    primeiro?.focus();
+    primeiro?.scrollIntoView({block:'center', behavior:'smooth'});
+  }
+}
+
 async function irPagar(){
   const bt = document.getElementById('ck_pagar');
   const erro = document.getElementById('ck_erro');
@@ -1070,13 +1251,17 @@ async function irPagar(){
   const dizer = t => { erro.textContent = t; erro.classList.remove('some'); };
   erro.classList.add('some');
 
-  const tel = document.getElementById('ck_tel').value.trim();
-  const end = checkout.entrega==='retirada' ? '' : document.getElementById('ck_end').value.trim();
-  if(tel.length < 8) return dizer('Deixe um telefone para a gente falar com você.');
-  if(checkout.entrega!=='retirada'){
-    if(!limparCep(checkout.cep)) return dizer('Confira o CEP: ele tem oito dígitos.');
-    if(end.length < 8) return dizer('Escreva o endereço de entrega.');
+  const problemas = conferirEntrega();
+  mostrarProblemas(problemas);
+  if(problemas.length){
+    dizer(problemas.length === 1
+      ? 'Falta um campo para seguir.'
+      : `Faltam ${problemas.length} campos para seguir.`);
+    return;
   }
+
+  const tel = document.getElementById('ck_tel').value.trim();
+  const end = checkout.entrega==='retirada' ? '' : comporEndereco();
 
   bt.disabled = true; bt.textContent = 'preparando…';
   try{
