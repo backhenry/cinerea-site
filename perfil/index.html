@@ -58,7 +58,16 @@
     .linkitem select{grid-area:i} .linkitem button{grid-area:x}
     .linkitem .rot{grid-area:r} .linkitem .url{grid-area:u}
   }
-  .some{display:none}
+  /* `!important` aqui, e é o lugar certo para ele.
+     `.some` é uma classe e `.abas` também, e `.abas{display:flex}` vem depois
+     no arquivo — então esconder as abas com `.some` nunca funcionou: quem não
+     entrou via os quatro botões da conta, clicáveis e inúteis, ao lado de um
+     formulário de senha.
+     Poderia ser `.abas.some{display:none}`, mas `.some` é usado em dezenas de
+     lugares e cada um teria de ganhar o próprio par. Esconder é a intenção
+     final de quem escreve `some`: não há caso em que perder para outra regra
+     seja o desejado. */
+  .some{display:none !important}
 
   /* Navegação interna do perfil. Rola de lado no celular em vez de quebrar em
      duas linhas: quatro seções não cabem em 320px, e empilhar rótulos deixa a
@@ -148,6 +157,18 @@
   }
   .ck-total b{font-family:'Fraunces'}
   .ck-desconto{color:var(--ok)}
+  /* ---- entrar / criar conta ---------------------------------------------- */
+  .troca{
+    margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+    font-size:13.5px;color:var(--smoke);text-align:center;
+  }
+  /* Um botão que parece link, e não um segundo botão cheio: criar conta e
+     entrar não competem — em cada momento só um dos dois é o caminho. */
+  .btlink{
+    background:none;border:none;padding:0;font:inherit;color:var(--ember);
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer;
+  }
+  .btlink:hover{color:var(--char)}
   .ck-recusado{color:var(--ember)}
   .ck-dupla{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   @media(max-width:520px){ .ck-dupla{grid-template-columns:1fr} }
@@ -275,7 +296,8 @@
  * Os dois exigem NFC, que só existe no aplicativo, no Android.
  */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         signOut, sendPasswordResetEmail,
          updateProfile, verifyBeforeUpdateEmail,
          EmailAuthProvider, reauthenticateWithCredential, deleteUser }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -472,30 +494,150 @@ async function carregarPecas(){
   }
 }
 
+/**
+ * A porta de entrada: entrar OU criar conta.
+ *
+ * Criar conta faltava, e isso deixou de ser detalhe quando a loja passou a
+ * fechar a compra aqui: quem nunca usou o aplicativo chegava com a sacola na
+ * mão, via um formulário de senha que não tinha como preencher, e a venda
+ * morria ali. Era o buraco mais caro do site.
+ *
+ * Os dois modos moram na MESMA tela, trocando por um botão, e não em páginas
+ * separadas: quem errou a senha e quer criar conta, e quem tentou criar e
+ * descobriu que já tem, não podem perder o que já digitaram no caminho. O
+ * e-mail atravessa a troca.
+ */
+let modoEntrada = 'entrar';
+
 function pintarEntrada(){
-  document.getElementById('titulo').textContent = 'Entrar na sua conta';
-  document.getElementById('chamada').textContent =
-    'Suas peças, suas encomendas e seus dados, com a mesma conta do aplicativo.';
+  const criando = modoEntrada === 'criar';
+  const veioDaSacola = !!sacolaGuardada();
+
+  document.getElementById('titulo').textContent =
+    criando ? 'Criar sua conta' : 'Entrar na sua conta';
+  document.getElementById('chamada').textContent = veioDaSacola
+    ? 'Falta só a conta para você pagar e acompanhar o pedido.'
+    : 'Suas peças, suas encomendas e seus dados, com a mesma conta do aplicativo.';
+
+  const guardado = window.__emailDigitado || '';
+
   tela.innerHTML = `<div class="cartao">
-    <label>E-mail</label><input id="email" type="email" autocomplete="username">
-    <label>Senha</label><input id="senha" type="password" autocomplete="current-password">
+    ${veioDaSacola ? `<div class="aviso" style="margin-bottom:16px">Sua sacola está guardada.
+      Assim que a conta estiver pronta, você volta direto para o pagamento.</div>` : ''}
+    ${criando ? `<label for="nome">Seu nome</label>
+      <input id="nome" autocomplete="name" placeholder="como devemos te chamar">
+      <div class="ck-erro some" id="e_nome"></div>` : ''}
+    <label for="email">E-mail</label>
+    <input id="email" type="email" autocomplete="${criando?'email':'username'}" value="${esc(guardado)}">
+    <div class="ck-erro some" id="e_email"></div>
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" autocomplete="${criando?'new-password':'current-password'}">
+    <div class="ck-erro some" id="e_senha"></div>
+    ${criando ? '<div class="sub" style="margin-top:4px">Pelo menos 6 caracteres.</div>' : ''}
     <div class="botoes">
-      <button class="bt" id="entrar">Entrar</button>
-      <button class="btfrouxo" id="esqueci">Esqueci a senha</button>
+      <button class="bt" id="acao">${criando ? 'Criar conta' : 'Entrar'}</button>
+      ${criando ? '' : '<button class="btfrouxo" id="esqueci">Esqueci a senha</button>'}
     </div>
     <div class="erro some" id="erroEntrada"></div>
+    <div class="troca">
+      ${criando
+        ? 'Já tem conta? <button class="btlink" id="trocar">Entrar</button>'
+        : 'Primeira vez aqui? <button class="btlink" id="trocar">Criar sua conta</button>'}
+    </div>
+    ${criando ? `<div class="sub" style="margin-top:14px">Ao criar a conta você concorda com a
+      <a href="/privacidade/">política de privacidade</a>.</div>` : ''}
     <div class="aviso">Aqui você troca o que suas peças dizem, acompanha suas
       encomendas e cuida dos seus dados. Reconhecer uma peça nova e gravar o chip
       continuam só no aplicativo, no Android, porque exigem NFC.</div>
   </div>`;
-  document.getElementById('entrar').onclick = entrar;
-  document.getElementById('senha').onkeydown = e => { if(e.key==='Enter') entrar(); };
-  document.getElementById('esqueci').onclick = async () => {
-    const em = document.getElementById('email').value.trim();
+
+  const campoEmail = document.getElementById('email');
+  // O e-mail sobrevive à troca de modo: quem digitou e descobriu que errou o
+  // caminho não pode ter de digitar de novo.
+  campoEmail.oninput = () => { window.__emailDigitado = campoEmail.value; };
+
+  document.getElementById('trocar').onclick = () => {
+    modoEntrada = criando ? 'entrar' : 'criar';
+    pintarEntrada();
+  };
+
+  const agir = criando ? criarConta : entrar;
+  document.getElementById('acao').onclick = agir;
+  document.getElementById('senha').onkeydown = e => { if(e.key==='Enter') agir(); };
+
+  const esq = document.getElementById('esqueci');
+  if(esq) esq.onclick = async () => {
+    const em = campoEmail.value.trim();
     if(!em) return falha('erroEntrada','Escreva seu e-mail primeiro.');
     try{ await sendPasswordResetEmail(auth, em); falha('erroEntrada','Enviei um e-mail para você trocar a senha.'); }
     catch{ falha('erroEntrada','Não consegui enviar agora.'); }
   };
+}
+
+/**
+ * O Firebase fala em códigos; o cliente não.
+ *
+ * As mesmas frases do aplicativo (`src/sessao/erros.ts`), de propósito: é a
+ * mesma conta e o mesmo erro, e ler duas explicações diferentes para a mesma
+ * coisa faz a pessoa achar que são dois sistemas.
+ */
+const RECADOS_AUTH = {
+  'auth/invalid-email': 'Esse e-mail não parece completo.',
+  'auth/missing-password': 'Falta a senha.',
+  'auth/invalid-credential': 'E-mail ou senha não conferem.',
+  'auth/wrong-password': 'E-mail ou senha não conferem.',
+  'auth/user-not-found': 'Não encontramos uma conta com esse e-mail.',
+  'auth/email-already-in-use': 'Já existe uma conta com esse e-mail. Tente entrar.',
+  'auth/weak-password': 'A senha precisa de pelo menos 6 caracteres.',
+  'auth/too-many-requests': 'Muitas tentativas seguidas. Espere um minuto.',
+  'auth/network-request-failed': 'Sem conexão. Verifique a internet.',
+  'auth/user-disabled': 'Essa conta está desativada.',
+  'permission-denied': 'Sua conta entrou, mas não conseguimos salvar seus dados.',
+};
+const recadoDoErro = e =>
+  RECADOS_AUTH[e?.code] || 'Não consegui agora. Tente de novo em instantes.';
+
+async function criarConta(){
+  const bt = document.getElementById('acao');
+  const nome = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value;
+
+  // Confere ANTES de chamar o Firebase, e campo a campo. Deixar o servidor
+  // recusar devolve um código só e a pessoa não sabe qual dos três errou.
+  const problemas = [];
+  if(nome.length < 2) problemas.push(['nome','Escreva seu nome.']);
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)) problemas.push(['email','Esse e-mail não parece completo.']);
+  if(senha.length < 6) problemas.push(['senha','A senha precisa de pelo menos 6 caracteres.']);
+  ['nome','email','senha'].forEach(c=>{
+    const cx=document.getElementById('e_'+c);
+    if(cx){cx.textContent='';cx.classList.add('some');}
+    document.getElementById(c)?.classList.remove('ruim');
+  });
+  for(const [campo,texto] of problemas){
+    const cx=document.getElementById('e_'+campo);
+    if(cx){cx.textContent=texto;cx.classList.remove('some');}
+    document.getElementById(campo)?.classList.add('ruim');
+  }
+  if(problemas.length){ document.getElementById(problemas[0][0])?.focus(); return; }
+
+  bt.disabled = true; bt.textContent = 'criando…';
+  try{
+    const { user } = await createUserWithEmailAndPassword(auth, email, senha);
+    await updateProfile(user, { displayName: nome });
+    // O mesmo documento que o aplicativo cria. A regra prende `clientes/{uid}`
+    // ao próprio uid, e este é o dele.
+    await setDoc(doc(fdb,'clientes',user.uid), {
+      nome, email: user.email,
+      criadoEm: serverTimestamp(), atualizadoEm: serverTimestamp(),
+    });
+    // Daqui em diante quem manda é o `onAuthStateChanged`: ele já vai abrir a
+    // seção certa, inclusive a de fechar a compra se houver sacola guardada.
+  }catch(e){
+    console.error(e);
+    bt.disabled = false; bt.textContent = 'Criar conta';
+    falha('erroEntrada', recadoDoErro(e));
+  }
 }
 
 function falha(id, msg){
@@ -506,7 +648,7 @@ function falha(id, msg){
 }
 
 async function entrar(){
-  const bt = document.getElementById('entrar');
+  const bt = document.getElementById('acao');
   bt.disabled = true;
   try{
     await signInWithEmailAndPassword(auth,
