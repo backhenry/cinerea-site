@@ -1502,9 +1502,27 @@ async function irPagar(){
     try{ sessionStorage.removeItem('cinerea:sacola'); }catch(e){}
     await pagar(ref.id, bt);
   }catch(e){
-    console.error(e);
+    console.error('encomenda recusada', e?.code, e);
     bt.disabled = false; bt.textContent = 'Ir para o pagamento';
-    dizer('Não consegui registrar sua encomenda agora. Tente de novo em instantes.');
+
+    /* A MENSAGEM DIZ QUAL É O PROBLEMA, e não "tente de novo".
+       A frase genérica custou uma ida e volta inteira em ago/2026: a regra do
+       Firestore recusava a encomenda porque `cep` e `entrega` ainda não tinham
+       sido publicados na lista de campos aceitos, e a tela dizia "tente de novo
+       em instantes" — um conselho que nunca ia funcionar, para um erro que não
+       era momentâneo.
+
+       `permission-denied` na criação de uma encomenda quer dizer uma coisa só:
+       o que o navegador manda e o que a regra aceita divergiram. Isso é defeito
+       da casa, não da pessoa, e é assim que a frase tem de soar. */
+    const codigo = e?.code || '';
+    dizer(
+      codigo === 'permission-denied'
+        ? 'Algo do nosso lado recusou esta encomenda. Já fomos avisados — fale com a gente pelo WhatsApp que resolvemos na hora.'
+      : codigo === 'unavailable' || /network/i.test(e?.message || '')
+        ? 'A conexão caiu no meio do caminho. Confira a internet e toque de novo.'
+      : 'Não consegui registrar sua encomenda agora. Tente de novo em instantes.'
+    );
   }
 }
 window.telaFechar = telaFechar;
