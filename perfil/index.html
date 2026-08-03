@@ -245,6 +245,8 @@ import { getFirestore, doc, collection, getDoc, getDocs, setDoc, deleteDoc, serv
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getFunctions, httpsCallable }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ", authDomain: "cinerea1.firebaseapp.com",
@@ -330,7 +332,9 @@ function resumir(c){
 /* ---------------------------------------------------------------- sessão --- */
 let usuario = null, pecas = [];
 
-let secao = 'pecas';
+// Quem volta do Mercado Pago cai direto em encomendas: é lá que está o que
+// ela quer ver. Sem isto, a pessoa que acabou de pagar aterrissa nas peças.
+let secao = /[?&](pago|pendente|falhou)=/.test(location.search) ? 'encomendas' : 'pecas';
 
 onAuthStateChanged(auth, async u => {
   usuario = u;
@@ -739,11 +743,73 @@ function ligarAparencia(){
 
 /* ----------------------------------------------------------- encomendas --- */
 const SITUACAO = {
-  nova:      ['Enviada · aguardando a Cinérea', true],
-  aceita:    ['Aceita · em produção', true],
-  recusada:  ['Não foi possível atender', false],
-  concluida: ['Concluída', false],
+  nova:                     ['Enviada · aguardando a Cinérea', true],
+  'aguardando pagamento':   ['Aguardando o pagamento', true],
+  paga:                     ['Paga · aguardando a Cinérea', true],
+  aceita:                   ['Aceita · em produção', true],
+  recusada:                 ['Não foi possível atender', false],
+  concluida:                ['Concluída', false],
 };
+
+/**
+ * Pagar uma encomenda.
+ *
+ * O NAVEGADOR MANDA SÓ O ID. Preço, desconto e o que está na sacola são
+ * refeitos no servidor, a partir do catálogo publicado — é a razão de haver
+ * servidor. Se daqui fosse o valor, alguém mandaria "cobrar R$ 1".
+ */
+async function pagar(id, botao){
+  const antes = botao.textContent;
+  botao.disabled = true; botao.textContent = 'abrindo o pagamento…';
+  try{
+    const chamar = httpsCallable(getFunctions(app, 'southamerica-east1'), 'criarPagamento');
+    const { data } = await chamar({ encomendaId: id });
+    if(!data?.url) throw new Error('sem endereço de pagamento');
+    // `location.assign` e não `window.open`: bloqueador de pop-up mata a aba
+    // nova e a pessoa fica achando que o botão não funciona.
+    location.assign(data.url);
+  }catch(e){
+    console.error(e);
+    botao.disabled = false; botao.textContent = antes;
+    const msg = e?.message || '';
+    alert(/já está paga/.test(msg) ? 'Esta encomenda já foi paga.'
+        : /saiu da vitrine/.test(msg) ? 'Uma das peças saiu da vitrine enquanto você comprava. Refaça a sacola na loja.'
+        : 'Não consegui abrir o pagamento agora. Tente de novo em instantes.');
+  }
+}
+window.pagar = pagar;
+
+/**
+ * A volta do Mercado Pago.
+ *
+ * Ele devolve a pessoa para cá com `?pago`, `?pendente` ou `?falhou`. Sem
+ * tratar isso, ela cai numa lista de encomendas sem uma palavra sobre o que
+ * acabou de acontecer com o dinheiro dela.
+ *
+ * O RECADO NÃO É PROVA DE PAGAMENTO, e por isso ele fala de "confirmação" e
+ * não de "pago": quem confirma é o webhook, reconsultando o Mercado Pago. O
+ * parâmetro veio na barra de endereço e qualquer um pode digitá-lo.
+ */
+function recadoDaVolta(){
+  const q = new URLSearchParams(location.search);
+  const dizeres = {
+    pago:     ['Pagamento recebido.', 'A confirmação chega em instantes e a encomenda muda de estado sozinha. A Cinérea já foi avisada.'],
+    pendente: ['Pagamento em processamento.', 'Boleto e alguns Pix levam um tempo para compensar. Assim que cair, a encomenda muda de estado sozinha.'],
+    falhou:   ['O pagamento não foi concluído.', 'Nada foi cobrado. Você pode tentar de novo pelo botão da encomenda.'],
+  };
+  for(const chave of Object.keys(dizeres)){
+    if(!q.has(chave)) continue;
+    const [titulo, texto] = dizeres[chave];
+    const el = document.createElement('div');
+    el.className = 'cartao';
+    el.innerHTML = `<h3>${titulo}</h3><p class="sub">${texto}</p>`;
+    document.getElementById('tela').prepend(el);
+    // Limpa a barra de endereço: recarregar a página não pode repetir o recado
+    // de um pagamento que já passou.
+    history.replaceState(null, '', location.pathname);
+    break;
+  }
+}
 
 async function carregarEncomendas(){
   document.getElementById('chamada').textContent = 'O andamento de cada pedido.';
@@ -756,6 +822,7 @@ async function carregarEncomendas(){
     const lista = snap.docs.map(d => ({id:d.id, ...d.data()}))
       .sort((a,b) => (b.criadaEm?.toMillis?.()||0) - (a.criadaEm?.toMillis?.()||0));
     pintarEncomendas(lista);
+    recadoDaVolta();
   }catch(e){
     console.error(e);
     tela.innerHTML = `<div class="cartao"><h3>Não consegui buscar suas encomendas</h3>
@@ -774,6 +841,9 @@ function pintarEncomendas(lista){
   }
   tela.innerHTML = lista.map(e => {
     const [rotulo, viva] = SITUACAO[e.situacao] || ['Enviada', true];
+    // Pagar vale para o que ainda não foi pago nem recusado. Encomenda que a
+    // casa já recusou não pode receber dinheiro.
+    const podePagar = e.situacao === 'nova' || e.situacao === 'aguardando pagamento';
     const itens = (e.itens||[]).map(i =>
       `<div class="linha"><span>${Number(i.qtd)||1}× ${esc(i.nome||'peça')}</span>
        <span>${brl((Number(i.preco)||0) * (Number(i.qtd)||1))}</span></div>`).join('');
@@ -804,6 +874,13 @@ function pintarEncomendas(lista){
       ${quando?`<p class="sub" style="margin-top:10px">${esc(quando)}</p>`:''}
       ${e.situacao==='nova'?`<p class="sub" style="margin-top:8px">Ainda não é uma compra fechada:
         falta a Cinérea confirmar o frete e o pagamento com você.</p>`:''}
+      ${podePagar ? `<div class="botoes" style="margin-top:14px">
+          <button class="bt" onclick="pagar('${esc(e.id)}', this)">Pagar agora</button>
+        </div>
+        <p class="sub" style="margin-top:8px">O valor é conferido no servidor, pelo
+          catálogo de hoje. O frete é combinado à parte.</p>` : ''}
+      ${e.situacao==='paga' ? `<p class="sub" style="margin-top:8px">Pagamento confirmado.
+        A Cinérea já foi avisada e entra em contato sobre o envio.</p>` : ''}
     </div>`;
   }).join('');
 }
