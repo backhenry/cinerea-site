@@ -147,6 +147,8 @@
     font-family:'Fraunces';font-size:18px;
   }
   .ck-total b{font-family:'Fraunces'}
+  .ck-desconto{color:var(--ok)}
+  .ck-recusado{color:var(--ember)}
   .ck-dupla{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   @media(max-width:520px){ .ck-dupla{grid-template-columns:1fr} }
   .ck-caixa{
@@ -927,6 +929,49 @@ async function buscarCep(cep){
   }catch(e){ return null; }
 }
 
+/**
+ * O desconto do cupom, do lado de cá.
+ *
+ * ESPELHA `aplicarCupom` do servidor, passo a passo e na mesma ordem. É a
+ * quarta cópia da conta — servidor, loja, gestão e aqui — e é dívida conhecida
+ * pelo mesmo motivo de sempre: o site é HTML estático sem etapa de build. O que
+ * impede as quatro de divergirem é o teste que passa os mesmos valores por
+ * todas e exige o mesmo centavo.
+ *
+ * Devolve também o MOTIVO de não ter descontado. Sem ele, um cupom que venceu
+ * entre pôr na sacola e chegar aqui sumiria calado, e a pessoa veria o preço
+ * cheio sem entender por quê — e é exatamente esse silêncio que faz alguém
+ * abandonar a compra achando que foi enganada.
+ */
+function descontoDoCupom(bruto, cupom, agora){
+  if(!cupom) return { desconto:0, motivo:'sem cupom' };
+  if(bruto <= 0) return { desconto:0, motivo:'sacola sem valor' };
+  if(cupom.ativo === false) return { desconto:0, motivo:'não está mais valendo' };
+
+  const ate = typeof cupom.ate === 'number' ? cupom.ate : null;
+  if(ate && agora > ate) return { desconto:0, motivo:'passou da validade' };
+
+  const minimo = Number(cupom.minimo) || 0;
+  if(bruto < minimo) return { desconto:0, motivo:`vale a partir de ${brl(minimo)}` };
+
+  const cru = cupom.tipo === 'valor'
+    ? Math.max(Number(cupom.valor) || 0, 0)
+    : (bruto * Math.min(Math.max(Number(cupom.valor) || 0, 0), 100)) / 100;
+
+  return { desconto: cents(Math.min(cru, bruto)), motivo: '' };
+}
+
+/** O cupom, lido de `cupons/{codigo}`. `get` é aberto; `list` não. */
+async function lerCupomWeb(codigo){
+  if(!codigo) return null;
+  try{
+    const d = await getDoc(doc(fdb,'cupons',String(codigo)));
+    if(!d.exists()) return { ausente:true };
+    const x = d.data();
+    return { ...x, ate: x.ate?.toMillis ? x.ate.toMillis() : (typeof x.ate==='number' ? x.ate : null) };
+  }catch(e){ console.error(e); return null; }
+}
+
 let checkout = { entrega:'correio', cep:'', frete:null };
 
 async function telaFechar(){
@@ -967,6 +1012,12 @@ async function telaFechar(){
   window.__checkoutItens = itens;
   window.__checkoutCupom = carga.cupom || null;
   window.__checkoutTabela = cat.frete || null;
+  // O cupom é RELIDO aqui, e não herdado da loja. Entre pôr na sacola e chegar
+  // nesta tela ele pode ter vencido, sido desligado, ou a sacola pode ter
+  // encolhido abaixo do mínimo. O servidor vai reler de qualquer jeito na hora
+  // de cobrar; reler aqui é o que faz a tela contar a mesma história.
+  window.__checkoutCupomDados = window.__checkoutCupom
+    ? await lerCupomWeb(window.__checkoutCupom) : null;
 
   tela.innerHTML = `
     <div class="cartao">
@@ -1131,10 +1182,21 @@ function pintarItensDaSacola(){
 function pintarTotais(){
   const itens = window.__checkoutItens || [];
   const bruto = cents(itens.reduce((s,i)=>s+i.preco*i.qtd,0));
-  const cupom = window.__checkoutCupom;
+  const codigo = window.__checkoutCupom;
+  const dados = window.__checkoutCupomDados;
+
+  const cupomAplicado = dados && !dados.ausente
+    ? descontoDoCupom(bruto, dados, Date.now())
+    : { desconto: 0, motivo: dados?.ausente ? 'não encontrei esse cupom' : '' };
+  const desconto = cupomAplicado.desconto;
+
+  /* O FRETE OLHA O VALOR JÁ DESCONTADO, e não o bruto — é o que o servidor faz.
+     Calcular sobre o bruto daria "frete grátis" na tela para quem só chega ao
+     corte antes do desconto, e cobrança de frete no Mercado Pago. A pessoa veria
+     dois números diferentes na mesma compra, com dois minutos de diferença. */
   const frete = calcularFrete({
     entrega: checkout.entrega, cep: checkout.cep,
-    subtotal: bruto, tabela: window.__checkoutTabela,
+    subtotal: cents(bruto - desconto), tabela: window.__checkoutTabela,
   });
   checkout.frete = frete;
 
@@ -1146,12 +1208,21 @@ function pintarTotais(){
       ? `<b>${frete.motivo==='retirada' ? 'sem frete' : 'grátis'}</b>`
       : `<b>${brl(frete.valor)}</b>`;
 
+  // O cupom aparece com o VALOR, e não com uma promessa. "Total menos o cupom"
+  // não é preço: quem está prestes a pagar precisa do número.
+  const linhaCupom = !codigo ? '' : desconto > 0
+    ? `<div class="ck-linha"><span>Cupom ${esc(codigo)}</span><b class="ck-desconto">−${brl(desconto)}</b></div>`
+    : `<div class="ck-linha"><span>Cupom ${esc(codigo)}</span>
+         <span class="sub ck-recusado">${esc(cupomAplicado.motivo || 'não se aplica')}</span></div>`;
+
+  const total = cents(bruto - desconto + (frete.ok ? frete.valor : 0));
+
   document.getElementById('ck_totais').innerHTML = `
     <div class="ck-linha"><span>Peças</span><b>${brl(bruto)}</b></div>
-    ${cupom ? `<div class="ck-linha"><span>Cupom ${esc(cupom)}</span><span class="sub">conferido no pagamento</span></div>` : ''}
+    ${linhaCupom}
     <div class="ck-linha"><span>Frete</span>${dizFrete}</div>
-    <div class="ck-linha ck-total"><span>Total</span>
-      <b>${brl(bruto + (frete.ok?frete.valor:0))}${cupom?' menos o cupom':''}</b></div>`;
+    <div class="ck-linha ck-total"><span>Total</span><b>${brl(total)}</b></div>
+    ${frete.ok ? '' : '<div class="sub" style="margin-top:6px">O frete entra assim que o CEP estiver certo.</div>'}`;
 }
 
 /**
