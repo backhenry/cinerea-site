@@ -124,6 +124,29 @@
   .logoacoes{flex:1 1 auto;min-width:0}
   .logoacoes .sub{margin-top:8px}
   input[type=range]{padding:0;border:none;background:none;accent-color:var(--ember)}
+
+  /* ---- fechar a compra --------------------------------------------------- */
+  .ck-opcoes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .ck-op{
+    flex:1 1 160px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+    background:var(--paper);color:var(--smoke);font-family:'Inter';font-size:13.5px;cursor:pointer;
+    transition:border-color .15s,color .15s,background .15s;
+  }
+  .ck-op:hover{border-color:var(--char);color:var(--char)}
+  /* Escolhido é CHEIO, e não só uma borda mais escura: a diferença entre
+     "receber em casa" e "retirar" muda o que se paga, e uma borda de 1px é
+     pouco sinal para uma escolha que mexe no preço. */
+  .ck-op.ativa{background:var(--char);border-color:var(--char);color:var(--paper)}
+  .ck-linha{
+    display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    padding:7px 0;font-size:14px;
+  }
+  .ck-linha b{font-variant-numeric:tabular-nums}
+  .ck-total{
+    border-top:1px solid var(--line);margin-top:6px;padding-top:12px;
+    font-family:'Fraunces';font-size:18px;
+  }
+  .ck-total b{font-family:'Fraunces'}
 </style>
 </head>
 <body>
@@ -334,7 +357,31 @@ let usuario = null, pecas = [];
 
 // Quem volta do Mercado Pago cai direto em encomendas: é lá que está o que
 // ela quer ver. Sem isto, a pessoa que acabou de pagar aterrissa nas peças.
-let secao = /[?&](pago|pendente|falhou)=/.test(location.search) ? 'encomendas' : 'pecas';
+let secao = /[?&](pago|pendente|falhou)=/.test(location.search) ? 'encomendas'
+          : (/[?&]sacola=/.test(location.search) && sacolaGuardada()) ? 'fechar'
+          : 'pecas';
+
+/**
+ * A sacola que a loja deixou aqui.
+ *
+ * Vem pelo `sessionStorage` e não pela barra de endereço: um link com o
+ * carrinho dentro acaba encaminhado, salvo e editado. `sessionStorage` morre
+ * com a aba, que é o mesmo tempo de vida que a sacola já tinha na loja —
+ * sacola guardada por dias volta com preço velho.
+ *
+ * O que vale desta carga é o `id` e a `qtd`. Nome e preço vêm junto só para a
+ * tela de conferência desenhar sem esperar a rede; quem refaz o preço, e quem
+ * decide o que vai ser cobrado, é o servidor.
+ */
+function sacolaGuardada(){
+  try{
+    const bruto = sessionStorage.getItem('cinerea:sacola');
+    if(!bruto) return null;
+    const c = JSON.parse(bruto);
+    if(!c || !Array.isArray(c.itens) || !c.itens.length) return null;
+    return c;
+  }catch(e){ return null; }
+}
 
 onAuthStateChanged(auth, async u => {
   usuario = u;
@@ -354,6 +401,7 @@ async function abrirSecao(qual){
   secao = qual;
   document.querySelectorAll('#abas button').forEach(b =>
     b.classList.toggle('aqui', b.dataset.secao === qual));
+  if (qual === 'fechar')     return telaFechar();
   if (qual === 'pecas')      return carregarPecas();
   if (qual === 'encomendas') return carregarEncomendas();
   if (qual === 'dados')      return pintarDados();
@@ -783,6 +831,285 @@ const SITUACAO = {
   recusada:                 ['Não foi possível atender', false],
   concluida:                ['Concluída', false],
 };
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FECHAR A COMPRA
+   ══════════════════════════════════════════════════════════════════════════
+
+   Por que isto mora AQUI e não na loja: criar a encomenda exige login — a
+   regra do Firestore pede `request.auth` e amarra o documento ao uid de quem
+   cria. A loja é pública de propósito, porque quem chega por um link de peça
+   não devia esbarrar numa senha para olhar preço. Login anônimo resolveria a
+   regra e quebraria o que importa: a pessoa não acharia o próprio pedido
+   depois, e "onde acompanho?" é a primeira pergunta de quem acabou de pagar.
+
+   O QUE SOBE DAQUI: ids, quantidades, o CÓDIGO do cupom, o CEP e a forma de
+   entrega. Nunca preço, nunca desconto, nunca frete. Os números desta tela são
+   PRÉVIA; quem cobra é `criarPagamento`, relendo o catálogo publicado. É a
+   mesma regra desde o primeiro cupom, e é a razão de existir do servidor.
+*/
+
+/** O recorte público do catálogo: preços de hoje e a tabela de frete. */
+let catalogoLoja = null;
+async function lerCatalogoLoja(){
+  if(catalogoLoja) return catalogoLoja;
+  const snap = await getDocs(collection(fdb,'catalogo'));
+  catalogoLoja = snap.empty ? {} : snap.docs[0].data();
+  return catalogoLoja;
+}
+
+/**
+ * O frete, do lado de cá.
+ *
+ * É a MESMA conta de `functions/frete.js`, e por isso ela é uma terceira cópia
+ * — a quarta contando a gestão. Cópia aqui é dívida conhecida e aceita, pelo
+ * mesmo motivo do cupom: o site é HTML estático sem etapa de build e não tem
+ * como importar o módulo do servidor. O que impede as duas de divergirem é o
+ * teste que passa os mesmos valores pelas duas e exige o mesmo centavo.
+ *
+ * E ela é só PRÉVIA. Se divergir, quem manda é o servidor, e a pessoa vê o
+ * valor certo no Mercado Pago — feio, mas não errado no dinheiro.
+ */
+const FAIXAS_CEP = [
+  ['sudeste','01000000','39999999'], ['sul','80000000','99999999'],
+  ['centro-oeste','70000000','73699999'], ['centro-oeste','73700000','76799999'],
+  ['norte','76800000','77999999'], ['centro-oeste','78000000','79999999'],
+  ['nordeste','40000000','56999999'], ['nordeste','57000000','65999999'],
+  ['norte','66000000','69999999'],
+];
+function limparCep(cep){
+  const so = String(cep ?? '').replace(/\D/g,'');
+  return so.length === 8 ? so : null;
+}
+function regiaoDoCep(cep){
+  const limpo = limparCep(cep);
+  if(!limpo) return null;
+  for(const [regiao,de,ate] of FAIXAS_CEP) if(limpo >= de && limpo <= ate) return regiao;
+  return null;
+}
+function calcularFrete({ entrega, cep, subtotal, tabela }){
+  if(entrega === 'retirada') return { ok:true, valor:0, regiao:null, motivo:'retirada' };
+  if(!tabela || tabela.ativo === false) return { ok:false, causa:'sem-tabela' };
+  const regiao = regiaoDoCep(cep);
+  if(!regiao) return { ok:false, causa:'cep-invalido' };
+  const corte = Number(tabela.corte);
+  if(isFinite(corte) && corte > 0 && cents(subtotal) >= cents(corte))
+    return { ok:true, valor:0, regiao, motivo:'gratis-acima-do-corte' };
+  const valor = Number((tabela.valores||{})[regiao]);
+  if(!isFinite(valor) || valor < 0) return { ok:false, causa:'regiao-sem-valor', regiao };
+  return { ok:true, valor:cents(valor), regiao, motivo:'tabela' };
+}
+const cents = v => Math.round((Number(v)||0)*100)/100;
+
+/** O endereço a partir do CEP, pelo ViaCEP: gratuito e sem chave. */
+async function buscarCep(cep){
+  const limpo = limparCep(cep);
+  if(!limpo) return null;
+  try{
+    const r = await fetch(`https://viacep.com.br/ws/${limpo}/json/`);
+    const d = await r.json();
+    return d?.erro ? null : d;
+  }catch(e){ return null; }
+}
+
+let checkout = { entrega:'correio', cep:'', frete:null };
+
+async function telaFechar(){
+  const carga = sacolaGuardada();
+  if(!carga){ return abrirSecao('pecas'); }
+
+  document.getElementById('chamada').textContent = 'Confira e vá para o pagamento.';
+  tela.innerHTML = esperando('montando sua sacola…');
+
+  const cat = await lerCatalogoLoja();
+  const porId = new Map((cat.itens||[]).map(p=>[String(p.id), p]));
+
+  // Preço de HOJE, do catálogo, e não o que veio da loja. Se algo mudou entre
+  // pôr na sacola e chegar aqui, a pessoa vê a mudança antes de pagar, e não
+  // depois na fatura.
+  const itens = carga.itens.map(i=>{
+    const p = porId.get(String(i.id));
+    return p ? { id:String(i.id), qtd:Math.max(1,Math.min(99,Number(i.qtd)||1)),
+                 nome:p.nome, preco:Number(p.preco)||0, situacao:p.situacao } : null;
+  }).filter(Boolean);
+
+  const foraDaVitrine = carga.itens.length - itens.length;
+  const embreve = itens.filter(i=>i.situacao==='embreve');
+
+  if(!itens.length){
+    tela.innerHTML = `<div class="cartao"><h3>A sacola não existe mais</h3>
+      <p class="sub">As peças que você tinha escolhido saíram da vitrine.</p>
+      <div class="botoes"><a class="bt" href="/loja/">Voltar à loja</a></div></div>`;
+    return;
+  }
+
+  let dados = {};
+  try{
+    const d = await getDoc(doc(fdb,'clientes',usuario.uid));
+    if(d.exists()) dados = d.data();
+  }catch(e){ console.error(e); }
+
+  window.__checkoutItens = itens;
+  window.__checkoutCupom = carga.cupom || null;
+  window.__checkoutTabela = cat.frete || null;
+
+  tela.innerHTML = `
+    <div class="cartao">
+      <h3>Sua sacola</h3>
+      ${foraDaVitrine>0 ? `<p class="sub" style="color:var(--ember)">${foraDaVitrine} peça(s) saíram da vitrine e não entram nesta compra.</p>` : ''}
+      ${embreve.length ? `<p class="sub" style="color:var(--ember)">Peça em produção na sacola: o pagamento vai recusar até ela voltar à vitrine.</p>` : ''}
+      <div id="ck_itens"></div>
+    </div>
+
+    <div class="cartao">
+      <h3>Entrega</h3>
+      <div class="ck-opcoes">
+        <button class="ck-op ativa" data-entrega="correio">Receber em casa</button>
+        <button class="ck-op" data-entrega="retirada">Retirar / entrega local</button>
+      </div>
+      <div id="ck_endereco">
+        <label>CEP</label>
+        <input id="ck_cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9">
+        <div class="sub" id="ck_cepRecado" style="margin-top:4px"></div>
+        <label>Endereço</label>
+        <input id="ck_end" autocomplete="street-address" placeholder="rua, número, complemento, bairro, cidade"
+               value="${esc(dados.endereco||'')}">
+      </div>
+      <label>Telefone</label>
+      <input id="ck_tel" inputmode="tel" autocomplete="tel" placeholder="12 99123-4567" value="${esc(dados.telefone||'')}">
+      <label>Recado para o ateliê (opcional)</label>
+      <input id="ck_recado" placeholder="uma dedicatória, um detalhe da entrega…">
+    </div>
+
+    <div class="cartao">
+      <h3>Total</h3>
+      <div id="ck_totais"></div>
+      <div class="botoes"><button class="bt" id="ck_pagar">Ir para o pagamento</button></div>
+      <div class="erro some" id="ck_erro"></div>
+      <p class="sub" style="margin-top:10px">O pagamento acontece no Mercado Pago e você
+        volta para cá. A confirmação chega sozinha, e a encomenda aparece em
+        <b>Minhas encomendas</b> — é lá que você acompanha cada passo.</p>
+    </div>`;
+
+  tela.querySelectorAll('.ck-op').forEach(b => b.onclick = () => {
+    checkout.entrega = b.dataset.entrega;
+    tela.querySelectorAll('.ck-op').forEach(x => x.classList.toggle('ativa', x===b));
+    document.getElementById('ck_endereco').classList.toggle('some', checkout.entrega==='retirada');
+    pintarTotais();
+  });
+
+  const campoCep = document.getElementById('ck_cep');
+  campoCep.oninput = async () => {
+    checkout.cep = campoCep.value;
+    pintarTotais();
+    if(!limparCep(checkout.cep)) return;
+    const recado = document.getElementById('ck_cepRecado');
+    recado.textContent = 'buscando o endereço…';
+    const e = await buscarCep(checkout.cep);
+    if(!e){ recado.textContent = 'não achei esse CEP — confira, ou escreva o endereço à mão'; return; }
+    recado.textContent = `${e.localidade} · ${e.uf}`;
+    const campo = document.getElementById('ck_end');
+    // Só preenche o que está VAZIO: quem já escreveu o próprio endereço não
+    // pode vê-lo desaparecer porque o CEP voltou depois.
+    if(!campo.value.trim()) campo.value = [e.logradouro, e.bairro, e.localidade, e.uf].filter(Boolean).join(', ');
+  };
+
+  document.getElementById('ck_pagar').onclick = irPagar;
+  pintarItensDaSacola(); pintarTotais();
+}
+
+/* `pintarItensDaSacola`, e não `pintarItens`: já existe uma `pintarItens` neste
+   arquivo, da lista de encomendas. Duas declarações do mesmo nome no escopo do
+   módulo derrubam o MÓDULO INTEIRO — a tela não abre, nem a parte antiga —, e
+   o navegador não diz nada além de uma página em branco. */
+function pintarItensDaSacola(){
+  const itens = window.__checkoutItens || [];
+  document.getElementById('ck_itens').innerHTML = itens.map(i=>`
+    <div class="ck-linha"><span>${i.qtd}× ${esc(i.nome)}</span><b>${brl(i.preco*i.qtd)}</b></div>`).join('');
+}
+
+/** A conta que a pessoa vê. Prévia — quem cobra é o servidor. */
+function pintarTotais(){
+  const itens = window.__checkoutItens || [];
+  const bruto = cents(itens.reduce((s,i)=>s+i.preco*i.qtd,0));
+  const cupom = window.__checkoutCupom;
+  const frete = calcularFrete({
+    entrega: checkout.entrega, cep: checkout.cep,
+    subtotal: bruto, tabela: window.__checkoutTabela,
+  });
+  checkout.frete = frete;
+
+  const dizFrete = !frete.ok
+    ? (frete.causa==='cep-invalido'
+        ? '<span class="sub">informe o CEP</span>'
+        : '<span class="sub">combinado por mensagem</span>')
+    : frete.valor === 0
+      ? `<b>${frete.motivo==='retirada' ? 'sem frete' : 'grátis'}</b>`
+      : `<b>${brl(frete.valor)}</b>`;
+
+  document.getElementById('ck_totais').innerHTML = `
+    <div class="ck-linha"><span>Peças</span><b>${brl(bruto)}</b></div>
+    ${cupom ? `<div class="ck-linha"><span>Cupom ${esc(cupom)}</span><span class="sub">conferido no pagamento</span></div>` : ''}
+    <div class="ck-linha"><span>Frete</span>${dizFrete}</div>
+    <div class="ck-linha ck-total"><span>Total</span>
+      <b>${brl(bruto + (frete.ok?frete.valor:0))}${cupom?' menos o cupom':''}</b></div>`;
+}
+
+/**
+ * Cria a encomenda e manda para o pagamento.
+ *
+ * A encomenda nasce PRIMEIRO, e no Firestore. É ela que dá o `external_reference`
+ * pelo qual o webhook reencontra a compra depois — sem documento não há como o
+ * dinheiro voltar a encontrar o pedido.
+ */
+async function irPagar(){
+  const bt = document.getElementById('ck_pagar');
+  const erro = document.getElementById('ck_erro');
+  const itens = window.__checkoutItens || [];
+  const dizer = t => { erro.textContent = t; erro.classList.remove('some'); };
+  erro.classList.add('some');
+
+  const tel = document.getElementById('ck_tel').value.trim();
+  const end = checkout.entrega==='retirada' ? '' : document.getElementById('ck_end').value.trim();
+  if(tel.length < 8) return dizer('Deixe um telefone para a gente falar com você.');
+  if(checkout.entrega!=='retirada'){
+    if(!limparCep(checkout.cep)) return dizer('Confira o CEP: ele tem oito dígitos.');
+    if(end.length < 8) return dizer('Escreva o endereço de entrega.');
+  }
+
+  bt.disabled = true; bt.textContent = 'preparando…';
+  try{
+    const ref = doc(collection(fdb,'encomendas'));
+    await setDoc(ref, {
+      clienteUid: usuario.uid,
+      clienteNome: usuario.displayName || '',
+      clienteEmail: usuario.email || '',
+      clienteTelefone: tel.slice(0,20),
+      endereco: end.slice(0,400),
+      cep: checkout.entrega==='retirada' ? '' : limparCep(checkout.cep),
+      entrega: checkout.entrega,
+      recado: document.getElementById('ck_recado').value.trim().slice(0,500),
+      itens: itens.map(i=>({ id:i.id, nome:i.nome, preco:i.preco, qtd:i.qtd })),
+      // O BRUTO das peças, sem desconto e sem frete. A gestão compara este
+      // número com o catálogo dela; desconto e frete viajam em campos que a
+      // casa escreve, e nunca o cliente.
+      totalVisto: cents(itens.reduce((s,i)=>s+i.preco*i.qtd,0)),
+      cupom: window.__checkoutCupom || '',
+      situacao: 'nova',
+      criadaEm: serverTimestamp(),
+    });
+    // A sacola sai daqui assim que virou encomenda: voltar do pagamento e
+    // reencontrar a mesma sacola faria a pessoa comprar duas vezes.
+    try{ sessionStorage.removeItem('cinerea:sacola'); }catch(e){}
+    await pagar(ref.id, bt);
+  }catch(e){
+    console.error(e);
+    bt.disabled = false; bt.textContent = 'Ir para o pagamento';
+    dizer('Não consegui registrar sua encomenda agora. Tente de novo em instantes.');
+  }
+}
+window.telaFechar = telaFechar;
 
 /**
  * Pagar uma encomenda.

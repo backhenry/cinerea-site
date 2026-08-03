@@ -345,6 +345,7 @@
   .gtotais{margin-top:14px;font-size:14px}
   .gtotais div{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
   .gtotais .gfim{border-top:1px solid var(--line);margin-top:8px;padding-top:10px;font-size:16px}
+  .gnota{font-size:11.5px;color:var(--smoke);text-align:center;margin-top:8px;line-height:1.45}
   .gfechar{
     display:block;width:100%;margin-top:14px;padding:15px;border:none;border-radius:10px;
     background:var(--char);color:var(--paper);font-family:'Inter';font-size:15px;cursor:pointer;
@@ -442,7 +443,8 @@
     </div>
     <div class="grecado" id="cupomRecado" style="display:none"></div>
     <div class="gtotais" id="gavetaTotais"></div>
-    <button class="gfechar" onclick="fecharPedido()">Fechar pedido</button>
+    <button class="gfechar" onclick="fecharPedido()">Finalizar compra</button>
+    <div class="gnota">Você entra na sua conta para pagar e acompanhar o pedido.</div>
   </div>
 </aside>
 
@@ -941,21 +943,52 @@ function piscarContador(){
  * fingir um checkout que não cobra — o cliente confere antes de enviar.
  */
 window.fecharPedido = () => {
+  const ids=Object.keys(sacola);
+  if(!ids.length) return;
+
+  /* A SACOLA ATRAVESSA PELO `sessionStorage`, e não pela barra de endereço.
+     Um link com a sacola dentro é um link que se encaminha, se salva e se
+     edita: bastaria trocar um número para pedir preço diferente. Aqui não
+     muda nada de dinheiro (quem refaz o preço é o servidor), mas um endereço
+     que carrega o carrinho de alguém acaba sempre virando um endereço
+     compartilhado por engano.
+
+     `sessionStorage` e não `localStorage`: a sacola morre com a aba, que é o
+     mesmo tempo de vida que ela já tem aqui na loja. Sacola guardada por dias
+     volta com preço velho, que é o problema que a loja evita desde o começo. */
+  const carga={
+    itens: ids.map(id=>{
+      const p=produtos.find(x=>x.id===id);
+      // Nome e preço viajam só para a tela de conferência do outro lado
+      // desenhar sem esperar a rede. O que vale é o `id`.
+      return { id, qtd: sacola[id], nome: p?.nome||'', preco: Number(p?.preco)||0 };
+    }),
+    cupom: cupom ? cupom.codigo : null,
+    de: Date.now(),
+  };
+  try{ sessionStorage.setItem('cinerea:sacola', JSON.stringify(carga)); }
+  catch(e){ console.error('sessionStorage indisponível', e); }
+  location.href = '/perfil/?sacola=1';
+};
+
+/* Por que a compra sai da loja e termina no perfil.
+ *
+ * A encomenda precisa de LOGIN — a regra do Firestore exige `request.auth` e
+ * amarra o documento ao uid de quem cria. A loja é pública e anônima de
+ * propósito: quem chega por um link de peça não devia esbarrar numa tela de
+ * senha para olhar preço.
+ *
+ * Login anônimo resolveria a regra e quebraria o que importa: a pessoa não
+ * acharia o próprio pedido depois. E "onde acompanho?" é a primeira pergunta
+ * de quem acabou de pagar.
+ *
+ * Então a loja entrega a sacola e o perfil fecha a compra, que é onde já
+ * existem a conta, os dados da pessoa e a lista de encomendas para onde o
+ * Mercado Pago devolve. Nada disso foi duplicado. */
+window.contatoWhats = () => {
   if(!whats){ alert('Fale com a gente pelo Instagram: @cinerea.velas'); return; }
-  const linhas=Object.entries(sacola).map(([id,q])=>{
-    const p=produtos.find(x=>x.id===id);
-    return `• ${q}× ${p.nome} — ${brl(p.preco*q)}`;
-  });
-  const total=somaDaSacola();
-  const desc=descontoDoCupom(total);
   const numero = whats.length>=12?whats:'55'+whats;
-  // O CÓDIGO do cupom vai escrito na mensagem, e é por ele que a comissão do
-  // vendedor fica registrada. O valor do desconto vai junto só para o cliente
-  // conferir: quem fecha a conta é a gestão, pelo cadastro dela.
-  const txt = 'Olá! Quero encomendar pela Cinérea:\n\n'+linhas.join('\n')
-    + (desc>0 ? `\n\nSubtotal: ${brl(total)}\nCupom ${cupom.codigo}: −${brl(desc)}` : '')
-    + `\n\nTotal: ${brl(total-desc)}`;
-  location.href = `https://wa.me/${numero}?text=${encodeURIComponent(txt)}`;
+  location.href = `https://wa.me/${numero}?text=`+encodeURIComponent('Olá! Tenho uma dúvida sobre uma peça da Cinérea.');
 };
 
 // Link direto para uma coleção: /loja/?colecao=Refis. É o que permite à página
