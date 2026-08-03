@@ -245,31 +245,57 @@
      A gaveta não ocupa o rodapé de ninguém, e ainda cabe o que a barra não
      comportava — quantidade por item e remover, que antes não existiam. */
   /* Em brasa, e cheio. É o único botão de ação do cabeçalho e precisa ser
-     achado de primeira — vale o acento aqui. */
-  .sacola-bt{
-    display:flex;align-items:center;gap:7px;flex-shrink:0;
+     achado de primeira — vale o acento aqui.
+
+     O SELETOR PRECISA DO `.topo-acoes` NA FRENTE, e isso não é estilo: é a
+     única forma de a regra valer. O `comum.css` tem `.topo-acoes button`, que
+     é uma classe MAIS um tipo, e por especificidade vence `.sacola-bt`, que é
+     uma classe só — não importa que este arquivo venha depois, porque
+     especificidade decide antes da ordem.
+
+     Enquanto a regra não vencia, o efeito era este, e ele durou até alguém
+     olhar: em repouso a sacola herdava `background:none` e `color:smoke` e
+     virava um texto cinza igual a "Perfil", indistinguível de um link de menu.
+     E no hover ficava pior — o fundo escuro daqui pegava, mas
+     `.topo-acoes button:hover` pintava o texto de brasa, e dava BRASA SOBRE
+     BRASA: o rótulo sumia dentro do próprio botão.
+
+     Para o hover é preciso uma classe a mais ainda, porque `.topo-acoes
+     button:hover` também tem duas classes de peso. */
+  .topo-acoes .sacola-bt{
+    display:flex;align-items:center;gap:8px;flex-shrink:0;
     background:var(--ember);border:1px solid var(--ember);border-radius:22px;
-    padding:8px 16px 8px 13px;cursor:pointer;font-family:'Inter';font-size:13.5px;
-    color:#fff;transition:background .18s ease,border-color .18s ease;
+    padding:9px 17px 9px 14px;cursor:pointer;font-family:'Inter';font-size:13.5px;
+    color:#fff;font-weight:500;letter-spacing:.01em;
+    /* A sombra dá o degrau que separa "botão" de "texto do menu" num cabeçalho
+       claro. Sem ela, uma pastilha chapada some no papel quando a rolagem leva
+       uma foto para trás do cabeçalho. */
+    box-shadow:0 1px 2px rgba(28,26,23,.10),0 4px 12px -6px rgba(181,70,42,.55);
+    transition:background .18s ease,border-color .18s ease,box-shadow .18s ease;
   }
-  .sacola-bt:hover{background:#9C3B23;border-color:#9C3B23}
-  .sacola-bt svg{width:17px;height:17px;flex:0 0 auto}
-  .sacola-bt .n{
+  /* O ícone segue `currentColor`, então ele fica branco junto com o rótulo. */
+  .topo-acoes .sacola-bt:hover,
+  .topo-acoes .sacola-bt:focus-visible{
+    background:#9C3B23;border-color:#9C3B23;color:#fff;
+    box-shadow:0 1px 2px rgba(28,26,23,.14),0 6px 16px -6px rgba(181,70,42,.7);
+  }
+  .topo-acoes .sacola-bt svg{width:17px;height:17px;flex:0 0 auto}
+  .topo-acoes .sacola-bt .n{
     background:#fff;color:var(--ember);border-radius:11px;min-width:20px;
-    padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;font-weight:500;
+    padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;font-weight:600;
   }
-  .sacola-bt .n.vazia{display:none}
+  .topo-acoes .sacola-bt .n.vazia{display:none}
   /* No celular o botão fica só com o símbolo e o contador. A palavra "Sacola"
      custava 43px num cabeçalho que já não fechava a conta. */
   @media(max-width:560px){
-    .sacola-bt .rot-sacola{display:none}
-    .sacola-bt{padding:8px 12px}
+    .topo-acoes .sacola-bt .rot-sacola{display:none}
+    .topo-acoes .sacola-bt{padding:9px 13px}
   }
   /* O retorno de "entrou na sacola": o botão pulsa uma vez. Movimento de um
      botão, e não da loja inteira. */
-  .sacola-bt.pulsa{animation:pulsaSacola .5s ease}
+  .topo-acoes .sacola-bt.pulsa{animation:pulsaSacola .5s ease}
   @keyframes pulsaSacola{0%,100%{transform:scale(1)}40%{transform:scale(1.12)}}
-  @media (prefers-reduced-motion:reduce){ .sacola-bt.pulsa{animation:none} }
+  @media (prefers-reduced-motion:reduce){ .topo-acoes .sacola-bt.pulsa{animation:none} }
 
   .gaveta-fundo{
     position:fixed;inset:0;background:rgba(28,26,23,.42);z-index:45;
