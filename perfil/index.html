@@ -1597,7 +1597,17 @@ async function carregarEncomendas(){
       where('clienteUid','==',usuario.uid)));
     const lista = snap.docs.map(d => ({id:d.id, ...d.data()}))
       .sort((a,b) => (b.criadaEm?.toMillis?.()||0) - (a.criadaEm?.toMillis?.()||0));
-    pintarEncomendas(lista);
+    /* Os cupons das encomendas que AINDA não têm número do servidor.
+       Só essas precisam de conta: as que já foram cobradas ou aceitas carregam
+       o valor gravado, e é ele que vale. Uma leitura por código distinto, e
+       não uma por encomenda. */
+    const pendentes = [...new Set(lista
+      .filter(e => e.cupom && !e.pagamento && typeof e.descontoAplicado !== 'number')
+      .map(e => e.cupom))];
+    const cupons = {};
+    await Promise.all(pendentes.map(async c => { cupons[c] = await lerCupomWeb(c); }));
+
+    pintarEncomendas(lista, cupons);
     recadoDaVolta();
   }catch(e){
     console.error(e);
@@ -1606,7 +1616,78 @@ async function carregarEncomendas(){
   }
 }
 
-function pintarEncomendas(lista){
+
+/**
+ * O dinheiro de uma encomenda, na tela de acompanhar.
+ *
+ * TRÊS ESTADOS, e confundi-los é mostrar valor errado para quem já pagou:
+ *
+ *   FECHADO      a casa aceitou, ou o pagamento foi confirmado. `descontoAplicado`
+ *                e `totalFechado` são números que a CASA escreveu, e não dependem
+ *                mais de o cupom continuar existindo.
+ *   COBRADO      a cobrança foi criada e o dinheiro ainda não caiu. O servidor já
+ *                gravou em `pagamento` exatamente o que está sendo cobrado —
+ *                peças, desconto, frete e total. É o número da fatura.
+ *   PRÉVIA       nem uma coisa nem outra. Aqui, e só aqui, o desconto é
+ *                calculado na tela, com o mesmo `descontoDoCupom` do checkout.
+ *
+ * A ordem importa: `fechado` ganha de `cobrado`, e `cobrado` ganha da prévia.
+ * Uma encomenda paga com cupom vencido depois mostraria "sem desconto" se a
+ * prévia tivesse precedência — e a pessoa pagou com desconto.
+ *
+ * ATÉ AGO/2026 O DESCONTO NÃO APARECIA ANTES DE A CASA ACEITAR, e a razão
+ * estava escrita aqui: recalcular exigiria uma cópia a mais da conta do cupom,
+ * e divergir seria mostrar dinheiro errado. Duas coisas mudaram. O checkout
+ * passou a ter essa conta, guardada pelo teste que compara as cinco cópias. E,
+ * mais importante, o estado COBRADO não calcula nada: ele lê o que o servidor
+ * gravou. O que a tela dizia — "o desconto é confirmado junto com o frete" —
+ * era verdade quando não havia pagamento online, e virou uma desculpa para
+ * esconder um número que já estava no documento.
+ */
+function resumoDaEncomenda(e, cupons = {}){
+  const linha = (rot, val, cls='') =>
+    `<div class="linha ${cls}"><span>${rot}</span><span>${val}</span></div>`;
+  const pecas = Number(e.totalVisto) || 0;
+
+  // ---- fechado: a casa escreveu o número ----------------------------------
+  if(typeof e.descontoAplicado === 'number' && typeof e.totalFechado === 'number'){
+    const frete = Number(e.fretePago) || 0;
+    return linha('Peças', brl(pecas))
+      + (e.descontoAplicado > 0 ? linha(`Cupom ${esc(e.cupom||'')}`, '− ' + brl(e.descontoAplicado)) : '')
+      + (frete > 0 ? linha('Frete', brl(frete)) : '')
+      + linha('Combinado', brl(e.totalFechado + frete), 'forte');
+  }
+
+  // ---- cobrado: o servidor gravou o que vai na fatura ---------------------
+  const p = e.pagamento;
+  if(p && typeof p.total === 'number'){
+    return linha('Peças', brl(typeof p.bruto === 'number' ? p.bruto : pecas))
+      + (p.desconto > 0 ? linha(`Cupom ${esc(e.cupom||'')}`, '− ' + brl(p.desconto)) : '')
+      + (p.frete > 0 ? linha('Frete', brl(p.frete))
+         : p.entrega === 'retirada' ? linha('Frete', 'retirada') : '')
+      + linha('A pagar', brl(p.total), 'forte')
+      + (e.cupom && !(p.desconto > 0)
+          ? `<p class="sub" style="margin-top:8px">O cupom <b>${esc(e.cupom)}</b> não valia
+             mais quando a cobrança foi criada.</p>` : '');
+  }
+
+  // ---- prévia: ainda não há cobrança --------------------------------------
+  const dados = e.cupom ? cupons[e.cupom] : null;
+  const conta = dados && !dados.ausente
+    ? descontoDoCupom(pecas, dados, Date.now())
+    : { desconto: 0, motivo: dados?.ausente ? 'não encontrei esse cupom' : '' };
+
+  return linha('Peças', brl(pecas))
+    + (conta.desconto > 0
+        ? linha(`Cupom ${esc(e.cupom)}`, '− ' + brl(conta.desconto))
+        : e.cupom
+          ? linha(`Cupom ${esc(e.cupom)}`, `<span class="sub">${esc(conta.motivo || 'não se aplica')}</span>`)
+          : '')
+    + linha('Total das peças', brl(Math.max(pecas - conta.desconto, 0)), 'forte')
+    + '<p class="sub" style="margin-top:8px">O frete entra quando você for pagar.</p>';
+}
+
+function pintarEncomendas(lista, cupons = {}){
   if(!lista.length){
     tela.innerHTML = `<div class="cartao">
       <h3>Nenhuma encomenda ainda</h3>
@@ -1624,21 +1705,7 @@ function pintarEncomendas(lista){
       `<div class="linha"><span>${Number(i.qtd)||1}× ${esc(i.nome||'peça')}</span>
        <span>${brl((Number(i.preco)||0) * (Number(i.qtd)||1))}</span></div>`).join('');
 
-    // O DESCONTO SÓ APARECE COM NÚMERO DEPOIS DE CONFIRMADO pela casa. Antes
-    // disso o valor dependeria de recalcular o cupom aqui, e essa conta já
-    // existe em três lugares no projeto. Uma quarta cópia divergiria em algum
-    // deles, e divergir aqui é mostrar dinheiro errado para quem comprou.
-    const confirmado = typeof e.descontoAplicado === 'number';
-    const desconto = confirmado && e.descontoAplicado > 0
-      ? `<div class="linha"><span>Cupom ${esc(e.cupom||'')}</span>
-         <span>− ${brl(e.descontoAplicado)}</span></div>` : '';
-    const fecho = confirmado
-      ? `<div class="linha forte"><span>Combinado</span>
-         <span>${brl(typeof e.totalFechado === 'number' ? e.totalFechado
-                : Math.max((Number(e.totalVisto)||0) - e.descontoAplicado, 0))}</span></div>`
-      : `<div class="linha forte"><span>Peças</span><span>${brl(e.totalVisto)}</span></div>`;
-    const cupomPendente = !confirmado && e.cupom
-      ? `<p class="sub" style="margin-top:8px">Cupom <b>${esc(e.cupom)}</b> informado. O desconto é confirmado junto com o frete.</p>` : '';
+    const resumo = resumoDaEncomenda(e, cupons);
 
     const quando = e.criadaEm?.toDate
       ? e.criadaEm.toDate().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}) : '';
@@ -1646,7 +1713,7 @@ function pintarEncomendas(lista){
     return `<div class="cartao">
       <span class="selo ${viva?'viva':''}">${esc(rotulo)}</span>
       <div style="margin-top:14px">${itens}</div>
-      ${desconto}${fecho}${cupomPendente}
+      ${resumo}
       ${quando?`<p class="sub" style="margin-top:10px">${esc(quando)}</p>`:''}
       ${e.situacao==='nova'?`<p class="sub" style="margin-top:8px">Ainda não é uma compra fechada:
         falta a Cinérea confirmar o frete e o pagamento com você.</p>`:''}
