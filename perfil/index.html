@@ -531,16 +531,35 @@ function pintarLista(){
     // Peça NÃO permanente tem o conteúdo dentro do chip, e não no endereço.
     // Trocar aqui não mudaria o que o convidado vê: seria mentira na tela.
     const podeAqui = !!p.permanente;
+    const registrada = p.adicionadaEm?.toDate
+      ? p.adicionadaEm.toDate().toLocaleDateString('pt-BR',{month:'long',year:'numeric'}) : '';
     return `<div class="cartao">
       <h3>${esc(p.nome || 'Peça sem nome')}</h3>
       <p class="sub">${diz}</p>
+      ${/* O CHIP É INVISÍVEL, e por isso o registro precisa ser dito. A pessoa
+            não tem como conferir sozinha que a peça está na conta dela: não há
+            nada para olhar na escultura. Esta linha é a prova. */''}
+      <p class="sub" style="margin-top:6px;font-size:12px;letter-spacing:.04em">
+        Registrada na sua conta${registrada?` desde ${esc(registrada)}`:''}
+        · chip ${esc(String(p.tagUid||'').slice(0,8).toUpperCase())}
+      </p>
       ${podeAqui
         ? `<div class="botoes"><button class="bt" data-editar="${i}">Trocar o conteúdo</button>
            <a class="bt bt2" href="/p/?c=${encodeURIComponent(p.tagUid)}" target="_blank" rel="noopener">Ver como o convidado vê</a></div>`
-        : `<div class="aviso">O conteúdo desta peça está gravado <b>dentro do chip</b>,
-             e não num endereço. Para trocar é preciso o aplicativo e a peça na mão.
-             Gravando uma vez no modo <b>“trocar de onde eu estiver”</b>, ela passa a
-             aparecer aqui para sempre.</div>`}
+        /* A PEÇA VEM PRIMEIRO, A LIMITAÇÃO DEPOIS.
+           Antes este cartão era um aviso grande explicando o que NÃO dá para
+           fazer, e a peça sumia atrás dele: quem abria a conta via um problema,
+           não um bem. Mas ela está registrada, é dela, e o chip está gravado —
+           isso é o assunto. A restrição continua dita, em uma linha discreta,
+           porque esconder também seria mentir. */
+        : `<p class="sub" style="margin-top:12px;color:var(--char)">
+             <b>Gravada no chip.</b> O conteúdo mora dentro da peça, e é por isso
+             que ela funciona mesmo sem internet.
+           </p>
+           <p class="sub" style="margin-top:6px">Para trocar o que ela diz é preciso o
+             aplicativo e a peça na mão. Gravando uma vez no modo
+             <b>“trocar de onde eu estiver”</b>, ela passa a ser editável por aqui,
+             de qualquer aparelho.</p>`}
       ${linhaDoRefil(p.tagUid)}
     </div>`;
   }).join('');
