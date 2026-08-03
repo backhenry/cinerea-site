@@ -181,7 +181,7 @@
     <div>
       <h3>A loja</h3>
       <a href="/loja/">Todas as peças</a>
-      <a href="/loja/?colecao=Areia">Refis de areia</a>
+      <a href="/loja/?colecao=Refis">Refis de areia</a>
       <a href="/aplicacoes/">Aplicações</a>
       <a href="/contato/?sobre=empresa">Quantidade para empresa</a>
     </div>
@@ -472,10 +472,24 @@ async function entrar(){
  * - `refil` preenchido = o ateliê registrou o refil DESTE modelo. É o caminho
  *   bom, e por isso o link é do modelo, não da loja inteira: quem tem uma vela
  *   de areia não quer procurar qual das areias serve;
- * - sem certidão, ou certidão sem refil = manda para o contato, NÃO para a
- *   loja. Enquanto o refil não existir como produto cadastrado, mandar para a
- *   loja é mandar para uma prateleira vazia.
+ * - sem certidão, ou certidão sem refil = manda para a COLEÇÃO DE REFIS.
+ *
+ * Esse último caso mandava para o contato, e a razão caducou em ago/2026,
+ * quando o refil virou produto publicado. O desvio existia porque a loja não
+ * tinha refil nenhum: mandar para lá era mandar para uma prateleira vazia.
+ * Hoje a prateleira tem, e continuar desviando é trocar uma compra de um
+ * toque por uma conversa de WhatsApp — no lugar do app que existe justamente
+ * para lembrar a hora de repor.
+ *
+ * Consertar aqui, e não preenchendo `refil` peça por peça no Console, é o que
+ * faz valer para as peças que JÁ estão na casa dos clientes. O campo continua
+ * ganhando, quando existir, porque ele é mais específico.
+ *
+ * A página do convidado já fazia assim (`ondeRepor`, em /p/). Eram duas telas
+ * discordando sobre a mesma pergunta.
  */
+const REFIS = '/loja/?colecao=Refis';
+
 function linhaDoRefil(tagUid){
   if (!(tagUid in certidoes)) return '';
   const c = certidoes[tagUid];
@@ -492,7 +506,7 @@ function linhaDoRefil(tagUid){
   }
 
   return `<p class="sub" style="margin-top:12px">
-    <a href="/contato/?sobre=refil">Qual refil serve nesta peça</a>
+    <a href="${REFIS}">Ver os refis</a>
   </p>`;
 }
 
@@ -1126,7 +1140,7 @@ function pintarAjuda(){
   <div class="cartao">
     <h3>Repor a areia</h3>
     <p class="sub">Quando a fragrância acabar, a escultura fica: você repõe só a areia.</p>
-    <div class="botoes"><a class="bt bt2" href="/loja/?colecao=Areia">Ver os refis</a></div>
+    <div class="botoes"><a class="bt bt2" href="/loja/?colecao=Refis">Ver os refis</a></div>
   </div>
 
   <div class="cartao">

@@ -375,7 +375,10 @@ function mostrar(v, cert){
   // `refil` vem da certidão, que só a casa escreve, então o risco aqui é bem
   // menor. Passa pelo mesmo filtro assim mesmo: um dia alguém amplia quem
   // escreve na certidão e ninguém vai lembrar deste link.
-  const ondeRepor = (cert?.refil && enderecoSeguro(cert.refil)) || '/loja/?colecao=Areia';
+  // `Areia` casa com "Coleção Areia", que são as esculturas que se preenchem,
+  // e não com "Refis & Consumíveis", que é onde a areia se compra. O casamento
+  // da loja é por trecho do nome, então o rótulo certo aqui é `Refis`.
+  const ondeRepor = (cert?.refil && enderecoSeguro(cert.refil)) || '/loja/?colecao=Refis';
   const caminhos = `<div class="caminhos surge" style="animation-delay:.16s">
     <a class="caminho" href="${esc(ondeRepor)}" rel="noopener">
       Repor a areia<span class="sub">quando a fragrância acabar</span>
