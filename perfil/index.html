@@ -1048,17 +1048,28 @@ function regiaoDoCep(cep){
   for(const [regiao,de,ate] of FAIXAS_CEP) if(limpo >= de && limpo <= ate) return regiao;
   return null;
 }
-function calcularFrete({ entrega, cep, subtotal, tabela }){
+function calcularFrete({ entrega, cep, subtotal, pecas, tabela }){
   if(entrega === 'retirada') return { ok:true, valor:0, regiao:null, motivo:'retirada' };
   if(!tabela || tabela.ativo === false) return { ok:false, causa:'sem-tabela' };
   const regiao = regiaoDoCep(cep);
   if(!regiao) return { ok:false, causa:'cep-invalido' };
+  const base = Number((tabela.valores||{})[regiao]);
+  if(!isFinite(base) || base < 0) return { ok:false, causa:'regiao-sem-valor', regiao };
+  // Uma sacola só de refis ainda é uma caixa: `max(1, …)`.
+  const unidades = Math.max(1, Math.floor(Number(pecas) || 0));
+  const adicional = Math.min(Math.max(Number(tabela.adicional) || 0, 0), 1);
+  const extra = n => cents(n * base * adicional);
   const corte = Number(tabela.corte);
-  if(isFinite(corte) && corte > 0 && cents(subtotal) >= cents(corte))
-    return { ok:true, valor:0, regiao, motivo:'gratis-acima-do-corte' };
-  const valor = Number((tabela.valores||{})[regiao]);
-  if(!isFinite(valor) || valor < 0) return { ok:false, causa:'regiao-sem-valor', regiao };
-  return { ok:true, valor:cents(valor), regiao, motivo:'tabela' };
+  if(isFinite(corte) && corte > 0 && cents(subtotal) >= cents(corte)){
+    const teto = Math.floor(Number(tabela.gratisAte) || 0);
+    if(teto <= 0 || unidades <= teto)
+      return { ok:true, valor:0, regiao, motivo:'gratis-acima-do-corte' };
+    // Só o excedente é cobrado: as primeiras `teto` peças seguem por conta da
+    // casa. Cobrar o frete inteiro puniria quem levou uma peça a mais do que o
+    // limite mais do que quem levou uma a menos.
+    return { ok:true, valor:extra(unidades - teto), regiao, motivo:'gratis-parcial' };
+  }
+  return { ok:true, valor:cents(base + extra(unidades - 1)), regiao, motivo:'tabela' };
 }
 const cents = v => Math.round((Number(v)||0)*100)/100;
 
@@ -1134,7 +1145,8 @@ async function telaFechar(){
   const itens = carga.itens.map(i=>{
     const p = porId.get(String(i.id));
     return p ? { id:String(i.id), qtd:Math.max(1,Math.min(99,Number(i.qtd)||1)),
-                 nome:p.nome, preco:Number(p.preco)||0, situacao:p.situacao } : null;
+                 nome:p.nome, preco:Number(p.preco)||0, situacao:p.situacao,
+                 leve:!!p.leve } : null;
   }).filter(Boolean);
 
   const foraDaVitrine = carga.itens.length - itens.length;
@@ -1338,9 +1350,13 @@ function pintarTotais(){
      Calcular sobre o bruto daria "frete grátis" na tela para quem só chega ao
      corte antes do desconto, e cobrança de frete no Mercado Pago. A pessoa veria
      dois números diferentes na mesma compra, com dois minutos de diferença. */
+  // Só as peças que OCUPAM CAIXA. Refil e chaveiro vão na sobra da caixa de uma
+  // escultura, e quem os separa é o `leve` do catálogo.
+  const pecasNoFrete = itens.reduce((s,i)=> s + (i.leve ? 0 : i.qtd), 0);
   const frete = calcularFrete({
     entrega: checkout.entrega, cep: checkout.cep,
-    subtotal: cents(bruto - desconto), tabela: window.__checkoutTabela,
+    subtotal: cents(bruto - desconto), pecas: pecasNoFrete,
+    tabela: window.__checkoutTabela,
   });
   checkout.frete = frete;
 
