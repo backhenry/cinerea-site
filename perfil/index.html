@@ -157,6 +157,8 @@
   }
   .ck-total b{font-family:'Fraunces'}
   .ck-desconto{color:var(--ok)}
+  /* Alinhado à direita, debaixo do valor do frete: é dele que o prazo fala. */
+  .ck-prazo{text-align:right;font-size:12px;color:var(--smoke);margin:-2px 0 6px}
   /* ---- entrar / criar conta ---------------------------------------------- */
   .troca{
     margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
@@ -1359,10 +1361,20 @@ function pintarTotais(){
 
   const total = cents(bruto - desconto + (frete.ok ? frete.valor : 0));
 
+  /* O PRAZO ANDA COLADO NO FRETE, e não numa linha à parte.
+     "Quanto custa" e "quando chega" são a mesma pergunta para quem está
+     decidindo, e separá-los faz a segunda passar despercebida — que é como
+     nasce o "cadê minha peça?" três dias depois de comprar.
+     Só aparece na entrega: quem retira combina a hora por telefone. */
+  const prazo = window.__checkoutTabela?.prazo;
+  const dizPrazo = (frete.ok && frete.motivo !== 'retirada' && prazo)
+    ? `<div class="ck-prazo">${esc(prazo)} depois de a peça ficar pronta</div>` : '';
+
   document.getElementById('ck_totais').innerHTML = `
     <div class="ck-linha"><span>Peças</span><b>${brl(bruto)}</b></div>
     ${linhaCupom}
     <div class="ck-linha"><span>Frete</span>${dizFrete}</div>
+    ${dizPrazo}
     <div class="ck-linha ck-total"><span>Total</span><b>${brl(total)}</b></div>
     ${frete.ok ? '' : '<div class="sub" style="margin-top:6px">O frete entra assim que o CEP estiver certo.</div>'}`;
 }
