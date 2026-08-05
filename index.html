@@ -108,6 +108,35 @@
      interrupção no meio de uma coluna estreita, com meia tela vazia à direita. */
   .dupla{display:grid;gap:30px;align-items:center;margin-top:24px}
   .dupla p{max-width:52ch}
+
+  /* ---- a peça girando --------------------------------------------------- */
+  /* O vídeo já foi composto sobre o creme do site na hora de codificar, em vez
+     de carregar transparência: alfa em vídeo exige webm com VP9 e cai fora no
+     Safari, e o fundo aqui é uma cor chapada que nunca muda. Um `overlay` de
+     ffmpeg resolveu de vez o que seria um problema de compatibilidade eterno. */
+  /* O FUNDO PRECISA ESTAR AQUI, e essa foi a parte que não se adivinha.
+     `mix-blend-mode` mistura com o que está atrás DENTRO do mesmo contexto de
+     empilhamento, e a seção `.ideia` cria um: ela tem `transform` por causa da
+     animação de revelação. Com o pai transparente, o vídeo multiplicava contra
+     nada e o branco continuava branco — exatamente o que apareceu na prova.
+     Pintar o papel aqui dá ao `multiply` o que ele precisa. */
+  .giro{display:flex;justify-content:center;background:var(--paper)}
+  .giro-video{
+    width:100%;max-width:330px;height:auto;display:block;
+    /* O VÍDEO É COMPOSTO SOBRE BRANCO, e `multiply` faz o branco sumir.
+       Não é detalhe: `branco × qualquer cor = a própria cor`, então o fundo do
+       vídeo vira exatamente o papel da página, seja ele qual for, e sem
+       depender de o codificador devolver o RGB exato.
+
+       Tentei antes compor sobre o próprio creme, e não funciona por dois
+       motivos que só aparecem na tela. O H.264 guarda a imagem em YUV com
+       faixa limitada, e a ida e volta desloca o tom o suficiente para o olho
+       ver uma placa mais clara em volta da peça. E `multiply` de creme contra
+       creme dá um creme MAIS ESCURO, o que trocou a placa clara por uma
+       escura. Branco resolve os dois de uma vez. */
+    mix-blend-mode:multiply;
+  }
+  @media(min-width:880px){ .giro-video{max-width:400px} }
   @media(min-width:880px){
     .dupla{grid-template-columns:430px 1fr;gap:46px}
     .dupla .desenho{margin:0}
@@ -443,6 +472,42 @@
           <p>Quando a fragrância se esgotar, troque só a areia.</p></div>
       </div>
       <a class="linkinho" href="/loja/">Ver os refis de areia perfumada →</a>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────────────
+         A PEÇA GIRANDO.
+
+         Seção nova, e não a troca de um desenho existente: os quatro SVGs do
+         site explicam mecanismos (a vela em corte, o chip, os três passos, os
+         sete tipos). Trocar qualquer um deles daria beleza e tiraria
+         explicação, e o site precisa das duas coisas.
+
+         Ela vem logo depois de "a vela acaba, a escultura não" porque é a
+         resposta daquela frase: a pessoa acabou de ler que a escultura
+         permanece, e aqui ela vê a escultura.
+
+         O VÍDEO É UM RENDER, e o texto diz isso. Foi ele que virou o molde, o
+         que é verdade e é a razão de a seção existir — mas passar render por
+         fotografia de produto é prometer um acabamento que o gesso não tem.
+    ────────────────────────────────────────────────────────────────────────── -->
+    <section class="ideia" id="nasce">
+      <div class="rot">Como a peça nasce</div>
+      <h2>Antes do gesso, ela é um&nbsp;desenho.</h2>
+      <div class="dupla">
+        <div class="giro">
+          <video class="giro-video" id="giroVideo" muted loop playsinline
+                 preload="none" poster="/giro.jpg"
+                 aria-label="A escultura do David girando, vista de todos os lados."></video>
+        </div>
+        <div class="texto">
+          <p>Cada peça começa modelada em três dimensões. É desse modelo que sai
+             o molde, e é do molde que sai o gesso — um de cada vez, à mão.</p>
+          <p>O que você vê aqui é o modelo, girando. A peça que chega na sua
+             casa é de gesso: fosca, com o peso e a textura que só o material
+             tem.</p>
+          <a class="linkinho" href="/loja/">Ver as peças da vitrine →</a>
+        </div>
+      </div>
     </section>
 
     <section class="ideia" id="chip">

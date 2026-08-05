@@ -238,3 +238,51 @@ window.velaDeEspera = function (texto) {
     + '<span class="cinzas"><i></i><i></i><i></i></span>'
     + '</div><p>' + String(texto == null ? '' : texto) + '</p></div>';
 };
+
+/**
+ * A peça girando, na seção "como a peça nasce".
+ *
+ * SÓ CARREGA QUANDO CHEGA PERTO, e é a diferença que importa: a home já baixa o
+ * vídeo da capa para todo visitante, e um segundo laço baixado na abertura
+ * dobraria o gasto de quem está no 4G para ver algo que ainda nem apareceu na
+ * tela. Por isso o `preload="none"` no HTML e o `src` posto aqui.
+ *
+ * As mesmas duas recusas da capa, pelas mesmas razões: quem pediu menos
+ * movimento não recebe vídeo, e quem está economizando dados também não. Nos
+ * dois casos sobra o pôster, que é um quadro da peça — e aqui ele BASTA, ao
+ * contrário da capa, onde um quadro escuro parado não diria nada.
+ *
+ * `IntersectionObserver` e não evento de rolagem: rolagem dispara dezenas de
+ * vezes por segundo e obriga a medir posição na mão, que é justamente o tipo de
+ * medida que erra quando a aba está escondida.
+ */
+(function () {
+  var v = document.getElementById('giroVideo');
+  if (!v) return;
+
+  var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var con = navigator.connection;
+  var economizando = con && (con.saveData || /2g/.test(con.effectiveType || ''));
+  // O pôster já está no HTML, então não fazer nada aqui deixa a peça parada na
+  // tela. É a degradação certa: perde o giro, não perde a imagem.
+  if (quieto || economizando) return;
+
+  if (!('IntersectionObserver' in window)) { v.src = '/giro.mp4'; v.load(); return; }
+
+  var olho = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      if (e.isIntersecting) {
+        if (!v.src) { v.src = '/giro.mp4'; v.load(); }
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      } else if (!v.paused) {
+        // Pausar ao sair da tela: um laço tocando fora de vista gasta bateria
+        // para ninguém. O pôster não volta, e nem deveria — a peça fica onde
+        // parou, e retoma dali quando a pessoa sobe de novo.
+        v.pause();
+      }
+    });
+  }, { rootMargin: '200px 0px' });
+
+  olho.observe(v);
+})();
