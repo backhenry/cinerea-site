@@ -5,7 +5,7 @@
        A transformação parece arbitrária e não é: foi medida com getBBox no
        navegador, que é a única forma confiável de saber onde um desenho em SVG
        realmente está. O grupo fica centrado em (75,75) com desvio de 0,04, e
-       ocupa 52% do quadro — diagonal de 110 contra o limite de 120 da zona
+       ocupa 52% do quadro, diagonal de 110 contra o limite de 120 da zona
        segura das máscaras do Android, que recortam o ícone em círculo.
 
        Mexeu aqui, medir de novo. SVG transborda o viewBox sem erro nenhum. -->

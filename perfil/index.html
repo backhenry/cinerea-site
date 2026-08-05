@@ -60,7 +60,7 @@
   }
   /* `!important` aqui, e é o lugar certo para ele.
      `.some` é uma classe e `.abas` também, e `.abas{display:flex}` vem depois
-     no arquivo — então esconder as abas com `.some` nunca funcionou: quem não
+     no arquivo, então esconder as abas com `.some` nunca funcionou: quem não
      entrou via os quatro botões da conta, clicáveis e inúteis, ao lado de um
      formulário de senha.
      Poderia ser `.abas.some{display:none}`, mas `.some` é usado em dezenas de
@@ -75,7 +75,7 @@
   .abas{
     display:flex;gap:6px;overflow-x:auto;margin:0 0 22px;padding-bottom:4px;
     scrollbar-width:none;-webkit-overflow-scrolling:touch;
-    /* Centradas, como o título e a chamada logo acima — alinhadas à esquerda
+    /* Centradas, como o título e a chamada logo acima, alinhadas à esquerda
        sob um título centrado, elas pareciam de outra página.
 
        `safe center` e não `center`: com `center` puro, o que não cabe sai pela
@@ -165,7 +165,7 @@
     font-size:13.5px;color:var(--smoke);text-align:center;
   }
   /* Um botão que parece link, e não um segundo botão cheio: criar conta e
-     entrar não competem — em cada momento só um dos dois é o caminho. */
+     entrar não competem, em cada momento só um dos dois é o caminho. */
   .btlink{
     background:none;border:none;padding:0;font:inherit;color:var(--ember);
     text-decoration:underline;text-underline-offset:3px;cursor:pointer;
@@ -280,7 +280,7 @@
  *
  * POR QUE ELE EXISTE, e por que não é o aplicativo: o chip guarda o ENDEREÇO
  * PERMANENTE da peça, não o conteúdo. Quem gravou uma vez nunca mais precisa de
- * NFC para trocar o que a peça diz — basta mudar o que aquele endereço mostra,
+ * NFC para trocar o que a peça diz, basta mudar o que aquele endereço mostra,
  * que é um documento no Firestore. Ou seja, esta página faz tudo o que o app faz
  * DEPOIS da primeira gravação.
  *
@@ -328,7 +328,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
  * ESTA CONTA EXISTE DUAS VEZES: aqui e em `cinerea-app/src/nfc/registros.ts`,
  * que é a versão com 21 testes rodando contra o codificador de verdade. Aqui
  * ela está reescrita à mão porque o site é HTML estático, sem empacotador.
- * Mudou lá, olhar aqui — e é por isso que o formato do documento publicado está
+ * Mudou lá, olhar aqui, e é por isso que o formato do documento publicado está
  * escrito por extenso logo abaixo, em vez de sair de uma função esperta.
  * ------------------------------------------------------------------------ */
 const TIPOS = {
@@ -406,8 +406,7 @@ let secao = /[?&](pago|pendente|falhou)=/.test(location.search) ? 'encomendas'
  *
  * Vem pelo `sessionStorage` e não pela barra de endereço: um link com o
  * carrinho dentro acaba encaminhado, salvo e editado. `sessionStorage` morre
- * com a aba, que é o mesmo tempo de vida que a sacola já tinha na loja —
- * sacola guardada por dias volta com preço velho.
+ * com a aba, que é o mesmo tempo de vida que a sacola já tinha na loja, * sacola guardada por dias volta com preço velho.
  *
  * O que vale desta carga é o `id` e a `qtd`. Nome e preço vêm junto só para a
  * tela de conferência desenhar sem esperar a rede; quem refaz o preço, e quem
@@ -686,7 +685,7 @@ async function entrar(){
  * quando o refil virou produto publicado. O desvio existia porque a loja não
  * tinha refil nenhum: mandar para lá era mandar para uma prateleira vazia.
  * Hoje a prateleira tem, e continuar desviando é trocar uma compra de um
- * toque por uma conversa de WhatsApp — no lugar do app que existe justamente
+ * toque por uma conversa de WhatsApp, no lugar do app que existe justamente
  * para lembrar a hora de repor.
  *
  * Consertar aqui, e não preenchendo `refil` peça por peça no Console, é o que
@@ -721,7 +720,7 @@ function linhaDoRefil(tagUid){
 /**
  * Só http e https viram link. Mesmo critério da página do convidado.
  *
- * `esc()` escapa aspas, o que impede sair do atributo — e não impede nada de
+ * `esc()` escapa aspas, o que impede sair do atributo, e não impede nada de
  * um `javascript:`, que executa sem precisar sair de lugar nenhum.
  */
 function enderecoDeConfianca(bruto){
@@ -771,8 +770,7 @@ function pintarLista(){
         /* A PEÇA VEM PRIMEIRO, A LIMITAÇÃO DEPOIS.
            Antes este cartão era um aviso grande explicando o que NÃO dá para
            fazer, e a peça sumia atrás dele: quem abria a conta via um problema,
-           não um bem. Mas ela está registrada, é dela, e o chip está gravado —
-           isso é o assunto. A restrição continua dita, em uma linha discreta,
+           não um bem. Mas ela está registrada, é dela, e o chip está gravado, isso é o assunto. A restrição continua dita, em uma linha discreta,
            porque esconder também seria mentir. */
         : `<p class="sub" style="margin-top:12px;color:var(--char)">
              <b>Gravada no chip.</b> O conteúdo mora dentro da peça, e é por isso
@@ -794,7 +792,7 @@ function pintarLista(){
 /**
  * Cor, fundo e nome que o dono escolhe para a página dele.
  *
- * Nenhum destes campos vira endereço, então nada aqui pode virar link — o que
+ * Nenhum destes campos vira endereço, então nada aqui pode virar link, o que
  * mantém o filtro de esquema da página do convidado fora deste assunto.
  *
  * A ASSINATURA DA CINÉREA CONTINUA no rodapé da página, sempre. Personalizar a
@@ -997,7 +995,7 @@ const SITUACAO = {
    FECHAR A COMPRA
    ══════════════════════════════════════════════════════════════════════════
 
-   Por que isto mora AQUI e não na loja: criar a encomenda exige login — a
+   Por que isto mora AQUI e não na loja: criar a encomenda exige login, a
    regra do Firestore pede `request.auth` e amarra o documento ao uid de quem
    cria. A loja é pública de propósito, porque quem chega por um link de peça
    não devia esbarrar numa senha para olhar preço. Login anônimo resolveria a
@@ -1023,13 +1021,13 @@ async function lerCatalogoLoja(){
  * O frete, do lado de cá.
  *
  * É a MESMA conta de `functions/frete.js`, e por isso ela é uma terceira cópia
- * — a quarta contando a gestão. Cópia aqui é dívida conhecida e aceita, pelo
+ *, a quarta contando a gestão. Cópia aqui é dívida conhecida e aceita, pelo
  * mesmo motivo do cupom: o site é HTML estático sem etapa de build e não tem
  * como importar o módulo do servidor. O que impede as duas de divergirem é o
  * teste que passa os mesmos valores pelas duas e exige o mesmo centavo.
  *
  * E ela é só PRÉVIA. Se divergir, quem manda é o servidor, e a pessoa vê o
- * valor certo no Mercado Pago — feio, mas não errado no dinheiro.
+ * valor certo no Mercado Pago, feio, mas não errado no dinheiro.
  */
 const FAIXAS_CEP = [
   ['sudeste','01000000','39999999'], ['sul','80000000','99999999'],
@@ -1088,14 +1086,14 @@ async function buscarCep(cep){
  * O desconto do cupom, do lado de cá.
  *
  * ESPELHA `aplicarCupom` do servidor, passo a passo e na mesma ordem. É a
- * quarta cópia da conta — servidor, loja, gestão e aqui — e é dívida conhecida
+ * quarta cópia da conta, servidor, loja, gestão e aqui, e é dívida conhecida
  * pelo mesmo motivo de sempre: o site é HTML estático sem etapa de build. O que
  * impede as quatro de divergirem é o teste que passa os mesmos valores por
  * todas e exige o mesmo centavo.
  *
  * Devolve também o MOTIVO de não ter descontado. Sem ele, um cupom que venceu
  * entre pôr na sacola e chegar aqui sumiria calado, e a pessoa veria o preço
- * cheio sem entender por quê — e é exatamente esse silêncio que faz alguém
+ * cheio sem entender por quê, e é exatamente esse silêncio que faz alguém
  * abandonar a compra achando que foi enganada.
  */
 function descontoDoCupom(bruto, cupom, agora){
@@ -1247,7 +1245,7 @@ async function telaFechar(){
       <div class="erro some" id="ck_erro"></div>
       <p class="sub" style="margin-top:10px">O pagamento acontece no Mercado Pago e você
         volta para cá. A confirmação chega sozinha, e a encomenda aparece em
-        <b>Minhas encomendas</b> — é lá que você acompanha cada passo.</p>
+        <b>Minhas encomendas</b>, é lá que você acompanha cada passo.</p>
     </div>`;
 
   tela.querySelectorAll('.ck-op').forEach(b => b.onclick = () => {
@@ -1274,12 +1272,12 @@ async function telaFechar(){
     if(minha !== buscaCep) return;
 
     if(!e){
-      recado.textContent = 'não achei esse CEP — confira, ou escreva o endereço à mão';
+      recado.textContent = 'não achei esse CEP, confira, ou escreva o endereço à mão';
       return;
     }
     recado.textContent = `${e.localidade} · ${e.uf}`;
     // SÓ PREENCHE O QUE ESTÁ VAZIO. Quem já escreveu o próprio endereço não
-    // pode vê-lo sumir porque o CEP voltou depois — e CEP de rua inteira volta
+    // pode vê-lo sumir porque o CEP voltou depois, e CEP de rua inteira volta
     // sem logradouro, então sobrescrever apagaria o que a pessoa sabia e o
     // ViaCEP não sabe.
     const por = (id, valor) => {
@@ -1306,7 +1304,7 @@ async function telaFechar(){
   };
 
   // A conferência roda de novo a cada saída de campo, mas SÓ para limpar o que
-  // já foi corrigido — nunca para acusar um campo que a pessoa ainda não
+  // já foi corrigido, nunca para acusar um campo que a pessoa ainda não
   // visitou. Acusar antes da hora é o que faz formulário parecer hostil.
   tela.querySelectorAll('#ck_endereco input, #ck_tel').forEach(campo => {
     campo.onblur = () => {
@@ -1326,7 +1324,7 @@ async function telaFechar(){
 
 /* `pintarItensDaSacola`, e não `pintarItens`: já existe uma `pintarItens` neste
    arquivo, da lista de encomendas. Duas declarações do mesmo nome no escopo do
-   módulo derrubam o MÓDULO INTEIRO — a tela não abre, nem a parte antiga —, e
+   módulo derrubam o MÓDULO INTEIRO, a tela não abre, nem a parte antiga, e
    o navegador não diz nada além de uma página em branco. */
 function pintarItensDaSacola(){
   const itens = window.__checkoutItens || [];
@@ -1334,7 +1332,7 @@ function pintarItensDaSacola(){
     <div class="ck-linha"><span>${i.qtd}× ${esc(i.nome)}</span><b>${brl(i.preco*i.qtd)}</b></div>`).join('');
 }
 
-/** A conta que a pessoa vê. Prévia — quem cobra é o servidor. */
+/** A conta que a pessoa vê. Prévia, quem cobra é o servidor. */
 function pintarTotais(){
   const itens = window.__checkoutItens || [];
   const bruto = cents(itens.reduce((s,i)=>s+i.preco*i.qtd,0));
@@ -1346,7 +1344,7 @@ function pintarTotais(){
     : { desconto: 0, motivo: dados?.ausente ? 'não encontrei esse cupom' : '' };
   const desconto = cupomAplicado.desconto;
 
-  /* O FRETE OLHA O VALOR JÁ DESCONTADO, e não o bruto — é o que o servidor faz.
+  /* O FRETE OLHA O VALOR JÁ DESCONTADO, e não o bruto, é o que o servidor faz.
      Calcular sobre o bruto daria "frete grátis" na tela para quem só chega ao
      corte antes do desconto, e cobrança de frete no Mercado Pago. A pessoa veria
      dois números diferentes na mesma compra, com dois minutos de diferença. */
@@ -1379,7 +1377,7 @@ function pintarTotais(){
 
   /* O PRAZO ANDA COLADO NO FRETE, e não numa linha à parte.
      "Quanto custa" e "quando chega" são a mesma pergunta para quem está
-     decidindo, e separá-los faz a segunda passar despercebida — que é como
+     decidindo, e separá-los faz a segunda passar despercebida, que é como
      nasce o "cadê minha peça?" três dias depois de comprar.
      Só aparece na entrega: quem retira combina a hora por telefone. */
   const prazo = window.__checkoutTabela?.prazo;
@@ -1399,7 +1397,7 @@ function pintarTotais(){
  * Cria a encomenda e manda para o pagamento.
  *
  * A encomenda nasce PRIMEIRO, e no Firestore. É ela que dá o `external_reference`
- * pelo qual o webhook reencontra a compra depois — sem documento não há como o
+ * pelo qual o webhook reencontra a compra depois, sem documento não há como o
  * dinheiro voltar a encontrar o pedido.
  */
 /**
@@ -1421,7 +1419,7 @@ function conferirEntrega(){
   // combina a hora de buscar.
   const tel = v('ck_tel').replace(/\D/g,'');
   if(!tel) erra('tel','Precisamos de um telefone para falar com você.');
-  else if(tel.length < 10) erra('tel','Faltou o DDD ou um dígito — são 10 ou 11 números.');
+  else if(tel.length < 10) erra('tel','Faltou o DDD ou um dígito, são 10 ou 11 números.');
   else if(tel.length > 11) erra('tel','Esse número tem dígitos demais.');
 
   if(checkout.entrega === 'retirada') return problemas;
@@ -1432,7 +1430,7 @@ function conferirEntrega(){
   if(v('ck_rua').length < 3) erra('rua','Escreva o nome da rua.');
 
   // "Sem número" existe porque endereço rural e algumas zonas realmente não
-  // têm. Sem essa saída, a pessoa inventa um "0" e a etiqueta sai errada — que
+  // têm. Sem essa saída, a pessoa inventa um "0" e a etiqueta sai errada, que
   // é pior do que o campo vazio, porque ninguém percebe.
   const semNumero = document.getElementById('ck_sn')?.checked;
   if(!semNumero && !v('ck_numero')) erra('numero','Diga o número, ou marque "sem número".');
@@ -1453,7 +1451,7 @@ function conferirEntrega(){
  * fechar venda. Quando a etiqueta automática entrar, é aqui que se desmonta.
  *
  * OS TETOS DOS CAMPOS somam menos que os 400 caracteres da regra, de propósito.
- * Sem eles, um endereço longo demais só seria cortado na hora de gravar — e o
+ * Sem eles, um endereço longo demais só seria cortado na hora de gravar, e o
  * corte cai no FIM da string, que é onde estão a cidade e o estado. Uma
  * etiqueta sem cidade é uma peça de gesso que vai e volta.
  */
@@ -1462,7 +1460,7 @@ function comporEndereco(){
   const numero = document.getElementById('ck_sn')?.checked ? 'S/N' : v('ck_numero');
   const compl = v('ck_compl');
   const rua = [v('ck_rua'), numero].filter(Boolean).join(', ');
-  return [rua + (compl ? ' — ' + compl : ''), v('ck_bairro'),
+  return [rua + (compl ? ', ' + compl : ''), v('ck_bairro'),
           v('ck_cidade') + '/' + v('ck_uf').toUpperCase()].filter(Boolean).join(', ');
 }
 
@@ -1537,7 +1535,7 @@ async function irPagar(){
        A frase genérica custou uma ida e volta inteira em ago/2026: a regra do
        Firestore recusava a encomenda porque `cep` e `entrega` ainda não tinham
        sido publicados na lista de campos aceitos, e a tela dizia "tente de novo
-       em instantes" — um conselho que nunca ia funcionar, para um erro que não
+       em instantes", um conselho que nunca ia funcionar, para um erro que não
        era momentâneo.
 
        `permission-denied` na criação de uma encomenda quer dizer uma coisa só:
@@ -1546,7 +1544,7 @@ async function irPagar(){
     const codigo = e?.code || '';
     dizer(
       codigo === 'permission-denied'
-        ? 'Algo do nosso lado recusou esta encomenda. Já fomos avisados — fale com a gente pelo WhatsApp que resolvemos na hora.'
+        ? 'Algo do nosso lado recusou esta encomenda. Já fomos avisados, fale com a gente pelo WhatsApp que resolvemos na hora.'
       : codigo === 'unavailable' || /network/i.test(e?.message || '')
         ? 'A conexão caiu no meio do caminho. Confira a internet e toque de novo.'
       : 'Não consegui registrar sua encomenda agora. Tente de novo em instantes.'
@@ -1559,7 +1557,7 @@ window.telaFechar = telaFechar;
  * Pagar uma encomenda.
  *
  * O NAVEGADOR MANDA SÓ O ID. Preço, desconto e o que está na sacola são
- * refeitos no servidor, a partir do catálogo publicado — é a razão de haver
+ * refeitos no servidor, a partir do catálogo publicado, é a razão de haver
  * servidor. Se daqui fosse o valor, alguém mandaria "cobrar R$ 1".
  */
 async function pagar(id, botao){
@@ -1654,22 +1652,20 @@ async function carregarEncomendas(){
  *                e `totalFechado` são números que a CASA escreveu, e não dependem
  *                mais de o cupom continuar existindo.
  *   COBRADO      a cobrança foi criada e o dinheiro ainda não caiu. O servidor já
- *                gravou em `pagamento` exatamente o que está sendo cobrado —
- *                peças, desconto, frete e total. É o número da fatura.
+ *                gravou em `pagamento` exatamente o que está sendo cobrado, *                peças, desconto, frete e total. É o número da fatura.
  *   PRÉVIA       nem uma coisa nem outra. Aqui, e só aqui, o desconto é
  *                calculado na tela, com o mesmo `descontoDoCupom` do checkout.
  *
  * A ordem importa: `fechado` ganha de `cobrado`, e `cobrado` ganha da prévia.
  * Uma encomenda paga com cupom vencido depois mostraria "sem desconto" se a
- * prévia tivesse precedência — e a pessoa pagou com desconto.
+ * prévia tivesse precedência, e a pessoa pagou com desconto.
  *
  * ATÉ AGO/2026 O DESCONTO NÃO APARECIA ANTES DE A CASA ACEITAR, e a razão
  * estava escrita aqui: recalcular exigiria uma cópia a mais da conta do cupom,
  * e divergir seria mostrar dinheiro errado. Duas coisas mudaram. O checkout
  * passou a ter essa conta, guardada pelo teste que compara as cinco cópias. E,
  * mais importante, o estado COBRADO não calcula nada: ele lê o que o servidor
- * gravou. O que a tela dizia — "o desconto é confirmado junto com o frete" —
- * era verdade quando não havia pagamento online, e virou uma desculpa para
+ * gravou. O que a tela dizia, "o desconto é confirmado junto com o frete", * era verdade quando não havia pagamento online, e virou uma desculpa para
  * esconder um número que já estava no documento.
  */
 function resumoDaEncomenda(e, cupons = {}){

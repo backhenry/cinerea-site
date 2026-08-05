@@ -21,8 +21,7 @@
     :root{
       --paper:#141311; --ash:#1F1D1A; --char:#F0EDE7; --smoke:#9A938A;
       --line:#312D28; --surface:rgba(255,255,255,.04); --shadow:rgba(0,0,0,.4);
-      /* A brasa clareia no escuro. O #B5462A sobre este fundo dá 2,4:1 —
-         serve para um ponto decorativo, não para um link que se lê. */
+      /* A brasa clareia no escuro. O #B5462A sobre este fundo dá 2,4:1, serve para um ponto decorativo, não para um link que se lê. */
       --ember:#D9663F;
     }
   }
@@ -40,16 +39,16 @@
     padding:40px 22px 32px; text-align:center; gap:0;
   }
   /* `currentColor` no traço + esta cor: a marca vira clara no modo escuro
-     sozinha. Com a cor fixa no SVG ela ficava carvão sobre carvão — invisível.
+     sozinha. Com a cor fixa no SVG ela ficava carvão sobre carvão, invisível.
      A brasa do ponto continua brasa: ela funciona nos dois fundos. */
   svg.marca{width:40px;height:40px;color:var(--char)}
-  /* A brasa respira enquanto a peça abre — é o único movimento da página. */
+  /* A brasa respira enquanto a peça abre, é o único movimento da página. */
   svg.marca circle{transform-origin:center; animation:brasa 2.6s ease-in-out infinite}
   .pronto svg.marca circle{animation:none}
   @keyframes brasa{0%,100%{opacity:1}50%{opacity:.35}}
 
   /* O `align-items:center` do pai faz os filhos encolherem para o conteúdo.
-     Sem isto o cartão media 223px numa tela de 390 — e o `width:100%` dele
+     Sem isto o cartão media 223px numa tela de 390, e o `width:100%` dele
      passava a valer sobre uma largura já encolhida. */
   #corpo{width:100%;display:flex;flex-direction:column;align-items:center}
 
@@ -113,7 +112,7 @@
   }
   .proc{font-family:'Fraunces';font-weight:400;font-size:18px;margin-top:8px;line-height:1.3}
   /* Os dois caminhos que a peça abre para quem a recebeu: comprar a sua, e
-     repor a areia quando esta acabar. Secundários de propósito — o conteúdo
+     repor a areia quando esta acabar. Secundários de propósito, o conteúdo
      que o dono deixou é o assunto, isto é o convite. */
   .caminhos{margin-top:14px;width:100%;max-width:420px;display:flex;flex-wrap:wrap;gap:10px}
   .caminho{
@@ -174,7 +173,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Chave de app web não é segredo: ela vai em qualquer site. Quem protege é a
-// regra do Firestore — `vitrines/` e `pecas/` são de leitura aberta de
+// regra do Firestore, `vitrines/` e `pecas/` são de leitura aberta de
 // propósito, e nada mais desse projeto é.
 const app = initializeApp({
   apiKey: "AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ",
@@ -201,7 +200,7 @@ function vazio(msg){
  *
  * `esc()` impede quebrar o atributo, mas NÃO impede `javascript:` dentro de um
  * href: escapado ou não, ele executa no clique. E o app não é o único que
- * escreve na vitrine — quem tem uma peça pode gravar direto no Firestore, e a
+ * escreve na vitrine, quem tem uma peça pode gravar direto no Firestore, e a
  * regra não consegue conferir esquema de URL. Ou seja: sem esta função, um
  * cliente publicava script executável NO DOMÍNIO DA MARCA, disparado em quem
  * encostasse o celular na peça dele.
@@ -231,7 +230,7 @@ function abrirEm(url, rotulo){
  *
  * Nenhum vem de fora de propósito: esta página abre no celular de quem encostou
  * numa peça, às vezes com sinal ruim, e uma dependência de terceiro seria mais
- * uma requisição para dar errado — além de contar a um estranho quem abriu a
+ * uma requisição para dar errado, além de contar a um estranho quem abriu a
  * peça. Traço fino, na cor do texto, para conviverem com a marca.
  */
 const S = 'fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"';
@@ -258,7 +257,7 @@ const SIMBOLOS = {
  * tudo de uma vez, sem uma segunda folha de estilo para manter em dia.
  *
  * O `estilo` chega da vitrine, escrito pelo dono. Nada aqui vira endereço, mas
- * uma cor inválida quebraria o CSS calado — daí o filtro de `#rrggbb`.
+ * uma cor inválida quebraria o CSS calado, daí o filtro de `#rrggbb`.
  *
  * A ASSINATURA DA CINÉREA CONTINUA no rodapé, sempre. Personalizar é para a
  * peça caber na identidade de quem comprou, não para apagar de onde ela veio:
@@ -285,7 +284,7 @@ function vestir(estilo){
     raiz.setProperty('--shadow','rgba(28,26,23,.07)');
   }
   // O LOGO SUBSTITUI a marca da Cinérea no alto. A assinatura embaixo continua,
-  // e é ela que diz de quem é a peça — trocar o símbolo do topo é vestir a
+  // e é ela que diz de quem é a peça, trocar o símbolo do topo é vestir a
   // página, não apagar a procedência.
   //
   // O endereço precisa ser do NOSSO Storage. A regra do Firestore confere tipo e
@@ -332,7 +331,7 @@ function mostrar(v, cert){
       : `<p class="nota">Encoste o celular na peça para conectar.</p>`;
     bloco = `<p class="rot">Rede de wi-fi</p><p class="rede">${esc(v.dados)}</p>${senha}`;
   } else if (v.tipo === 'links') {
-    // Vários endereços numa peça. Só existe no modo permanente — o chip guarda
+    // Vários endereços numa peça. Só existe no modo permanente, o chip guarda
     // esta página, e é aqui que a lista mora.
     const itens = Array.isArray(v.itens) ? v.itens.slice(0, 12) : [];
     // Cada endereço da lista passa pelo mesmo filtro. A regra do Firestore
@@ -398,7 +397,7 @@ function mostrar(v, cert){
   document.body.classList.add('pronto');
 
   // Copiar a senha do wi-fi. `writeText` exige contexto seguro (temos HTTPS) e
-  // um gesto do usuário — por isso vive no clique, e não no carregamento.
+  // um gesto do usuário, por isso vive no clique, e não no carregamento.
   const botao = document.getElementById('copiarSenha');
   if (botao) {
     botao.addEventListener('click', async () => {
@@ -421,7 +420,7 @@ function mostrar(v, cert){
  *
  * Existe porque esta página só se vê com uma vitrine publicada, e desenhar às
  * cegas foi o que produziu os erros de layout deste projeto. Só responde quando
- * NÃO há `?c=` — nunca interfere numa peça de verdade.
+ * NÃO há `?c=`, nunca interfere numa peça de verdade.
  */
 const DEMO = {
   link:     { tipo:'link',     dados:'https://exemplo.com' },
@@ -449,7 +448,7 @@ if (!chip && demo && demo in DEMO) {
 
   // `&t=` troca o conteúdo pelo texto de quem está experimentando. É o que
   // permite à página inicial mostrar a peça DELA, com as palavras DELA, dentro
-  // de um celular desenhado. O texto entra pelo mesmo `esc()` do resto — vem
+  // de um celular desenhado. O texto entra pelo mesmo `esc()` do resto, vem
   // da barra de endereço, então é entrada não confiável como qualquer outra.
   const proprio = busca.get('t');
   const base = DEMO[demo];

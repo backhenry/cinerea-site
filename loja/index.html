@@ -18,7 +18,7 @@
   :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
   /* A calha da barra de rolagem fica reservada SEMPRE. Sem isto, travar a
      rolagem para abrir a gaveta faz a barra sumir e a página inteira pular
-     ~15px para o lado — onde a barra ocupa espaço de verdade (Windows, e Mac
+     ~15px para o lado, onde a barra ocupa espaço de verdade (Windows, e Mac
      com "mostrar sempre"). Aqui a barra é sobreposta e mede 0, então o defeito
      não aparece: é o tipo de coisa que só quebra na máquina do outro. */
   html{scrollbar-gutter:stable}
@@ -97,7 +97,7 @@
   }
   /* UMA LINGUAGEM SÓ para todos os controles: mesma altura, mesmo raio, mesma
      borda, mesmo corpo de texto. Antes o `<select>` guardava a aparência do
-     sistema — cantos quase retos, altura própria e a seta dupla do macOS — ao
+     sistema, cantos quase retos, altura própria e a seta dupla do macOS, ao
      lado de pílulas arredondadas. Duas gramáticas na mesma linha, e a barra
      inteira parecia montada por acaso. */
   .controles > *{ height:36px }
@@ -263,20 +263,20 @@
      peça na sacola, não dava para pôr a segunda.
 
      A gaveta não ocupa o rodapé de ninguém, e ainda cabe o que a barra não
-     comportava — quantidade por item e remover, que antes não existiam. */
+     comportava, quantidade por item e remover, que antes não existiam. */
   /* Em brasa, e cheio. É o único botão de ação do cabeçalho e precisa ser
-     achado de primeira — vale o acento aqui.
+     achado de primeira, vale o acento aqui.
 
      O SELETOR PRECISA DO `.topo-acoes` NA FRENTE, e isso não é estilo: é a
      única forma de a regra valer. O `comum.css` tem `.topo-acoes button`, que
      é uma classe MAIS um tipo, e por especificidade vence `.sacola-bt`, que é
-     uma classe só — não importa que este arquivo venha depois, porque
+     uma classe só, não importa que este arquivo venha depois, porque
      especificidade decide antes da ordem.
 
      Enquanto a regra não vencia, o efeito era este, e ele durou até alguém
      olhar: em repouso a sacola herdava `background:none` e `color:smoke` e
      virava um texto cinza igual a "Perfil", indistinguível de um link de menu.
-     E no hover ficava pior — o fundo escuro daqui pegava, mas
+     E no hover ficava pior, o fundo escuro daqui pegava, mas
      `.topo-acoes button:hover` pintava o texto de brasa, e dava BRASA SOBRE
      BRASA: o rótulo sumia dentro do próprio botão.
 
@@ -507,7 +507,7 @@ async function carregar(){
     id:String(p.id??i), nome:p.nome||'Peça', preco:Number(p.preco)||0, foto:p.foto||'',
     // A SEGUNDA FOTO PRECISA ESTAR AQUI. Este mapa é uma lista explícita de
     // campos, então campo novo que a gestão publique e não apareça nesta
-    // linha é simplesmente descartado — sem erro, sem aviso.
+    // linha é simplesmente descartado, sem erro, sem aviso.
     foto2:p.foto2||'',
     linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
     desc:p.desc||'', longa:p.longa||'', ficha:lerFicha(p.ficha), modelo:p.modelo||'',
@@ -525,7 +525,7 @@ function marca(){ return '<div class="moldura"><div style="display:flex;align-it
 /**
  * A ficha técnica vem como TEXTO, uma linha `rótulo: valor`.
  *
- * Era array de pares, e o Firestore recusa array dentro de array — `itens` já
+ * Era array de pares, e o Firestore recusa array dentro de array, `itens` já
  * é um array, então nada lá dentro pode ser lista. Publicar quebrava com
  * "Nested arrays are not supported".
  *
@@ -543,7 +543,7 @@ function cartao(p){
   const breve = p.situacao === 'embreve';
   // A SEGUNDA FOTO SÓ ENTRA SE EXISTIR. Sem ela o cartão volta ao que sempre
   // foi: uma imagem que se aproxima devagar. Duplicar a primeira para "ter o
-  // efeito" seria pior que não ter — a pessoa passa o mouse e nada muda.
+  // efeito" seria pior que não ter, a pessoa passa o mouse e nada muda.
   const foto = p.foto
     ? `<div class="moldura${p.foto2?' tem-dupla':''}">
          <img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">
@@ -576,8 +576,7 @@ function pintar(){
     ? `<button class="${!linhaAtiva?'on':''}" onclick="filtrar(null)">Tudo</button>`+
       linhas.map(l=>`<button class="${linhaAtiva===l?'on':''}" onclick="filtrar('${esc(l)}')">${esc(l)}</button>`).join('')
     : '';
-  // A busca corre nome, frase curta, descrição longa, coleção e ficha técnica —
-  // é onde estão as palavras que a pessoa lembra ("gesso", "busto", "22 cm").
+  // A busca corre nome, frase curta, descrição longa, coleção e ficha técnica, // é onde estão as palavras que a pessoa lembra ("gesso", "busto", "22 cm").
   const casa = p => !termo || limpar(
     [p.nome, p.desc, p.longa, p.linha, (p.ficha||[]).map(l=>l.join(' ')).join(' ')].join(' ')
   ).includes(termo);
@@ -603,7 +602,7 @@ function pintar(){
   // ESCOLHER UMA ORDEM DESFAZ AS SEÇÕES, e é o que a pessoa espera: "preço
   // menor primeiro" é um pedido sobre a loja inteira, não sobre cada coleção
   // separadamente. Ordenando dentro das seções, com uma peça em cada, a escolha
-  // não mudava nada na tela — medido, e foi assim que este caso apareceu.
+  // não mudava nada na tela, medido, e foi assim que este caso apareceu.
   let achados = 0, html;
   if(ordem !== 'vitrine'){
     const itens = ordenar(produtos.filter(p =>
@@ -681,7 +680,7 @@ function pintarBanner(){
   // O CÓDIGO SÓ APARECE SE O CUPOM EXISTIR MESMO, e esta trava nasceu do pior
   // jeito de errar isso, encontrado no ar em ago/2026: o banner dizia "15% OFF,
   // código INAUGURA15", tocar nele preenchia a sacola sozinho, e a loja
-  // respondia "não encontrei esse cupom, confira as letras" — acusando de
+  // respondia "não encontrei esse cupom, confira as letras", acusando de
   // digitar errado quem não digitou nada, na página em que ia comprar.
   //
   // A gestão avisa o dono, mas isso depende de ele olhar. Aqui é automático, e
@@ -757,7 +756,7 @@ function somaDaSacola(){
  * corpo. Depois de pôr a primeira peça, não dava para pôr a segunda.
  *
  * A gaveta também resolve o que a barra não comportava: quantidade por item e
- * remover, que simplesmente não existiam — `juntar` só sabia somar um.
+ * remover, que simplesmente não existiam, `juntar` só sabia somar um.
  */
 function pintarBarra(){
   const n = Object.values(sacola).reduce((s,q)=>s+q,0);
@@ -832,12 +831,12 @@ addEventListener('keydown', e => { if(e.key === 'Escape') fecharGaveta(); });
  *
  * O cliente digita o CÓDIGO; o desconto vem do documento que a casa publicou em
  * `cupons/{codigo}`. Ler por id, e nunca listar a coleção, é o que impede
- * alguém de baixar todos os cupons e escolher o maior desconto — a regra do
+ * alguém de baixar todos os cupons e escolher o maior desconto, a regra do
  * Firestore libera `get` e proíbe `list`.
  *
  * Nem esta conta nem a do aplicativo mandam: as duas são PRÉVIA. Quem fecha o
  * valor é a gestão, quando o pedido chega. Aqui, no estágio 1, o pedido vai
- * escrito pelo WhatsApp e o código do cupom vai junto na mensagem — é assim que
+ * escrito pelo WhatsApp e o código do cupom vai junto na mensagem, é assim que
  * a comissão do vendedor fica registrada.
  *
  * A versão testada desta conta é `cinerea-app/src/loja/cupom.ts`, que roda em
@@ -950,7 +949,7 @@ window.abrirFicha = id => {
  *
  * O SCRIPT SÓ BAIXA QUANDO ALGUÉM PEDE, e isso é a decisão que protege a loja.
  * O `model-viewer` tem uns 300 KB, e hoje o site não carrega dependência
- * nenhuma — essa leveza é qualidade dele. Carregar no `<head>` faria todo
+ * nenhuma, essa leveza é qualidade dele. Carregar no `<head>` faria todo
  * visitante pagar por um recurso que a maioria não vai abrir. Aqui ele entra no
  * primeiro toque, e só na peça que tem modelo.
  *
@@ -965,7 +964,7 @@ window.abrirFicha = id => {
  *
  * No computador não há AR: o mesmo componente vira um visualizador que se
  * arrasta com o mouse, e o botão do Quick Look/Scene Viewer simplesmente não
- * aparece. Não precisa de aviso nem de detecção nossa — o próprio componente
+ * aparece. Não precisa de aviso nem de detecção nossa, o próprio componente
  * decide, e ele sabe mais sobre o aparelho do que a gente.
  */
 const MODEL_VIEWER = 'https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js';
@@ -1010,14 +1009,14 @@ window.abrir3d = async (modelo, nome, quer) => {
      O padrão do model-viewer é `webxr scene-viewer quick-look`, e no Android o
      WebXR é tentado primeiro: ele pede a câmera (ou a atualização do ARCore) e
      a sessão daquele toque JÁ FALHOU quando a pessoa concede. O `ar-status`
-     volta 'failed', nada abre, e só o toque seguinte funciona — que é o
+     volta 'failed', nada abre, e só o toque seguinte funciona, que é o
      "clicar duas vezes" que o dono sentiu.
 
      O Scene Viewer não tem esse degrau: é um aplicativo do sistema, e ele
      mesmo cuida da permissão e da instalação, dentro do próprio fluxo. É
      também o caminho que o Android usa por padrão em qualquer site com RA.
      O WebXR fica de reserva, para o aparelho que não atende ao intent, e o
-     Quick Look continua sendo o do iPhone — a ordem não o afeta, porque ele é
+     Quick Look continua sendo o do iPhone, a ordem não o afeta, porque ele é
      o único que o iOS entende.
 
      `ar-scale="fixed"` sobrevive à troca: o model-viewer o traduz em
@@ -1037,7 +1036,7 @@ window.abrir3d = async (modelo, nome, quer) => {
   /* O SEGUNDO CAMINHO PARA UM TOQUE PERDIDO: tocar antes de a peça carregar.
      São 395 KB, e numa rede ruim isso são segundos com o botão já na tela e a
      RA ainda sem o que pousar. Em vez de deixar o toque cair no vazio, o botão
-     nasce desligado e dizendo "preparando…" — um botão que se explica é melhor
+     nasce desligado e dizendo "preparando…", um botão que se explica é melhor
      que um botão que ignora. */
   const pronto = () => {
     const bt = document.getElementById('ar_bt');
@@ -1048,7 +1047,7 @@ window.abrir3d = async (modelo, nome, quer) => {
   /* ENTRAR NA RA SOZINHO, quando foi isso que a pessoa pediu.
      O gesto dela ainda vale: o navegador dá alguns segundos de "ativação
      transitória" depois do toque, e a peça leva ~2 s para carregar. Se mesmo
-     assim o gesto tiver expirado, `activateAR` recusa — e o que sobra é o botão
+     assim o gesto tiver expirado, `activateAR` recusa, e o que sobra é o botão
      "Ver na sua casa" já pronto na tela, que é exatamente o comportamento de
      antes. Ou seja: no melhor caso um toque, no pior caso o que já havia, e em
      nenhum caso a câmera abrindo sem alguém ter pedido. */
@@ -1069,8 +1068,7 @@ window.abrir3d = async (modelo, nome, quer) => {
 
      Então a espera é por ela, e não por um evento documentado que não chega.
      O teto de dez segundos é a rede de segurança: um botão desligado para
-     sempre seria MUITO pior que o toque perdido que ele veio consertar —
-     tocar e a RA reclamar é melhor que tocar e nada responder. */
+     sempre seria MUITO pior que o toque perdido que ele veio consertar, tocar e a RA reclamar é melhor que tocar e nada responder. */
   if(alvo.loaded) pronto();
   else {
     const espera = setInterval(() => { if(alvo.loaded){ clearInterval(espera); pronto(); } }, 120);
@@ -1079,7 +1077,7 @@ window.abrir3d = async (modelo, nome, quer) => {
 
   /* A RECUPERAÇÃO DEPOIS DE INSTALAR O APP DO GOOGLE.
      No Android, tocar em "Ver na sua casa" sem os Serviços do Google para RA
-     manda a pessoa para a Play Store. Ela instala, volta — e a página estava
+     manda a pessoa para a Play Store. Ela instala, volta, e a página estava
      do mesmo jeito, exigindo um recarregamento manual que ninguém adivinha.
      Foi exatamente o que o dono viveu no teste.
 
@@ -1088,8 +1086,7 @@ window.abrir3d = async (modelo, nome, quer) => {
      casos a gente reavalia e, se agora dá, DIZ que agora dá. */
   // Os ouvintes se registram UMA VEZ e leem a peça atual do documento. Prendê-los
   // ao `model-viewer` desta chamada empilharia um par por peça aberta, e o
-  // visualizador antigo (já fora da página) responde `canActivateAR` falso —
-  // trocar de peça passaria a dizer "abra no celular" para quem está no celular.
+  // visualizador antigo (já fora da página) responde `canActivateAR` falso, // trocar de peça passaria a dizer "abra no celular" para quem está no celular.
   pecaDo3d = nome;
   if(!ouvindoAr){
     ouvindoAr = true;
@@ -1113,7 +1110,7 @@ let ouvindoAr = false, pecaDo3d = '';
  *
  * No computador não há RA nenhuma, e um botão "Ver na sua casa" ali promete o
  * que a máquina não faz. Quem decide o que ACONTECE continua sendo
- * `canActivateAR`, que é a pergunta certa — isto aqui decide só o que se
+ * `canActivateAR`, que é a pergunta certa, isto aqui decide só o que se
  * ESCREVE, antes de haver visualizador para perguntar.
  */
 const ehCelular = () => ehAndroid() || ehIOS();
@@ -1132,7 +1129,7 @@ const ehIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent)
  *   frustrar; o que se oferece é girar com o mouse e abrir no celular;
  * - no iPhone é um toque, e o passo a passo só atrapalharia;
  * - no Android pode faltar o app do Google, e é o único caso em que a pessoa
- *   precisa de instrução ANTES de tentar — descobrir depois custa a viagem
+ *   precisa de instrução ANTES de tentar, descobrir depois custa a viagem
  *   até a loja de aplicativos e a volta.
  *
  * O passo a passo fica FECHADO por padrão. Quem não precisa não lê, e quem
@@ -1177,7 +1174,7 @@ function passos(qual, nome, aberto){
   const lista = qual === 'android'
     ? [
         'Toque em <b>Ver na sua casa</b>.',
-        `Se o celular pedir o app <b>Serviços do Google para RA</b>, instale — é da
+        `Se o celular pedir o app <b>Serviços do Google para RA</b>, instale, é da
          Google, é gratuito e serve para qualquer site com realidade aumentada.
          <a href="https://play.google.com/store/apps/details?id=com.google.ar.core"
             target="_blank" rel="noopener">abrir na Play Store</a>`,
@@ -1202,7 +1199,7 @@ window.juntar = id => {
   // A GAVETA NÃO ABRE SOZINHA. Ela abria por 1,6s para dar retorno, e o efeito
   // era a página inteira se mexer a cada peça posta na sacola, sem ninguém
   // pedir. Quem manda abrir é o botão. O retorno vem do contador, que pisca no
-  // cabeçalho — movimento de um número, não da loja inteira.
+  // cabeçalho, movimento de um número, não da loja inteira.
   piscarContador();
 };
 
@@ -1216,7 +1213,7 @@ function piscarContador(){
 
 /**
  * Estágio 1 na web: o pedido vai escrito pelo WhatsApp. Sem servidor e sem
- * fingir um checkout que não cobra — o cliente confere antes de enviar.
+ * fingir um checkout que não cobra, o cliente confere antes de enviar.
  */
 window.fecharPedido = () => {
   const ids=Object.keys(sacola);
@@ -1249,7 +1246,7 @@ window.fecharPedido = () => {
 
 /* Por que a compra sai da loja e termina no perfil.
  *
- * A encomenda precisa de LOGIN — a regra do Firestore exige `request.auth` e
+ * A encomenda precisa de LOGIN, a regra do Firestore exige `request.auth` e
  * amarra o documento ao uid de quem cria. A loja é pública e anônima de
  * propósito: quem chega por um link de peça não devia esbarrar numa tela de
  * senha para olhar preço.

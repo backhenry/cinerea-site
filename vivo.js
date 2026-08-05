@@ -2,7 +2,7 @@
 // que marca onde você está.
 //
 // Arquivo compartilhado de propósito. Duplicar isto em cada página criaria dois
-// lugares para consertar — e cada função aqui já sai calada quando o elemento
+// lugares para consertar, e cada função aqui já sai calada quando o elemento
 // dela não existe, então a mesma cópia serve a páginas diferentes.
 //
 // REGRA QUE TUDO AQUI SEGUE: nada esconde conteúdo. Se este arquivo não
@@ -12,7 +12,7 @@
 //
 // O script só informa ONDE estamos, numa variável de 0 a 1; quem posiciona a
 // chama e mede o trecho queimado é o CSS. Assim não há geometria em dois
-// lugares para dessincronizar — a lição das ilustrações.
+// lugares para dessincronizar, a lição das ilustrações.
 //
 // `requestAnimationFrame` com trava: o evento de rolagem dispara dezenas de
 // vezes por segundo e escrever no estilo em todas elas força recálculo à toa.
@@ -42,7 +42,7 @@
   addEventListener('resize', agendar);
 })();
 
-// Cada seção acende ao chegar. Só decoração — se isto nunca rodar, os rótulos
+// Cada seção acende ao chegar. Só decoração, se isto nunca rodar, os rótulos
 // ficam exatamente como sempre foram. É o que permite usar `IntersectionObserver`
 // aqui sem o risco que ele traria se escondesse texto.
 (function () {
@@ -62,7 +62,7 @@
 //
 // Decoração, como o resto: se nada disto rodar, o menu fica exatamente como
 // sempre foi. A faixa central (-45% em cima e embaixo) faz a marcação trocar
-// quando a seção cruza o MEIO da tela, e não a borda — pela borda ela piscaria
+// quando a seção cruza o MEIO da tela, e não a borda, pela borda ela piscaria
 // entre duas seções na transição.
 (function () {
   if (!('IntersectionObserver' in window)) return;
@@ -93,7 +93,7 @@
 // O experimentador: o texto de quem visita aparece dentro do celular desenhado.
 //
 // O quadro é um iframe da PÁGINA DO CONVIDADO de verdade, e não uma imitação
-// dela — imitação envelheceria em separado, e a prévia passaria a mentir.
+// dela, imitação envelheceria em separado, e a prévia passaria a mentir.
 //
 // Sai calado se o bloco não existir: a loja carrega o mesmo arquivo.
 (function () {
@@ -146,7 +146,7 @@
  *
  * Ele NÃO vem no HTML com `src`: quem põe o endereço é este script, e só depois
  * de o navegador dizer que consegue tocar. Assim, arquivo ausente, rede ruim ou
- * formato não suportado deixam a capa exatamente como ela é hoje — em vez de um
+ * formato não suportado deixam a capa exatamente como ela é hoje, em vez de um
  * retângulo preto no lugar da primeira coisa que a pessoa vê.
  *
  * PARA PUBLICAR UM VÍDEO: ponha `capa.mp4` na raiz do site (e, se quiser,
@@ -155,7 +155,7 @@
  *   formato   MP4, H.264, sem áudio (o laço toca mudo de qualquer jeito)
  *   tamanho   1920×1080 ou 1600×900, deitado
  *   duração   6 a 12 segundos, em laço, sem corte brusco no fim
- *   peso      até ~4 MB — ele baixa para TODO visitante da página inicial
+ *   peso      até ~4 MB, ele baixa para TODO visitante da página inicial
  *   conteúdo  o texto fica no meio e por cima; deixe o centro calmo, e conte
  *             que as bordas somem no celular
  *
@@ -178,7 +178,7 @@
   if (con && (con.saveData || /2g/.test(con.effectiveType || ''))) return;
 
   // NÃO ESPERAR SÓ POR `canplay`. Com `preload="metadata"` o navegador baixa só
-  // o cabeçalho, e `canplay` exige dados suficientes para tocar — vários
+  // o cabeçalho, e `canplay` exige dados suficientes para tocar, vários
   // navegadores não bufferizam isso sem uma tentativa de reprodução, e o evento
   // simplesmente nunca chega. O vídeo ficava invisível sem erro nenhum.
   //
@@ -219,7 +219,7 @@
 //
 // Devolve a marcação pronta, porque ela precisa nascer de UM lugar: são cinco
 // pontos de carregamento em duas páginas, e cinco cópias de HTML divergem na
-// primeira vez que a peça mudar — foi a lição das ilustrações do site.
+// primeira vez que a peça mudar, foi a lição das ilustrações do site.
 //
 // `role="status"` com `aria-live="polite"` faz o leitor de tela anunciar o
 // texto quando ele aparece. A vela em si é `aria-hidden`: ela não informa
@@ -249,7 +249,7 @@ window.velaDeEspera = function (texto) {
  *
  * As mesmas duas recusas da capa, pelas mesmas razões: quem pediu menos
  * movimento não recebe vídeo, e quem está economizando dados também não. Nos
- * dois casos sobra o pôster, que é um quadro da peça — e aqui ele BASTA, ao
+ * dois casos sobra o pôster, que é um quadro da peça, e aqui ele BASTA, ao
  * contrário da capa, onde um quadro escuro parado não diria nada.
  *
  * `IntersectionObserver` e não evento de rolagem: rolagem dispara dezenas de
@@ -286,7 +286,7 @@ window.velaDeEspera = function (texto) {
           if (p && p.catch) p.catch(function () {});
         } else if (!v.paused) {
           // Pausar ao sair da tela: um laço tocando fora de vista gasta bateria
-          // para ninguém. O pôster não volta, e nem deveria — a peça fica onde
+          // para ninguém. O pôster não volta, e nem deveria, a peça fica onde
           // parou, e retoma dali quando a pessoa sobe de novo.
           v.pause();
         }

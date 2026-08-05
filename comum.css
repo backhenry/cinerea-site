@@ -9,7 +9,7 @@ a{color:inherit}
 .topo{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
 /* TRÊS COLUNAS, e não flex com margem automática. Com `margin-left:auto` o
    menu encostava à direita nas páginas sem botão de sacola e ficava no meio na
-   loja — a mesma barra parecia duas. Em grade, a coluna do meio é o centro da
+   loja, a mesma barra parecia duas. Em grade, a coluna do meio é o centro da
    página, tenha ou não algo à direita. */
 .topo-in{
   max-width:1000px;margin:0 auto;padding:14px 22px;
@@ -83,7 +83,7 @@ a{color:inherit}
 
 /* ---- o pavio, compartilhado pelas páginas que rolam --------------------
    Vive aqui, e não em cada página, porque duplicar geometria é criar dois
-   lugares para dessincronizar — foi assim que os rótulos das ilustrações
+   lugares para dessincronizar, foi assim que os rótulos das ilustrações
    saíram do quadro. Uma definição, todas as páginas. */
 /*
      Uma vela queimando na lateral enquanto se lê: acima da chama o pavio está
@@ -91,7 +91,7 @@ a{color:inherit}
 
      Tudo posicionado por uma variável `--p` (0 a 1) que o script atualiza na
      rolagem. O CSS faz as contas; o JavaScript só informa onde estamos. Se o
-     script morrer, sobra um pavio inteiro por acender — decoração parada, e
+     script morrer, sobra um pavio inteiro por acender, decoração parada, e
      nada de conteúdo se perde. */
   .pavio{
     position:fixed; left:14px; top:12vh; bottom:12vh; width:3px; z-index:20;
@@ -159,7 +159,7 @@ a{color:inherit}
   /* CERA ENDURECIDA: os veios que ficam depois que o que escorreu esfriou.
      São o que tira a silhueta de retângulo, e retângulo é justamente o que não
      derreteu nunca. Ficam presos ao TOPO da coluna, ou seja, logo abaixo da
-     linha em que a cera está derretendo agora — que é de onde eles teriam
+     linha em que a cera está derretendo agora, que é de onde eles teriam
      corrido. Conforme a vela encurta, eles descem com ela.
 
      Veios e não saliências: `overflow:hidden` recorta o que passa da largura,
@@ -191,7 +191,7 @@ a{color:inherit}
 
   /* A ZONA QUENTE: o trecho logo abaixo da chama onde a cera está derretida.
      É a peça que mais faz parecer parafina, porque é a única grande o bastante
-     para se ver numa coluna de 9px — cor e valor mudam num pedaço inteiro, e
+     para se ver numa coluna de 9px, cor e valor mudam num pedaço inteiro, e
      não num detalhe de um pixel.
 
      Translúcida e morna: a cera quente deixa a luz passar. Ela respira no mesmo
@@ -208,13 +208,13 @@ a{color:inherit}
     animation:amolecer 2.4s ease-in-out infinite;
   }
   /* Amplitude larga e compasso curto: de .55 a 1 em 2,4s. A versão anterior
-     ia de .72 a 1 em 3,3s, que é deriva lenta — o olho lê como estático. */
+     ia de .72 a 1 em 3,3s, que é deriva lenta, o olho lê como estático. */
   @keyframes amolecer{
     0%,100%{opacity:.55; height:34px}
     50%    {opacity:1;   height:48px}
   }
 
-  /* A cera correndo. Nasce na boca derretida, desce e PARA — o freio é o que
+  /* A cera correndo. Nasce na boca derretida, desce e PARA, o freio é o que
      faz parecer que endureceu no caminho, e é por isso que a curva desacelera
      em vez de ser linear. Ela não some ao chegar: fica parada, opaca, e só
      apaga no fim do ciclo, quando outra já está descendo por cima.
@@ -239,7 +239,7 @@ a{color:inherit}
   }
   /* O PERCURSO É EM PORCENTAGEM, não em pixels, e essa é a diferença entre
      "escorre um pouco" e "escorre até a base".
-     Em pixels o fio parava a 18 ou 42px do topo — sempre no mesmo ponto, e no
+     Em pixels o fio parava a 18 ou 42px do topo, sempre no mesmo ponto, e no
      começo da página isso é um dedo de cera numa vela de 600px. Em porcentagem
      o alvo é a altura QUE A VELA TEM AGORA, e ela muda a cada rolagem: alto na
      página o fio corre a coluna inteira; perto do fim, quando resta um toco, ele
@@ -249,7 +249,7 @@ a{color:inherit}
      um elemento de 2px dentro de um `position:fixed`, e nada disso reflui a
      página. */
   /* O RASTRO: o caminho molhado que a gota deixa atrás. É ele que liga o pingo
-     à boca derretida — sem rastro cada gota é um objeto solto descendo, e
+     à boca derretida, sem rastro cada gota é um objeto solto descendo, e
      objeto solto descendo não é cera, é uma bolinha. */
   .pavio .cera i::before{
     content:''; position:absolute; left:50%; bottom:60%;
@@ -261,7 +261,7 @@ a{color:inherit}
 
   /* CADA GOTA TEM O PRÓPRIO PERCURSO, e é isso que faz a descida parecer
      orgânica. Antes as quatro dividiam uma animação só: mesma distância, mesma
-     curva, mesma velocidade, defasadas no tempo — quatro peças de relógio, e o
+     curva, mesma velocidade, defasadas no tempo, quatro peças de relógio, e o
      olho reconhece repetição antes de reconhecer qualquer outra coisa.
 
      Três coisas mudam entre elas, e nenhuma é enfeite:
@@ -336,14 +336,14 @@ a{color:inherit}
   }
 
   /* A boca derretida: o anel de cera líquida logo abaixo da chama. É o que
-     separa "vela acesa" de "vela cortada ao meio" — sem ele a coluna termina
+     separa "vela acesa" de "vela cortada ao meio", sem ele a coluna termina
      num corte reto, que nenhuma vela tem.
 
      Fica um pouco ABAIXO da chama, senão a chama a cobre inteira e o trabalho
      não aparece: foi o que aconteceu na primeira versão.
 
      E fica pouco MAIS LARGA QUE A COLUNA, não que a chama. Uma poça mais larga
-     que a própria vela não existe — a cera derretida está dentro da vela, não
+     que a própria vela não existe, a cera derretida está dentro da vela, não
      em volta dela. Com 16px sobre uma coluna de 9 o conjunto lia como cabeça de
      fósforo. Os 11px de agora são a boca com a beirada transbordando um fio,
      que é o que uma vela acesa tem de verdade. */
@@ -400,7 +400,7 @@ a{color:inherit}
   }
   @keyframes calor{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(.9)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
 
-  /* Cinzas subindo da chama. Cinérea é cinza — e até agora não havia nenhuma
+  /* Cinzas subindo da chama. Cinérea é cinza, e até agora não havia nenhuma
      no site. Sobem, esfriam e somem, cada uma no seu tempo. */
   .pavio .cinzas{position:absolute;left:50%;top:calc(var(--p,0) * 100%);width:0;height:0}
   .pavio .cinzas i{
@@ -416,7 +416,7 @@ a{color:inherit}
   }
 
   /* No celular ele encolhe e encosta na borda: ali a largura é preciosa.
-     A vela some junto — a 6px da borda, uma coluna de 9px encostaria no texto,
+     A vela some junto, a 6px da borda, uma coluna de 9px encostaria no texto,
      e a leitura vale mais que o enfeite. Fica o pavio com a chama, que é o que
      ela sempre foi no telefone. */
   @media(max-width:700px){
@@ -440,7 +440,7 @@ a{color:inherit}
     .pavio .poca{width:10px;height:5px}
   }
   /* Na faixa do meio (tablet, janela de laptop encolhida) o conteúdo já encosta
-     nos 22px e o pavio ficava a 4,5px dele — apertado desde antes desta vela.
+     nos 22px e o pavio ficava a 4,5px dele, apertado desde antes desta vela.
      Quatro pixels para a esquerda dobram a folga, e ninguém nota um enfeite de
      canto mudar de lugar. A regra é de FAIXA e não `max-width`: fosse
      `max-width`, ela venceria a do telefone logo acima e desfaria o `left:6px`
@@ -453,7 +453,7 @@ a{color:inherit}
      feito de irregularidade, e irregularidade precisa de pixels. Numa coluna de
      9px o veio de cera endurecida tem 2px e vira ruído; com 13 ele lê.
      Acima de 1240px o conteúdo começa em 142px, então 13px de vela deixam mais
-     de 120px de respiro — de longe o caso mais folgado. */
+     de 120px de respiro, de longe o caso mais folgado. */
   @media(min-width:1241px){
     .pavio .cera{width:26px;border-radius:0 0 9px 9px}
     .pavio .chama{width:21px;height:36px}
@@ -474,7 +474,7 @@ a{color:inherit}
      começa a 142px e a vela termina em 28: mexer no padding ali só desalinharia
      a centralização à toa.
 
-     Onde `:has` não existir, o pior caso é a vela a 5px do texto — apertado, e
+     Onde `:has` não existir, o pior caso é a vela a 5px do texto, apertado, e
      não quebrado. */
   @media(min-width:701px) and (max-width:1040px){
     body:has(.pavio) .envolve,
@@ -491,7 +491,7 @@ a{color:inherit}
 
   /* Quem pede menos movimento não perde a vela, perde o que se mexe sozinho.
      A chama continua andando com a rolagem, porque isso é resposta ao gesto da
-     pessoa e não animação de fundo — e é a única função útil que ela tem. */
+     pessoa e não animação de fundo, e é a única função útil que ela tem. */
   @media (prefers-reduced-motion: reduce){
     .pavio .chama, .pavio .chama::after,
     .pavio .cinzas i, .pavio .cera i,
@@ -518,7 +518,7 @@ a{color:inherit}
 
 
   /* ---- a espera: a mesma vela, derretendo sozinha -----------------------
-     Reaproveita a peça da margem inteira — cera, boca, escorridos, chama. O
+     Reaproveita a peça da margem inteira, cera, boca, escorridos, chama. O
      que muda é quem manda no `--p`: lá é a rolagem, aqui é o tempo, porque
      carregamento não tem progresso conhecido. A vela derrete, apaga e acende
      de novo, e o ciclo se fecha no escuro para não haver salto à vista.
@@ -526,7 +526,7 @@ a{color:inherit}
      `@property` é o que permite ANIMAR uma variável. Sem o registro, `--p` é
      texto para o navegador e os quadros pulam de valor em valor: a vela
      desceria aos trancos. Onde não houver suporte é exatamente isso que
-     acontece — mais pobre, e não quebrado.
+     acontece, mais pobre, e não quebrado.
 
      Os TAMANHOS SÃO FIXOS AQUI, e não seguem a tela como na margem. A vela da
      rolagem engorda em monitor grande porque tem margem sobrando; uma vela de

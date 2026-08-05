@@ -118,7 +118,7 @@
      `mix-blend-mode` mistura com o que está atrás DENTRO do mesmo contexto de
      empilhamento, e a seção `.ideia` cria um: ela tem `transform` por causa da
      animação de revelação. Com o pai transparente, o vídeo multiplicava contra
-     nada e o branco continuava branco — exatamente o que apareceu na prova.
+     nada e o branco continuava branco, que foi exatamente o que apareceu na prova.
      Pintar o papel aqui dá ao `multiply` o que ele precisa. */
   .giro{display:flex;justify-content:center;background:var(--paper)}
   .giro-video{
@@ -142,20 +142,13 @@
     .dupla .desenho{margin:0}
   }
 
-  /* O chaveiro, dentro da seção do chip. Margem maior em cima porque ele vem
-     logo depois da grade dos sete tipos, que já tem a sua linha divisória. */
-  .chaveiro{margin-top:34px}
-  .chaveiro-foto{
-    width:100%;max-width:330px;height:auto;display:block;margin:0 auto;
-    /* Sem moldura e sem fundo: o PNG veio com alfa e com a sombra do próprio
-       render, então a peça pousa no papel. Encaixotá-la aqui seria inventar uma
-       borda que a peça não tem. */
-  }
-  @media(min-width:880px){ .chaveiro-foto{max-width:400px} }
-
   /* O vídeo do NFC, num cartão. `overflow:hidden` é o que faz o arredondamento
      valer para o vídeo, que não respeita `border-radius` do pai sem isso. */
-  .comofunciona{margin-top:34px}
+  .medalhao{margin-top:34px}
+  /* A foto entra MENOR que o vídeo, e recuada: ela é a resposta secundária
+     ("como o objeto é"), e do mesmo tamanho competiria com a cena que explica
+     a tecnologia. */
+  .medalhao-foto{width:62%;max-width:250px;height:auto;display:block;margin:14px auto 0}
   .nfc-cartao{
     /* O cinza do render (#E1E0DC) e o `--ash` são praticamente a mesma cor, então
        o cartão não tem emenda com o vídeo. A borda é o que o faz parecer painel
@@ -167,7 +160,7 @@
   }
   .nfc-video{width:100%;height:auto;display:block}
 
-  /* Os três passos são uma sequência física — desenhada explica melhor que
+  /* Os três passos são uma sequência física, desenhada explica melhor que
      numerada. O mesmo copo nos três, mudando só o que acontece com ele. */
   .passo .fig{display:block;width:62px;height:62px;margin-bottom:8px}
   .passo .n{font-family:'Fraunces';font-size:17px;color:var(--ember);margin-right:3px}
@@ -183,8 +176,7 @@
   .tipo span{font-size:13px;color:var(--smoke)}
   /* O esticar da chama vem por CSS, e não por `animateTransform`: aquele escala
      a partir da origem do SVG e a chama sairia do lugar. `transform-box:fill-box`
-     faz a origem ser a própria forma, e daí ela cresce de onde o fogo nasce —
-     a base do pavio. Fora de compasso com o halo, de propósito. */
+     faz a origem ser a própria forma, e daí ela cresce de onde o fogo nasce, a base do pavio. Fora de compasso com o halo, de propósito. */
   .fogo{transform-box:fill-box;transform-origin:50% 100%;animation:subir 2.7s ease-in-out infinite}
   @keyframes subir{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,1.09)}}
 
@@ -193,9 +185,8 @@
      porque é isso que o chip faz; a areia cai porque é assim que se enche; a
      seta gira porque o ciclo recomeça. Nenhuma existe só para se mexer. */
 
-  /* As ondas saem em sequência — o atraso é o que dá a direção. */
-  /* Repousam VISÍVEIS: travando a animação, as ondas continuam desenhadas —
-     o mesmo cuidado das seções. O ciclo só modula em volta desse repouso. */
+  /* As ondas saem em sequência, o atraso é o que dá a direção. */
+  /* Repousam VISÍVEIS: travando a animação, as ondas continuam desenhadas, o mesmo cuidado das seções. O ciclo só modula em volta desse repouso. */
   .onda{opacity:.5;animation:pulso 3.4s ease-out infinite}
   .o1{animation-delay:0s} .o2{animation-delay:.42s} .o3{animation-delay:.84s}
   @keyframes pulso{0%{opacity:.22}18%{opacity:.9}55%{opacity:.3}100%{opacity:.22}}
@@ -215,12 +206,12 @@
   .recomeco{transform-box:fill-box;transform-origin:50% 78%;animation:volta 6s cubic-bezier(.5,0,.2,1) infinite}
   @keyframes volta{0%,55%{transform:rotate(0)}85%,100%{transform:rotate(360deg)}}
 
-  /* As seções entram subindo — SÓ deslocamento, nunca opacidade.
+  /* As seções entram subindo, SÓ deslocamento, nunca opacidade.
      A diferença não é estética, é de modo de falha. Animar opacidade esconde o
      texto para mostrá-lo depois, e qualquer coisa que trave a animação (aba
      oculta, `IntersectionObserver` que não dispara, erro de script) deixa a
      página em branco. Medi isso acontecendo. Animando só o `translateY`, o pior
-     caso é a seção ficar 14px fora do lugar — e ninguém percebe. */
+     caso é a seção ficar 14px fora do lugar, e ninguém percebe. */
   .ideia{animation:sobe .8s cubic-bezier(.2,.7,.3,1) both}
   #areia{animation-delay:.05s} #chip{animation-delay:.14s}
   #app{animation-delay:.23s}   #marca{animation-delay:.32s}
@@ -302,8 +293,7 @@
 </head>
 <body>
 
-<!-- A vela que queima enquanto se lê. `aria-hidden`: é imagem, não informação —
-     quem usa leitor de tela não perde nada. -->
+<!-- A vela que queima enquanto se lê. `aria-hidden`: é imagem, não informação: quem usa leitor de tela não perde nada. -->
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
 
 <header class="topo"><div class="topo-in">
@@ -340,7 +330,7 @@
     <div class="capa-veu" aria-hidden="true"></div>
     <!-- A marca da capa acende. Nenhum desenho novo: o ponto de brasa do logo
          já era fogo, só nunca tinha queimado. É o gesto mais contido possível
-         aqui — a primeira tela precisa de presença, não de espetáculo. -->
+         aqui: a primeira tela precisa de presença, não de espetáculo. -->
     <svg class="selo" viewBox="0 0 150 150" fill="none" aria-hidden="true">
       <defs>
         <radialGradient id="aura">
@@ -386,7 +376,7 @@
       <svg class="desenho" viewBox="0 0 470 372" role="img" aria-label="Corte de uma vela Cinérea: a escultura de gesso sustenta uma taça com camadas de areia perfumada e um pavio aceso.">
         <!-- A chama viva. Sem biblioteca: `feTurbulence` gera um ruído orgânico e
              `feDisplacementMap` empurra os contornos com ele, o que dá o bruxuleio
-             que uma animação de forma nunca acerta — fogo não repete o movimento.
+             que uma animação de forma nunca acerta, porque fogo não repete o movimento.
              A `baseFrequency` anima devagar para o ruído não parecer um laço. -->
         <defs>
           <filter id="bruxuleio" x="-60%" y="-30%" width="220%" height="180%">
@@ -512,14 +502,14 @@
          permanece, e aqui ela vê a escultura.
 
          O VÍDEO É UM RENDER, e o texto diz isso. Foi ele que virou o molde, o
-         que é verdade e é a razão de a seção existir — mas passar render por
+         que é verdade e é a razão de a seção existir, mas passar render por
          fotografia de produto é prometer um acabamento que o gesso não tem.
 
          E ELE FOI DESSATURADO NA CODIFICAÇÃO, de propósito. O render sai do
          Blender com uma luz âmbar forte, e um busto laranja saturado ocupando
          um quarto da seção quebrava a paleta duas vezes: a brasa é ACENTO, com
          menos de 10% da tela, e a peça de verdade é gesso branco. Não era só
-         desencontro estético — era o material errado. Um `hue=s=0.10` com um
+         desencontro estético: era o material errado. Um `hue=s=0.10` com um
          resto de calor devolve o gesso e devolve a brasa ao tipo pequeno, que
          é o lugar dela.
 
@@ -539,7 +529,7 @@
         </div>
         <div class="texto">
           <p>Cada peça começa modelada em três dimensões. É desse modelo que sai
-             o molde, e é do molde que sai o gesso — um de cada vez, à mão.</p>
+             o molde, e é do molde que sai o gesso, um de cada vez, à mão.</p>
           <p>O que você vê aqui é o modelo, girando. A peça que chega na sua
              casa é de gesso: fosca, com o peso e a textura que só o material
              tem.</p>
@@ -580,7 +570,7 @@
         </g>
         <g class="chamada" stroke="#C9BCA8" stroke-width="1.3"><path d="M96 250 V286"/><path d="M306 210 h20"/></g>
         <g font-family="Inter" font-size="13" fill="#6E6862">
-          <text x="96" y="302" text-anchor="middle">o chip fica na base</text>
+          <text x="96" y="302" text-anchor="middle">o medalhão fica na base</text>
           <text x="332" y="206">abre sozinho,</text>
           <text x="332" y="223">sem instalar nada</text>
         </g>
@@ -645,63 +635,49 @@
         </div>
       </div>
 
-      <!-- O CHAVEIRO ENTRA AQUI, e não numa seção própria. Ele é o MESMO chip
-           da escultura, num disco de gesso que cabe no bolso — o lugar dele é
-           o parágrafo em que a pessoa acabou de entender o que o chip faz.
-           Seção separada faria dele um segundo assunto, quando ele é o mesmo
-           assunto em outro tamanho.
+      <!-- O MEDALHÃO. Um bloco só, e não dois: o que ele é e como ele funciona
+           são a mesma história, e contá-las separadas repetia a cena do desenho
+           logo acima (celular, peça, ondas) a 500 px de distância. Medido num
+           celular de 375px, a seção tinha passado de 2.150 para 3.465 px.
 
-           A imagem tem fundo transparente e sombra própria, então ela pousa no
-           papel sem moldura. É o oposto do vídeo do David, que é opaco e
-           precisou de `multiply` e de um fundo pintado para sumir com o branco:
-           aqui o alfa do WebP resolve, e por isso o formato não é JPEG. -->
-      <div class="dupla chaveiro">
-        <img class="chaveiro-foto" src="/chaveiro.webp" width="1100" height="862"
-             loading="lazy" decoding="async"
-             alt="Um disco de gesso claro com a marca da Cinérea rebaixada no centro e um ponto cor de brasa ao lado.">
+           O vídeo vem primeiro porque é ele que mostra a tecnologia acontecendo.
+           A foto vem embaixo, menor, porque responde uma pergunta mais simples e
+           secundária: como o objeto é.
+
+           O vídeo vive num cartão com borda. O render tem fundo cinza chapado
+           (#E1E0DC), sem alfa, e o truque do vídeo do David não serve aqui:
+           `multiply` de cinza contra creme dá um creme mais escuro, uma placa
+           suja em volta. A foto tem alfa e sombra própria, então pousa no papel
+           sem moldura nenhuma. -->
+      <div class="dupla medalhao">
         <div>
-          <div class="rot">O chaveiro</div>
-          <p>O chip não vive só dentro da escultura. O Chaveiro Tecnológico é o
-             mesmo gesso e o mesmo chip, num disco que vai no bolso: quem
-             encostar o celular nele abre o que você deixou ali.</p>
-          <p>Serve de cartão de visita que não acaba, de recado para quem chega
-             em casa, ou do jeito que você inventar. Como a peça grande, ele
-             pode dizer outra coisa amanhã.</p>
+          <div class="nfc-cartao">
+            <video class="nfc-video" id="nfcVideo" muted loop playsinline
+                   preload="none" poster="/nfc.jpg" width="740" height="696"
+                   aria-label="Um celular se aproxima do medalhão e o campo do chip aparece em ondas."></video>
+          </div>
+          <img class="medalhao-foto" src="/chaveiro.webp" width="1100" height="862"
+               loading="lazy" decoding="async"
+               alt="O medalhão: um disco de gesso com a marca da Cinérea rebaixada e um ponto cor de brasa.">
+        </div>
+        <div>
+          <div class="rot">O medalhão</div>
+          <p>O chip não fica solto no gesso: ele vive num <b>medalhão</b>, encaixado
+             num lugar próprio da escultura. Como é um objeto à parte, sai da peça e
+             volta, e pode passar de uma escultura para outra.</p>
+          <p>O mesmo medalhão existe em <b>versão chaveiro</b>, para levar no bolso o
+             que a peça diria. Ele não tem bateria: quem acorda o chip é o campo do
+             próprio celular, no instante em que os dois se aproximam. É a mesma
+             tecnologia do cartão por aproximação, e o motivo de a peça continuar
+             funcionando daqui a dez anos.</p>
           <a class="linkinho" href="/loja/?colecao=Acessorios">Ver o chaveiro na loja →</a>
         </div>
       </div>
 
-      <!-- COMO FUNCIONA. O desenho ao lado do texto explica a IDEIA; este vídeo
-           mostra o INSTANTE — a antena acordando quando o celular chega perto.
-           É a única imagem do site em que a tecnologia aparece acontecendo.
-
-           Ele vive num cartão, e não solto no papel como a foto acima. O render
-           tem fundo cinza chapado (#E1E0DC), sem alfa, e o truque do vídeo do
-           David não serve aqui: `multiply` de cinza contra creme dá um creme
-           mais escuro, uma placa suja em volta. Como o cinza do render e o
-           `--ash` do site são praticamente a mesma cor, o cartão não tem
-           emenda, e um painel de demonstração é o que isso é mesmo. -->
-      <div class="dupla comofunciona">
-        <div class="nfc-cartao">
-          <video class="nfc-video" id="nfcVideo" muted loop playsinline
-                 preload="none" poster="/nfc.jpg" width="740" height="696"
-                 aria-label="Um celular se aproxima do chaveiro e o campo do chip aparece em ondas."></video>
-        </div>
-        <div>
-          <div class="rot">Como funciona</div>
-          <p>Dentro do gesso há uma antena e um chip do tamanho de uma unha, sem
-             bateria nenhuma. Quem o acorda é o campo do próprio celular, no
-             instante em que os dois se aproximam: o chip devolve um endereço, e
-             o celular abre o que estiver lá.</p>
-          <p>É a mesma tecnologia do cartão por aproximação. Por isso o convidado
-             não instala nada e não faz cadastro — e por isso a peça continua
-             funcionando daqui a dez anos, sem carregar e sem trocar pilha.</p>
-        </div>
-      </div>
 
       <!-- EXPERIMENTE. Explicar que a peça guarda um recado é uma coisa; ver o
            SEU recado dentro de um celular é outra. O quadro é um iframe da
-           página do convidado de verdade — não uma imitação dela, que
+           página do convidado de verdade, não uma imitação dela, que
            envelheceria em separado. -->
       <div class="experimente">
         <div class="exp-lado">
@@ -813,7 +789,7 @@
 //
 // Escuta o `change` do matchMedia, não o `resize` da janela: o primeiro dispara
 // exatamente quando o limite é cruzado. Com `resize` a troca já foi perdida
-// (viewBox recortado, rótulos visíveis — texto fora do quadro).
+// (viewBox recortado, rótulos visíveis, texto fora do quadro).
 //
 // Sem JavaScript nada é escondido e o quadro fica o largo: desenho pequeno no
 // celular, com os rótulos miúdos. Menos bonito, e inteiro.
@@ -829,7 +805,7 @@
     recortes.forEach(function (r) {
       var el = document.querySelector(r[0]);
       if (!el) return;
-      // A classe e o viewBox andam juntos — é o que impede a dessincronia.
+      // A classe e o viewBox andam juntos, é o que impede a dessincronia.
       el.classList.toggle('cortado', estreito.matches);
       el.setAttribute('viewBox', estreito.matches ? r[2] : r[1]);
     });
