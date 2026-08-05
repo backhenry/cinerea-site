@@ -1272,7 +1272,7 @@ async function telaFechar(){
     if(minha !== buscaCep) return;
 
     if(!e){
-      recado.textContent = 'não achei esse CEP, confira, ou escreva o endereço à mão';
+      recado.textContent = 'não achei esse CEP: confira, ou escreva o endereço à mão';
       return;
     }
     recado.textContent = `${e.localidade} · ${e.uf}`;
@@ -1419,7 +1419,7 @@ function conferirEntrega(){
   // combina a hora de buscar.
   const tel = v('ck_tel').replace(/\D/g,'');
   if(!tel) erra('tel','Precisamos de um telefone para falar com você.');
-  else if(tel.length < 10) erra('tel','Faltou o DDD ou um dígito, são 10 ou 11 números.');
+  else if(tel.length < 10) erra('tel','Faltou o DDD ou um dígito: são 10 ou 11 números.');
   else if(tel.length > 11) erra('tel','Esse número tem dígitos demais.');
 
   if(checkout.entrega === 'retirada') return problemas;
