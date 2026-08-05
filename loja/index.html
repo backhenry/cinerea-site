@@ -231,6 +231,16 @@
   .sub3d{font-size:12.5px;color:var(--smoke);margin-top:8px;line-height:1.5}
   .btlink3d{background:none;border:none;padding:0;font:inherit;color:var(--ember);
     text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .ar-passos{margin-top:10px;font-size:13px}
+  .ar-passos summary{
+    cursor:pointer;color:var(--ember);text-decoration:underline;
+    text-underline-offset:3px;list-style:none;
+  }
+  .ar-passos summary::-webkit-details-marker{display:none}
+  .ar-passos ol{margin:10px 0 0;padding-left:20px;color:var(--smoke);line-height:1.6}
+  .ar-passos li{margin-bottom:7px}
+  .ar-passos li b{color:var(--char)}
+  .ar-passos a{color:var(--ember)}
   .mv{
     width:100%;height:min(62vh,460px);background:var(--ash);
     border-radius:12px;--poster-color:transparent;
@@ -984,15 +994,124 @@ window.abrir3d = async (modelo, nome) => {
     return;
   }
   caixa.innerHTML = `
-    <model-viewer class="mv" src="${esc(modelo)}" alt="${esc(nome)} em três dimensões"
+    <model-viewer class="mv" id="mv3d" src="${esc(modelo)}" alt="${esc(nome)} em três dimensões"
       camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1.1"
       ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed"
       environment-image="neutral" loading="eager">
       <button slot="ar-button" class="bt">Ver na sua casa</button>
     </model-viewer>
-    <div class="sub3d">Arraste para girar. No celular, toque em <b>Ver na sua casa</b>
-      para pousar a peça no seu espaço, em tamanho real: ${esc(nome)} tem 25 cm de altura.</div>`;
+    <div class="sub3d" id="ar_recado"></div>
+    <div id="ar_ajuda"></div>`;
+
+  ajudaDoAr(nome);
+
+  /* A RECUPERAÇÃO DEPOIS DE INSTALAR O APP DO GOOGLE.
+     No Android, tocar em "Ver na sua casa" sem os Serviços do Google para RA
+     manda a pessoa para a Play Store. Ela instala, volta — e a página estava
+     do mesmo jeito, exigindo um recarregamento manual que ninguém adivinha.
+     Foi exatamente o que o dono viveu no teste.
+
+     `pageshow` cobre a volta pelo cache de navegação (que é como o Android
+     devolve a aba) e `visibilitychange` cobre a troca de aplicativo. Nos dois
+     casos a gente reavalia e, se agora dá, DIZ que agora dá. */
+  // Os ouvintes se registram UMA VEZ e leem a peça atual do documento. Prendê-los
+  // ao `model-viewer` desta chamada empilharia um par por peça aberta, e o
+  // visualizador antigo (já fora da página) responde `canActivateAR` falso —
+  // trocar de peça passaria a dizer "abra no celular" para quem está no celular.
+  pecaDo3d = nome;
+  if(!ouvindoAr){
+    ouvindoAr = true;
+    const revalidar = () => { if(document.getElementById('mv3d')) ajudaDoAr(pecaDo3d); };
+    addEventListener('pageshow', revalidar);
+    document.addEventListener('visibilitychange', () => { if(!document.hidden) revalidar(); });
+  }
+
+  // `ar-status` é o model-viewer contando como terminou a tentativa. 'failed' é
+  // o caminho do Android sem suporte, e sem tratá-lo a pessoa volta para uma
+  // tela idêntica, sem uma palavra sobre o que aconteceu.
+  document.getElementById('mv3d').addEventListener('ar-status', e => {
+    if(e.detail.status === 'failed') ajudaDoAr(pecaDo3d, true);
+  });
 };
+
+let ouvindoAr = false, pecaDo3d = '';
+
+/** Android? Só para escolher a instrução certa, nunca para esconder recurso. */
+const ehAndroid = () => /android/i.test(navigator.userAgent);
+const ehIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/**
+ * O recado e o passo a passo ao lado do visualizador.
+ *
+ * TRÊS TEXTOS DIFERENTES, porque três situações diferentes:
+ *
+ * - no computador não há RA nenhuma, e prometer "veja na sua casa" ali é
+ *   frustrar; o que se oferece é girar com o mouse e abrir no celular;
+ * - no iPhone é um toque, e o passo a passo só atrapalharia;
+ * - no Android pode faltar o app do Google, e é o único caso em que a pessoa
+ *   precisa de instrução ANTES de tentar — descobrir depois custa a viagem
+ *   até a loja de aplicativos e a volta.
+ *
+ * O passo a passo fica FECHADO por padrão. Quem não precisa não lê, e quem
+ * precisa acha em um toque: instrução aberta na cara de quem já sabe é ruído,
+ * e ruído faz a pessoa parar de ler tudo.
+ */
+function ajudaDoAr(nome, falhou){
+  const recado = document.getElementById('ar_recado');
+  const ajuda = document.getElementById('ar_ajuda');
+  const mv = document.getElementById('mv3d');
+  if(!recado || !ajuda || !mv) return;
+
+  const podeAr = !!mv.canActivateAR;
+
+  if(falhou){
+    recado.innerHTML = `<b>A câmera não abriu.</b> No Android isso quase sempre é o
+      app <b>Serviços do Google para RA</b>, que falta no aparelho.`;
+    ajuda.innerHTML = passos('android', nome, true);
+    return;
+  }
+
+  if(!podeAr){
+    // Computador, ou celular sem suporte. Não some com o visualizador: girar a
+    // peça já responde metade da pergunta que a RA responderia.
+    recado.innerHTML = `Arraste para girar a peça. Para <b>ver em tamanho real na sua casa</b>,
+      abra esta página no celular.`;
+    ajuda.innerHTML = '';
+    return;
+  }
+
+  recado.innerHTML = `Arraste para girar. Toque em <b>Ver na sua casa</b> para pousar a peça
+    no seu espaço, em tamanho real: ${esc(nome)} tem 25 cm de altura.`;
+  ajuda.innerHTML = passos(ehAndroid() ? 'android' : ehIOS() ? 'ios' : 'geral', nome, false);
+}
+
+function passos(qual, nome, aberto){
+  const comum = [
+    'Toque em <b>Ver na sua casa</b>.',
+    'Aponte a câmera para o chão ou uma mesa e mexa devagar até a superfície ser reconhecida.',
+    'Toque para posicionar a peça. Dê a volta nela e chegue perto: o tamanho é o real.',
+  ];
+  const lista = qual === 'android'
+    ? [
+        'Toque em <b>Ver na sua casa</b>.',
+        `Se o celular pedir o app <b>Serviços do Google para RA</b>, instale — é da
+         Google, é gratuito e serve para qualquer site com realidade aumentada.
+         <a href="https://play.google.com/store/apps/details?id=com.google.ar.core"
+            target="_blank" rel="noopener">abrir na Play Store</a>`,
+        'Volte para esta página e toque de novo. Não precisa recarregar.',
+        'Aponte a câmera para o chão e mexa devagar até reconhecer a superfície.',
+        'Toque para posicionar. Dê a volta e chegue perto: o tamanho é o real.',
+      ]
+    : comum;
+
+  return `<details class="ar-passos"${aberto ? ' open' : ''}>
+    <summary>Como ver na sua casa</summary>
+    <ol>${lista.map(p => `<li>${p}</li>`).join('')}</ol>
+    <p class="sub3d">Precisa de luz e de uma superfície com alguma textura. Chão liso e
+      escuro é o caso em que a câmera mais demora a entender o espaço.</p>
+  </details>`;
+}
 
 window.fecharFicha = () => document.getElementById('ficha').classList.remove('abre');
 window.juntar = id => {
