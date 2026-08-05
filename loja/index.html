@@ -933,7 +933,9 @@ window.abrirFicha = id => {
     ${p.longa?`<p class="flonga">${esc(p.longa)}</p>`:''}
     ${p.ficha.length?`<div class="ftec">${p.ficha.map(([r,v])=>`<div><span>${esc(r)}</span><span>${esc(v)}</span></div>`).join('')}</div>`:''}
     ${p.modelo?`<div class="ver3d" id="ver3d">
-        <button class="bt fraco" onclick="abrir3d('${esc(p.modelo)}','${esc(p.nome)}')">Ver na sua casa</button>
+        <button class="bt fraco" id="bt_abrir3d"
+          onclick="abrir3d('${esc(p.modelo)}','${esc(p.nome)}', true)"
+          >${ehCelular() ? 'Ver na sua casa' : 'Ver em 3D'}</button>
         <div class="sub3d">No celular, a peça aparece em tamanho real no seu espaço.</div>
       </div>`:''}
     ${breve
@@ -980,7 +982,17 @@ function carregar3d(){
   return scriptDo3d;
 }
 
-window.abrir3d = async (modelo, nome) => {
+/**
+ * Abre o visualizador e, quando a pessoa PEDIU a realidade aumentada, entra
+ * nela sozinho.
+ *
+ * `quer` é o que separa os dois toques que existiam. A ficha do produto tinha
+ * um botão "Ver na sua casa" que só abria o visualizador, e dentro dele havia
+ * OUTRO botão com exatamente o mesmo nome, esse sim abrindo a câmera. Ler as
+ * mesmas palavras duas vezes e ter de tocar nas duas não é um passo a mais: é
+ * a tela parecendo que ignorou o primeiro toque.
+ */
+window.abrir3d = async (modelo, nome, quer) => {
   const caixa = document.getElementById('ver3d');
   if(!caixa) return;
   caixa.innerHTML = '<div class="sub3d">abrindo…</div>';
@@ -991,7 +1003,7 @@ window.abrir3d = async (modelo, nome) => {
     // Falhou o script de terceiro: devolve o botão em vez de deixar "abrindo…"
     // para sempre. A venda não pode depender de uma CDN.
     caixa.innerHTML = `<div class="sub3d">Não consegui abrir a visualização agora.
-      <button class="btlink3d" onclick="abrir3d('${esc(modelo)}','${esc(nome)}')">tentar de novo</button></div>`;
+      <button class="btlink3d" onclick="abrir3d('${esc(modelo)}','${esc(nome)}', ${quer ? 'true' : 'false'})">tentar de novo</button></div>`;
     return;
   }
   /* A ORDEM DOS MODOS É O QUE TIRA O SEGUNDO TOQUE.
@@ -1030,6 +1042,23 @@ window.abrir3d = async (modelo, nome) => {
   const pronto = () => {
     const bt = document.getElementById('ar_bt');
     if(bt){ bt.disabled = false; bt.textContent = 'Ver na sua casa'; }
+    entrarNaRa();
+  };
+
+  /* ENTRAR NA RA SOZINHO, quando foi isso que a pessoa pediu.
+     O gesto dela ainda vale: o navegador dá alguns segundos de "ativação
+     transitória" depois do toque, e a peça leva ~2 s para carregar. Se mesmo
+     assim o gesto tiver expirado, `activateAR` recusa — e o que sobra é o botão
+     "Ver na sua casa" já pronto na tela, que é exatamente o comportamento de
+     antes. Ou seja: no melhor caso um toque, no pior caso o que já havia, e em
+     nenhum caso a câmera abrindo sem alguém ter pedido. */
+  let tentou = false;
+  const entrarNaRa = () => {
+    const mv = document.getElementById('mv3d');
+    if(!quer || tentou || !mv || !mv.canActivateAR) return;
+    tentou = true;
+    try{ mv.activateAR(); }
+    catch(e){ console.warn('a RA não abriu sozinha; o botão continua na tela', e); }
   };
   const alvo = document.getElementById('mv3d');
 
@@ -1078,6 +1107,16 @@ window.abrir3d = async (modelo, nome) => {
 };
 
 let ouvindoAr = false, pecaDo3d = '';
+
+/**
+ * Celular? Só para o rótulo do botão dizer a verdade.
+ *
+ * No computador não há RA nenhuma, e um botão "Ver na sua casa" ali promete o
+ * que a máquina não faz. Quem decide o que ACONTECE continua sendo
+ * `canActivateAR`, que é a pergunta certa — isto aqui decide só o que se
+ * ESCREVE, antes de haver visualizador para perguntar.
+ */
+const ehCelular = () => ehAndroid() || ehIOS();
 
 /** Android? Só para escolher a instrução certa, nunca para esconder recurso. */
 const ehAndroid = () => /android/i.test(navigator.userAgent);
