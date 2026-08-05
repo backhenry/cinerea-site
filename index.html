@@ -489,6 +489,19 @@
          O VÍDEO É UM RENDER, e o texto diz isso. Foi ele que virou o molde, o
          que é verdade e é a razão de a seção existir — mas passar render por
          fotografia de produto é prometer um acabamento que o gesso não tem.
+
+         E ELE FOI DESSATURADO NA CODIFICAÇÃO, de propósito. O render sai do
+         Blender com uma luz âmbar forte, e um busto laranja saturado ocupando
+         um quarto da seção quebrava a paleta duas vezes: a brasa é ACENTO, com
+         menos de 10% da tela, e a peça de verdade é gesso branco. Não era só
+         desencontro estético — era o material errado. Um `hue=s=0.10` com um
+         resto de calor devolve o gesso e devolve a brasa ao tipo pequeno, que
+         é o lugar dela.
+
+         O FUNDO CONTINUA BRANCO PURO depois do tratamento, e isso é condição,
+         não coincidência: qualquer ajuste que tinja o branco quebra o
+         `multiply` e traz o retângulo de volta. Foi o que descartou a versão
+         em brasa, que era bonita e deixava o fundo em 254,254,244.
     ────────────────────────────────────────────────────────────────────────── -->
     <section class="ideia" id="nasce">
       <div class="rot">Como a peça nasce</div>
