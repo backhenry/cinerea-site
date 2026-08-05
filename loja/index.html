@@ -231,6 +231,7 @@
   .sub3d{font-size:12.5px;color:var(--smoke);margin-top:8px;line-height:1.5}
   .btlink3d{background:none;border:none;padding:0;font:inherit;color:var(--ember);
     text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .mv .bt[disabled]{opacity:.55;cursor:default}
   .ar-passos{margin-top:10px;font-size:13px}
   .ar-passos summary{
     cursor:pointer;color:var(--ember);text-decoration:underline;
@@ -993,17 +994,59 @@ window.abrir3d = async (modelo, nome) => {
       <button class="btlink3d" onclick="abrir3d('${esc(modelo)}','${esc(nome)}')">tentar de novo</button></div>`;
     return;
   }
+  /* A ORDEM DOS MODOS É O QUE TIRA O SEGUNDO TOQUE.
+     O padrão do model-viewer é `webxr scene-viewer quick-look`, e no Android o
+     WebXR é tentado primeiro: ele pede a câmera (ou a atualização do ARCore) e
+     a sessão daquele toque JÁ FALHOU quando a pessoa concede. O `ar-status`
+     volta 'failed', nada abre, e só o toque seguinte funciona — que é o
+     "clicar duas vezes" que o dono sentiu.
+
+     O Scene Viewer não tem esse degrau: é um aplicativo do sistema, e ele
+     mesmo cuida da permissão e da instalação, dentro do próprio fluxo. É
+     também o caminho que o Android usa por padrão em qualquer site com RA.
+     O WebXR fica de reserva, para o aparelho que não atende ao intent, e o
+     Quick Look continua sendo o do iPhone — a ordem não o afeta, porque ele é
+     o único que o iOS entende.
+
+     `ar-scale="fixed"` sobrevive à troca: o model-viewer o traduz em
+     `resizable=false` no intent, e o tamanho real continua sendo o real. */
   caixa.innerHTML = `
     <model-viewer class="mv" id="mv3d" src="${esc(modelo)}" alt="${esc(nome)} em três dimensões"
       camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1.1"
-      ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed"
+      ar ar-modes="scene-viewer webxr quick-look" ar-scale="fixed"
       environment-image="neutral" loading="eager">
-      <button slot="ar-button" class="bt">Ver na sua casa</button>
+      <button slot="ar-button" class="bt" id="ar_bt" disabled>preparando…</button>
     </model-viewer>
     <div class="sub3d" id="ar_recado"></div>
     <div id="ar_ajuda"></div>`;
 
   ajudaDoAr(nome);
+
+  /* O SEGUNDO CAMINHO PARA UM TOQUE PERDIDO: tocar antes de a peça carregar.
+     São 395 KB, e numa rede ruim isso são segundos com o botão já na tela e a
+     RA ainda sem o que pousar. Em vez de deixar o toque cair no vazio, o botão
+     nasce desligado e dizendo "preparando…" — um botão que se explica é melhor
+     que um botão que ignora. */
+  const pronto = () => {
+    const bt = document.getElementById('ar_bt');
+    if(bt){ bt.disabled = false; bt.textContent = 'Ver na sua casa'; }
+  };
+  const alvo = document.getElementById('mv3d');
+
+  /* NENHUM EVENTO SERVE AQUI, e isso foi medido nesta versão do model-viewer
+     (4.0.0), não suposto: registrando `load`, `progress`, `error` e
+     `model-visibility` numa peça recém-criada, o `load` NÃO sai e o `progress`
+     sobe até 0,9875 e para. Quem fica correto é a propriedade `loaded`.
+
+     Então a espera é por ela, e não por um evento documentado que não chega.
+     O teto de dez segundos é a rede de segurança: um botão desligado para
+     sempre seria MUITO pior que o toque perdido que ele veio consertar —
+     tocar e a RA reclamar é melhor que tocar e nada responder. */
+  if(alvo.loaded) pronto();
+  else {
+    const espera = setInterval(() => { if(alvo.loaded){ clearInterval(espera); pronto(); } }, 120);
+    setTimeout(() => { clearInterval(espera); pronto(); }, 10000);
+  }
 
   /* A RECUPERAÇÃO DEPOIS DE INSTALAR O APP DO GOOGLE.
      No Android, tocar em "Ver na sua casa" sem os Serviços do Google para RA
