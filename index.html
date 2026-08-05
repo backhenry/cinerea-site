@@ -142,6 +142,31 @@
     .dupla .desenho{margin:0}
   }
 
+  /* O chaveiro, dentro da seção do chip. Margem maior em cima porque ele vem
+     logo depois da grade dos sete tipos, que já tem a sua linha divisória. */
+  .chaveiro{margin-top:34px}
+  .chaveiro-foto{
+    width:100%;max-width:330px;height:auto;display:block;margin:0 auto;
+    /* Sem moldura e sem fundo: o PNG veio com alfa e com a sombra do próprio
+       render, então a peça pousa no papel. Encaixotá-la aqui seria inventar uma
+       borda que a peça não tem. */
+  }
+  @media(min-width:880px){ .chaveiro-foto{max-width:400px} }
+
+  /* O vídeo do NFC, num cartão. `overflow:hidden` é o que faz o arredondamento
+     valer para o vídeo, que não respeita `border-radius` do pai sem isso. */
+  .comofunciona{margin-top:34px}
+  .nfc-cartao{
+    /* O cinza do render (#E1E0DC) e o `--ash` são praticamente a mesma cor, então
+       o cartão não tem emenda com o vídeo. A borda é o que o faz parecer painel
+       de demonstração e não remendo: sem ela, a placa cinza sobre o creme lê
+       como erro de recorte. Mesmo desenho do visualizador 3D da loja. */
+    background:var(--ash);border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;
+    max-width:400px;margin:0 auto;
+  }
+  .nfc-video{width:100%;height:auto;display:block}
+
   /* Os três passos são uma sequência física — desenhada explica melhor que
      numerada. O mesmo copo nos três, mudando só o que acontece com ele. */
   .passo .fig{display:block;width:62px;height:62px;margin-bottom:8px}
@@ -619,6 +644,61 @@
           </svg><span>contato</span>
         </div>
       </div>
+
+      <!-- O CHAVEIRO ENTRA AQUI, e não numa seção própria. Ele é o MESMO chip
+           da escultura, num disco de gesso que cabe no bolso — o lugar dele é
+           o parágrafo em que a pessoa acabou de entender o que o chip faz.
+           Seção separada faria dele um segundo assunto, quando ele é o mesmo
+           assunto em outro tamanho.
+
+           A imagem tem fundo transparente e sombra própria, então ela pousa no
+           papel sem moldura. É o oposto do vídeo do David, que é opaco e
+           precisou de `multiply` e de um fundo pintado para sumir com o branco:
+           aqui o alfa do WebP resolve, e por isso o formato não é JPEG. -->
+      <div class="dupla chaveiro">
+        <img class="chaveiro-foto" src="/chaveiro.webp" width="1100" height="862"
+             loading="lazy" decoding="async"
+             alt="Um disco de gesso claro com a marca da Cinérea rebaixada no centro e um ponto cor de brasa ao lado.">
+        <div>
+          <div class="rot">O chaveiro</div>
+          <p>O chip não vive só dentro da escultura. O Chaveiro Tecnológico é o
+             mesmo gesso e o mesmo chip, num disco que vai no bolso: quem
+             encostar o celular nele abre o que você deixou ali.</p>
+          <p>Serve de cartão de visita que não acaba, de recado para quem chega
+             em casa, ou do jeito que você inventar. Como a peça grande, ele
+             pode dizer outra coisa amanhã.</p>
+          <a class="linkinho" href="/loja/?colecao=Acessorios">Ver o chaveiro na loja →</a>
+        </div>
+      </div>
+
+      <!-- COMO FUNCIONA. O desenho ao lado do texto explica a IDEIA; este vídeo
+           mostra o INSTANTE — a antena acordando quando o celular chega perto.
+           É a única imagem do site em que a tecnologia aparece acontecendo.
+
+           Ele vive num cartão, e não solto no papel como a foto acima. O render
+           tem fundo cinza chapado (#E1E0DC), sem alfa, e o truque do vídeo do
+           David não serve aqui: `multiply` de cinza contra creme dá um creme
+           mais escuro, uma placa suja em volta. Como o cinza do render e o
+           `--ash` do site são praticamente a mesma cor, o cartão não tem
+           emenda, e um painel de demonstração é o que isso é mesmo. -->
+      <div class="dupla comofunciona">
+        <div class="nfc-cartao">
+          <video class="nfc-video" id="nfcVideo" muted loop playsinline
+                 preload="none" poster="/nfc.jpg" width="740" height="696"
+                 aria-label="Um celular se aproxima do chaveiro e o campo do chip aparece em ondas."></video>
+        </div>
+        <div>
+          <div class="rot">Como funciona</div>
+          <p>Dentro do gesso há uma antena e um chip do tamanho de uma unha, sem
+             bateria nenhuma. Quem o acorda é o campo do próprio celular, no
+             instante em que os dois se aproximam: o chip devolve um endereço, e
+             o celular abre o que estiver lá.</p>
+          <p>É a mesma tecnologia do cartão por aproximação. Por isso o convidado
+             não instala nada e não faz cadastro — e por isso a peça continua
+             funcionando daqui a dez anos, sem carregar e sem trocar pilha.</p>
+        </div>
+      </div>
+
       <!-- EXPERIMENTE. Explicar que a peça guarda um recado é uma coisa; ver o
            SEU recado dentro de um celular é outra. O quadro é um iframe da
            página do convidado de verdade — não uma imitação dela, que

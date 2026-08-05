@@ -257,32 +257,45 @@ window.velaDeEspera = function (texto) {
  * medida que erra quando a aba está escondida.
  */
 (function () {
-  var v = document.getElementById('giroVideo');
-  if (!v) return;
-
   var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var con = navigator.connection;
   var economizando = con && (con.saveData || /2g/.test(con.effectiveType || ''));
-  // O pôster já está no HTML, então não fazer nada aqui deixa a peça parada na
-  // tela. É a degradação certa: perde o giro, não perde a imagem.
-  if (quieto || economizando) return;
 
-  if (!('IntersectionObserver' in window)) { v.src = '/giro.mp4'; v.load(); return; }
+  /**
+   * O MESMO TRATAMENTO PARA CADA VÍDEO DA PÁGINA, e não uma cópia por vídeo.
+   *
+   * Eram dois laços iguais quando o segundo entrou (o do NFC), e a segunda
+   * cópia é onde a regra de quem pediu menos movimento se perde: ela não
+   * estoura nada, só deixa de valer para o vídeo novo.
+   */
+  function aoAparecer(id, arquivo) {
+    var v = document.getElementById(id);
+    if (!v) return;
 
-  var olho = new IntersectionObserver(function (entradas) {
-    entradas.forEach(function (e) {
-      if (e.isIntersecting) {
-        if (!v.src) { v.src = '/giro.mp4'; v.load(); }
-        var p = v.play();
-        if (p && p.catch) p.catch(function () {});
-      } else if (!v.paused) {
-        // Pausar ao sair da tela: um laço tocando fora de vista gasta bateria
-        // para ninguém. O pôster não volta, e nem deveria — a peça fica onde
-        // parou, e retoma dali quando a pessoa sobe de novo.
-        v.pause();
-      }
-    });
-  }, { rootMargin: '200px 0px' });
+    // O pôster já está no HTML, então não fazer nada aqui deixa a imagem parada
+    // na tela. É a degradação certa: perde o movimento, não perde a figura.
+    if (quieto || economizando) return;
 
-  olho.observe(v);
+    if (!('IntersectionObserver' in window)) { v.src = arquivo; v.load(); return; }
+
+    var olho = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) {
+          if (!v.src) { v.src = arquivo; v.load(); }
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else if (!v.paused) {
+          // Pausar ao sair da tela: um laço tocando fora de vista gasta bateria
+          // para ninguém. O pôster não volta, e nem deveria — a peça fica onde
+          // parou, e retoma dali quando a pessoa sobe de novo.
+          v.pause();
+        }
+      });
+    }, { rootMargin: '200px 0px' });
+
+    olho.observe(v);
+  }
+
+  aoAparecer('giroVideo', '/giro.mp4');
+  aoAparecer('nfcVideo', '/nfc.mp4');
 })();
