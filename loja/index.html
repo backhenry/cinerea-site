@@ -226,6 +226,15 @@
   .fechar button{background:none;border:none;font-size:14px;color:var(--smoke);cursor:pointer}
   .fmiolo{max-width:620px;margin:0 auto;padding:22px 22px 60px}
   .fmiolo .moldura{margin-bottom:22px}
+  /* ---- a peça em 3D ------------------------------------------------------ */
+  .ver3d{margin-top:22px}
+  .sub3d{font-size:12.5px;color:var(--smoke);margin-top:8px;line-height:1.5}
+  .btlink3d{background:none;border:none;padding:0;font:inherit;color:var(--ember);
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .mv{
+    width:100%;height:min(62vh,460px);background:var(--ash);
+    border-radius:12px;--poster-color:transparent;
+  }
   .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
   .ftitulo{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:6px}
   .fpreco{font-family:'Fraunces';font-size:24px;margin-top:16px}
@@ -490,7 +499,7 @@ async function carregar(){
     // linha é simplesmente descartado — sem erro, sem aviso.
     foto2:p.foto2||'',
     linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
-    desc:p.desc||'', longa:p.longa||'', ficha:lerFicha(p.ficha),
+    desc:p.desc||'', longa:p.longa||'', ficha:lerFicha(p.ficha), modelo:p.modelo||'',
     colecao:p.colecao||'', destaque:!!p.destaque, pronto:Number(p.pronto)||0,
   }));
   // Sem reordenar: a gestão publica já na ordem em que a loja mostra. Ordenar
@@ -912,6 +921,10 @@ window.abrirFicha = id => {
     <div class="fpreco">${brl(p.preco)}</div>
     ${p.longa?`<p class="flonga">${esc(p.longa)}</p>`:''}
     ${p.ficha.length?`<div class="ftec">${p.ficha.map(([r,v])=>`<div><span>${esc(r)}</span><span>${esc(v)}</span></div>`).join('')}</div>`:''}
+    ${p.modelo?`<div class="ver3d" id="ver3d">
+        <button class="bt fraco" onclick="abrir3d('${esc(p.modelo)}','${esc(p.nome)}')">Ver na sua casa</button>
+        <div class="sub3d">No celular, a peça aparece em tamanho real no seu espaço.</div>
+      </div>`:''}
     ${breve
       ? `<p class="desc" style="margin-top:24px">Esta peça ainda está sendo feita. Fale com a gente para saber quando ela chega.</p>
          <button class="bt fraco" onclick="fecharFicha()">Voltar à loja</button>`
@@ -919,6 +932,68 @@ window.abrirFicha = id => {
   document.getElementById('ficha').classList.add('abre');
   window.scrollTo(0,0);
 };
+/**
+ * A peça em 3D, e no celular em REALIDADE AUMENTADA.
+ *
+ * O SCRIPT SÓ BAIXA QUANDO ALGUÉM PEDE, e isso é a decisão que protege a loja.
+ * O `model-viewer` tem uns 300 KB, e hoje o site não carrega dependência
+ * nenhuma — essa leveza é qualidade dele. Carregar no `<head>` faria todo
+ * visitante pagar por um recurso que a maioria não vai abrir. Aqui ele entra no
+ * primeiro toque, e só na peça que tem modelo.
+ *
+ * A VERSÃO É FIXA, e não `@latest`. Script de terceiro que se atualiza sozinho
+ * dentro da loja é a sua vitrine mudando sem você saber, e um dia quebrando
+ * numa sexta à noite.
+ *
+ * ESCALA REAL: o GLB é exportado em METROS, com a peça medindo 0,2485 m e a
+ * base apoiada em z=0. É isso, e só isso, que faz o AR pousá-la no chão com o
+ * tamanho certo. Um modelo normalizado (que é o padrão do turntable) apareceria
+ * com centenas de metros na sala da pessoa.
+ *
+ * No computador não há AR: o mesmo componente vira um visualizador que se
+ * arrasta com o mouse, e o botão do Quick Look/Scene Viewer simplesmente não
+ * aparece. Não precisa de aviso nem de detecção nossa — o próprio componente
+ * decide, e ele sabe mais sobre o aparelho do que a gente.
+ */
+const MODEL_VIEWER = 'https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js';
+let scriptDo3d = null;
+
+function carregar3d(){
+  if(scriptDo3d) return scriptDo3d;
+  scriptDo3d = new Promise((ok, falha) => {
+    const s = document.createElement('script');
+    s.type = 'module'; s.src = MODEL_VIEWER;
+    s.onload = ok; s.onerror = falha;
+    document.head.appendChild(s);
+  });
+  return scriptDo3d;
+}
+
+window.abrir3d = async (modelo, nome) => {
+  const caixa = document.getElementById('ver3d');
+  if(!caixa) return;
+  caixa.innerHTML = '<div class="sub3d">abrindo…</div>';
+  try{
+    await carregar3d();
+  }catch(e){
+    console.error('model-viewer não carregou', e);
+    // Falhou o script de terceiro: devolve o botão em vez de deixar "abrindo…"
+    // para sempre. A venda não pode depender de uma CDN.
+    caixa.innerHTML = `<div class="sub3d">Não consegui abrir a visualização agora.
+      <button class="btlink3d" onclick="abrir3d('${esc(modelo)}','${esc(nome)}')">tentar de novo</button></div>`;
+    return;
+  }
+  caixa.innerHTML = `
+    <model-viewer class="mv" src="${esc(modelo)}" alt="${esc(nome)} em três dimensões"
+      camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1.1"
+      ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed"
+      environment-image="neutral" loading="eager">
+      <button slot="ar-button" class="bt">Ver na sua casa</button>
+    </model-viewer>
+    <div class="sub3d">Arraste para girar. No celular, toque em <b>Ver na sua casa</b>
+      para pousar a peça no seu espaço, em tamanho real: ${esc(nome)} tem 25 cm de altura.</div>`;
+};
+
 window.fecharFicha = () => document.getElementById('ficha').classList.remove('abre');
 window.juntar = id => {
   sacola[id] = (sacola[id] || 0) + 1;
