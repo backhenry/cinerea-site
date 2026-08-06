@@ -149,6 +149,28 @@
      ("como o objeto é"), e do mesmo tamanho competiria com a cena que explica
      a tecnologia. */
   .medalhao-foto{width:62%;max-width:250px;height:auto;display:block;margin:14px auto 0}
+
+  /* O RAIO X OCUPA O LUGAR DA FOTO, e não um espaço novo. A seção já tinha
+     crescido demais uma vez; aqui a foto e a vista explodida são dois estados
+     do mesmo slot, então o bloco não engorda por existir mais uma coisa. */
+  .medalhao-vista{min-height:1px}
+  .medalhao-vista model-viewer{
+    width:100%;height:260px;display:block;margin-top:14px;
+    background:var(--ash);border:1px solid var(--line);border-radius:14px;
+    --poster-color:transparent;
+  }
+  .btlink{background:none;border:none;padding:0;font:inherit;color:var(--ember);
+          cursor:pointer;margin-top:12px;display:block;text-align:center;width:100%}
+  .btlink[disabled]{color:var(--smoke);cursor:default}
+  /* As legendas do desenho: pequenas, claras, e sem caixa colorida, que
+     brigaria com a brasa. `data-visibility-attribute` faz o model-viewer
+     esconder sozinho a que estiver atrás da peça. */
+  .zap{
+    background:var(--paper);border:1px solid var(--line);border-radius:20px;
+    padding:3px 9px;font-size:10.5px;color:var(--char);white-space:nowrap;
+    transform:translate(-50%,-50%);
+  }
+  .zap[data-visible="false"]{opacity:0;pointer-events:none;transition:opacity .2s}
   .nfc-cartao{
     /* O cinza do render (#E1E0DC) e o `--ash` são praticamente a mesma cor, então
        o cartão não tem emenda com o vídeo. A borda é o que o faz parecer painel
@@ -656,9 +678,12 @@
                    preload="none" poster="/nfc.jpg" width="740" height="696"
                    aria-label="Um celular se aproxima do medalhão e o campo do chip aparece em ondas."></video>
           </div>
-          <img class="medalhao-foto" src="/chaveiro.webp" width="1100" height="862"
-               loading="lazy" decoding="async"
-               alt="O medalhão: um disco de gesso com a marca da Cinérea rebaixada e um ponto cor de brasa.">
+          <div class="medalhao-vista" id="medalhaoVista">
+            <img class="medalhao-foto" src="/chaveiro.webp" width="1100" height="862"
+                 loading="lazy" decoding="async"
+                 alt="O medalhão: um disco de gesso com a marca da Cinérea rebaixada e um ponto cor de brasa.">
+          </div>
+          <button type="button" class="btlink" id="btDentro">Ver o medalhão por dentro →</button>
         </div>
         <div>
           <div class="rot">O medalhão</div>

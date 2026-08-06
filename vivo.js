@@ -299,3 +299,78 @@ window.velaDeEspera = function (texto) {
   aoAparecer('giroVideo', '/giro.mp4');
   aoAparecer('nfcVideo', '/nfc.mp4');
 })();
+
+
+/* ===========================================================================
+   O MEDALHÃO POR DENTRO
+
+   A foto responde "como o objeto é". Esta vista responde a outra pergunta, a
+   que ninguém faz em voz alta: "onde fica o chip?". Num disco fechado e sem
+   furo, a resposta honesta é abrir a peça.
+
+   Entra SOB DEMANDA e no lugar da foto, por duas razões. A biblioteca do
+   visualizador tem ~300 KB e o modelo mais 48, e ninguém deve pagar isso para
+   ler um parágrafo sobre um chaveiro. E a seção já tinha crescido demais uma
+   vez: dois estados do mesmo slot não engordam a página.
+
+   O botão vira "abrindo…" e não some: se a rede falhar, sobra a foto e uma
+   segunda chance, em vez de um buraco.
+   =========================================================================== */
+(function () {
+  var bt = document.getElementById('btDentro');
+  var vista = document.getElementById('medalhaoVista');
+  if (!bt || !vista) return;
+
+  var MV = 'https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js';
+  var promessa = null;
+  function carregar() {
+    if (promessa) return promessa;
+    promessa = new Promise(function (ok, falha) {
+      var s = document.createElement('script');
+      s.type = 'module'; s.src = MV;
+      s.onload = ok; s.onerror = falha;
+      document.head.appendChild(s);
+    });
+    return promessa;
+  }
+
+  // As posições vêm do próprio arquivo: as peças ficam a ±0,0741 m e ±0,0247 m
+  // no eixo X, e o glTF é Y para cima. Escrever isto a olho erraria de um
+  // centímetro, que numa peça de 3,8 cm é a legenda apontando para a vizinha.
+  // A ALTURA DE CADA LEGENDA foi medida na tela, não escolhida no escuro: a
+  // 0,004 m elas pousavam EM CIMA das peças e "base" encostava em "antena". Um
+  // pouco acima do plano, cada uma fica no ar, com a peça inteira à vista.
+  var LEGENDAS = [
+    ['base',   '-0.0741 0.016 0'],
+    ['antena', '-0.0247 0.020 0'],
+    ['chip',   '0.0247 0.016 0'],
+    ['tampa',  '0.0741 0.016 0']
+  ];
+
+  bt.addEventListener('click', function () {
+    if (bt.disabled) return;
+    bt.disabled = true;
+    bt.textContent = 'abrindo…';
+    carregar().then(function () {
+      var zaps = LEGENDAS.map(function (l, i) {
+        return '<button class="zap" slot="hotspot-' + i + '" data-position="' + l[1] +
+               '" data-normal="0 1 0" data-visibility-attribute="visible">' + l[0] + '</button>';
+      }).join('');
+      vista.innerHTML =
+        '<model-viewer src="/3d/medalhao.glb" alt="O medalhão aberto: base, antena, chip e tampa."' +
+        ' camera-controls touch-action="pan-y" shadow-intensity="0.6" exposure="1.15"' +
+        // `field-of-view` estreito é escolha de desenho técnico: menos perspectiva,
+        // as quatro peças na mesma escala aparente, e a fila ocupando mais do
+        // cartão. Com a lente padrão a peça da ponta ficava visivelmente menor
+        // que a do meio, o que numa vista explodida lê como tamanho diferente.
+        ' environment-image="neutral" loading="eager" field-of-view="26deg"' +
+        ' camera-orbit="0deg 58deg auto">' +
+        zaps + '</model-viewer>';
+      bt.textContent = 'Arraste para girar a peça';
+    }).catch(function (e) {
+      console.error('model-viewer não carregou', e);
+      bt.disabled = false;
+      bt.textContent = 'não consegui abrir agora, tentar de novo';
+    });
+  });
+})();
