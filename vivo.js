@@ -341,10 +341,10 @@ window.velaDeEspera = function (texto) {
   // 0,004 m elas pousavam EM CIMA das peças e "base" encostava em "antena". Um
   // pouco acima do plano, cada uma fica no ar, com a peça inteira à vista.
   var LEGENDAS = [
-    ['base',   '-0.0741 0.016 0'],
-    ['antena', '-0.0247 0.020 0'],
-    ['chip',   '0.0247 0.016 0'],
-    ['tampa',  '0.0741 0.016 0']
+    ['base',   '-0.0894 0.016 0'],
+    ['antena', '-0.0298 0.020 0'],
+    ['chip',   '0.0298 0.016 0'],
+    ['tampa',  '0.0894 0.016 0']
   ];
 
   bt.addEventListener('click', function () {
