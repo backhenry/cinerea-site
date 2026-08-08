@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oráculo · Cinérea</title>
+<meta name="description" content="Três perguntas sobre o seu momento, e o aroma da casa que combina com ele. Não é diagnóstico nem tratamento: é uma escolha de perfume, feita com calma.">
+<meta property="og:title" content="Oráculo · Cinérea">
+<meta property="og:description" content="A base permanece, o conteúdo se renova.">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#F2EFEA">
+<link rel="icon" href="/icone.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Cinérea">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  /* O roteiro pedia um quarto tom para detalhes, que a paleta do site nao tem.
+     Fica declarado AQUI e nao no comum.css: cor nova em folha compartilhada e
+     cor que vaza para paginas que nunca a pediram. */
+  :root{--morno:#8A7E70}
+
+  .palco{max-width:640px;margin:0 auto;padding:56px 22px 80px;min-height:70vh}
+
+  .abertura{text-align:center}
+  .abertura .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .abertura h1{font-family:'Fraunces';font-weight:300;font-size:clamp(30px,7.6vw,44px);
+               line-height:1.14;margin-top:12px;text-wrap:balance}
+  .abertura p{margin-top:18px;font-size:16.5px;color:var(--smoke);line-height:1.7}
+
+  /* O PASSO INTEIRO TROCA, e a troca é uma dissolvência de 400ms com 10px de
+     deslocamento. É o único movimento da página: uma pergunta de cada vez, sem
+     barra de progresso gritando, sem contagem. A pressa é do outro lado da
+     internet. */
+  .passo{opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease}
+  .passo.entra{opacity:1;transform:none}
+  .passo[hidden]{display:none}
+
+  .conta{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .passo h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,33px);
+            line-height:1.16;margin-top:10px;text-wrap:balance}
+  .passo .guia{margin-top:12px;font-size:15.5px;color:var(--smoke);line-height:1.7;
+               font-family:'Fraunces';font-style:italic}
+
+  .opcoes{margin-top:30px;display:grid;gap:10px}
+  .opcao{
+    display:block;width:100%;text-align:left;background:none;cursor:pointer;
+    border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    font-family:'Inter';font-size:15.5px;line-height:1.6;color:var(--char);
+    transition:border-color .2s ease,background .2s ease;
+  }
+  .opcao:hover{border-color:var(--morno);background:rgba(138,126,112,.05)}
+  .opcao:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+  .voltar{margin-top:22px;background:none;border:none;padding:0;cursor:pointer;
+          font-family:'Inter';font-size:13.5px;color:var(--smoke)}
+  .voltar:hover{color:var(--ember)}
+
+  /* ---- o resultado ---- */
+  .achado .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .achado h2{font-family:'Fraunces';font-weight:300;font-size:clamp(28px,7vw,40px);
+             line-height:1.14;margin-top:10px}
+  .achado .carater{margin-top:6px;font-family:'Fraunces';font-style:italic;
+                   font-size:17px;color:var(--morno)}
+  .achado p{margin-top:18px;font-size:16px;line-height:1.74}
+  .achado .notas{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+  .achado .nota{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+                color:var(--smoke);border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+
+  .caixa{margin-top:28px;background:var(--ash);border-radius:14px;padding:22px 22px}
+  .caixa h3{font-family:'Fraunces';font-weight:300;font-size:19px}
+  .caixa p{margin-top:8px;font-size:14.5px;color:var(--smoke);line-height:1.65}
+
+  .bt{display:inline-block;margin-top:20px;padding:15px 28px;background:var(--char);
+      color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;
+      border:none;cursor:pointer;font-family:'Inter';transition:.15s}
+  .bt:hover{background:var(--ember)}
+  .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
+  .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
+  .refazer{display:block;margin-top:34px;background:none;border:none;padding:0;
+           cursor:pointer;font-family:'Inter';font-size:13.5px;color:var(--smoke)}
+  .refazer:hover{color:var(--ember)}
+
+  .rodape-nota{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+               font-size:13px;color:var(--smoke);line-height:1.65}
+</style>
+</head>
+<body>
+
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/">A marca</a>
+    <a href="/aromas/">Aromas</a>
+    <a href="/aplicacoes/">Aplicações</a>
+    <a href="/loja/">Loja</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+  <div class="topo-acoes">
+    <a href="https://wa.me/5511958280174" target="_blank" rel="noopener"
+       aria-label="Falar no WhatsApp" title="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.4a8.6 8.6 0 0 0-7.35 13.05L3.5 20.5l4.15-1.1A8.6 8.6 0 1 0 12 3.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.35 8.05c-.17-.38-.35-.39-.51-.39h-.44c-.15 0-.4.06-.61.28-.21.22-.8.78-.8 1.9s.82 2.2.93 2.35c.12.15 1.58 2.53 3.9 3.45 1.93.76 2.32.61 2.74.57.42-.04 1.36-.55 1.55-1.09.19-.53.19-.99.13-1.09-.06-.09-.21-.15-.44-.26-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.13.15-.27.17-.5.06-.23-.12-.97-.36-1.85-1.14-.68-.61-1.15-1.36-1.28-1.59-.13-.23-.01-.35.1-.47.1-.1.23-.27.34-.4.11-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.51-1.24-.7-1.7Z" fill="currentColor"/></svg>
+    </a>
+    <a href="/perfil/" aria-label="Meu perfil" title="Meu perfil">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M4.8 20c.6-3.6 3.6-6 7.2-6s6.6 2.4 7.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span class="rot-acao">Perfil</span>
+    </a>
+  </div>
+</div></header>
+
+<main class="palco">
+
+  <section class="abertura" id="abertura">
+    <div class="rot">Oráculo</div>
+    <h1>Três perguntas, e o aroma que combina com o seu&nbsp;momento.</h1>
+    <p>Não é teste de personalidade nem consulta. É a conversa que a gente teria
+       no ateliê antes de você escolher uma areia: como está o seu dia, e o que o
+       seu nariz está pedindo.</p>
+    <button class="bt" id="comecar">Começar</button>
+  </section>
+
+  <section class="passo" id="p1" hidden>
+    <div class="conta">Pergunta 1 de 3</div>
+    <h2>O clima do corpo</h2>
+    <p class="guia">Feche os olhos por um instante. O que o seu corpo está pedindo agora?</p>
+    <div class="opcoes">
+      <button class="opcao" data-r="A">Ar. Estou lento e pesado, e queria algo que abrisse a janela.</button>
+      <button class="opcao" data-r="B">Chão. Estou tenso e disperso, e queria algo que me assentasse.</button>
+      <button class="opcao" data-r="C">Silêncio. Estou agitado por dentro, e queria algo que baixasse o volume.</button>
+    </div>
+  </section>
+
+  <section class="passo" id="p2" hidden>
+    <div class="conta">Pergunta 2 de 3</div>
+    <h2>A hora do dia</h2>
+    <p class="guia">Quando você imagina essa peça acesa, que hora é?</p>
+    <div class="opcoes">
+      <button class="opcao" data-r="A">De manhã cedo, com a casa ainda acordando.</button>
+      <button class="opcao" data-r="B">No fim da tarde, quando o dia começa a assentar.</button>
+      <button class="opcao" data-r="C">Tarde da noite, com tudo já apagado.</button>
+    </div>
+  </section>
+
+  <section class="passo" id="p3" hidden>
+    <div class="conta">Pergunta 3 de 3</div>
+    <h2>O que o nariz pede</h2>
+    <p class="guia">Sem pensar muito: qual destes três você cheiraria agora?</p>
+    <div class="opcoes">
+      <button class="opcao" data-r="A">Casca de fruta cítrica, ar frio de serra, roupa lavada no varal.</button>
+      <button class="opcao" data-r="B">Lenha, terra depois da chuva, madeira velha de móvel bom.</button>
+      <button class="opcao" data-r="C">Flor à noite, folha amassada na mão, o cheiro de um quarto escuro.</button>
+    </div>
+  </section>
+
+  <section class="passo achado" id="fim" hidden></section>
+
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+         Jordão. Cada peça moldada à mão, uma por vez.</p>
+      <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>A loja</h3>
+      <a href="/loja/">Todas as peças</a>
+      <a href="/loja/?colecao=Refis">Refis de areia</a>
+      <a href="/aplicacoes/">Aplicações</a>
+      <a href="/contato/?sobre=empresa">Quantidade para empresa</a>
+    </div>
+    <div>
+      <h3>Entenda a peça</h3>
+      <a href="/aromas/">Aromas e aromaterapia</a>
+      <a href="/#areia">A vela que se repõe</a>
+      <a href="/#chip">O chip dentro dela</a>
+      <a href="/perfil/">Minhas peças</a>
+    </div>
+    <div>
+      <h3>Falar com o ateliê</h3>
+      <a href="https://wa.me/5511958280174" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="/contato/">Contato</a>
+      <a href="/privacidade/">Privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/vivo.js" defer></script>
+<script>
+/* ===========================================================================
+   O ORÁCULO
+
+   Três perguntas, três respostas possíveis, e o aroma da casa que combina.
+
+   O QUE ELE NÃO FAZ, e a decisão é deliberada: não diagnostica, não prescreve
+   e não fala em sistema nervoso. O roteiro original vinha com "diagnóstico",
+   "função PNEI", "atua no córtex pré-frontal" e "sedativo", e isso é promessa
+   de efeito sobre a saúde num produto de ambiente, que no Brasil é assunto de
+   ANVISA e de CONAR, além de não ser verdade. A página /aromas/ foi escrita
+   inteira em cima dessa linha, e um teste que a cruzasse desmentiria o site
+   na página ao lado.
+
+   O que sobra, e que é o que de fato vende: perguntar o momento da pessoa e
+   responder com um perfume, que é exatamente o que se faz no balcão.
+
+   ESTADO DE CADA AROMA. Só um dos três existe hoje no catálogo. Prometer
+   comprar o que não está à venda é o erro que já está no site (quatro coleções
+   vazias), e aqui ele seria pior, porque a pessoa acabou de responder três
+   perguntas para chegar nele. Então cada aroma declara se está `naLoja`, e a
+   tela final muda de acordo: quem cai num aroma pronto compra, quem cai num
+   que ainda vem entra na lista de aviso pelo WhatsApp.
+
+   Trocar `naLoja` para true e ajustar `onde` é tudo o que este arquivo precisa
+   quando os outros dois forem cadastrados.
+   =========================================================================== */
+const AROMAS = {
+  A: {
+    nome: 'Névoa da Manhã',
+    carater: 'clara, cítrica, de janela aberta',
+    notas: ['casca de bergamota', 'flor de lavanda', 'colônia'],
+    texto: `É a estrutura da água de colônia, a mais antiga que existe: cítrico
+      em cima, flor logo atrás, e leveza como projeto. Abre a casa em vez de
+      encher a sala, e some sem pedir licença, que é o feitio dela. Se você
+      procura frescor e clareza, é esta.`,
+    naLoja: true,
+    onde: '/loja/?colecao=Refis',
+    chamada: 'Ver a areia na loja',
+  },
+  B: {
+    nome: 'Lenha & Poesia',
+    carater: 'quente, seca, de madeira',
+    notas: ['cedro', 'vetiver', 'terra depois da chuva'],
+    texto: `Madeira e raiz, o oposto do cítrico. São aromas que evaporam devagar,
+      então ficam na sala muito depois de a chama apagar, e é por isso que a
+      perfumaria os usa para segurar tudo o mais. É o aroma de fim de tarde
+      fria, e é o mais denso dos três.`,
+    naLoja: false,
+    onde: '',
+    chamada: '',
+  },
+  C: {
+    nome: 'Sopro de Sono',
+    carater: 'noturna, floral, macia',
+    notas: ['lavanda', 'sálvia', 'resina doce'],
+    texto: `Floral e herbáceo, com uma resina adocicada por baixo para não ficar
+      só perfume de flor. É o aroma de quarto com a luz apagada, e o único dos
+      três que foi pensado para o fim do dia e não para o começo.`,
+    naLoja: false,
+    onde: '',
+    chamada: '',
+  },
+};
+
+const ZAP = 'https://wa.me/5511958280174';
+const PASSOS = ['p1', 'p2', 'p3'];
+let respostas = [];
+
+const q = (id) => document.getElementById(id);
+
+/**
+ * Troca de tela com dissolvência.
+ *
+ * O `hidden` sai ANTES do quadro em que a classe entra, senão a transição não
+ * acontece: o navegador não anima de `display:none`, ele pula direto para o
+ * estado final. Daí o `requestAnimationFrame` duplo, que é o jeito de esperar
+ * o elemento existir no layout antes de mudar a opacidade.
+ */
+function mostrar(id) {
+  const atual = document.querySelector('.passo.entra, #abertura:not([hidden])');
+  const entrar = () => {
+    const alvo = q(id);
+    alvo.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => alvo.classList.add('entra')));
+    // O foco vai para o título: quem navega por teclado ou leitor de tela
+    // precisa saber que a tela mudou, e nada aqui rola a página.
+    const titulo = alvo.querySelector('h2, h1');
+    if (titulo) { titulo.setAttribute('tabindex', '-1'); titulo.focus({ preventScroll: true }); }
+  };
+  if (!atual) return entrar();
+  atual.classList.remove('entra');
+  if (atual.id === 'abertura') { atual.hidden = true; return entrar(); }
+  setTimeout(() => { atual.hidden = true; entrar(); }, 400);
+}
+
+function responder(letra) {
+  respostas.push(letra);
+  if (respostas.length < PASSOS.length) return mostrar(PASSOS[respostas.length]);
+  pintarFim(apurar());
+}
+
+/**
+ * A letra que mais aparece, com a TERCEIRA pergunta como desempate.
+ *
+ * O desempate é a preferência declarada de cheiro, e não a primeira resposta,
+ * porque é a única das três em que a pessoa escolhe um aroma e não descreve um
+ * estado. Num empate, o que ela quer cheirar vale mais do que como ela diz que
+ * está.
+ */
+function apurar() {
+  const conta = {};
+  respostas.forEach((r) => { conta[r] = (conta[r] || 0) + 1; });
+  const maior = Math.max(...Object.values(conta));
+  const lideres = Object.keys(conta).filter((k) => conta[k] === maior);
+  if (lideres.length === 1) return lideres[0];
+  const desempate = respostas[2];
+  return lideres.includes(desempate) ? desempate : lideres[0];
+}
+
+function pintarFim(letra) {
+  const a = AROMAS[letra];
+  const compra = a.naLoja
+    ? `<a class="bt" href="${a.onde}">${a.chamada}</a>`
+    : `<a class="bt" href="${ZAP}?text=${encodeURIComponent(
+        'Oi! Fiz o oráculo no site e caí na ' + a.nome + '. Quero avisar quando ela chegar.')}"
+        target="_blank" rel="noopener">Avisar quando chegar</a>
+       <a class="bt fraco" href="/loja/?colecao=Refis">Ver a areia que já existe</a>`;
+
+  const aviso = a.naLoja ? '' : `
+    <div class="caixa">
+      <h3>Esta ainda está sendo feita</h3>
+      <p>A ${a.nome} está em preparo no ateliê e ainda não está à venda. Pode
+         deixar seu recado no WhatsApp que a gente avisa quando ela sair, sem
+         cadastro e sem lista de e-mail.</p>
+    </div>`;
+
+  q('fim').innerHTML = `
+    <div class="rot">O seu aroma</div>
+    <h2>${a.nome}</h2>
+    <div class="carater">${a.carater}</div>
+    <p>${a.texto}</p>
+    <div class="notas">${a.notas.map((n) => `<span class="nota">${n}</span>`).join('')}</div>
+    ${aviso}
+    <div class="caixa">
+      <h3>A areia precisa de uma peça</h3>
+      <p>A areia perfumada não queima sozinha: ela vai dentro de uma escultura de
+         gesso da Cinérea, que é permanente. Você compra a peça uma vez, e daí em
+         diante repõe só a areia. Se ainda não tem uma, comece por ela.</p>
+      <a class="bt fraco" href="/loja/">Ver as esculturas</a>
+    </div>
+    ${compra}
+    <button class="refazer" id="refazer">Responder de novo</button>
+    <p class="rodape-nota">Isto é uma sugestão de perfume, e não uma avaliação de
+       saúde. Aroma não trata nada, e quem tem uma questão de saúde merece um
+       profissional. O que uma peça acesa faz é dar prazer, presença e memória.
+       Mais sobre isso na página de <a href="/aromas/">aromas</a>.</p>`;
+
+  mostrar('fim');
+  q('refazer').addEventListener('click', () => {
+    respostas = [];
+    q('fim').classList.remove('entra');
+    setTimeout(() => { q('fim').hidden = true; mostrar('p1'); }, 400);
+  });
+}
+
+q('comecar').addEventListener('click', () => mostrar('p1'));
+document.querySelectorAll('.opcao').forEach((b) => {
+  b.addEventListener('click', () => responder(b.dataset.r));
+});
+</script>
+</body>
+</html>
