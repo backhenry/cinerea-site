@@ -80,6 +80,13 @@
 </head>
 <body>
 
+<!-- A vela que queima enquanto se lê. `aria-hidden`: é imagem, não informação:
+     quem usa leitor de tela não perde nada. Ela é a MESMA das outras páginas,
+     e quem a anima é o `vivo.js`, que a procura por `.pavio`: esquecer esta
+     linha não estoura nada, só deixa a página sem a vela. Foi o que aconteceu
+     aqui. -->
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
 <header class="topo"><div class="topo-in">
   <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
   <nav>
