@@ -50,8 +50,38 @@
 
   /* As três em fila. Elas encolhem juntas e nunca empilham: em duas linhas
      viram "algumas fotos", e o que a imagem precisa dizer é TRÊS. */
-  .tres{display:flex;justify-content:center;gap:clamp(4px,2vw,16px)}
-  .tres img{width:31%;max-width:170px;height:auto;display:block}
+  /* SEM O NOME, as três areias são três manchas de cor e a pessoa não sabe o
+     que está vendo. O nome embaixo é o que transforma "três fotos" em "três
+     opções com nome", que é a pergunta que o bloco faz. */
+  .tres{display:flex;justify-content:center;gap:clamp(6px,2.4vw,18px);
+        align-items:flex-start}
+  .tres figure{width:31%;max-width:170px}
+  .tres img{width:100%;height:auto;display:block}
+  .tres figcaption{
+    margin-top:2px;font-family:'Fraunces';font-weight:300;
+    font-size:clamp(12.5px,3.2vw,15px);line-height:1.25;color:var(--char);
+    text-wrap:balance;
+  }
+
+  /* AS TRÊS ENTRAM EM SEQUÊNCIA, e não juntas: escalonadas, elas lêem como
+     três coisas para escolher; ao mesmo tempo, leem como uma imagem só.
+
+     O ESTADO DE REPOUSO É VISÍVEL, e isto não é detalhe: quem esconde por
+     padrão e mostra por animação aposta que a animação vai rodar. Medido nesta
+     página: em aba escondida o navegador CONGELA a animação no primeiro quadro,
+     e as três areias ficaram em opacidade zero, ou seja, o convite inteiro sem
+     imagem. O mesmo vale para quem cai num navegador que não anima.
+
+     Por isso quem esconde é o JavaScript, com a classe `.anima`, e só depois de
+     ele estar rodando. Sem script, sem animação, ou com ela travada, o que
+     sobra é a página inteira à mostra. */
+  .anima .tres figure{opacity:0;transform:translateY(14px)}
+  .anima .convite.vista .tres figure{
+    animation:sobe .7s cubic-bezier(.2,.7,.3,1) forwards;
+  }
+  .anima .convite.vista .tres figure:nth-child(2){animation-delay:.12s}
+  .anima .convite.vista .tres figure:nth-child(3){animation-delay:.24s}
+  @keyframes sobe{to{opacity:1;transform:none}}
 
   .bt-convite{
     display:inline-flex;align-items:center;gap:10px;margin-top:24px;
@@ -74,6 +104,39 @@
   .tempo:nth-child(1){background:rgba(181,70,42,.05);border-left-color:rgba(181,70,42,.35)}
   .tempo:nth-child(2){background:rgba(181,70,42,.08);border-left-color:rgba(181,70,42,.6)}
   .tempo:nth-child(3){background:rgba(181,70,42,.12);border-left-color:var(--ember)}
+  /* A ANIMAÇÃO QUE EXPLICA, e não a que enfeita.
+     O bloco inteiro diz que a nota de saída evapora depressa e a de fundo
+     demora. Em vez de repetir isso por escrito, cada faixa tem um sopro que
+     sobe e some, e a única diferença entre as três é a DURAÇÃO: 3,5s na saída,
+     9s no coração, 19s no fundo. Quem olhar dez segundos vê a de cima subir
+     três vezes enquanto a de baixo ainda está no meio do caminho, e entende
+     sem ler.
+
+     Fica em `::after` com `pointer-events:none` para não atrapalhar seleção de
+     texto, e o `overflow:hidden` é o que recorta o sopro na faixa. */
+  .tempo{position:relative;overflow:hidden}
+  .tempo::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to top,rgba(181,70,42,.20),rgba(181,70,42,.05) 45%,transparent 75%);
+    transform:translateY(70%);opacity:0;
+    animation:evapora var(--dur,6s) linear infinite;
+  }
+  .tempo:nth-child(1)::after{--dur:3.5s}
+  .tempo:nth-child(2)::after{--dur:9s}
+  .tempo:nth-child(3)::after{--dur:19s}
+  @keyframes evapora{
+    0%   {transform:translateY(70%); opacity:0}
+    12%  {opacity:1}
+    70%  {opacity:.55}
+    100% {transform:translateY(-105%); opacity:0}
+  }
+
+  /* Quem pediu menos movimento não recebe nenhum. A mesma recusa que o vídeo
+     da capa e a vela de espera já respeitam. */
+  @media(prefers-reduced-motion:reduce){
+    .tempo::after{animation:none;opacity:0}
+  }
+
   .tempo b{display:block;font-size:14.5px;letter-spacing:.02em}
   .tempo span{display:block;margin-top:5px;font-size:14.5px;color:var(--smoke);line-height:1.6}
   .tempo em{font-style:normal;color:var(--char)}
@@ -107,6 +170,30 @@
      "cerne da madeira" quebravam no meio e a etiqueta virava duas linhas soltas,
      que lê como defeito. Sozinha ela também fica mais fácil de varrer: a coluna
      inteira passa a ser uma lista de partes da planta, que é o assunto. */
+  /* OS DESENHOS SE DESENHAM ao entrar na tela, com o traço correndo do começo
+     ao fim. É a mesma ideia da vela da margem: mostrar o mecanismo em vez de
+     enfeitar. Aqui o mecanismo é a própria planta sendo identificada, e o traço
+     correndo é o gesto de quem desenha.
+
+     `stroke-dasharray` grande o bastante para qualquer um dos traços deste
+     desenho, e `stroke-dashoffset` indo a zero. Sem `pathLength` porque os
+     caminhos têm comprimentos muito diferentes e normalizar cada um exigiria
+     medir; um valor único e generoso faz todos terminarem, uns antes de outros,
+     o que até ajuda: o desenho nasce em partes. */
+  /* Mesma regra do convite: o desenho nasce PRONTO, e só some para ser
+     desenhado quando o script garante que vai desenhá-lo. Sem isso, os seis
+     pictogramas ficam em branco na cara de quem tem a aba em segundo plano. */
+  .anima .planta .fig path,.anima .planta .fig circle{
+    stroke-dasharray:220;stroke-dashoffset:220;
+  }
+  .anima .planta.vista .fig path,.anima .planta.vista .fig circle{
+    animation:tracar 1.1s ease-out forwards;
+  }
+  .planta.vista .fig *:nth-child(2){animation-delay:.16s}
+  .planta.vista .fig *:nth-child(3){animation-delay:.32s}
+  .planta.vista .fig *:nth-child(4){animation-delay:.46s}
+  @keyframes tracar{to{stroke-dashoffset:0}}
+
   .parte{display:inline-block;font-size:10.5px;letter-spacing:.1em;
          text-transform:uppercase;color:var(--ember);white-space:nowrap;
          border:1px solid var(--line);border-radius:20px;padding:2px 9px;margin-top:4px}
@@ -184,10 +271,22 @@
          palavra, que há três caminhos e que um deles é o dela. É a mesma imagem
          que o oráculo mostra no fim, então a promessa e a entrega combinam. -->
     <section class="convite">
-      <div class="tres" aria-hidden="true">
-        <img src="/areia/nevoa.webp" width="1400" height="1050" alt="" loading="lazy">
-        <img src="/areia/lenha.webp" width="1400" height="1050" alt="" loading="lazy">
-        <img src="/areia/sopro.webp" width="1400" height="1050" alt="" loading="lazy">
+      <div class="tres">
+        <figure>
+          <img src="/areia/nevoa.webp" width="1400" height="1050" loading="lazy"
+               alt="Areia da Névoa da Manhã: grãos de cera num verde acinzentado.">
+          <figcaption>Névoa da Manhã</figcaption>
+        </figure>
+        <figure>
+          <img src="/areia/lenha.webp" width="1400" height="1050" loading="lazy"
+               alt="Areia da Lenha &amp; Poesia: grãos de cera num castanho quente.">
+          <figcaption>Lenha &amp; Poesia</figcaption>
+        </figure>
+        <figure>
+          <img src="/areia/sopro.webp" width="1400" height="1050" loading="lazy"
+               alt="Areia do Sopro de Sono: grãos de cera num lilás acinzentado.">
+          <figcaption>Sopro de Sono</figcaption>
+        </figure>
       </div>
       <h2>Qual desses é o seu?</h2>
       <p>Três perguntas sobre o seu momento, e o aroma da casa que combina com
@@ -425,5 +524,34 @@
 </footer>
 
 <script src="/vivo.js" defer></script>
+<script>
+/* As animações que dependem de a pessoa CHEGAR no bloco.
+ *
+ * `IntersectionObserver` e não posição de rolagem: rolagem dispara dezenas de
+ * vezes por segundo e obriga a medir na mão, que é a medida que erra quando a
+ * aba está escondida. Aqui basta saber que entrou.
+ *
+ * `once`: a classe entra e fica. Reanimar a cada passagem transforma a página
+ * num painel piscando para quem sobe e desce procurando um parágrafo.
+ */
+(function () {
+  var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var alvos = document.querySelectorAll('.convite, .planta');
+  if (quieto || !('IntersectionObserver' in window)) return;
+
+  // A CLASSE QUE ESCONDE ENTRA AQUI, e não no HTML. Enquanto ela não existe, o
+  // conteúdo está à mostra: é o que garante que uma animação travada ou um
+  // navegador sem suporte deixem a página legível em vez de vazia.
+  document.documentElement.classList.add('anima');
+  var olho = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('vista');
+      olho.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  alvos.forEach(function (el) { olho.observe(el); });
+})();
+</script>
 </body>
 </html>
