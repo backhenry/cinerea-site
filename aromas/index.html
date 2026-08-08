@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aromas · Cinérea</title>
+<meta name="description" content="Por que um cheiro chega antes do pensamento, como um aroma se sustenta em três tempos, e o que muda quando o óleo é de verdade. O aroma da sua peça você troca quando quiser: a escultura fica, a areia se repõe.">
+<meta property="og:title" content="Aromas · Cinérea">
+<meta property="og:description" content="A base permanece, o conteúdo se renova.">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#F2EFEA">
+<link rel="icon" href="/icone.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Cinérea">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  .capa{text-align:center;padding:66px 22px 40px;max-width:660px;margin:0 auto}
+  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);
+           line-height:1.12;margin-top:12px;text-wrap:balance}
+  .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke);line-height:1.65}
+
+  .miolo{max-width:760px;margin:0 auto;padding:0 22px 20px}
+  .bloco{padding:44px 0;border-top:1px solid var(--line)}
+  .bloco .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .bloco h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,31px);
+            line-height:1.16;margin-top:10px;text-wrap:balance}
+  .bloco p{margin-top:16px;font-size:16px;line-height:1.72;max-width:56ch}
+  .bloco p.calmo{color:var(--smoke)}
+
+  /* ---- os três tempos ----------------------------------------------------
+     A coluna de cor à esquerda é a única ilustração da página, e ela existe
+     porque a ideia É vertical: a nota de saída está por cima, a de fundo por
+     baixo, e o que segura a de cima é a de baixo. Um desenho horizontal
+     contaria a mesma coisa pior. */
+  .tempos{margin-top:26px;display:grid;gap:2px}
+  .tempo{padding:18px 20px;border-left:3px solid var(--ember)}
+  .tempo:nth-child(1){background:rgba(181,70,42,.05);border-left-color:rgba(181,70,42,.35)}
+  .tempo:nth-child(2){background:rgba(181,70,42,.08);border-left-color:rgba(181,70,42,.6)}
+  .tempo:nth-child(3){background:rgba(181,70,42,.12);border-left-color:var(--ember)}
+  .tempo b{display:block;font-size:14.5px;letter-spacing:.02em}
+  .tempo span{display:block;margin-top:5px;font-size:14.5px;color:var(--smoke);line-height:1.6}
+  .tempo em{font-style:normal;color:var(--char)}
+
+  /* ---- as plantas -------------------------------------------------------- */
+  .plantas{margin-top:24px;display:grid;gap:0}
+  .planta{display:grid;gap:3px 18px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .planta:last-child{border-bottom:none}
+  .planta b{font-size:15.5px}
+  .planta i{font-style:italic;color:var(--smoke);font-size:13.5px}
+  .planta span{font-size:14.5px;color:var(--smoke);line-height:1.62}
+  @media(min-width:660px){
+    .planta{grid-template-columns:190px 1fr;align-items:baseline}
+    .planta span{grid-column:2}
+  }
+
+  .parte{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+         color:var(--ember);border:1px solid var(--line);border-radius:20px;
+         padding:2px 9px;margin-left:2px;vertical-align:2px}
+
+  .acoes{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
+  .bt{display:inline-block;padding:14px 26px;background:var(--char);color:var(--paper);
+      text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+  .bt:hover{background:var(--ember)}
+  .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
+  .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
+
+  /* ---- o aviso -----------------------------------------------------------
+     Ele fica no FIM e com o mesmo peso do resto, sem letra miúda e sem caixa
+     de advertência. Letra miúda é o formato de quem quer que não seja lido, e
+     aqui a intenção é a contrária: dizer o que a peça não faz é o que dá
+     crédito ao que ela faz. */
+  .aviso{background:var(--ash);border-radius:14px;padding:26px 24px;margin-top:8px}
+  .aviso h2{margin-top:6px}
+  .fonte{margin-top:18px;font-size:13px;color:var(--smoke);line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/">A marca</a>
+    <a href="/aromas/" class="aqui">Aromas</a>
+    <a href="/aplicacoes/">Aplicações</a>
+    <a href="/loja/">Loja</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+  <div class="topo-acoes">
+    <a href="https://wa.me/5511958280174" target="_blank" rel="noopener"
+       aria-label="Falar no WhatsApp" title="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.4a8.6 8.6 0 0 0-7.35 13.05L3.5 20.5l4.15-1.1A8.6 8.6 0 1 0 12 3.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.35 8.05c-.17-.38-.35-.39-.51-.39h-.44c-.15 0-.4.06-.61.28-.21.22-.8.78-.8 1.9s.82 2.2.93 2.35c.12.15 1.58 2.53 3.9 3.45 1.93.76 2.32.61 2.74.57.42-.04 1.36-.55 1.55-1.09.19-.53.19-.99.13-1.09-.06-.09-.21-.15-.44-.26-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.13.15-.27.17-.5.06-.23-.12-.97-.36-1.85-1.14-.68-.61-1.15-1.36-1.28-1.59-.13-.23-.01-.35.1-.47.1-.1.23-.27.34-.4.11-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.51-1.24-.7-1.7Z" fill="currentColor"/></svg>
+    </a>
+    <a href="/perfil/" aria-label="Meu perfil" title="Meu perfil">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M4.8 20c.6-3.6 3.6-6 7.2-6s6.6 2.4 7.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span class="rot-acao">Perfil</span>
+    </a>
+  </div>
+</div></header>
+
+<main>
+  <section class="capa">
+    <div class="rot">Aromas</div>
+    <h1>O cheiro chega antes do&nbsp;pensamento.</h1>
+    <p>Todos os outros sentidos passam por uma triagem no cérebro antes de virar
+       sensação. O olfato não: ele entra direto na região da memória e da emoção.
+       É por isso que um aroma abre uma lembrança inteira antes de você conseguir
+       dar nome a ele.</p>
+  </section>
+
+  <div class="miolo">
+
+    <section class="bloco">
+      <div class="rot">Como um aroma se sustenta</div>
+      <h2>Todo aroma tem três tempos, e você sente os&nbsp;três.</h2>
+      <p>O que se sente numa vela recém-acesa não é o que fica na sala uma hora
+         depois. Isso não é impressão sua nem defeito da peça: é a velocidade com
+         que cada molécula evapora. A perfumaria organiza isso em três camadas, e
+         entender as três muda o que você procura numa vela.</p>
+
+      <div class="tempos">
+        <div class="tempo">
+          <b>Saída</b>
+          <span>Leve e volátil, é a primeira coisa que chega e a primeira que vai
+            embora. Quase sempre cítrica: <em>bergamota</em>, limão, mandarina.
+            É o aceno de entrada.</span>
+        </div>
+        <div class="tempo">
+          <b>Coração</b>
+          <span>O corpo do aroma, o que acompanha a peça acesa. Costuma ser floral
+            ou herbáceo: <em>lavanda</em>, <em>ylang-ylang</em>, camomila-romana.
+            É o que a pessoa lembra depois.</span>
+        </div>
+        <div class="tempo">
+          <b>Fundo</b>
+          <span>Raízes, madeiras e resinas. Evaporam devagar, e é justamente por
+            isso que <em>seguram</em> as notas de saída em vez de deixá-las fugir.
+            <em>Vetiver</em> e <em>patchouli</em> são os dois clássicos.</span>
+        </div>
+      </div>
+
+      <p>É aqui que se separa um aroma bom de um aroma barato. Sem nota de fundo
+         para fixar o resto, o cheiro sobe forte no primeiro minuto e desaparece
+         no terceiro. Forte não é o mesmo que duradouro, e quem já comprou vela
+         perfumada que "não cheira mais" conhece a diferença sem saber o nome
+         dela.</p>
+    </section>
+
+    <section class="bloco">
+      <div class="rot">De onde ele vem</div>
+      <h2>A parte da planta muda tudo.</h2>
+      <p>Não existe "o óleo da lavanda". Existe o óleo da flor da lavanda, e ele é
+         outra coisa do que sairia da folha. A mesma planta dá aromas diferentes
+         conforme o que se destila, e é por isso que a origem vem escrita com nome
+         botânico, e não só com nome de fantasia.</p>
+
+      <div class="plantas">
+        <div class="planta">
+          <b>Lavanda <span class="parte">flor</span></b>
+          <i>Lavandula angustifolia</i>
+          <span>Floral, doce e herbácea. "Lavanda" no rótulo diz pouco: existem
+            várias, com perfumes e comportamentos distintos, e só o nome botânico
+            separa uma da outra.</span>
+        </div>
+        <div class="planta">
+          <b>Bergamota <span class="parte">casca do fruto</span></b>
+          <i>Citrus &times; bergamia</i>
+          <span>Um cruzamento de laranja-amarga com lima-doce. É a nota de saída
+            da água de colônia criada em 1709, e é ela que faz o chá Earl Grey
+            cheirar a Earl Grey desde os anos 1820.</span>
+        </div>
+        <div class="planta">
+          <b>Cedro-do-atlas <span class="parte">cerne da madeira</span></b>
+          <i>Cedrus atlantica</i>
+          <span>Quente, amadeirado e adocicado, com um fundo quase canforado. Sai
+            do miolo do tronco, não da casca nem da folha.</span>
+        </div>
+        <div class="planta">
+          <b>Patchouli <span class="parte">folha e caule</span></b>
+          <i>Pogostemon cablin</i>
+          <span>Denso, terroso e adocicado. É dos poucos aromas que melhoram com
+            o tempo: envelhecendo, fica mais redondo e mais rico.</span>
+        </div>
+        <div class="planta">
+          <b>Vetiver <span class="parte">raiz</span></b>
+          <i>Vetiveria zizanioides</i>
+          <span>O único óleo de raiz entre as gramíneas aromáticas, e um dos mais
+            viscosos que existem: escorre devagar, e dura na mesma medida.</span>
+        </div>
+        <div class="planta">
+          <b>Ylang-ylang <span class="parte">flor</span></b>
+          <i>Cananga odorata</i>
+          <span>Floral intenso com um fio cítrico por cima. O nome que lhe deram
+            nas Filipinas quer dizer, mais ou menos, flor das flores.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloco">
+      <div class="rot">Qualidade</div>
+      <h2>Dá para perceber um óleo adulterado.</h2>
+      <p>Cor, viscosidade e cheiro são a identidade de um óleo essencial. Quando
+         algum dos três destoa do que aquele óleo deveria ser, quase sempre há
+         adulteração, ou oxidação por armazenagem ruim e tempo demais no vidro.
+         Não é misticismo: é a mesma lógica de reconhecer azeite bom.</p>
+      <p>O patchouli é o exemplo mais triste disso. É um dos óleos mais adulterados
+         do mundo, e o patchouli barato que correu o planeta nos anos 1970 é a
+         razão de muita gente jurar que detesta patchouli, sem nunca ter chegado
+         perto do verdadeiro.</p>
+      <!-- ENTRA AQUI: uma frase do dono sobre a areia da casa, e ela precisa ser
+           VERDADE conferível. "Óleo essencial puro", "sem fragrância sintética" e
+           "grau terapêutico" são afirmações com consequência: a primeira e a
+           segunda o cliente cobra, e a terceira não significa nada, porque não
+           existe órgão que certifique "grau terapêutico". Enquanto a frase não
+           vier do ateliê, esta seção fala de como reconhecer, e não do que
+           usamos. -->
+    </section>
+
+    <section class="bloco">
+      <div class="rot">Na Cinérea</div>
+      <h2>A escultura fica. O aroma&nbsp;troca.</h2>
+      <p>Numa vela comum o perfume está preso na cera, então quando o aroma acaba,
+         acabou a vela junto, e o que sobra é um vidro sujo. Aqui é o contrário: a
+         escultura de gesso é permanente e o aroma vive na areia. Acabou, você
+         repõe a areia e a peça volta a dizer outra coisa.</p>
+      <p>Na prática isso quer dizer que o cheiro da sua casa pode acompanhar a
+         estação, a ocasião ou o humor, sem trocar o objeto que está na estante.
+         Cítrico e claro no verão, madeira e raiz quando esfria, e a mesma peça
+         atravessando tudo.</p>
+      <div class="acoes">
+        <a class="bt" href="/loja/?colecao=Refis">Ver os refis de areia</a>
+        <a class="bt fraco" href="/loja/">Ver as peças</a>
+      </div>
+    </section>
+
+    <section class="bloco aviso">
+      <div class="rot">Uma coisa dita com todas as letras</div>
+      <h2>Aroma não é remédio.</h2>
+      <p class="calmo">Existe uma literatura clínica séria sobre óleos essenciais,
+         escrita para terapeutas, e é dela que vêm os fatos desta página. Mas uma
+         vela não é tratamento, e a Cinérea não promete efeito nenhum sobre a sua
+         saúde. Quem tem uma questão de saúde merece um profissional, e não uma
+         chama bonita.</p>
+      <p class="calmo">O que uma peça acesa faz é o que o olfato faz de melhor sem
+         precisar prometer nada: dar prazer, marcar presença e guardar memória. Já
+         é bastante.</p>
+      <p class="fonte">Os fatos de botânica, extração e perfumaria desta página
+         foram apurados em <i>Aromatica Volume 1: A Clinical Guide to Essential
+         Oil Therapeutics</i>, de Peter Holmes (Singing Dragon). O texto é nosso.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+         Jordão. Cada peça moldada à mão, uma por vez.</p>
+      <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>A loja</h3>
+      <a href="/loja/">Todas as peças</a>
+      <a href="/loja/?colecao=Refis">Refis de areia</a>
+      <a href="/aplicacoes/">Aplicações</a>
+      <a href="/contato/?sobre=empresa">Quantidade para empresa</a>
+    </div>
+    <div>
+      <h3>Entenda a peça</h3>
+      <a href="/aromas/">Aromas e aromaterapia</a>
+      <a href="/#areia">A vela que se repõe</a>
+      <a href="/#chip">O chip dentro dela</a>
+      <a href="/perfil/">Minhas peças</a>
+    </div>
+    <div>
+      <h3>Falar com o ateliê</h3>
+      <a href="https://wa.me/5511958280174" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="/contato/">Contato</a>
+      <a href="/privacidade/">Privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/vivo.js" defer></script>
+</body>
+</html>
