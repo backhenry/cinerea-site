@@ -31,6 +31,39 @@
   .bloco p{margin-top:16px;font-size:16px;line-height:1.72;max-width:56ch}
   .bloco p.calmo{color:var(--smoke)}
 
+  /* ---- o convite para o oráculo -----------------------------------------
+     A brasa cheia entra AQUI e em nenhum outro lugar da página. A regra da
+     marca é acento em menos de 10% da tela, e um botão é exatamente o
+     "elemento crucial" que a regra abre exceção para: é o único lugar onde se
+     pede uma ação. */
+  /* O CARTÃO É DE PAPEL, e não do cinza, e a razão é a imagem: os três renders
+     têm o papel do site assado no fundo, então sobre o cinza cada um vira um
+     retângulo visível e o convite lê como três fotos coladas. Com o mesmo tom
+     dos dois lados eles pousam sem emenda, e quem separa o bloco da página é a
+     borda. */
+  .convite{text-align:center;padding:38px 24px 42px;margin-top:6px;
+           background:var(--paper);border:1px solid var(--line);border-radius:18px}
+  .convite h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);
+              line-height:1.15;margin-top:20px}
+  .convite p{margin:12px auto 0;font-size:15.5px;color:var(--smoke);
+             line-height:1.65;max-width:46ch}
+
+  /* As três em fila. Elas encolhem juntas e nunca empilham: em duas linhas
+     viram "algumas fotos", e o que a imagem precisa dizer é TRÊS. */
+  .tres{display:flex;justify-content:center;gap:clamp(4px,2vw,16px)}
+  .tres img{width:31%;max-width:170px;height:auto;display:block}
+
+  .bt-convite{
+    display:inline-flex;align-items:center;gap:10px;margin-top:24px;
+    padding:16px 30px;background:var(--ember);color:var(--paper);
+    text-decoration:none;border-radius:999px;font-size:16px;
+    box-shadow:0 6px 18px -8px rgba(181,70,42,.7);
+    transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+  }
+  .bt-convite svg{width:20px;height:20px;transition:transform .15s ease}
+  .bt-convite:hover{background:var(--char);box-shadow:0 8px 22px -8px rgba(28,26,23,.5)}
+  .bt-convite:hover svg{transform:translateX(3px)}
+
   /* ---- os três tempos ----------------------------------------------------
      A coluna de cor à esquerda é a única ilustração da página, e ela existe
      porque a ideia É vertical: a nota de saída está por cima, a de fundo por
@@ -139,6 +172,34 @@
   </section>
 
   <div class="miolo">
+
+    <!-- O CONVITE VEM AQUI, e não no fim da página.
+         Ele estava depois de cinco blocos de texto, ou seja, oferecido a quem
+         já tinha lido tudo, que é justamente quem menos precisa de ajuda para
+         escolher. Quem chega sem saber nada desiste antes. Logo depois da
+         abertura, ele pega a pessoa no instante em que ela acabou de descobrir
+         que cheiro mexe com memória e ainda não sabe o que fazer com isso.
+
+         O desenho são as TRÊS AREIAS, e não um ícone: elas dizem, sem uma
+         palavra, que há três caminhos e que um deles é o dela. É a mesma imagem
+         que o oráculo mostra no fim, então a promessa e a entrega combinam. -->
+    <section class="convite">
+      <div class="tres" aria-hidden="true">
+        <img src="/areia/nevoa.webp" width="1400" height="1050" alt="" loading="lazy">
+        <img src="/areia/lenha.webp" width="1400" height="1050" alt="" loading="lazy">
+        <img src="/areia/sopro.webp" width="1400" height="1050" alt="" loading="lazy">
+      </div>
+      <h2>Qual desses é o seu?</h2>
+      <p>Três perguntas sobre o seu momento, e o aroma da casa que combina com
+         ele. Leva menos de um minuto, e não pede cadastro nenhum.</p>
+      <a class="bt-convite" href="/oraculo/">
+        Descobrir o meu aroma
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h13M13 7l5 5-5 5" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </section>
 
     <section class="bloco">
       <div class="rot">Como um aroma se sustenta</div>
@@ -305,11 +366,8 @@
          estação, a ocasião ou o humor, sem trocar o objeto que está na estante.
          Cítrico e claro no verão, madeira e raiz quando esfria, e a mesma peça
          atravessando tudo.</p>
-      <p>E se você não souber por onde começar, tem um caminho mais curto: três
-         perguntas sobre o seu momento, e o aroma da casa que combina com ele.</p>
       <div class="acoes">
-        <a class="bt" href="/oraculo/">Descobrir o meu aroma</a>
-        <a class="bt fraco" href="/loja/?colecao=Refis">Ver os refis de areia</a>
+        <a class="bt" href="/loja/?colecao=Refis">Ver os refis de areia</a>
         <a class="bt fraco" href="/loja/">Ver as peças</a>
       </div>
     </section>
