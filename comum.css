@@ -43,11 +43,53 @@ a{color:inherit}
 .topo nav::-webkit-scrollbar{display:none}
 .topo nav a{text-decoration:none;font-size:14px;color:var(--smoke);white-space:nowrap}
 .topo nav a:hover,.topo nav a.aqui{color:var(--char)}
+/* ---------------------------------------------------------------------------
+   O MENU EM LINHA PRÓPRIA QUANDO NÃO CABE NA MESMA.
+
+   Medido, e não estimado: com cinco itens, o cabeçalho da loja precisa de
+   734px para não cortar nada (marca 104 + menu 323 + ações 206 + vãos 36 +
+   recuos 54). Abaixo disso o "Contato" saía pela direita, e a saída anterior,
+   rolar o menu de lado, esconde item de navegação num site em que o menu é o
+   site inteiro. Rolagem lateral dentro de uma barra também é o gesto que
+   ninguém descobre sozinho.
+
+   Duas linhas resolvem sem esconder nada e sem JavaScript: marca e ações em
+   cima, menu embaixo ocupando a largura toda. Em 375px o menu pede ~300px de
+   343 disponíveis, então cabe com folga, e o `wrap` é a rede de segurança para
+   telas ainda menores: quebrar em duas linhas é ruim, sumir é pior.
+
+   O corte é em 780 e não em 734 para deixar margem ao botão da sacola, que
+   cresce com o número de peças.
+
+   A barra fica mais alta no celular, e isso foi conferido: nada mede a altura
+   dela. A ficha da peça é `position:fixed` e cobre a tela inteira, e foi por
+   isso que a sacola virou gaveta.
+   --------------------------------------------------------------------------- */
+@media(max-width:780px){
+  .topo-in{
+    grid-template-columns:auto 1fr;
+    grid-template-areas:"marca acoes" "nav nav";
+    row-gap:11px;
+  }
+  .topo .marca{grid-area:marca}
+  .topo-acoes{grid-area:acoes}
+  .topo nav{
+    grid-area:nav;justify-content:center;flex-wrap:wrap;
+    /* Em linha própria não há o que rolar, e manter `auto` deixaria uma barra
+       de rolagem fantasma capturando o gesto de arrastar a página. */
+    overflow-x:visible;
+  }
+}
+
 @media(max-width:620px){
-  .topo .marca span{display:none}
+  /* A marca volta a aparecer por extenso: com o menu embaixo, sobra espaço na
+     primeira linha, e o nome da casa vale mais ali do que o vazio. */
   .topo-acoes .rot-acao{display:none}
   .topo-acoes{gap:10px}
-  .topo-in{gap:10px;padding:12px 16px}
+  .topo-in{gap:10px;row-gap:10px;padding:12px 16px}
+  /* 12 e 13 porque MEDI: com 14 e 13,5 o menu pedia 333px e tinha 333, ou seja,
+     cabia em 375 por zero pixel e quebrava em duas linhas num aparelho de 360,
+     que é metade dos Android. Assim ele pede ~305 e sobra folga até em 320. */
   .topo nav{gap:12px}
   .topo nav a{font-size:13px}
 }
