@@ -52,14 +52,31 @@
   .planta b{font-size:15.5px}
   .planta i{font-style:italic;color:var(--smoke);font-size:13.5px}
   .planta span{font-size:14.5px;color:var(--smoke);line-height:1.62}
+  /* O DESENHO MARCA A PARTE, e é só isso que ele faz: pétala, casca, cerne,
+     folha, raiz. A seção inteira existe para dizer que a parte da planta muda o
+     óleo, e uma lista de nomes botânicos não diz isso a quem passa o olho. */
+  /* LINHA POR LINHA, e não por posicionamento automático. Com a figura ocupando
+     quatro linhas na primeira coluna, o preenchimento automático não seguiu a
+     ordem do documento e a etiqueta da parte foi parar ACIMA do nome da planta.
+     Dizer em que linha cada um entra tira a adivinhação. */
+  .planta{grid-template-columns:34px 1fr;align-items:start;gap:2px 16px}
+  .planta .fig{width:34px;height:34px;grid-column:1;grid-row:1/span 3;align-self:start}
+  .planta b{grid-column:2;grid-row:1}
+  .planta i{grid-column:2;grid-row:2}
+  .planta .parte{grid-column:2;grid-row:3;justify-self:start}
+  .planta span{grid-column:2;grid-row:4}
   @media(min-width:660px){
-    .planta{grid-template-columns:190px 1fr;align-items:baseline}
-    .planta span{grid-column:2}
+    .planta{grid-template-columns:34px 200px 1fr}
+    .planta span{grid-column:3;grid-row:1/span 3;align-self:center}
   }
 
-  .parte{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-         color:var(--ember);border:1px solid var(--line);border-radius:20px;
-         padding:2px 9px;margin-left:2px;vertical-align:2px}
+  /* EM LINHA PRÓPRIA, e não colado ao nome. Ao lado dele, "casca do fruto" e
+     "cerne da madeira" quebravam no meio e a etiqueta virava duas linhas soltas,
+     que lê como defeito. Sozinha ela também fica mais fácil de varrer: a coluna
+     inteira passa a ser uma lista de partes da planta, que é o assunto. */
+  .parte{display:inline-block;font-size:10.5px;letter-spacing:.1em;
+         text-transform:uppercase;color:var(--ember);white-space:nowrap;
+         border:1px solid var(--line);border-radius:20px;padding:2px 9px;margin-top:4px}
 
   .acoes{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
   .bt{display:inline-block;padding:14px 26px;background:var(--char);color:var(--paper);
@@ -174,39 +191,51 @@
 
       <div class="plantas">
         <div class="planta">
-          <b>Lavanda <span class="parte">flor</span></b>
+          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><path d="M20 33 V17" stroke="#1C1A17" stroke-width="1.8"/><path d="M20 17 c-4 0-6-3-6-5 s2-5 6-5 6 3 6 5 -2 5-6 5Z" stroke="#B5462A" stroke-width="1.8"/><path d="M14.6 11.5 h10.8 M15.6 8.2 h8.8" stroke="#B5462A" stroke-width="1.4"/><path d="M20 27 l-5-3 M20 23 l5-3" stroke="#1C1A17" stroke-width="1.6"/></svg>
+          <b>Lavanda</b>
+          <span class="parte">flor</span>
           <i>Lavandula angustifolia</i>
           <span>Floral, doce e herbácea. "Lavanda" no rótulo diz pouco: existem
             várias, com perfumes e comportamentos distintos, e só o nome botânico
             separa uma da outra.</span>
         </div>
         <div class="planta">
-          <b>Bergamota <span class="parte">casca do fruto</span></b>
+          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><circle cx="20" cy="22" r="11" stroke="#1C1A17" stroke-width="1.8"/><path d="M20 11 a11 11 0 0 1 11 11" stroke="#B5462A" stroke-width="3.2" stroke-linecap="round"/><circle cx="20" cy="22" r="6.6" stroke="#1C1A17" stroke-width="1.3" opacity=".45"/><path d="M20 11 v-3.4" stroke="#1C1A17" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <b>Bergamota</b>
+          <span class="parte">casca do fruto</span>
           <i>Citrus &times; bergamia</i>
           <span>Um cruzamento de laranja-amarga com lima-doce. É a nota de saída
             da água de colônia criada em 1709, e é ela que faz o chá Earl Grey
             cheirar a Earl Grey desde os anos 1820.</span>
         </div>
         <div class="planta">
-          <b>Cedro-do-atlas <span class="parte">cerne da madeira</span></b>
+          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><circle cx="20" cy="20" r="12" stroke="#1C1A17" stroke-width="1.8"/><circle cx="20" cy="20" r="8" stroke="#1C1A17" stroke-width="1.2" opacity=".4"/><circle cx="20" cy="20" r="4.6" stroke="#B5462A" stroke-width="2"/><circle cx="20" cy="20" r="1.5" fill="#B5462A" stroke="none"/></svg>
+          <b>Cedro-do-atlas</b>
+          <span class="parte">cerne da madeira</span>
           <i>Cedrus atlantica</i>
           <span>Quente, amadeirado e adocicado, com um fundo quase canforado. Sai
             do miolo do tronco, não da casca nem da folha.</span>
         </div>
         <div class="planta">
-          <b>Patchouli <span class="parte">folha e caule</span></b>
+          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><path d="M20 34 V14" stroke="#B5462A" stroke-width="1.8"/><path d="M20 22 c-8 0-11-5-11-9 6 0 11 3 11 9Z" stroke="#1C1A17" stroke-width="1.7" stroke-linejoin="round"/><path d="M20 16 c8 0 11-4 11-8 -6 0-11 2-11 8Z" stroke="#1C1A17" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          <b>Patchouli</b>
+          <span class="parte">folha e caule</span>
           <i>Pogostemon cablin</i>
           <span>Denso, terroso e adocicado. É dos poucos aromas que melhoram com
             o tempo: envelhecendo, fica mais redondo e mais rico.</span>
         </div>
         <div class="planta">
-          <b>Vetiver <span class="parte">raiz</span></b>
+          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><path d="M12 11 h16" stroke="#1C1A17" stroke-width="1.8" stroke-linecap="round"/><path d="M16 11 c0-3 1-5 2-6 M24 11 c0-3-1-5-2-6" stroke="#1C1A17" stroke-width="1.5" stroke-linecap="round"/><path d="M17 11 v9 c0 5-2 8-4 12 M23 11 v7 c0 6 2 9 4 13 M20 11 v22" stroke="#B5462A" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <b>Vetiver</b>
+          <span class="parte">raiz</span>
           <i>Vetiveria zizanioides</i>
           <span>O único óleo de raiz entre as gramíneas aromáticas, e um dos mais
             viscosos que existem: escorre devagar, e dura na mesma medida.</span>
         </div>
         <div class="planta">
-          <b>Ylang-ylang <span class="parte">flor</span></b>
+          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><circle cx="20" cy="20" r="3" stroke="#B5462A" stroke-width="1.8"/><path d="M20 17 c1-6 4-9 7-10 -1 4-3 8-7 10Z M23 20 c6 1 9 4 10 7 -4-1-8-3-10-7Z M20 23 c-1 6-4 9-7 10 1-4 3-8 7-10Z M17 20 c-6-1-9-4-10-7 4 1 8 3 10 7Z" stroke="#1C1A17" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <b>Ylang-ylang</b>
+          <span class="parte">flor</span>
           <i>Cananga odorata</i>
           <span>Floral intenso com um fio cítrico por cima. O nome que lhe deram
             nas Filipinas quer dizer, mais ou menos, flor das flores.</span>
