@@ -59,6 +59,11 @@
   .voltar:hover{color:var(--ember)}
 
   /* ---- o resultado ---- */
+  /* A foto da areia abre o resultado. É a única imagem da página, e ela existe
+     porque o produto É o grão: descrever "cera granulada" e não mostrar deixa a
+     pessoa imaginando pó, vidro ou pedra. */
+  .achado .foto{width:100%;height:auto;display:block;border-radius:14px;
+                background:var(--ash);margin-bottom:22px}
   .achado .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
   .achado h2{font-family:'Fraunces';font-weight:300;font-size:clamp(28px,7vw,40px);
              line-height:1.14;margin-top:10px}
@@ -225,35 +230,39 @@
 const AROMAS = {
   A: {
     nome: 'Névoa da Manhã',
-    carater: 'clara, cítrica, de janela aberta',
-    notas: ['casca de bergamota', 'flor de lavanda', 'colônia'],
-    texto: `É a estrutura da água de colônia, a mais antiga que existe: cítrico
-      em cima, flor logo atrás, e leveza como projeto. Abre a casa em vez de
-      encher a sala, e some sem pedir licença, que é o feitio dela. Se você
-      procura frescor e clareza, é esta.`,
-    naLoja: true,
-    onde: '/loja/?colecao=Refis',
-    chamada: 'Ver a areia na loja',
+    foto: '/areia/nevoa.webp',
+    carater: 'fresca, conífera, de ar frio',
+    notas: ['pinho silvestre', 'cipreste', 'alecrim'],
+    texto: `O cheiro do inverno da serra às sete da manhã: agulha de pinheiro,
+      madeira fria de cipreste e o corte herbal do alecrim por cima. É a mais
+      seca e a mais desperta das três, feita para a mesa de trabalho e não para
+      a cabeceira.`,
+    naLoja: false,
+    onde: '',
+    chamada: '',
   },
   B: {
     nome: 'Lenha & Poesia',
+    foto: '/areia/lenha.webp',
     carater: 'quente, seca, de madeira',
-    notas: ['cedro', 'vetiver', 'terra depois da chuva'],
-    texto: `Madeira e raiz, o oposto do cítrico. São aromas que evaporam devagar,
-      então ficam na sala muito depois de a chama apagar, e é por isso que a
-      perfumaria os usa para segurar tudo o mais. É o aroma de fim de tarde
-      fria, e é o mais denso dos três.`,
+    notas: ['cedro-do-atlas', 'patchouli', 'vetiver'],
+    texto: `Madeira, terra e raiz, o oposto do cítrico. São aromas que evaporam
+      devagar, então ficam na sala muito depois de a chama apagar, e é por isso
+      que a perfumaria os usa para segurar tudo o mais. É o aroma de lareira, e
+      é o mais denso dos três.`,
     naLoja: false,
     onde: '',
     chamada: '',
   },
   C: {
     nome: 'Sopro de Sono',
+    foto: '/areia/sopro.webp',
     carater: 'noturna, floral, macia',
-    notas: ['lavanda', 'sálvia', 'resina doce'],
-    texto: `Floral e herbáceo, com uma resina adocicada por baixo para não ficar
-      só perfume de flor. É o aroma de quarto com a luz apagada, e o único dos
-      três que foi pensado para o fim do dia e não para o começo.`,
+    notas: ['lavanda', 'sálvia esclareia', 'benjoim'],
+    texto: `Lavanda e sálvia, com a resina de benjoim por baixo, que é doce como
+      caramelo e é o que impede a composição de ficar só perfume de flor. É o
+      aroma de quarto com a luz apagada, e o único dos três pensado para o fim
+      do dia.`,
     naLoja: false,
     onde: '',
     chamada: '',
@@ -322,7 +331,7 @@ function pintarFim(letra) {
     : `<a class="bt" href="${ZAP}?text=${encodeURIComponent(
         'Oi! Fiz o oráculo no site e caí na ' + a.nome + '. Quero avisar quando ela chegar.')}"
         target="_blank" rel="noopener">Avisar quando chegar</a>
-       <a class="bt fraco" href="/loja/?colecao=Refis">Ver a areia que já existe</a>`;
+       <a class="bt fraco" href="/loja/">Ver o que já está pronto</a>`;
 
   const aviso = a.naLoja ? '' : `
     <div class="caixa">
@@ -333,6 +342,7 @@ function pintarFim(letra) {
     </div>`;
 
   q('fim').innerHTML = `
+    <img class="foto" src="${a.foto}" width="1400" height="1050" alt="A areia da ${a.nome}: grãos de cera de soja tingidos.">
     <div class="rot">O seu aroma</div>
     <h2>${a.nome}</h2>
     <div class="carater">${a.carater}</div>
