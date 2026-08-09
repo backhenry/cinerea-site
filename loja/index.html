@@ -30,15 +30,50 @@
   h1{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:10px}
   .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:15px}
   .envolve{max-width:1000px;margin:0 auto;padding:0 22px}
-  /* As coleções respondem a OUTRA pergunta que os controles acima: lá é como
-     ver, aqui é o que ver. O ar entre as duas faixas é o que separa os dois
-     assuntos sem precisar de traço nem de título. */
-  .linhas{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 28px;justify-content:center}
-  .linhas button{height:36px;padding:0 16px;border-radius:20px;border:1px solid var(--line);
-                 background:none;font-family:'Inter';font-size:12.5px;color:var(--smoke);
-                 cursor:pointer;transition:background .15s ease,border-color .15s ease,color .15s ease}
-  .linhas button:hover{border-color:var(--ember);color:var(--ember)}
-  .linhas button.on{background:var(--char);color:var(--paper);border-color:var(--char)}
+  /* AS COLEÇÕES NÃO SÃO FILTROS, e antes pareciam.
+     Elas respondem a OUTRA pergunta que os controles acima: lá é COMO ver
+     (ordenar, esconder), aqui é O QUE ver. Filtro é um controle, que se liga e
+     se desliga e volta ao normal; coleção é NAVEGAÇÃO, é escolher em que parte
+     da loja você está.
+
+     A separação era só ar, e o ar não deu conta: as duas faixas usavam a mesma
+     pílula, mesma altura, mesma borda, mesmo corpo de texto, então a diferença
+     entre "Pronta entrega" e "Acessórios" ficava só na palavra. E o vão de
+     38px, tentando fazer o trabalho sozinho, empurrava a vitrine para baixo.
+
+     Agora são gramáticas diferentes de propósito. Os controles seguem pílulas
+     em Inter, que é a letra da interface. As coleções viram uma barra de
+     seções em Fraunces, a letra dos títulos, sem borda e sem fundo, com a
+     escolhida sublinhada em brasa sobre o fio que corre embaixo de todas. É a
+     forma que um índice tem, e ela encosta na vitrine que ela governa. */
+  .linhas{
+    display:flex;gap:clamp(16px,4vw,30px);
+    margin:26px 0 32px;border-bottom:1px solid var(--line);
+    /* Rola de lado em vez de quebrar, como os controles: uma segunda linha de
+       seções empurraria as peças para baixo da dobra. */
+    overflow-x:auto;scrollbar-width:none;
+    /* CENTRAR E ROLAR SE MORDEM, e o estrago é invisível no computador.
+       Com `center`, o conteúdo que não cabe transborda para os DOIS lados, e
+       o lado esquerdo fica inalcançável, porque não existe rolagem negativa.
+       Medido em 375px: "Tudo" sumia fora da tela e não havia como chegar nele.
+       `safe center` centra quando cabe e alinha à esquerda quando não cabe;
+       navegador que não conhece a palavra ignora a linha e fica com a de
+       cima, que é o comportamento antigo. */
+    justify-content:center;
+    justify-content:safe center;
+  }
+  .linhas::-webkit-scrollbar{display:none}
+  .linhas button{
+    flex:0 0 auto;background:none;border:none;cursor:pointer;white-space:nowrap;
+    font-family:'Fraunces';font-weight:300;font-size:clamp(15.5px,3.8vw,18px);
+    color:var(--smoke);padding:0 2px 12px;
+    /* O sublinhado tem 2px e o fio tem 1: a margem negativa faz um cobrir o
+       outro, senão a seção escolhida fica com dois traços empilhados. */
+    border-bottom:2px solid transparent;margin-bottom:-1px;
+    transition:color .15s ease,border-color .15s ease;
+  }
+  .linhas button:hover{color:var(--char)}
+  .linhas button.on{color:var(--char);border-bottom-color:var(--ember)}
   /* ---- banner de promoção -----------------------------------------------
      Vem do cadastro da gestão e sobe junto com o catálogo. A loja NÃO tem
      banner próprio de propósito: seria a segunda lista de verdade sobre a loja,
