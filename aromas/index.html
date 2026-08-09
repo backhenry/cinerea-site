@@ -51,6 +51,12 @@
   .bloco h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,31px);
             line-height:1.16;margin-top:10px;text-wrap:balance}
   .bloco p{margin-top:16px;font-size:16px;line-height:1.72;max-width:56ch}
+  /* O PARÁGRAFO DE ABERTURA de cada seção entra um ponto maior. É o recurso
+     mais velho da tipografia editorial e o mais barato: dá um degrau de entrada
+     ao olho e quebra a impressão de bloco único, sem acrescentar um elemento
+     sequer. Não vale para o cartão do aviso, que é curto e já tem contraste
+     próprio. */
+  .bloco:not(.aviso) > p:first-of-type{font-size:17.5px;line-height:1.68}
   .bloco p.calmo{color:var(--smoke)}
 
   /* ---- o convite para o oráculo -----------------------------------------
@@ -269,6 +275,19 @@
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
   .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
+
+  /* A PEÇA AO LADO DO TEXTO, e empilhada no celular. O vídeo é composto sobre
+     branco e sumido com `multiply`, como o da página inicial e o das areias: o
+     `.giro` pinta o papel atrás porque `multiply` mistura com o que está no
+     mesmo contexto de empilhamento, e sem fundo pintado o branco continua
+     branco. */
+  .par{display:grid;gap:18px;margin-top:26px;align-items:center}
+  .par .giro{display:flex;justify-content:center;background:var(--ash)}
+  .par .giro-video{width:100%;max-width:240px;height:auto;display:block;
+                   mix-blend-mode:multiply}
+  .par .perto{margin-top:0}
+  .par .acoes{margin-top:20px}
+  @media(min-width:640px){ .par{grid-template-columns:240px 1fr;gap:26px} }
 
   /* ---- as gotas -----------------------------------------------------------
      Cada pipeta é um traço fino com uma gota que engorda na ponta, se solta e
@@ -595,9 +614,27 @@
          estação, a ocasião ou o humor, sem trocar o objeto que está na estante.
          Cítrico e claro no verão, madeira e raiz quando esfria, e a mesma peça
          atravessando tudo.</p>
-      <div class="acoes">
-        <a class="bt" href="/loja/?colecao=Refis">Ver os refis de areia</a>
-        <a class="bt fraco" href="/loja/">Ver as peças</a>
+      <!-- A PEÇA APARECE AQUI, e é a única imagem de escultura da página.
+           O bloco pedia a compra falando de "sua escultura de gesso" sem nunca
+           mostrar uma: quem chega do Instagram não sabe o que é uma Cinérea, e
+           estava sendo convidado a comprar um objeto que não viu. É o mesmo
+           vídeo da página inicial, e reusar é de propósito: a peça que ele
+           conhece lá é a que ele encontra aqui. -->
+      <div class="par">
+        <div class="giro">
+          <video class="giro-video" id="giroAromas" muted loop playsinline
+                 preload="none" poster="/giro.jpg"
+                 aria-label="A escultura do David girando, vista de todos os lados."></video>
+        </div>
+        <div>
+          <p class="perto">Esta é uma delas. O gesso é maciço e fica para sempre;
+             a areia por dentro é que se gasta e se repõe, quantas vezes você
+             quiser, com o aroma que quiser.</p>
+          <div class="acoes">
+            <a class="bt" href="/loja/?colecao=Refis">Ver os refis de areia</a>
+            <a class="bt fraco" href="/loja/">Ver as peças</a>
+          </div>
+        </div>
       </div>
     </section>
 
