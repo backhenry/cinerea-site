@@ -84,6 +84,18 @@
   .tres{max-width:520px;margin:0 auto}
   .trio-video{
     width:100%;height:auto;display:block;
+    /* O TOPO SE DISSOLVE NO PAPEL, e é isto que tira a cara de gif quadrado.
+       Não adiantou fazer os grãos nascerem acima do enquadramento: o que
+       desenha a linha reta é a BORDA DO VÍDEO cortando o campo de grãos. Onde
+       há grão até o limite do retângulo, o retângulo aparece.
+
+       A máscara resolve no navegador, sem re-render: os grãos vão perdendo
+       opacidade conforme sobem e somem no papel em vez de baterem numa aresta.
+       De quebra, eles agora parecem se formar no ar enquanto caem. */
+    -webkit-mask-image:linear-gradient(to bottom,
+      transparent 0%, rgba(0,0,0,.25) 12%, rgba(0,0,0,.75) 26%, #000 40%);
+    mask-image:linear-gradient(to bottom,
+      transparent 0%, rgba(0,0,0,.25) 12%, rgba(0,0,0,.75) 26%, #000 40%);
     /* O VÍDEO É COMPOSTO SOBRE BRANCO, e `multiply` faz o branco sumir: branco
        vezes qualquer cor é a própria cor, então o fundo do vídeo vira o papel
        do cartão sem depender de o codificador devolver o RGB exato. Composto
