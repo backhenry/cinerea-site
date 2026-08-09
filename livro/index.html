@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O livro · Cinérea</title>
+<meta name="description" content="O que permanece quando a chama passa: um tratado breve sobre o olfato, o fogo e a arte de habitar a própria casa. 86 páginas, de graça, sem cadastro.">
+<meta property="og:title" content="O que permanece quando a chama passa · Cinérea">
+<meta property="og:description" content="Um tratado breve sobre o olfato, o fogo e a arte de habitar a própria casa. De graça, sem cadastro.">
+<meta property="og:image" content="https://cinerea.com.br/livro/capa.webp">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#F2EFEA">
+<link rel="icon" href="/icone.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Cinérea">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/comum.css">
+<style>
+  /* O quarto tom, o mesmo do oráculo, declarado aqui e não no comum.css: cor
+     nova em folha compartilhada é cor que vaza para páginas que não a pediram. */
+  :root{--morno:#8A7E70}
+
+  .palco{max-width:900px;margin:0 auto;padding:52px 22px 70px}
+
+  /* A CAPA AO LADO DO CONVITE. O livro é um objeto, e mostrar a capa é o que o
+     faz parecer um: "baixe nosso material" com um ícone de PDF é isca de
+     newsletter, e este aqui não é isca, é presente. */
+  .oferta{display:grid;gap:30px;align-items:center}
+  @media(min-width:760px){ .oferta{grid-template-columns:300px 1fr;gap:46px} }
+
+  .capa-livro{
+    width:100%;max-width:300px;height:auto;display:block;margin:0 auto;
+    border-radius:6px;
+    /* A sombra é a única da página, e existe porque a capa é escura sobre papel
+       claro: sem ela o retângulo preto flutua sem peso. */
+    box-shadow:0 18px 40px -22px rgba(28,26,23,.75), 0 2px 6px -2px rgba(28,26,23,.25);
+  }
+
+  .oferta .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .oferta h1{font-family:'Fraunces';font-weight:300;font-size:clamp(29px,7vw,42px);
+             line-height:1.13;margin-top:12px;text-wrap:balance}
+  .oferta .sub{margin-top:12px;font-family:'Fraunces';font-style:italic;
+               font-size:17.5px;color:var(--morno);line-height:1.5}
+  .oferta p{margin-top:16px;font-size:16px;line-height:1.72;max-width:52ch}
+
+  .baixar{
+    display:inline-flex;align-items:center;gap:10px;margin-top:24px;
+    padding:16px 30px;background:var(--ember);color:var(--paper);
+    text-decoration:none;border-radius:999px;font-size:16px;
+    box-shadow:0 6px 18px -8px rgba(181,70,42,.7);
+    transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+  }
+  .baixar svg{width:20px;height:20px;transition:transform .15s ease}
+  .baixar:hover{background:var(--char);box-shadow:0 8px 22px -8px rgba(28,26,23,.5)}
+  .baixar:hover svg{transform:translateY(2px)}
+  .selo{margin-top:12px;font-size:13px;color:var(--smoke);line-height:1.6}
+
+  /* ---- o que tem dentro ---- */
+  .dentro{margin-top:64px;padding-top:36px;border-top:1px solid var(--line)}
+  .dentro > .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .dentro h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.4vw,30px);
+             line-height:1.16;margin-top:10px}
+  .capitulos{margin-top:26px;display:grid;gap:0}
+  .cap{display:grid;grid-template-columns:38px 1fr;gap:4px 14px;padding:16px 0;
+       border-bottom:1px solid var(--line)}
+  .cap:last-child{border-bottom:none}
+  .cap .n{font-family:'Fraunces';font-size:17px;color:var(--ember);grid-row:span 2}
+  .cap b{font-size:15.5px}
+  .cap span{font-size:14.5px;color:var(--smoke);line-height:1.6;grid-column:2}
+
+  .nota{margin-top:44px;background:var(--ash);border-radius:14px;padding:26px 24px}
+  .nota h3{font-family:'Fraunces';font-weight:300;font-size:20px}
+  .nota p{margin-top:10px;font-size:15px;color:var(--smoke);line-height:1.7}
+  .nota p + p{margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
+
+<header class="topo"><div class="topo-in">
+  <a class="marca" href="/"><svg viewBox="0 0 150 150" fill="none" aria-hidden="true"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="currentColor" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="11" fill="#B5462A"/></svg><span>Cinérea</span></a>
+  <nav>
+    <a href="/">A marca</a>
+    <a href="/aromas/">Aromas</a>
+    <a href="/aplicacoes/">Aplicações</a>
+    <a href="/loja/">Loja</a>
+    <a href="/contato/">Contato</a>
+  </nav>
+  <div class="topo-acoes">
+    <a href="https://wa.me/5511958280174" target="_blank" rel="noopener"
+       aria-label="Falar no WhatsApp" title="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.4a8.6 8.6 0 0 0-7.35 13.05L3.5 20.5l4.15-1.1A8.6 8.6 0 1 0 12 3.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.35 8.05c-.17-.38-.35-.39-.51-.39h-.44c-.15 0-.4.06-.61.28-.21.22-.8.78-.8 1.9s.82 2.2.93 2.35c.12.15 1.58 2.53 3.9 3.45 1.93.76 2.32.61 2.74.57.42-.04 1.36-.55 1.55-1.09.19-.53.19-.99.13-1.09-.06-.09-.21-.15-.44-.26-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.13.15-.27.17-.5.06-.23-.12-.97-.36-1.85-1.14-.68-.61-1.15-1.36-1.28-1.59-.13-.23-.01-.35.1-.47.1-.1.23-.27.34-.4.11-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.51-1.24-.7-1.7Z" fill="currentColor"/></svg>
+    </a>
+    <a href="/perfil/" aria-label="Meu perfil" title="Meu perfil">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M4.8 20c.6-3.6 3.6-6 7.2-6s6.6 2.4 7.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span class="rot-acao">Perfil</span>
+    </a>
+  </div>
+</div></header>
+
+<main class="palco">
+
+  <section class="oferta">
+    <img class="capa-livro" src="/livro/capa.webp" width="1165" height="1654"
+         alt="Capa do livro: fundo escuro com a marca da Cinérea e o título O que permanece quando a chama passa.">
+    <div>
+      <div class="rot">Um presente do ateliê</div>
+      <h1>O que permanece quando a chama&nbsp;passa</h1>
+      <p class="sub">Um tratado breve sobre o olfato, o fogo e a arte de habitar
+         a própria casa.</p>
+      <p>Antes de fazer qualquer peça, o ateliê precisou entender o que estava
+         manipulando: por que um cheiro atravessa trinta anos de memória em menos
+         de um segundo, como a indústria separa matéria viva de imitação barata, e
+         o que um objeto pesado e frio ao toque faz por quem mora com ele.</p>
+      <p>Este livro é o resultado desse estudo, devolvido a quem lê. São 86
+         páginas, e ele não vende nada.</p>
+      <a class="baixar" href="/livro/cinerea-o-que-permanece.pdf" download>
+        Baixar o livro
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <!-- SEM CADASTRO, e isso é uma decisão e não um esquecimento. Trocar o
+           livro por um e-mail é o padrão do mercado e renderia uma lista, mas
+           a página de privacidade deste site promete nenhum rastreador e
+           nenhuma venda de dados, e o dono chamou isto de presente. Presente
+           com formulário na frente é amostra grátis. -->
+      <p class="selo">PDF de 330 KB. Sem cadastro, sem e-mail, sem contrapartida.</p>
+    </div>
+  </section>
+
+  <section class="dentro">
+    <div class="rot">O que tem dentro</div>
+    <h2>Cinco capítulos, e um degrau de cada vez.</h2>
+    <div class="capitulos">
+      <div class="cap">
+        <div class="n">I</div>
+        <b>A ciência do sopro</b>
+        <span>A neurobiologia do olfato, o código combinatório dos receptores, e
+          por que essa é a única porta sensorial sem porteiro.</span>
+      </div>
+      <div class="cap">
+        <div class="n">II</div>
+        <b>Cuidando do terreno</b>
+        <span>O que a psicoaromaterapia clínica afirma, o que ela apenas
+          tradiciona, e onde uma coisa acaba e a outra começa.</span>
+      </div>
+      <div class="cap">
+        <div class="n">III</div>
+        <b>A alquimia da perfumaria autoral</b>
+        <span>A fórmula curta, a recusa do fotorrealismo e a ilusão olfativa: como
+          um perfumista sugere uma fruta sem copiá-la.</span>
+      </div>
+      <div class="cap">
+        <div class="n">IV</div>
+        <b>Da planta ao pavio</b>
+        <span>Rastreabilidade, os critérios de qualidade de um óleo e o que um
+          laudo de cromatografia mostra que o rótulo não mostra.</span>
+      </div>
+      <div class="cap">
+        <div class="n">V</div>
+        <b>O ritual Cinérea</b>
+        <span>A vela de areia, o luxo silencioso e o objeto dividido em duas
+          metades: a que permanece e a que se renova.</span>
+      </div>
+    </div>
+
+    <div class="nota">
+      <h3>Uma coisa que o livro diz de saída</h3>
+      <p>"Não há aqui promessa de cura. Aroma não substitui medicina." Onde a
+         ciência ainda discute, ele diz que ela discute. Onde a tradição afirma
+         sem prova de laboratório, ele diz que é tradição, e explica por que
+         mesmo assim ela foi mantida.</p>
+      <p>Se quiser o caminho curto antes do longo, a página de
+         <a href="/aromas/">aromas</a> conta o essencial em cinco minutos, e o
+         <a href="/oraculo/">oráculo</a> responde em três perguntas qual aroma
+         combina com o seu momento.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <div>
+      <h3>Cinérea</h3>
+      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+         Jordão. Cada peça moldada à mão, uma por vez.</p>
+      <p class="lema">a base permanece, o conteúdo se renova</p>
+    </div>
+    <div>
+      <h3>A loja</h3>
+      <a href="/loja/">Todas as peças</a>
+      <a href="/loja/?colecao=Refis">Refis de areia</a>
+      <a href="/aplicacoes/">Aplicações</a>
+      <a href="/contato/?sobre=empresa">Quantidade para empresa</a>
+    </div>
+    <div>
+      <h3>Entenda a peça</h3>
+      <a href="/livro/">O livro, de graça</a>
+      <a href="/aromas/">Aromas e aromaterapia</a>
+      <a href="/#areia">A vela que se repõe</a>
+      <a href="/perfil/">Minhas peças</a>
+    </div>
+    <div>
+      <h3>Falar com o ateliê</h3>
+      <a href="https://wa.me/5511958280174" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="/contato/">Contato</a>
+      <a href="/privacidade/">Privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/vivo.js" defer></script>
+</body>
+</html>

@@ -182,6 +182,19 @@
   }
   .nfc-video{width:100%;height:auto;display:block}
 
+  /* O CARTÃO DO LIVRO. A capa é escura e pesada sobre o creme, então ela é o
+     único elemento que precisa de sombra na página inteira: sem peso, um
+     retângulo preto flutua. */
+  .livro-cartao{display:grid;gap:22px;align-items:center;text-decoration:none;
+                color:inherit}
+  .livro-cartao img{width:150px;height:auto;display:block;border-radius:4px;
+    box-shadow:0 16px 34px -20px rgba(28,26,23,.8),0 2px 6px -2px rgba(28,26,23,.25);
+    transition:transform .25s ease}
+  .livro-cartao:hover img{transform:translateY(-3px)}
+  .livro-cartao h2{margin-top:8px}
+  .livro-cartao .linkinho{display:inline-block;margin-top:16px}
+  @media(min-width:700px){ .livro-cartao{grid-template-columns:150px 1fr;gap:38px} }
+
   /* Os três passos são uma sequência física, desenhada explica melhor que
      numerada. O mesmo copo nos três, mudando só o que acontece com ele. */
   .passo .fig{display:block;width:62px;height:62px;margin-bottom:8px}
@@ -762,6 +775,26 @@
       <a class="linkinho" href="https://www.tiktok.com/@cinerea.velas" rel="noopener">Ver o processo no TikTok →</a>
     </section>
 
+    <!-- O LIVRO NA HOME, e a posição foi escolhida: depois de o ateliê ter se
+         apresentado, e antes do rodapé. Aqui a pessoa já sabe quem fala, então
+         o livro lê como o que ele é, um ateliê devolvendo o que estudou, e não
+         como isca de página de captura. No alto da home ele roubaria o lugar
+         dos botões de comprar, que é o que a home existe para fazer. -->
+    <section class="ideia" id="livro">
+      <a class="livro-cartao" href="/livro/">
+        <img src="/livro/capa.webp" width="1165" height="1654" loading="lazy"
+             alt="Capa do livro O que permanece quando a chama passa.">
+        <div>
+          <div class="rot">Um presente do ateliê</div>
+          <h2>O que permanece quando a chama&nbsp;passa</h2>
+          <p>Antes de fazer qualquer peça, precisamos entender o que estávamos
+             manipulando. Escrevemos 86 páginas sobre olfato, fogo e a arte de
+             habitar a própria casa, e elas são suas.</p>
+          <span class="linkinho">Ler e baixar, de graça →</span>
+        </div>
+      </a>
+    </section>
+
   </div>
 </main>
 
@@ -782,6 +815,7 @@
     </div>
     <div>
       <h3>Entenda a peça</h3>
+      <a href="/livro/">O livro, de graça</a>
       <a href="/aromas/">Aromas e aromaterapia</a>
       <a href="/#areia">A vela que se repõe</a>
       <a href="/#chip">O chip dentro dela</a>

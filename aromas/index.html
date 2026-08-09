@@ -301,6 +301,22 @@
   .par .acoes{margin-top:20px}
   @media(min-width:640px){ .par{grid-template-columns:240px 1fr;gap:26px} }
 
+  /* A FAIXA DO LIVRO. Cartão de papel sobre o cinza do bloco, com a capa
+     pequena à esquerda: a capa é escura e chama sozinha, então o resto do
+     convite pode ser silencioso. */
+  .livro-faixa{
+    display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;
+    margin-top:28px;padding:16px 18px;background:var(--paper);
+    border:1px solid var(--line);border-radius:14px;text-decoration:none;
+    transition:border-color .2s ease,transform .2s ease;
+  }
+  .livro-faixa:hover{border-color:var(--ember);transform:translateY(-1px)}
+  .livro-faixa img{width:64px;height:auto;display:block;border-radius:3px;
+                   box-shadow:0 6px 14px -8px rgba(28,26,23,.7)}
+  .livro-faixa b{display:block;font-family:'Fraunces';font-weight:300;
+                 font-size:17px;color:var(--char);margin-bottom:4px}
+  .livro-faixa span{font-size:14px;color:var(--smoke);line-height:1.6}
+
   /* ---- as gotas -----------------------------------------------------------
      Cada pipeta é um traço fino com uma gota que engorda na ponta, se solta e
      cai. A ÚNICA diferença entre as três é a duração, como nas faixas dos três
@@ -648,6 +664,21 @@
           </div>
         </div>
       </div>
+
+      <!-- O LIVRO ENTRA AQUI, e não no alto da página. Quem chegou até este
+           ponto leu cinco seções sobre cheiro por vontade própria: é o leitor
+           do livro, e não precisa ser convencido de que o assunto interessa.
+           No alto, ele competiria com o oráculo, que é o caminho curto para
+           quem tem pressa. Um leva a comprar hoje, o outro a voltar depois. -->
+      <a class="livro-faixa" href="/livro/">
+        <img src="/livro/capa.webp" width="1165" height="1654" loading="lazy"
+             alt="Capa do livro O que permanece quando a chama passa.">
+        <span>
+          <b>E tem um livro, de graça</b>
+          Escrevemos 86 páginas sobre olfato, fogo e a arte de habitar a própria
+          casa. Sem cadastro e sem contrapartida.
+        </span>
+      </a>
     </section>
 
     <section class="bloco aviso" id="aviso">
@@ -688,6 +719,7 @@
     </div>
     <div>
       <h3>Entenda a peça</h3>
+      <a href="/livro/">O livro, de graça</a>
       <a href="/aromas/">Aromas e aromaterapia</a>
       <a href="/#areia">A vela que se repõe</a>
       <a href="/#chip">O chip dentro dela</a>
