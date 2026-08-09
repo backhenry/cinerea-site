@@ -24,6 +24,28 @@
   .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke);line-height:1.65}
 
   .miolo{max-width:760px;margin:0 auto;padding:0 22px 20px}
+
+  /* O ÍNDICE. Discreto de propósito: ele é mapa, não chamada. A brasa já está
+     toda gasta no botão do convite, logo abaixo. */
+  .indice{margin-top:26px;display:flex;flex-wrap:wrap;justify-content:center;
+          gap:8px 6px}
+  .indice a{
+    font-size:12.5px;color:var(--smoke);text-decoration:none;
+    border:1px solid var(--line);border-radius:20px;padding:5px 12px;
+    transition:border-color .18s ease,color .18s ease;
+  }
+  .indice a:hover{border-color:var(--ember);color:var(--ember)}
+
+  /* O CABEÇALHO É FIXO, então âncora sem folga leva o título para debaixo dele.
+     A barra mede 86px no celular e 59px acima de 780px; 100 cobre os dois com
+     sobra, e sobra aqui é ar antes do título, que não incomoda. */
+  .bloco{scroll-margin-top:100px}
+  html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+
+  /* O NÚMERO no rótulo transforma cinco parágrafos empilhados numa sequência,
+     e é o que faz o índice acima ter sentido: o leitor reconhece onde caiu. */
+  .rot b{font-weight:500;color:var(--char);margin-right:2px}
   .bloco{padding:44px 0;border-top:1px solid var(--line)}
   .bloco .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
   .bloco h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,31px);
@@ -284,6 +306,14 @@
      de advertência. Letra miúda é o formato de quem quer que não seja lido, e
      aqui a intenção é a contrária: dizer o que a peça não faz é o que dá
      crédito ao que ela faz. */
+  /* O BLOCO DA CINÉREA é o único da página que pede uma compra, e estava com a
+     mesma cara dos quatro que só explicam. Ele ganha o mesmo cartão do aviso,
+     que é o recurso que a página já tinha para dizer "isto aqui é de outra
+     natureza". Não é destaque gritado: é parar de disfarçar. */
+  #cinerea{background:var(--ash);border-radius:14px;padding:30px 24px;
+           border-top:none;margin-top:20px}
+  #cinerea::before{display:none}
+
   .aviso{background:var(--ash);border-radius:14px;padding:26px 24px;margin-top:8px}
   .aviso h2{margin-top:6px}
   .fonte{margin-top:18px;font-size:13px;color:var(--smoke);line-height:1.6}
@@ -330,6 +360,20 @@
        sensação. O olfato não: ele entra direto na região da memória e da emoção.
        É por isso que um aroma abre uma lembrança inteira antes de você conseguir
        dar nome a ele.</p>
+
+    <!-- O ÍNDICE, e não um menu lateral.
+         A página tem 9,5 telas de leitura no celular, e sem nenhum mapa quem
+         chega não sabe o que vem nem onde está. Uma linha de cinco links custa
+         uma linha e resolve as duas coisas: diz do que a página trata e deixa
+         pular direto para o que interessa. Menu fixo lateral custaria espaço
+         permanente numa tela de 375px para o mesmo serviço. -->
+    <nav class="indice" aria-label="Seções desta página">
+      <a href="#tempos">Os tempos</a>
+      <a href="#plantas">De onde vem</a>
+      <a href="#qualidade">Qualidade</a>
+      <a href="#cinerea">Na Cinérea</a>
+      <a href="#aviso">Sem promessas</a>
+    </nav>
   </section>
 
   <div class="miolo">
@@ -380,8 +424,8 @@
       </a>
     </section>
 
-    <section class="bloco">
-      <div class="rot">Como um aroma se sustenta</div>
+    <section class="bloco" id="tempos">
+      <div class="rot"><b>I.</b> Como um aroma se sustenta</div>
       <h2>Todo aroma tem três tempos, e você sente os&nbsp;três.</h2>
       <p>O que se sente numa vela recém-acesa não é o que fica na sala uma hora
          depois. Isso não é impressão sua nem defeito da peça: é a velocidade com
@@ -430,8 +474,8 @@
          dela.</p>
     </section>
 
-    <section class="bloco">
-      <div class="rot">De onde ele vem</div>
+    <section class="bloco" id="plantas">
+      <div class="rot"><b>II.</b> De onde ele vem</div>
       <h2>A parte da planta muda tudo.</h2>
       <p>Não existe "o óleo da lavanda". Existe o óleo da flor da lavanda, e ele é
          outra coisa do que sairia da folha. A mesma planta dá aromas diferentes
@@ -492,8 +536,8 @@
       </div>
     </section>
 
-    <section class="bloco">
-      <div class="rot">Qualidade</div>
+    <section class="bloco" id="qualidade">
+      <div class="rot"><b>III.</b> Qualidade</div>
       <h2>Dá para perceber um óleo adulterado.</h2>
       <p>Cor, viscosidade e cheiro são a identidade de um óleo essencial. Quando
          algum dos três destoa do que aquele óleo deveria ser, quase sempre há
@@ -540,8 +584,8 @@
            usamos. -->
     </section>
 
-    <section class="bloco">
-      <div class="rot">Na Cinérea</div>
+    <section class="bloco" id="cinerea">
+      <div class="rot"><b>IV.</b> Na Cinérea</div>
       <h2>A escultura fica. O aroma&nbsp;troca.</h2>
       <p>Numa vela comum o perfume está preso na cera, então quando o aroma acaba,
          acabou a vela junto, e o que sobra é um vidro sujo. Aqui é o contrário: a
@@ -557,8 +601,8 @@
       </div>
     </section>
 
-    <section class="bloco aviso">
-      <div class="rot">Uma coisa dita com todas as letras</div>
+    <section class="bloco aviso" id="aviso">
+      <div class="rot"><b>V.</b> Uma coisa dita com todas as letras</div>
       <h2>Aroma não é remédio.</h2>
       <p class="calmo">Existe uma literatura clínica séria sobre óleos essenciais,
          escrita para terapeutas, e é dela que vêm os fatos desta página. Mas uma
