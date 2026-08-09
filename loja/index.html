@@ -603,8 +603,26 @@ function cartao(p){
     <div class="pe"><span class="preco">${brl(p.preco)}</span>${juntar}</div></div>`;
 }
 
+/**
+ * Os nomes dos botões de filtro: só coleções que TÊM peça dentro.
+ *
+ * A grade já pulava seção vazia, mas os botões mostravam todas, e o resultado
+ * medido em ago/2026 era uma loja com 3 peças oferecendo 7 filtros, quatro
+ * deles levando a "Nada por aqui.". Prateleira vazia escondida atrás de um
+ * botão é pior que prateleira vazia à vista: a pessoa gasta um toque para
+ * descobrir que não há nada, e é o toque que ela tinha para gastar comprando.
+ *
+ * Conta sobre o catálogo INTEIRO e não sobre o que a busca deixou passar: se
+ * dependesse do filtro, os botões apareceriam e sumiriam enquanto a pessoa
+ * digita, e a barra saltaria embaixo do dedo.
+ */
+function linhasComPeca(){
+  if(!colecoes.length) return [...new Set(produtos.map(p=>p.linha))];
+  return colecoes.filter(c => produtos.some(p => p.colecao === c.id)).map(c => c.nome);
+}
+
 function pintar(){
-  const linhas = colecoes.length ? colecoes.map(c=>c.nome) : [...new Set(produtos.map(p=>p.linha))];
+  const linhas = linhasComPeca();
   document.getElementById('linhas').innerHTML = linhas.length>1
     ? `<button class="${!linhaAtiva?'on':''}" onclick="filtrar(null)">Tudo</button>`+
       linhas.map(l=>`<button class="${linhaAtiva===l?'on':''}" onclick="filtrar('${esc(l)}')">${esc(l)}</button>`).join('')
