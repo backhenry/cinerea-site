@@ -76,6 +76,28 @@
   .banner.usavel:hover .bcupom{background:rgba(255,255,255,.16)}
   .banner.areia.usavel:hover .bcupom{background:rgba(28,26,23,.06)}
 
+  /* ---- rodízio, quando há mais de um banner -------------------------------
+     TODOS OCUPAM A MESMA CÉLULA DE GRADE, e é isso que resolve o defeito que
+     um rodízio traz de graça: chamadas de tamanhos diferentes dão faixas de
+     alturas diferentes, e a loja inteira PULARIA a cada troca, com a peça que
+     a pessoa ia tocar saindo de baixo do dedo. Empilhados na mesma célula, a
+     altura do conjunto é a do mais alto e nada se mexe.
+
+     Dissolvência e não deslize: a faixa é fina, e movimento lateral num site
+     desta calma tem cara de anúncio de portal. */
+  .bannerpilha{display:grid}
+  .bannerpilha > *{
+    grid-area:1/1; opacity:0; transition:opacity .6s ease;
+    pointer-events:none; visibility:hidden;
+  }
+  /* `visibility` junto da opacidade porque leitor de tela e navegação por
+     teclado ignoram `opacity:0`: sem isto, o cupom dos banners escondidos
+     continua sendo lido e recebendo foco. */
+  .bannerpilha > .aqui{opacity:1; pointer-events:auto; visibility:visible}
+  @media (prefers-reduced-motion: reduce){
+    .bannerpilha > *{transition:none}
+  }
+
   /* A loja abria direto no campo de busca, sem dizer de onde as peças vêm.
      Quem chega pelo Instagram cai aqui primeiro, e uma vitrine sem voz parece
      revenda. Duas linhas resolvem, e dizem que encomenda existe. */
@@ -482,18 +504,22 @@ const fdb = getFirestore(app);
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
-let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='', banner=null;
+let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='', banners=[];
 let ordem='vitrine', soEstoque=false, semBreve=false, termoCru='';
 /**
- * O cupom que o banner anuncia existe de verdade?
+ * O cupom que cada banner anuncia existe de verdade?
  *
- * `null` = ainda conferindo · `true` = vale · `false` = não vale.
+ * Um mapa `código -> veredito`, e o veredito tem TRÊS estados:
+ * ausente = ainda conferindo · `true` = vale · `false` = não vale.
  *
- * Três estados, e não dois, pela mesma razão de `resumoDoDesconto` no
- * aplicativo: enquanto a resposta não volta, "não vale" e "ainda não sei" são
- * coisas diferentes, e tratá-las igual faz a tela piscar a coisa errada.
+ * Três e não dois, pela mesma razão de `resumoDoDesconto` no aplicativo:
+ * enquanto a resposta não volta, "não vale" e "ainda não sei" são coisas
+ * diferentes, e tratá-las igual faz a tela piscar a coisa errada.
+ *
+ * Por CÓDIGO e não por banner: dois banners podem divulgar o mesmo cupom, e
+ * nesse caso a resposta é a mesma e a leitura é uma só.
  */
-let cupomDoBannerVale = null;
+const cupomDoBannerVale = {};
 const sacola={};   // id -> qtd
 
 /**
@@ -518,7 +544,13 @@ async function carregar(){
   // aqui de novo abriria espaço para o site e o app discordarem.
   colecoes = Array.isArray(d?.colecoes) ? d.colecoes : [];
   whats = String(d?.whats||'').replace(/\D/g,'')||null;
-  banner = d?.banner || null;
+  // `banners` é lista, e `banner` no singular é o formato ANTIGO, de quando só
+  // existia um. A leitura aceita os dois porque o Pages serve com dez minutos
+  // de cache: nesse intervalo há gente com a loja nova lendo um catálogo ainda
+  // não republicado, e gente com a loja velha lendo o catálogo novo. A gestão
+  // publica os dois campos pela mesma razão.
+  banners = Array.isArray(d?.banners) ? d.banners
+          : (d?.banner ? [d.banner] : []);
 }
 
 function marca(){ return '<div class="moldura"><div style="display:flex;align-items:center;justify-content:center;height:100%"><svg width="42" height="42" viewBox="0 0 150 150" fill="none"><path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/><circle cx="112" cy="75" r="10" fill="#B5462A"/></svg></div></div>'; }
@@ -660,23 +692,21 @@ function nadaEncontrado(){
 }
 
 /**
- * O banner da promoção.
+ * Os banners que ainda valem hoje.
  *
  * A VALIDADE É CONFERIDA AQUI TAMBÉM, e não só na gestão: o catálogo publicado
  * hoje continua no ar amanhã, e ninguém republica a loja todo dia. Sem esta
  * conferência, uma promoção de sexta continuaria anunciada na segunda.
  */
-function pintarBanner(){
-  const box = document.getElementById('banner');
-  if(!box) return;
-  const b = banner;
-  if(!b || !b.titulo){ box.innerHTML=''; return; }
-  if(b.ate){
-    // Comparação de texto em ISO, que ordena igual a data. `T23:59` não entra:
-    // o dia do "até" vale inteiro.
-    const hoje = new Date().toISOString().slice(0,10);
-    if(hoje > b.ate){ box.innerHTML=''; return; }
-  }
+function bannersDeHoje(){
+  // Comparação de texto em ISO, que ordena igual a data. `T23:59` não entra:
+  // o dia do "até" vale inteiro.
+  const hoje = new Date().toISOString().slice(0,10);
+  return (banners||[]).filter(b => b && b.titulo && !(b.ate && hoje > b.ate));
+}
+
+/** O HTML de um banner. Separado porque agora ele é desenhado N vezes. */
+function umBanner(b){
   const cor = {brasa:'brasa','carvão':'carvao',carvao:'carvao',areia:'areia'}[b.cor] || 'brasa';
   // O CÓDIGO SÓ APARECE SE O CUPOM EXISTIR MESMO, e esta trava nasceu do pior
   // jeito de errar isso, encontrado no ar em ago/2026: o banner dizia "15% OFF,
@@ -687,18 +717,17 @@ function pintarBanner(){
   // A gestão avisa o dono, mas isso depende de ele olhar. Aqui é automático, e
   // protege quem está comprando.
   //
-  // `cupomDoBannerVale` é null enquanto a resposta não voltou: nesse intervalo
-  // o banner sai SEM o código, e ganha o código quando a conferência chega.
-  // Melhor o convite aparecer sem chamada do que piscar um código que talvez
-  // não valha.
-  const usavel = !!b.cupom && cupomDoBannerVale === true;
+  // Chave ausente no mapa é "ainda conferindo": nesse intervalo o banner sai
+  // SEM o código, e ganha o código quando a conferência chega. Melhor o convite
+  // aparecer sem chamada do que piscar um código que talvez não valha.
+  const usavel = !!b.cupom && cupomDoBannerVale[b.cupom] === true;
   // A arte só entra se vier do NOSSO Storage. Mesma trava do logo da peça: sem
   // ela, alguém aponta a imagem para servidor próprio e passa a ver quem abriu
   // a loja, no domínio da marca.
   const nosso = /^https:\/\/firebasestorage\.googleapis\.com\//;
   const arte = nosso.test(b.imagem||'') ? b.imagem : '';
   const fundo = arte ? `background-image:url('${esc(arte)}');` : '';
-  box.innerHTML = `<${usavel?'button':'div'} class="banner ${arte?'comArte':cor}${usavel?' usavel':''}"
+  return `<${usavel?'button':'div'} class="banner ${arte?'comArte':cor}${usavel?' usavel':''}"
       ${usavel?`onclick="usarCupomDoBanner('${esc(b.cupom)}')"`:''} style="width:100%;border-left:none;border-right:none;border-top:none;font-family:inherit;${fundo}">
     <strong>${esc(b.titulo)}</strong>
     ${b.texto?`<span class="btexto">${esc(b.texto)}</span>`:''}
@@ -706,8 +735,47 @@ function pintarBanner(){
   </${usavel?'button':'div'}>`;
 }
 
+/** Quem pediu menos movimento não recebe rodízio nenhum. */
+const semMovimento = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let rodizio = null, bannerAtual = 0;
+
+function pintarBanner(){
+  const box = document.getElementById('banner');
+  if(!box) return;
+  const lista = bannersDeHoje();
+  if(rodizio){ clearInterval(rodizio); rodizio = null; }
+  if(!lista.length){ box.className=''; box.innerHTML=''; return; }
+
+  // EMPILHADOS quando não há rodízio, e não escondidos. Com movimento reduzido
+  // o revezamento não roda, e deixar só o primeiro visível sumiria com os
+  // outros para essa pessoa: conteúdo que existe e ela nunca vê. Empilhar é
+  // honesto e não se mexe.
+  const reveza = lista.length > 1 && !semMovimento();
+  box.className = reveza ? 'bannerpilha' : '';
+  box.innerHTML = lista.map(umBanner).join('');
+  if(!reveza) return;
+
+  bannerAtual = Math.min(bannerAtual, lista.length - 1);
+  const mostrar = i => {
+    bannerAtual = i;
+    [...box.children].forEach((el, j) => el.classList.toggle('aqui', j === i));
+  };
+  mostrar(bannerAtual);
+  // Sete segundos porque a chamada tem de caber numa leitura sem pressa, e a
+  // troca é uma dissolvência, não um deslize: a faixa é fina e movimento
+  // lateral num site desta calma vira anúncio de portal.
+  rodizio = setInterval(() => {
+    // Aba escondida CONGELA a dissolvência e o relógio segue: sem esta guarda,
+    // a pessoa volta para a loja no meio de uma troca, ou vários quadros
+    // adiante do que estava vendo.
+    if(document.hidden) return;
+    mostrar((bannerAtual + 1) % lista.length);
+  }, 7000);
+}
+
 /**
- * Confere se o cupom do banner existe antes de anunciá-lo.
+ * Confere se o cupom de um banner existe antes de anunciá-lo.
  *
  * Uma leitura de um documento só, e ela paga por si: sem isto o banner promete
  * um desconto que a loja recusa dois toques depois, culpando o cliente.
@@ -719,20 +787,37 @@ function pintarBanner(){
  *
  * Falha de rede deixa o código escondido. É o lado seguro: um banner sem
  * chamada continua sendo um banner; um código que não funciona vira acusação.
+ *
+ * Devolve o veredito em vez de escrever numa variável de fora, que é o que
+ * torna a conferência de vários banners um `Promise.all` de uma linha.
  */
-async function conferirCupomDoBanner(){
-  const cod = banner?.cupom;
-  if(!cod){ cupomDoBannerVale = false; return; }
+async function conferirCupomDoBanner(b){
+  const cod = b?.cupom;
+  if(!cod) return false;
   try{
     const d = await getDoc(doc(fdb,'cupons',cod));
-    if(!d.exists()){ cupomDoBannerVale = false; return; }
+    if(!d.exists()) return false;
     const x = d.data();
-    if(x.ativo === false){ cupomDoBannerVale = false; return; }
+    if(x.ativo === false) return false;
     const ate = x.ate?.toMillis ? x.ate.toMillis() : (typeof x.ate === 'number' ? x.ate : null);
-    cupomDoBannerVale = !(ate && Date.now() > ate);
+    return !(ate && Date.now() > ate);
   }catch{
-    cupomDoBannerVale = false;
+    return false;
   }
+}
+
+/**
+ * Confere os cupons de TODOS os banners, de uma vez.
+ *
+ * Por código único e não por banner: dois banners podem divulgar o mesmo
+ * cupom, e ler o mesmo documento duas vezes seria pagar duas vezes pela mesma
+ * resposta.
+ */
+async function conferirCuponsDosBanners(){
+  const codigos = [...new Set(bannersDeHoje().map(b => b.cupom).filter(Boolean))];
+  const vistos = await Promise.all(
+    codigos.map(cod => conferirCupomDoBanner({cupom: cod})));
+  codigos.forEach((cod, i) => { cupomDoBannerVale[cod] = vistos[i]; });
 }
 
 /** Tocar no cupom do banner já abre a sacola com ele preenchido. */
@@ -1282,7 +1367,7 @@ try {
   // A conferência do cupom vem DEPOIS de a loja aparecer, e não bloqueia: as
   // peças não podem esperar uma leitura que só decide se um código sai escrito
   // no banner. Quando ela volta, o banner se repinta com ou sem o código.
-  await conferirCupomDoBanner();
+  await conferirCuponsDosBanners();
   pintarBanner();
 }
 catch { document.getElementById('grade').innerHTML='<p class="vazio">Não consegui abrir a loja agora. Tente de novo com internet.</p>'; }
