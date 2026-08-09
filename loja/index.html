@@ -203,10 +203,17 @@
   }
   .btfrouxo:hover{color:var(--ember);text-decoration-color:var(--ember)}
 
-  /* No celular a palavra "Ordenar" sai, e a pílula encolhe de 237 para ~137px.
-     Medido: com ela, a barra quebrava em TRÊS linhas (126px de altura) porque
-     sobravam 90px na primeira, e "Pronta entrega" precisa de 121. Sem ela,
-     cabem duas linhas e a vitrine sobe 45px.
+  /* No celular a palavra "Ordenar" sai, e a pílula encolhe de 190 para 133px.
+
+     A MEDIDA MUDOU quando o segundo botão de filtro saiu, e a nota antiga aqui
+     virou mentira: ela dizia que a barra quebrava em TRÊS linhas, o que era
+     verdade com "Pronta entrega" e "Esconder em breve" juntos. Hoje, remedido
+     a 375px: com o rótulo dá 190 + 121 mais 9 de vão, ou seja 320 dos 331
+     úteis, e cabe numa linha só.
+
+     A media query fica assim mesmo, porque a folga é de 11px e some num
+     aparelho de 360, que é comum no Android. Comentário com número velho é
+     pior que comentário nenhum: mexeu na barra, medir de novo.
 
      O rótulo não some para quem usa leitor de tela: ele mudou de lugar, do
      <span> para o `aria-label` do próprio campo. A seta e o texto da opção já
@@ -494,8 +501,17 @@
         <option value="precoDesc">Preço: maior primeiro</option>
       </select>
     </label>
+    <!-- HAVIA UM SEGUNDO BOTÃO AQUI, "Esconder em breve", e ele era este
+         mesmo com menos força. "Pronta entrega" é `estoque > 0 E não é em
+         breve`; o outro era só `não é em breve`, ou seja, estava contido neste.
+         Ligar os dois dava exatamente o resultado de ligar só este.
+         Divergiam num caso único, peça à venda com estoque zero, feita sob
+         encomenda, e medindo o catálogo publicado esse caso não existia: as
+         três peças estavam disponíveis e com estoque. Dois controles parecidos,
+         lado a lado, escondendo zero peça cada um.
+         E a peça "em breve" já se anuncia sozinha na carta, com selo e sem
+         botão de sacola, que é onde a distinção precisa aparecer. -->
     <button class="marca-ctrl" id="btEstoque" onclick="alternarEstoque()">Pronta entrega</button>
-    <button class="marca-ctrl" id="btBreve" onclick="alternarBreve()">Esconder “em breve”</button>
     <button class="btfrouxo some" id="btLimpar" onclick="limparFiltros()">limpar filtros</button>
   </div>
   <p class="contagem" id="contagem"></p>
@@ -540,7 +556,7 @@ const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 let produtos=[], colecoes=[], whats=null, linhaAtiva=null, termo='', banners=[];
-let ordem='vitrine', soEstoque=false, semBreve=false, termoCru='';
+let ordem='vitrine', soEstoque=false, termoCru='';
 /**
  * O cupom que cada banner anuncia existe de verdade?
  *
@@ -671,8 +687,7 @@ function pintar(){
   // registrado não é pronta entrega: ela nem entra na sacola, e mostrá-la aqui
   // prometeria o que a loja recusa no clique seguinte.
   const passa = p => casa(p)
-    && (!soEstoque || (Number(p.pronto) > 0 && p.situacao !== 'embreve'))
-    && (!semBreve  || p.situacao !== 'embreve');
+    && (!soEstoque || (Number(p.pronto) > 0 && p.situacao !== 'embreve'));
 
   // A ordenação é aplicada DENTRO de cada coleção, não sobre a vitrine inteira.
   // Ordenar por preço atravessando as seções misturaria refil com escultura, e
@@ -717,9 +732,8 @@ function pintar(){
 
   // Os controles mostram o que está ligado, e o contador só aparece quando há
   // filtro: numa vitrine inteira, "12 peças" é ruído.
-  const filtrando = !!(termo || linhaAtiva || soEstoque || semBreve || ordem !== 'vitrine');
+  const filtrando = !!(termo || linhaAtiva || soEstoque || ordem !== 'vitrine');
   document.getElementById('btEstoque').classList.toggle('on', soEstoque);
-  document.getElementById('btBreve').classList.toggle('on', semBreve);
   document.getElementById('btLimpar').classList.toggle('some', !filtrando);
   document.getElementById('contagem').textContent =
     filtrando && achados ? `${achados} peça${achados>1?'s':''}` : '';
@@ -739,7 +753,6 @@ function nadaEncontrado(){
   if(termo)      motivos.push('a busca por “' + termoCru + '”');
   if(linhaAtiva) motivos.push('a coleção ' + linhaAtiva);
   if(soEstoque)  motivos.push('pronta entrega');
-  if(semBreve)   motivos.push('esconder as peças em breve');
   if(!motivos.length) return 'Nada por aqui.';
   return 'Nada com ' + motivos.join(' e ') + '. Toque em “limpar filtros” para ver tudo.';
 }
@@ -1040,9 +1053,8 @@ window.filtrar = l => { linhaAtiva=l; pintar(); };
 window.filtrarTexto = t => { termoCru = String(t||'').trim(); termo = limpar(t); pintar(); };
 window.ordenarPor = o => { ordem = o; pintar(); };
 window.alternarEstoque = () => { soEstoque = !soEstoque; pintar(); };
-window.alternarBreve = () => { semBreve = !semBreve; pintar(); };
 window.limparFiltros = () => {
-  termo = ''; termoCru = ''; linhaAtiva = null; ordem = 'vitrine'; soEstoque = false; semBreve = false;
+  termo = ''; termoCru = ''; linhaAtiva = null; ordem = 'vitrine'; soEstoque = false;
   document.getElementById('busca').value = '';
   document.getElementById('ordem').value = 'vitrine';
   pintar();
