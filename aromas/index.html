@@ -53,14 +53,28 @@
   /* SEM O NOME, as três areias são três manchas de cor e a pessoa não sabe o
      que está vendo. O nome embaixo é o que transforma "três fotos" em "três
      opções com nome", que é a pergunta que o bloco faz. */
-  .tres{display:flex;justify-content:center;gap:clamp(6px,2.4vw,18px);
-        align-items:flex-start}
-  .tres figure{width:31%;max-width:170px}
-  .tres img{width:100%;height:auto;display:block}
-  .tres figcaption{
-    margin-top:2px;font-family:'Fraunces';font-weight:300;
+  .tres{max-width:520px;margin:0 auto}
+  .trio-video{
+    width:100%;height:auto;display:block;
+    /* O VÍDEO É COMPOSTO SOBRE BRANCO, e `multiply` faz o branco sumir: branco
+       vezes qualquer cor é a própria cor, então o fundo do vídeo vira o papel
+       do cartão sem depender de o codificador devolver o RGB exato. Composto
+       sobre o creme, o H.264 devolvia um tom levemente deslocado e aparecia uma
+       placa mais clara em volta. Mesma solução do vídeo do David.
+
+       O `multiply` precisa de fundo pintado ATRÁS dele no mesmo contexto de
+       empilhamento, e o cartão já pinta `--paper`. */
+    mix-blend-mode:multiply;
+  }
+  /* OS NOMES EM TRÊS COLUNAS IGUAIS, porque os três montes estão em terços
+     iguais do quadro. Alinhar por medida do vídeo seria refazer a conta toda
+     vez que o enquadramento mudasse; em terços, o nome fica sob o monte por
+     construção. */
+  .nomes{display:grid;grid-template-columns:repeat(3,1fr);margin-top:2px}
+  .nomes span{
+    font-family:'Fraunces';font-weight:300;text-align:center;
     font-size:clamp(12.5px,3.2vw,15px);line-height:1.25;color:var(--char);
-    text-wrap:balance;
+    text-wrap:balance;padding:0 4px;
   }
 
   /* AS TRÊS ENTRAM EM SEQUÊNCIA, e não juntas: escalonadas, elas lêem como
@@ -75,12 +89,12 @@
      Por isso quem esconde é o JavaScript, com a classe `.anima`, e só depois de
      ele estar rodando. Sem script, sem animação, ou com ela travada, o que
      sobra é a página inteira à mostra. */
-  .anima .tres figure{opacity:0;transform:translateY(14px)}
-  .anima .convite.vista .tres figure{
+  .anima .nomes span{opacity:0;transform:translateY(14px)}
+  .anima .convite.vista .nomes span{
     animation:sobe .7s cubic-bezier(.2,.7,.3,1) forwards;
   }
-  .anima .convite.vista .tres figure:nth-child(2){animation-delay:.12s}
-  .anima .convite.vista .tres figure:nth-child(3){animation-delay:.24s}
+  .anima .convite.vista .nomes span:nth-child(2){animation-delay:.12s}
+  .anima .convite.vista .nomes span:nth-child(3){animation-delay:.24s}
   @keyframes sobe{to{opacity:1;transform:none}}
 
   .bt-convite{
@@ -271,22 +285,28 @@
          palavra, que há três caminhos e que um deles é o dela. É a mesma imagem
          que o oráculo mostra no fim, então a promessa e a entrega combinam. -->
     <section class="convite">
+      <!-- UM vídeo, e não três visualizadores 3D. Grão caindo é MOVIMENTO, e
+           movimento em WebGL exigiria partícula, que o visualizador de glTF não
+           faz: ele toca animação de esqueleto, não chuva. Três telas de WebGL na
+           mesma página também são três contextos gráficos no celular de quem só
+           queria ler sobre cheiro. Isto aqui é o mesmo modelo 3D, renderizado
+           em movimento, num arquivo de 216 KB.
+
+           O laço fecha por construção: cada grão percorre um número inteiro de
+           vezes a altura da cena ao longo dos 96 quadros, então o último é
+           exatamente um passo antes do primeiro. Medido, e não suposto: a
+           diferença entre o primeiro e o último quadro é 3,24, a mesma que
+           entre dois quadros vizinhos. O vídeo do NFC precisou ir e voltar
+           porque lá não existia esse ponto. -->
       <div class="tres">
-        <figure>
-          <img src="/areia/nevoa.webp" width="1400" height="1050" loading="lazy"
-               alt="Areia da Névoa da Manhã: grãos de cera num verde acinzentado.">
-          <figcaption>Névoa da Manhã</figcaption>
-        </figure>
-        <figure>
-          <img src="/areia/lenha.webp" width="1400" height="1050" loading="lazy"
-               alt="Areia da Lenha &amp; Poesia: grãos de cera num castanho quente.">
-          <figcaption>Lenha &amp; Poesia</figcaption>
-        </figure>
-        <figure>
-          <img src="/areia/sopro.webp" width="1400" height="1050" loading="lazy"
-               alt="Areia do Sopro de Sono: grãos de cera num lilás acinzentado.">
-          <figcaption>Sopro de Sono</figcaption>
-        </figure>
+        <video id="trioAreia" class="trio-video" muted loop playsinline
+               preload="none" poster="/areia/trio.jpg" width="1240" height="460"
+               aria-label="As três areias da Cinérea, com grãos de cera caindo sobre cada uma."></video>
+        <div class="nomes" aria-hidden="true">
+          <span>Névoa da Manhã</span>
+          <span>Lenha &amp; Poesia</span>
+          <span>Sopro de Sono</span>
+        </div>
       </div>
       <h2>Qual desses é o seu?</h2>
       <p>Três perguntas sobre o seu momento, e o aroma da casa que combina com

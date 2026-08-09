@@ -298,6 +298,7 @@ window.velaDeEspera = function (texto) {
 
   aoAparecer('giroVideo', '/giro.mp4');
   aoAparecer('nfcVideo', '/nfc.mp4');
+  aoAparecer('trioAreia', '/areia/trio.mp4');
 })();
 
 
