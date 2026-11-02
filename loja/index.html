@@ -320,6 +320,21 @@
   .bt{display:block;width:100%;margin-top:24px;padding:16px;border:none;border-radius:10px;background:var(--char);color:var(--paper);font-size:15px;cursor:pointer}
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;border:1px solid var(--line);color:var(--char)}
+  /* O BOTÃO DA REALIDADE AUMENTADA tinha a cara do "Voltar à loja": sem fundo,
+     borda no tom da linha, o mais apagado da ficha. Justo o argumento que mais
+     vende uma peça feita para morar com ela, e o dono pediu que ficasse visível.
+
+     Contorno e texto em brasa, com o cubo, e NÃO preenchido. O botão cheio
+     continua sendo "Colocar na sacola", que é o que paga a conta: dois botões
+     cheios na mesma ficha disputariam o dedo da pessoa, e a compra perderia.
+
+     Brasa sobre o papel dá 4,7:1 de contraste, acima do mínimo de 4,5 para
+     texto deste tamanho. Um fundo tingido de brasa, que eu cheguei a querer,
+     derrubava para 4,2 e reprovava. */
+  .bt.ra{display:flex;align-items:center;justify-content:center;gap:10px;
+         background:none;border:1.5px solid var(--ember);color:var(--ember);font-weight:500}
+  .bt.ra svg{width:20px;height:20px;flex:0 0 auto}
+  .bt.ra:hover{background:var(--ember);color:var(--paper)}
   /* ---- a sacola ---------------------------------------------------------
      Era uma BARRA FIXA no rodapé, e ela cobria o botão "Colocar na sacola" de
      dentro da ficha da peça: a ficha é `position:fixed` e rola por dentro, então
@@ -1083,9 +1098,9 @@ window.abrirFicha = id => {
     ${p.longa?`<p class="flonga">${esc(p.longa)}</p>`:''}
     ${p.ficha.length?`<div class="ftec">${p.ficha.map(([r,v])=>`<div><span>${esc(r)}</span><span>${esc(v)}</span></div>`).join('')}</div>`:''}
     ${p.modelo?`<div class="ver3d" id="ver3d">
-        <button class="bt fraco" id="bt_abrir3d"
+        <button class="bt ra" id="bt_abrir3d"
           onclick="abrir3d('${esc(p.modelo)}','${esc(p.nome)}', true)"
-          >${ehCelular() ? 'Ver na sua casa' : 'Ver em 3D'}</button>
+          ><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 7.5 12 12l8-4.5M12 12v9" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>${ehCelular() ? 'Ver na sua casa' : 'Ver em 3D'}</span></button>
         <div class="sub3d">No celular, a peça aparece em tamanho real no seu espaço.</div>
       </div>`:''}
     ${breve
