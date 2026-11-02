@@ -1,5 +1,5 @@
 /* Identidade da Cinérea, compartilhada pelas páginas do site. */
-:root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
+:root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#645E58;--line:#D8D2C8}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:inherit}

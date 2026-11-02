@@ -1,0 +1,11 @@
+# Tudo liberado de propósito, inclusive /p/ e /perfil/.
+#
+# As duas NÃO devem aparecer no Google: /p/ mostra o que cada dono escreveu na
+# própria peça, às vezes a senha do wi-fi de casa, e /perfil/ é a tela de login.
+# Quem as tira da busca é o <meta name="robots" content="noindex"> dentro delas.
+# Bloquear aqui teria o efeito contrário: o Google deixaria de ler a página, não
+# veria o noindex, e poderia listar o endereço mesmo assim se alguém o publicasse.
+User-agent: *
+Allow: /
+
+Sitemap: https://cinerea.com.br/sitemap.xml

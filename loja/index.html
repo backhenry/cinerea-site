@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Loja · Cinérea</title>
 <meta name="description" content="As peças prontas do ateliê Cinérea, em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Cada peça guarda o que você escolher dizer.">
+<meta property="og:title" content="Loja · Cinérea">
+<meta property="og:description" content="As peças prontas do ateliê Cinérea, em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Cada peça guarda o que você escolher dizer.">
+<meta property="og:image" content="https://cinerea.com.br/capa.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/comum.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#F2EFEA">
@@ -13,9 +17,10 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#6E6862;--line:#D8D2C8}
+  :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#645E58;--line:#D8D2C8}
   /* A calha da barra de rolagem fica reservada SEMPRE. Sem isto, travar a
      rolagem para abrir a gaveta faz a barra sumir e a página inteira pular
      ~15px para o lado, onde a barra ocupa espaço de verdade (Windows, e Mac
@@ -539,7 +544,7 @@
 
 <div class="ficha" id="ficha"><div class="fechar"><button onclick="fecharFicha()">← voltar</button></div><div class="fmiolo" id="fmiolo"></div></div>
 <div class="gaveta-fundo" id="gavetaFundo" onclick="fecharGaveta()"></div>
-<aside class="gaveta" id="gaveta" role="dialog" aria-modal="true" aria-label="Sua sacola" aria-hidden="true">
+<aside class="gaveta" id="gaveta" role="dialog" aria-modal="true" aria-label="Sua sacola" aria-hidden="true" inert>
   <div class="gaveta-topo">
     <strong>Sua sacola</strong>
     <button onclick="fecharGaveta()">fechar</button>
@@ -982,12 +987,18 @@ window.tirarDaSacola = id => { delete sacola[id]; pintarBarra(); };
 window.abrirGaveta = () => {
   document.getElementById('gaveta').classList.add('abre');
   document.getElementById('gaveta').setAttribute('aria-hidden','false');
+  document.getElementById('gaveta').inert = false;
   document.getElementById('gavetaFundo').classList.add('abre');
   document.body.style.overflow = 'hidden';
 };
+// `inert` JUNTO do aria-hidden, e não no lugar dele. O aria-hidden sozinho
+// esconde a gaveta do leitor de tela mas deixa os botões e o campo de cupom
+// dentro dela recebendo foco: quem navega pelo teclado entrava numa sacola
+// invisível e não sabia onde estava. Achado pelo Lighthouse em nov/2026.
 window.fecharGaveta = () => {
   document.getElementById('gaveta').classList.remove('abre');
   document.getElementById('gaveta').setAttribute('aria-hidden','true');
+  document.getElementById('gaveta').inert = true;
   document.getElementById('gavetaFundo').classList.remove('abre');
   document.body.style.overflow = '';
 };

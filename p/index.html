@@ -2,17 +2,19 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Uma peça Cinérea</title>
 <link rel="icon" href="/icone.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#F2EFEA; --ash:#E7E3DC; --char:#1C1A17; --ember:#B5462A;
-    --smoke:#6E6862; --line:#D8D2C8;
+    --smoke:#645E58; --line:#D8D2C8;
     --surface:rgba(255,255,255,.55); --shadow:rgba(28,26,23,.07);
   }
   /* A peça é objeto de fim de tarde: o modo escuro não é um tema à parte, é a
@@ -278,7 +280,7 @@ function vestir(estilo){
     raiz.setProperty('--shadow','rgba(0,0,0,.4)');
   } else if (estilo.fundo === 'claro'){
     raiz.setProperty('--paper','#F2EFEA'); raiz.setProperty('--ash','#E7E3DC');
-    raiz.setProperty('--char','#1C1A17');  raiz.setProperty('--smoke','#6E6862');
+    raiz.setProperty('--char','#1C1A17');  raiz.setProperty('--smoke','#645E58');
     raiz.setProperty('--line','#D8D2C8');
     raiz.setProperty('--surface','rgba(255,255,255,.55)');
     raiz.setProperty('--shadow','rgba(28,26,23,.07)');
