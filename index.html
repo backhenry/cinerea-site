@@ -327,6 +327,33 @@
     100%{opacity:.85;transform:scale(1);box-shadow:0 0 5px 1px rgba(181,70,42,.18)}
   }
 </style>
+<!-- Dados estruturados (nov/2026): é por aqui que o Google liga o site ao
+     perfil da Cinérea no Maps. Nome, endereço e telefone têm de ser IDÊNTICOS
+     ao rodapé e ao perfil, e há teste conferindo o endereço contra o rodapé. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Cinérea",
+  "description": "Ateliê de esculturas de gesso e velas de areia em Campos do Jordão. Cada peça é moldada à mão, uma por vez, e guarda um chip que diz o que o dono quiser.",
+  "url": "https://cinerea.com.br/",
+  "logo": "https://cinerea.com.br/apple-touch-icon.png",
+  "image": "https://cinerea.com.br/capa.jpg",
+  "telephone": "+55 11 95828-0174",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rua Iria Francisca de Jesus, 150",
+    "addressLocality": "Campos do Jordão",
+    "addressRegion": "SP",
+    "postalCode": "12467-398",
+    "addressCountry": "BR"
+  },
+  "sameAs": [
+    "https://instagram.com/cinerea.velas",
+    "https://www.tiktok.com/@cinerea.velas"
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -884,5 +911,6 @@
 </script>
 
 <script src="/vivo.js" defer></script>
+<script src="/contador.js" defer></script>
 </body>
 </html>
