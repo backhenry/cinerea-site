@@ -6,7 +6,7 @@
 <title>Cinérea · esculturas que guardam o que você quiser dizer</title>
 <meta name="description" content="Ateliê em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Você preenche com areia perfumada e repõe quando acabar. A escultura fica. E um chip dentro dela guarda o que você escolher dizer.">
 <meta property="og:title" content="Cinérea">
-<meta property="og:image" content="https://cinerea.com.br/capa.jpg">
+<meta property="og:image" content="https://cinerea.com.br/compartilhar.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:description" content="A base permanece, o conteúdo se renova.">
 <meta property="og:type" content="website">
@@ -37,6 +37,28 @@
      legibilidade fica refém do que estiver passando na tela naquele segundo. */
   .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.42),rgba(20,19,17,.68))}
   .capa.com-video .capa-video,.capa.com-video .capa-veu{opacity:1}
+  /* O DAVID NA CAPA (nov/2026), no lugar da vela gerada que a loja não vendia.
+     O vídeo é largo e a peça gira no terço direito, sobre o carvão do site.
+
+     No computador o texto vai para a esquerda e o véu escurece só desse lado:
+     centrado, o título cobriria o rosto da peça, que é a razão do vídeo.
+     No celular não há lado, e o recorte é puxado para o David ficar no meio,
+     atrás do texto, com o véu de cima a baixo garantindo a leitura. A conta
+     do 83%: o quadro de 1920x864 escalado para 634 px de altura tem 1409 de
+     largura, o David está em 74% dela, e centrá-lo numa tela de 375 pede
+     deslocar 856 dos 1034 px que sobram. */
+  .capa-video{object-position:83% 50%}
+  /* No celular o texto fica SOBRE a peça iluminada: medido nos quadros, o pior
+     ponto atrás da frase em itálico dava 4,4:1 com o véu antigo. Um degrau
+     mais escuro o leva acima de 4,5. */
+  @media(max-width:899px){ .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.5),rgba(20,19,17,.72))} }
+  @media(min-width:900px){
+    .capa.com-video{text-align:left;padding-left:max(22px,calc(50vw - 470px))}
+    .capa.com-video p{margin-left:0}
+    .capa.com-video .bt{margin-left:0;margin-right:10px}
+    .capa-video{object-position:50% 50%}
+    .capa-veu{background:linear-gradient(90deg,rgba(20,19,17,.72) 0%,rgba(20,19,17,.5) 45%,rgba(20,19,17,.08) 75%)}
+  }
   .capa.com-video{color:#fff}
   .capa.com-video h1,.capa.com-video .lema,.capa.com-video p{color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.4)}
   .capa.com-video .lema{opacity:.92}
@@ -374,7 +396,7 @@
   "description": "Ateliê de esculturas de gesso e velas de areia em Campos do Jordão. Cada peça é moldada à mão, uma por vez, e guarda um chip que diz o que o dono quiser.",
   "url": "https://cinerea.com.br/",
   "logo": "https://cinerea.com.br/apple-touch-icon.png",
-  "image": "https://cinerea.com.br/capa.jpg",
+  "image": "https://cinerea.com.br/compartilhar.jpg",
   "telephone": "+55 11 95828-0174",
   "address": {
     "@type": "PostalAddress",

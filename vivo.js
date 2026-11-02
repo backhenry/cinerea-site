@@ -153,11 +153,12 @@
  * `capa.jpg` com o primeiro quadro). Nada mais precisa mudar.
  *
  *   formato   MP4, H.264, sem áudio (o laço toca mudo de qualquer jeito)
- *   tamanho   1920×1080 ou 1600×900, deitado
- *   duração   6 a 12 segundos, em laço, sem corte brusco no fim
- *   peso      até ~4 MB, ele baixa para TODO visitante da página inicial
- *   conteúdo  o texto fica no meio e por cima; deixe o centro calmo, e conte
- *             que as bordas somem no celular
+ *   tamanho   1920×864, deitado (o de hoje)
+ *   duração   em laço, sem corte brusco no fim; o giro do David fecha sozinho
+ *   peso      ~600 KB hoje; ele baixa para TODO visitante da página inicial
+ *   conteúdo  no computador o texto fica à ESQUERDA e a peça no terço direito;
+ *             no celular o recorte centra a peça atrás do texto (ver o CSS
+ *             da capa em index.html, que tem a conta do enquadramento)
  *
  * Ele fica no repositório, servido pelo GitHub Pages, e não no Cloud Storage:
  * aqui a banda é de graça, lá seria conta no fim do mês.
