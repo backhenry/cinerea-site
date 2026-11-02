@@ -18,6 +18,10 @@
 <meta name="apple-mobile-web-app-title" content="Cinérea">
 <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<!-- A conexão com o Firestore abre junto com a página: o catálogo é a
+     primeira coisa que o módulo pede, e é dele que a vitrine depende. -->
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://firebasestorage.googleapis.com">
 <style>
   :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#645E58;--line:#D8D2C8}
   /* A calha da barra de rolagem fica reservada SEMPRE. Sem isto, travar a
@@ -645,15 +649,58 @@ try {
 </aside>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+/*
+ * A LOJA LÊ O FIRESTORE PELA API REST, SEM O SDK (nov/2026).
+ *
+ * O SDK eram uns 300 KB de JavaScript de outro domínio, e o módulo inteiro
+ * esperava por eles antes de pedir o catálogo: a vitrine e a arte do banner,
+ * que é o maior elemento da página, só começavam depois. Medido no Lighthouse
+ * do celular: 6,7 s até a maior imagem aparecer.
+ *
+ * E a loja só faz DUAS leituras, as duas públicas: a lista de `catalogo/` e um
+ * `cupons/{codigo}`. As escritas (encomenda, pagamento) moram no perfil, que
+ * continua com o SDK. Daí este leitor mínimo, com a MESMA forma das funções do
+ * SDK que a loja chamava (`getDocs`, `getDoc`, `exists()`, `data()` e o
+ * `toMillis()` de data): o resto do arquivo não mudou uma linha, e os testes
+ * que extraem `conferirCupomDoBanner` seguem valendo.
+ */
+const RAIZ = 'https://firestore.googleapis.com/v1/projects/cinerea1/databases/(default)/documents';
+const fdb = null;
+const collection = (_, nome) => nome;
+const doc = (_, colecao, id) => `${colecao}/${encodeURIComponent(id)}`;
 
-const app = initializeApp({
-  apiKey:"AIzaSyAdoiD3IU7CR-QzZjeAxwAyYLvcClfd-XQ", authDomain:"cinerea1.firebaseapp.com",
-  projectId:"cinerea1", storageBucket:"cinerea1.firebasestorage.app",
-  messagingSenderId:"458519504441", appId:"1:458519504441:web:b66d6dd2d8a2d497654fe8",
-});
-const fdb = getFirestore(app);
+/** O formato REST embrulha cada valor no tipo dele; isto desembrulha. */
+function valorRest(v){
+  if(!v || 'nullValue' in v) return null;
+  if('stringValue' in v) return v.stringValue;
+  if('booleanValue' in v) return v.booleanValue;
+  if('integerValue' in v) return Number(v.integerValue);
+  if('doubleValue' in v) return Number(v.doubleValue);
+  if('timestampValue' in v){ const ms = Date.parse(v.timestampValue); return { toMillis: () => ms, toDate: () => new Date(ms) }; }
+  if('arrayValue' in v) return (v.arrayValue.values || []).map(valorRest);
+  if('mapValue' in v) return camposRest(v.mapValue.fields);
+  return null;
+}
+function camposRest(f){
+  const o = {};
+  for(const k in (f || {})) o[k] = valorRest(f[k]);
+  return o;
+}
+async function getDocs(colecao){
+  const r = await fetch(`${RAIZ}/${colecao}`);
+  if(!r.ok) throw new Error(`catálogo: ${r.status}`);
+  const j = await r.json();
+  return { docs: (j.documents || []).map(d => ({ id: d.name.split('/').pop(), data: () => camposRest(d.fields) })) };
+}
+async function getDoc(caminho){
+  const r = await fetch(`${RAIZ}/${caminho}`);
+  // 404 é resposta, e não erro: o documento não existe. Qualquer outra recusa
+  // sobe como erro, e quem chama trata como "não consegui conferir".
+  if(r.status === 404) return { exists: () => false, data: () => undefined };
+  if(!r.ok) throw new Error(`leitura: ${r.status}`);
+  const d = await r.json();
+  return { exists: () => true, data: () => camposRest(d.fields) };
+}
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const brl = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
@@ -731,9 +778,9 @@ function cartao(p){
   // foi: uma imagem que se aproxima devagar. Duplicar a primeira para "ter o
   // efeito" seria pior que não ter, a pessoa passa o mouse e nada muda.
   const foto = p.foto
-    ? `<div class="moldura${p.foto2?' tem-dupla':''}">
+    ? `<div class="moldura${p.foto2 && comPonteiro()?' tem-dupla':''}">
          <img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">
-         ${p.foto2?`<img class="segunda" src="${esc(p.foto2)}" alt="" loading="lazy" aria-hidden="true">`:''}
+         ${p.foto2 && comPonteiro()?`<img class="segunda" src="${esc(p.foto2)}" alt="" loading="lazy" aria-hidden="true">`:''}
          ${breve?'<span class="breve">em breve</span>':''}
        </div>`
     : marca();
@@ -909,6 +956,14 @@ function umBanner(b){
   </${usavel?'button':'div'}>`;
 }
 
+/**
+ * A segunda foto do produto só existe para a troca ao passar o mouse. Em tela
+ * de toque ela nunca aparece, e mesmo assim era baixada, porque fica empilhada
+ * atrás da primeira e o `lazy` a vê dentro da tela: três fotos a mais no
+ * celular, disputando a banda com o banner.
+ */
+const comPonteiro = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 /** Quem pediu menos movimento não recebe rodízio nenhum. */
 const semMovimento = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -936,13 +991,32 @@ function pintarBanner(){
   const reveza = lista.length > 1 && !semMovimento();
   box.className = reveza ? 'bannerpilha' : '';
   box.innerHTML = lista.map(umBanner).join('');
+  // SÓ A ARTE DO BANNER À MOSTRA BAIXA JÁ (nov/2026). Empilhados, todos os
+  // fundos eram pedidos ao mesmo tempo, e a arte do segundo (158 KB) disputava
+  // a banda com a do primeiro, que é o maior elemento da loja: no celular ela
+  // levava 4 s para chegar. A dos outros vai para `data-arte` e volta três
+  // segundos depois de o anterior aparecer, folga de sobra antes da troca.
+  // Tem de vir ANTES do `guardar()`: medir a altura obriga o navegador a
+  // resolver o estilo, e é aí que ele pede as imagens de fundo.
+  bannerAtual = Math.min(bannerAtual, lista.length - 1);
+  const filhos = () => [...box.children];
+  if(reveza) filhos().forEach((el, j) => {
+    if(j === bannerAtual || !el.style || !el.style.backgroundImage) return;
+    el.dataset.arte = el.style.backgroundImage;
+    el.style.backgroundImage = '';
+  });
   guardar();
   if(!reveza) return;
 
-  bannerAtual = Math.min(bannerAtual, lista.length - 1);
+  const acender = j => {
+    const el = filhos()[j];
+    if(el && el.dataset && el.dataset.arte){ el.style.backgroundImage = el.dataset.arte; delete el.dataset.arte; }
+  };
   const mostrar = i => {
     bannerAtual = i;
-    [...box.children].forEach((el, j) => el.classList.toggle('aqui', j === i));
+    acender(i);
+    filhos().forEach((el, j) => el.classList.toggle('aqui', j === i));
+    setTimeout(() => acender((i + 1) % lista.length), 3000);
   };
   mostrar(bannerAtual);
   // Sete segundos porque a chamada tem de caber numa leitura sem pressa, e a
@@ -1555,7 +1629,17 @@ function colecaoPedida(){
 }
 
 try {
-  await carregar(); linhaAtiva = colecaoPedida(); pintarBanner(); pintar();
+  await carregar(); linhaAtiva = colecaoPedida();
+  // A arte do primeiro banner é o maior elemento da loja, e é fundo de CSS:
+  // não aceita `fetchpriority`, e o navegador a põe na fila junto com as
+  // fotos das peças. Um preload de prioridade alta a passa na frente.
+  { const arte = (bannersDeHoje()[0] || {}).imagem || '';
+    if(/^https:\/\/firebasestorage\.googleapis\.com\//.test(arte)){
+      const l = document.createElement('link');
+      l.rel = 'preload'; l.as = 'image'; l.href = arte; l.fetchPriority = 'high';
+      document.head.appendChild(l);
+    } }
+  pintarBanner(); pintar();
   // `/loja/?peca={id}` abre a ficha daquela peça direto (nov/2026). É o que a
   // vitrine da home usa, e serve igual para um link de peça no Instagram.
   { const pedida = new URLSearchParams(location.search).get('peca');
