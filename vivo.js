@@ -376,3 +376,46 @@ window.velaDeEspera = function (texto) {
     });
   });
 })();
+
+// O CABEÇALHO SAI DA FRENTE AO LER, e volta ao rolar para cima (nov/2026).
+//
+// No celular ele tem duas linhas e ocupa 127 dos 812 px, 16% da tela, em toda
+// página e o tempo todo. Rolar para baixo é ler; rolar para cima é procurar
+// alguma coisa, e é nessa hora que ele volta.
+//
+// Ele DESLIZA inteiro, e não encolhe. Esconder só a linha do menu mudaria a
+// altura de um elemento que está no fluxo da página, e o texto embaixo pularia
+// a cada mudança de direção: o deslocamento que a loja levou duas rodadas para
+// zerar. `transform` não mexe em layout nenhum.
+//
+// Só no celular (o mesmo corte de 780 px em que o menu vira segunda linha), só
+// depois de passar a altura dele, e volta sempre que algo dentro dele recebe
+// foco, senão quem navega por teclado tabularia para um link fora da tela.
+(function () {
+  var topo = document.querySelector('.topo');
+  if (!topo) return;
+  var celular = window.matchMedia('(max-width:780px)');
+  var ancora = window.scrollY, pedido = false;
+
+  function mostrar() { topo.classList.remove('recolhido'); }
+
+  function medir() {
+    pedido = false;
+    var y = window.scrollY, d = y - ancora;
+    if (!celular.matches || y < topo.offsetHeight) { mostrar(); ancora = y; return; }
+    // A âncora só anda quando a direção é decidida: rolagem lenta soma vários
+    // quadros pequenos até passar do limiar, em vez de nunca chegar nele.
+    if (d > 8) { topo.classList.add('recolhido'); ancora = y; }
+    else if (d < -8) { mostrar(); ancora = y; }
+  }
+
+  window.addEventListener('scroll', function () {
+    if (pedido) return;
+    pedido = true;
+    requestAnimationFrame(medir);
+  }, { passive: true });
+  topo.addEventListener('focusin', mostrar);
+  // A loja chama isto ao pôr uma peça na sacola: o retorno é o contador que
+  // pisca no cabeçalho, e ele não pode piscar fora da tela.
+  window.addEventListener('cinerea:topo', mostrar);
+})();

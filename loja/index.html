@@ -273,11 +273,15 @@
   }
   .contagem{text-align:center;font-size:12.5px;color:var(--smoke);margin:10px 0 0;min-height:1.2em}
   .some{display:none}
+  .so-leitor{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
   .secao{margin-bottom:56px;scroll-margin-top:80px}
   .secao-nome{font-family:'Fraunces';font-weight:300;font-size:27px;margin-bottom:6px}
   .secao-desc{color:var(--smoke);font-size:14.5px;max-width:60ch;margin-bottom:26px}
-  .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:30px 22px}
+  /* `auto-fit` com teto de largura e centrado: com menos peças do que cabem
+     numa linha, elas ficam no meio, do mesmo tamanho, em vez de encostadas à
+     esquerda ao lado de uma coluna vazia. */
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:center;gap:30px 22px}
   /* DUAS POR LINHA NO CELULAR. Com uma, cada cartão tinha 460 px e a pessoa
      via uma peça por tela; com duas, a primeira linha cabe inteira na tela. */
   @media(max-width:560px){
@@ -356,6 +360,16 @@
   .fechar button{background:none;border:none;font-size:14px;color:var(--smoke);cursor:pointer}
   .fmiolo{max-width:620px;margin:0 auto;padding:22px 22px 60px}
   .fmiolo .moldura{margin-bottom:22px}
+  /* A galeria da ficha: rola de lado, uma foto por vez, e os pontos dizem em
+     qual se está. Cada ponto é um alvo de 44 px com um círculo de 7 dentro. */
+  .galeria{margin-bottom:12px}
+  .galeria .fotos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:12px}
+  .galeria .fotos::-webkit-scrollbar{display:none}
+  .galeria .fotos > .moldura{flex:0 0 100%;scroll-snap-align:center;margin:0}
+  .pontos{display:flex;justify-content:center;margin-top:2px}
+  .pontos button{width:44px;height:30px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+  .pontos button::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .2s ease}
+  .pontos button.on::before{background:var(--char)}
   /* ---- a peça em 3D ------------------------------------------------------ */
   .ver3d{margin-top:12px}
   .ver3d .bt{margin-top:0}
@@ -864,16 +878,21 @@ function pintar(){
     const secoes = colecoes.length
       ? colecoes.filter(c=>!linhaAtiva||c.nome===linhaAtiva)
       : [{id:'', nome:'', desc:''}];
-    html = secoes.map(c=>{
-      const itens = produtos.filter(p=> (colecoes.length ? p.colecao===c.id : true) && passa(p));
-      if(!itens.length) return '';
-      achados += itens.length;
-      return `<section class="secao">
+    const doGrupo = c => produtos.filter(p=> (colecoes.length ? p.colecao===c.id : true) && passa(p));
+    const grupos = secoes.map(c => ({ c, itens: doGrupo(c) })).filter(g => g.itens.length);
+    // Com poucas peças por coleção, "Tudo" é UMA grade só (ver separarPorColecao).
+    const corrida = !linhaAtiva && !separarPorColecao(grupos.map(g => g.itens.length));
+    achados = grupos.reduce((s, g) => s + g.itens.length, 0);
+    html = corrida
+      // O título existe para o leitor de tela: sem ele a página saltava do
+      // título principal para os do rodapé, e quem navega por títulos perdia
+      // a vitrine inteira entre os dois.
+      ? `<section class="secao"><h2 class="so-leitor">Peças à venda</h2><div class="grade">${grupos.flatMap(g => g.itens).map(cartao).join('')}</div></section>`
+      : grupos.map(({c, itens}) => `<section class="secao">
         ${c.nome?`<h2 class="secao-nome">${esc(c.nome)}</h2>`:''}
         ${c.desc?`<p class="secao-desc">${esc(c.desc)}</p>`:''}
         <div class="grade">${itens.map(cartao).join('')}</div>
-      </section>`;
-    }).join('');
+      </section>`).join('');
   }
 
   document.getElementById('grade').outerHTML =
@@ -888,6 +907,26 @@ function pintar(){
     filtrando && achados ? `${achados} peça${achados>1?'s':''}` : '';
 
   pintarBarra();
+}
+
+/**
+ * Separar a vitrine por coleção, ou mostrar uma grade só?
+ *
+ * Recebe quantas peças cada coleção mostraria. Separa quando há mais de uma
+ * coleção E elas têm, em média, três peças ou mais, que é uma linha cheia no
+ * celular e quase uma no computador.
+ *
+ * Existe por um retrato de nov/2026: três peças em três coleções. Separadas,
+ * cada seção era um título, uma frase e UM cartão, com três quartos da linha em
+ * branco no notebook e meia linha vazia no celular, e a loja parecia uma
+ * prateleira sem nada. Quando o catálogo crescer, as seções voltam sozinhas,
+ * sem ninguém precisar lembrar desta função.
+ */
+function separarPorColecao(qtds){
+  const cheias = (qtds || []).filter(n => n > 0);
+  if(cheias.length < 2) return false;
+  const total = cheias.reduce((s, n) => s + n, 0);
+  return total / cheias.length >= 3;
 }
 
 /**
@@ -1268,9 +1307,39 @@ function limpar(t){
   return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 }
 
+/** Os pontos seguem a rolagem, e tocar num ponto leva à foto dele. */
+function ligarGaleria(){
+  const trilho = document.getElementById('fotos');
+  const pontos = [...document.querySelectorAll('#pontos button')];
+  if(!trilho || !pontos.length) return;
+  const marcar = i => pontos.forEach((b, j) => {
+    b.classList.toggle('on', j === i);
+    if(j === i) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+  });
+  trilho.addEventListener('scroll', () => {
+    marcar(Math.round(trilho.scrollLeft / Math.max(1, trilho.clientWidth)));
+  }, { passive: true });
+  pontos.forEach((b, i) => b.addEventListener('click', () => {
+    trilho.scrollTo({ left: i * trilho.clientWidth, behavior: semMovimento() ? 'auto' : 'smooth' });
+  }));
+}
+
 window.abrirFicha = id => {
   const p=produtos.find(x=>x.id===id); if(!p)return;
-  const foto = p.foto?`<div class="moldura"><img src="${esc(p.foto)}" alt="${esc(p.nome)}"></div>`:marca();
+  // AS DUAS FOTOS NA FICHA, deslizando (nov/2026). A segunda só aparecia ao
+  // passar o mouse na loja, então no celular ninguém nunca a via, e a ficha,
+  // que é onde a pessoa decide, mostrava a peça de um ângulo só.
+  const fotos = [p.foto, p.foto2].filter(Boolean);
+  const foto = !fotos.length ? marca()
+    : fotos.length === 1 ? `<div class="moldura"><img src="${esc(p.foto)}" alt="${esc(p.nome)}"></div>`
+    : `<div class="galeria">
+        <div class="fotos" id="fotos" tabindex="0" aria-label="Fotos de ${esc(p.nome)}">
+          ${fotos.map((u, i) => `<div class="moldura"><img src="${esc(u)}" alt="${esc(p.nome)}${i ? ', outro ângulo' : ''}"${i ? ' loading="lazy"' : ''}></div>`).join('')}
+        </div>
+        <div class="pontos" id="pontos">
+          ${fotos.map((_, i) => `<button type="button" aria-label="Foto ${i + 1} de ${fotos.length}"${i ? '' : ' class="on" aria-current="true"'}></button>`).join('')}
+        </div>
+      </div>`;
   const breve = p.situacao==='embreve';
   document.getElementById('fmiolo').innerHTML = `${foto}
     ${p.linha?`<div class="rot">${esc(p.linha)}</div>`:''}
@@ -1293,6 +1362,7 @@ window.abrirFicha = id => {
       </div>`:''}
     ${p.longa?`<p class="flonga">${esc(p.longa)}</p>`:''}
     ${p.ficha.length?`<div class="ftec">${p.ficha.map(([r,v])=>`<div><span>${esc(r)}</span><span>${esc(v)}</span></div>`).join('')}</div>`:''}`;
+  ligarGaleria();
   document.getElementById('ficha').classList.add('abre');
   window.scrollTo(0,0);
 };
@@ -1548,6 +1618,7 @@ window.fecharFicha = () => document.getElementById('ficha').classList.remove('ab
 window.juntar = id => {
   sacola[id] = (sacola[id] || 0) + 1;
   pintarBarra(); fecharFicha();
+  window.dispatchEvent(new Event('cinerea:topo'));
   // A GAVETA NÃO ABRE SOZINHA. Ela abria por 1,6s para dar retorno, e o efeito
   // era a página inteira se mexer a cada peça posta na sacola, sem ninguém
   // pedir. Quem manda abrir é o botão. O retorno vem do contador, que pisca no

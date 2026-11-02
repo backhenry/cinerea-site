@@ -18,6 +18,11 @@ a{color:inherit}
 
 /* ---- cabeçalho ---- */
 .topo{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line)}
+/* Sai de cena ao rolar para baixo no celular, e volta ao rolar para cima.
+   Quem decide é o `vivo.js`; aqui só o movimento. */
+.topo{transition:transform .28s cubic-bezier(.2,.7,.3,1)}
+@media(max-width:780px){ .topo.recolhido{transform:translateY(-100%)} }
+@media(prefers-reduced-motion:reduce){ .topo{transition:none} }
 /* TRÊS COLUNAS, e não flex com margem automática. Com `margin-left:auto` o
    menu encostava à direita nas páginas sem botão de sacola e ficava no meio na
    loja, a mesma barra parecia duas. Em grade, a coluna do meio é o centro da
