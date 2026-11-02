@@ -16,9 +16,8 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
 <style>
   :root{--paper:#F2EFEA;--ash:#E7E3DC;--char:#1C1A17;--ember:#B5462A;--smoke:#645E58;--line:#D8D2C8}
   /* A calha da barra de rolagem fica reservada SEMPRE. Sem isto, travar a
@@ -125,6 +124,11 @@
 
      Dissolvência e não deslize: a faixa é fina, e movimento lateral num site
      desta calma tem cara de anúncio de portal. */
+  /* Alturas medidas em nov/2026, com os dois banners no ar, já contando a linha
+     do cupom: 156 px na tela de 1280 e 188 px no celular de 375. Valem só até o
+     primeiro desenho do banner, que tira a classe. */
+  #banner.reserva{min-height:157px}
+  @media(max-width:600px){#banner.reserva{min-height:188px}}
   .bannerpilha{display:grid}
   .bannerpilha > *{
     grid-area:1/1; opacity:0; transition:opacity .6s ease;
@@ -496,7 +500,24 @@
   </div>
 </div></header>
 
-<div id="banner"></div>
+<div id="banner" class="reserva"></div>
+<script>
+/* A ALTURA DO BANNER É RESERVADA ANTES DA PRIMEIRA PINTURA (nov/2026).
+   O banner chega com os dados do catálogo, que dependem do Firebase carregar,
+   então ele sempre entrava DEPOIS de a página aparecer e empurrava tudo para
+   baixo. Medido no Lighthouse: 0,17 de instabilidade, com o limite bom em 0,1,
+   no momento exato em que a pessoa começa a ler.
+
+   A classe `reserva` traz a altura medida dos banners de hoje. Este script
+   troca pela altura EXATA da última visita neste aparelho, se houver: quem
+   volta não tem pulo nenhum, nem depois de o banner mudar. Roda aqui, e não no
+   módulo, porque o módulo só executa depois do Firebase, tarde demais. */
+try {
+  var d = JSON.parse(localStorage.getItem('cinerea-banner') || 'null');
+  var faixa = innerWidth <= 600 ? 'celular' : 'tela';
+  if (d && d.faixa === faixa) document.getElementById('banner').style.minHeight = d.altura + 'px';
+} catch (e) {}
+</script>
 
 <section class="capa-loja">
   <div class="envolve">
@@ -807,6 +828,11 @@ function umBanner(b){
   // SEM o código, e ganha o código quando a conferência chega. Melhor o convite
   // aparecer sem chamada do que piscar um código que talvez não valha.
   const usavel = !!b.cupom && cupomDoBannerVale[b.cupom] === true;
+  // Enquanto a conferência não volta, a LINHA do cupom fica reservada, vazia e
+  // invisível. Sem isso o banner crescia de novo quando o código chegava, um
+  // segundo pulo de 36 px depois do primeiro. O código em si NÃO vai para a
+  // página antes de conferido: o espaço reservado é um espaço em branco.
+  const conferindo = !!b.cupom && !(b.cupom in cupomDoBannerVale);
   // A arte só entra se vier do NOSSO Storage. Mesma trava do logo da peça: sem
   // ela, alguém aponta a imagem para servidor próprio e passa a ver quem abriu
   // a loja, no domínio da marca.
@@ -817,7 +843,8 @@ function umBanner(b){
       ${usavel?`onclick="usarCupomDoBanner('${esc(b.cupom)}')"`:''} style="width:100%;border-left:none;border-right:none;border-top:none;font-family:inherit;${fundo}">
     <strong>${esc(b.titulo)}</strong>
     ${b.texto?`<span class="btexto">${esc(b.texto)}</span>`:''}
-    ${usavel?`<span class="bcupom">${esc(b.cupom)}</span>`:''}
+    ${usavel?`<span class="bcupom">${esc(b.cupom)}</span>`
+      : conferindo?'<span class="bcupom" style="visibility:hidden" aria-hidden="true">&nbsp;</span>':''}
   </${usavel?'button':'div'}>`;
 }
 
@@ -831,7 +858,15 @@ function pintarBanner(){
   if(!box) return;
   const lista = bannersDeHoje();
   if(rodizio){ clearInterval(rodizio); rodizio = null; }
-  if(!lista.length){ box.className=''; box.innerHTML=''; return; }
+  // Solta a reserva e guarda a altura real para a próxima visita. Tudo dentro
+  // do try: o armazenamento pode estar bloqueado, e aí a página só perde a dica.
+  const guardar = () => { try {
+    box.style.minHeight = '';
+    localStorage.setItem('cinerea-banner', JSON.stringify({
+      faixa: innerWidth <= 600 ? 'celular' : 'tela',
+      altura: Math.round(box.getBoundingClientRect().height) }));
+  } catch {} };
+  if(!lista.length){ box.className=''; box.innerHTML=''; guardar(); return; }
 
   // EMPILHADOS quando não há rodízio, e não escondidos. Com movimento reduzido
   // o revezamento não roda, e deixar só o primeiro visível sumiria com os
@@ -840,6 +875,7 @@ function pintarBanner(){
   const reveza = lista.length > 1 && !semMovimento();
   box.className = reveza ? 'bannerpilha' : '';
   box.innerHTML = lista.map(umBanner).join('');
+  guardar();
   if(!reveza) return;
 
   bannerAtual = Math.min(bannerAtual, lista.length - 1);
