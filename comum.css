@@ -26,7 +26,7 @@ a{color:inherit}
   max-width:1000px;margin:0 auto;padding:14px 22px;
   display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;
 }
-.topo-acoes{display:flex;align-items:center;gap:12px;justify-self:end}
+.topo-acoes{display:flex;align-items:center;gap:20px;justify-self:end}
 .topo-acoes a,.topo-acoes button{
   display:flex;align-items:center;gap:7px;color:var(--smoke);text-decoration:none;
   background:none;border:none;padding:0;cursor:pointer;font-family:'Inter';font-size:13.5px;
@@ -34,6 +34,12 @@ a{color:inherit}
 }
 .topo-acoes a:hover,.topo-acoes button:hover,.topo-acoes a.aqui{color:var(--ember)}
 .topo-acoes svg{width:20px;height:20px;flex:0 0 auto}
+/* ÁREA DE TOQUE DE 44 PX sem a barra crescer (nov/2026). O ícone mede 20 e era
+   o alvo inteiro: medido, eram os menores do site, e são os que se tocam em
+   toda página. O recuo aumenta o alvo e a margem negativa devolve o espaço,
+   então nada se mexe na tela. O vão de 20 é o que impede dois alvos de se
+   sobreporem. A sacola da loja tem moldura própria e fica de fora. */
+.topo-acoes > a{padding:12px 10px;margin:-12px -10px}
 .topo .marca{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
 .topo .marca svg{width:26px;height:26px}
 .topo .marca span{font-family:'Fraunces';font-size:19px}
@@ -52,7 +58,11 @@ a{color:inherit}
   overflow-x:auto;min-width:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .topo nav::-webkit-scrollbar{display:none}
-.topo nav a{text-decoration:none;font-size:14px;color:var(--smoke);white-space:nowrap}
+/* O mesmo para o menu: o texto mede 21 px de altura e o alvo passa a 45. A
+   margem negativa vai no MENU, e não nos links, porque o menu rola de lado, e
+   quem rola corta o que transborda, inclusive um recuo que saísse dele. */
+.topo nav{padding:12px 6px;margin:-12px -6px}
+.topo nav a{text-decoration:none;font-size:14px;color:var(--smoke);white-space:nowrap;padding:12px 6px;margin:-12px -6px}
 .topo nav a:hover,.topo nav a.aqui{color:var(--char)}
 /* ---------------------------------------------------------------------------
    O MENU EM LINHA PRÓPRIA QUANDO NÃO CABE NA MESMA.
@@ -96,7 +106,7 @@ a{color:inherit}
   /* A marca volta a aparecer por extenso: com o menu embaixo, sobra espaço na
      primeira linha, e o nome da casa vale mais ali do que o vazio. */
   .topo-acoes .rot-acao{display:none}
-  .topo-acoes{gap:10px}
+  .topo-acoes{gap:16px}
   .topo-in{gap:10px;row-gap:10px;padding:12px 16px}
   /* 12 e 13 porque MEDI: com 14 e 13,5 o menu pedia 333px e tinha 333, ou seja,
      cabia em 375 por zero pixel e quebrava em duas linhas num aparelho de 360,
@@ -104,6 +114,25 @@ a{color:inherit}
   .topo nav{gap:12px}
   .topo nav a{font-size:13px}
 }
+
+/* ---------------------------------------------------------------------------
+   OS BOTÕES, UMA GRAMÁTICA SÓ (nov/2026).
+
+   Medido antes: onze desenhos de botão e cinco raios (0, 9, 10, 14, 20 e 999)
+   nas nove páginas. Cada um fazia sentido sozinho, e juntos o site parecia
+   montado por pessoas diferentes. O que vale agora, e cada página aplica no
+   próprio CSS, porque os botões têm nomes diferentes em cada uma:
+
+   - AÇÃO (ir, comprar, baixar, enviar): raio 10, Inter 15 a 16, ~54 px de
+     altura. Três pesos: carvão cheio (o principal), contorno (o segundo
+     caminho) e brasa cheia (só onde a página tem UMA ação e ela é o fim da
+     leitura: o livro, o convite dos aromas). Sobre foto ou vídeo escuro o
+     principal vira papel, senão some.
+   - CONTROLE (filtro, aba, ordenar, escolher tipo): pílula de raio 20, Inter
+     12,5 a 13,5. Liga e desliga, e por isso parece outra coisa.
+   - CARTÃO (canal de contato, opção do oráculo, faixa do livro): raio 14.
+     É uma área inteira que se toca, não um botão.
+   --------------------------------------------------------------------------- */
 
 /* ---- rodapé ---- */
 .rodape{margin-top:80px;border-top:1px solid var(--line);background:var(--ash)}

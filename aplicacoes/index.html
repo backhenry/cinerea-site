@@ -42,6 +42,23 @@
   .passo p{margin-top:7px;font-size:14.5px;color:var(--smoke);line-height:1.55}
 
   .grupo{padding:44px 0;border-top:1px solid var(--line)}
+  .grupo{scroll-margin-top:70px}
+  .indice{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 22px;padding:30px 0 34px;border-top:1px solid var(--line)}
+  .indice a{font-family:'Fraunces';font-weight:300;font-size:18px;color:var(--char);text-decoration:none;
+    border-bottom:1px solid var(--line);padding:10px 0 2px}
+  .indice a:hover{border-bottom-color:var(--ember)}
+  /* NO CELULAR CADA GRUPO ABRE COM DOIS CASOS, e o resto vem por um toque.
+     Quem chegou pelo índice quer ver o grupo dele, não rolar por trinta
+     cartões dos outros. A classe é posta pelo script: sem ele, tudo aparece,
+     que é a regra desta página, efeito nenhum esconde texto sozinho. */
+  .mais-casos{display:none}
+  @media(max-width:560px){
+    .casos.recolhida .caso:nth-child(n+3){display:none}
+    .casos.recolhida + .mais-casos{display:block;width:100%;margin-top:14px;padding:14px;
+      background:transparent;border:1px solid var(--line);border-radius:10px;
+      font-family:'Inter';font-size:15px;color:var(--char);cursor:pointer}
+  }
+
   .grupo h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);line-height:1.15}
   .grupo .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
 
@@ -200,7 +217,7 @@
   .fecho h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px)}
   .fecho p{margin-top:12px;color:var(--smoke);max-width:52ch;margin-left:auto;margin-right:auto}
   .botoes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
-  .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;font-weight:500;transition:.15s}
+  .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
   .bt:hover{background:var(--ember)}
   .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
   .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
@@ -272,7 +289,20 @@
       </div>
     </section>
 
-    <section class="grupo">
+    <!-- O ÍNDICE (nov/2026). São 36 casos em seis grupos, e no celular a página
+         media 19 telas: quem procurava "restaurante" rolava por dez delas sem
+         saber se o assunto existia. Desenho de índice, igual às coleções da
+         loja, porque é navegação e não filtro. -->
+    <nav class="indice" aria-label="Grupos de aplicações">
+      <a href="#em-casa">Em casa</a>
+      <a href="#presente">Presente</a>
+      <a href="#restaurantes">Restaurantes</a>
+      <a href="#eventos">Eventos</a>
+      <a href="#trabalho">Trabalho</a>
+      <a href="#junto">Junto do que você vende</a>
+    </nav>
+
+    <section class="grupo" id="em-casa">
       <h2>Em casa</h2>
       <p class="intro">A peça fica na entrada, na sala ou no quarto de hóspedes, e
          responde o que todo mundo pergunta.</p>
@@ -389,7 +419,7 @@
       </div>
     </section>
 
-    <section class="grupo">
+    <section class="grupo" id="presente">
       <h2>Presente e afeto</h2>
       <p class="intro">Aqui a peça faz o que nenhum cartão faz: continua falando
          depois que a data passou, e diz outra coisa no ano seguinte.</p>
@@ -546,7 +576,7 @@
       </div>
     </section>
 
-    <section class="grupo">
+    <section class="grupo" id="restaurantes">
       <h2>Restaurantes, bares e hotéis</h2>
       <p class="intro">Trocar o que a peça diz não custa impressão, nem tempo, nem
          uma peça nova. É aqui que ela se paga, e costuma se pagar na primeira
@@ -706,7 +736,7 @@
       </div>
     </section>
 
-    <section class="grupo">
+    <section class="grupo" id="eventos">
       <h2>Eventos e convites</h2>
       <p class="intro">O convite que ninguém joga fora, porque ele é um objeto. E
          que depois do evento vira outra coisa, em vez de virar lixo bonito.</p>
@@ -846,7 +876,7 @@
       </div>
     </section>
 
-    <section class="grupo">
+    <section class="grupo" id="trabalho">
       <h2>Trabalho e ofício</h2>
       <p class="intro">Para quem vende o que faz, e precisa que o trabalho continue
          falando depois que a conversa acabou e o cliente foi embora.</p>
@@ -1006,7 +1036,7 @@
       </div>
     </section>
 
-    <section class="grupo">
+    <section class="grupo" id="junto">
       <h2>O que vai junto com o que você vende</h2>
       <p class="intro">Aqui a peça não é o presente: ela acompanha o produto. Sai da
          sua loja dentro da caixa, entra na casa do cliente e fica lá, com a sua
@@ -1182,6 +1212,28 @@
   var grades = [].slice.call(document.querySelectorAll('.casos'));
   if (!grades.length) return;
   grades.forEach(function (g) { g.classList.add('viraveis'); });
+
+  // Dois casos por grupo no celular, e um botão com o número do que falta.
+  // O CSS só esconde dentro da faixa de celular, então numa tela larga a
+  // classe não muda nada e o botão nem aparece.
+  grades.forEach(function (g) {
+    var n = g.querySelectorAll('.caso').length;
+    if (n <= 2) return;
+    g.classList.add('recolhida');
+    var bt = document.createElement('button');
+    bt.type = 'button';
+    bt.className = 'mais-casos';
+    bt.textContent = 'Ver mais ' + (n - 2) + (n - 2 === 1 ? ' ideia' : ' ideias');
+    bt.addEventListener('click', function () {
+      g.classList.remove('recolhida');
+      bt.parentNode.removeChild(bt);
+      // O foco vai para o primeiro cartão revelado, senão quem usa teclado
+      // fica num botão que deixou de existir.
+      var terceiro = g.querySelectorAll('.caso .frente')[2];
+      if (terceiro) terceiro.focus({ preventScroll: true });
+    });
+    g.parentNode.insertBefore(bt, g.nextSibling);
+  });
 
   [].slice.call(document.querySelectorAll('.caso')).forEach(function (caso, i) {
     var frente = caso.querySelector('.frente');

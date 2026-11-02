@@ -42,8 +42,14 @@
   .capa.com-video .lema{opacity:.92}
   .capa.com-video .selo{filter:drop-shadow(0 1px 10px rgba(0,0,0,.45))}
   .capa.com-video .selo path{stroke:#fff}
-  .capa.com-video .bt2{color:#fff;border-color:rgba(255,255,255,.55)}
-  .capa.com-video .bt2:hover{border-color:#fff;color:#fff}
+  /* SOBRE O VÍDEO O BOTÃO PRINCIPAL É CLARO (nov/2026). Carvão sobre um véu
+     escuro era o botão mais apagado da tela, justo o que leva à loja, enquanto
+     o contorno branco do segundo saltava mais que ele. Agora o principal é um
+     bloco de papel, e o secundário continua contorno. */
+  .capa.com-video .bt{background:var(--paper);color:var(--char)}
+  .capa.com-video .bt:hover{background:var(--ember);color:var(--paper)}
+  .capa.com-video .bt2{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+  .capa.com-video .bt2:hover{background:transparent;border-color:#fff;color:#fff}
   .capa svg{width:58px;height:58px;overflow:visible}
   /* Compassos diferentes de propósito: em fase, os dois pareceriam um pisca-pisca.
      A aura respira devagar; a brasa varia pouco, só o bastante para não parecer
@@ -62,6 +68,36 @@
      o primeiro: contorno, não bloco. */
   .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
   .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
+
+  /* A VITRINE, logo abaixo da capa (nov/2026). A home tinha doze telas de
+     história e nenhuma peça com preço: quem chega pelo Instagram querendo saber
+     quanto custa tinha de adivinhar que a resposta estava em "Ver as peças".
+     As caixas nascem com o tamanho final, foto quadrada e duas linhas de nome,
+     para a página não pular quando o catálogo chega. */
+  .vitrine{padding:52px 0 44px;border-top:1px solid var(--line);text-align:center}
+  .vitrine .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+  .vitrine h2{font-family:'Fraunces';font-weight:300;font-size:clamp(27px,7vw,38px);margin-top:10px;line-height:1.15}
+  .vit-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:30px auto 0;max-width:780px;text-align:left}
+  .vit-peca{display:block;text-decoration:none;color:var(--char)}
+  .vit-foto{display:block;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash)}
+  .vit-foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+  .vit-peca:hover .vit-foto img{transform:scale(1.04)}
+  .vit-nome{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    font-family:'Fraunces';font-weight:300;font-size:19px;line-height:1.25;margin-top:12px;min-height:2.5em}
+  .vit-preco{display:block;font-size:14.5px;color:var(--smoke);margin-top:4px;min-height:1.5em}
+  .vit-mais{display:inline-block;margin-top:30px;color:var(--ember);font-size:15px}
+  /* No celular, duas e meia por tela, rolando de lado: a terceira aparecendo
+     pela metade é o que diz que há mais para ver. */
+  @media(max-width:560px){
+    .vit-grade{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+      margin:26px -22px 0;padding:0 22px;scrollbar-width:none;
+      /* Sem isto o encaixe alinha a primeira peça na BORDA da tela e come o
+         recuo: medido, ela abria a 4 px da margem e não a 26. */
+      scroll-padding-inline:22px}
+    .vit-grade::-webkit-scrollbar{display:none}
+    .vit-peca{flex:0 0 42%;scroll-snap-align:start}
+    .vit-nome{font-size:16px}
+  }
 
   /* O verbete. Tratamento de dicionário, e não de seção: é uma definição, e
      lida como definição ela convence sem precisar afirmar nada. Centrado e
@@ -417,6 +453,20 @@
   </section>
 
   <div class="envolve">
+
+    <section class="vitrine" aria-labelledby="vitTitulo">
+      <div class="rot">Na vitrine</div>
+      <h2 id="vitTitulo">Pronto no ateliê, para levar.</h2>
+      <!-- Três caixas vazias do tamanho final: quem preenche é /vitrine.js,
+           com o mesmo catálogo que a loja lê. Sem rede, elas viram um convite
+           para a loja em vez de ficarem vazias. -->
+      <div class="vit-grade" id="vitrine">
+        <span class="vit-peca" aria-hidden="true"><span class="vit-foto"></span><span class="vit-nome"></span><span class="vit-preco"></span></span>
+        <span class="vit-peca" aria-hidden="true"><span class="vit-foto"></span><span class="vit-nome"></span><span class="vit-preco"></span></span>
+        <span class="vit-peca" aria-hidden="true"><span class="vit-foto"></span><span class="vit-nome"></span><span class="vit-preco"></span></span>
+      </div>
+      <a class="vit-mais" href="/loja/">Ver a loja inteira</a>
+    </section>
 
     <!-- O nome, antes de qualquer coisa. Quem chega aqui leu "Cinérea" no
          Instagram e não sabe o que a palavra quer dizer: sem isso, o nome é só
@@ -877,7 +927,7 @@
 </footer>
 
 <script>
-// O único script da página, e existe por um motivo estreito: o `viewBox` de um
+// O único script ESCRITO AQUI, e existe por um motivo estreito: o `viewBox` de um
 // SVG não se muda por CSS. Os dois desenhos têm quadro largo para caber os
 // rótulos laterais; no celular esses rótulos somem e sobraria metade do quadro
 // vazia à direita. Aqui o quadro é recortado para só a ilustração.
@@ -911,6 +961,7 @@
 </script>
 
 <script src="/vivo.js" defer></script>
+<script src="/vitrine.js" defer></script>
 <script src="/contador.js" defer></script>
 </body>
 </html>
