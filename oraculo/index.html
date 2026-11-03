@@ -61,11 +61,9 @@
   .voltar:hover{color:var(--ember)}
 
   /* ---- o resultado ---- */
-  /* A foto da areia abre o resultado. É a única imagem da página, e ela existe
-     porque o produto É o grão: descrever "cera granulada" e não mostrar deixa a
-     pessoa imaginando pó, vidro ou pedra. */
-  .achado .foto{width:100%;height:auto;display:block;border-radius:14px;
-                background:var(--ash);margin-bottom:22px}
+  /* O resultado abre pelo NOME, sem foto. Era a areia tingida de cada aroma,
+     e saiu em nov/2026, quando a areia passou a ser fabricada sem aroma: a
+     foto prometia um grão de cada cor para cada cheiro, que não é o que chega. */
   .achado .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
   .achado h2{font-family:'Fraunces';font-weight:300;font-size:clamp(28px,7vw,40px);
              line-height:1.14;margin-top:10px}
@@ -250,7 +248,6 @@
 const AROMAS = {
   A: {
     nome: 'Névoa da Manhã',
-    foto: '/areia/nevoa.webp',
     carater: 'fresca, conífera, de ar frio',
     notas: ['pinho silvestre', 'cipreste', 'alecrim'],
     texto: `O cheiro do inverno da serra às sete da manhã: agulha de pinheiro,
@@ -263,7 +260,6 @@ const AROMAS = {
   },
   B: {
     nome: 'Lenha & Poesia',
-    foto: '/areia/lenha.webp',
     carater: 'quente, seca, de madeira',
     notas: ['cedro-do-atlas', 'patchouli', 'vetiver'],
     texto: `Madeira, terra e raiz, o oposto do cítrico. São aromas que evaporam
@@ -276,7 +272,6 @@ const AROMAS = {
   },
   C: {
     nome: 'Sopro de Sono',
-    foto: '/areia/sopro.webp',
     carater: 'noturna, floral, macia',
     notas: ['lavanda', 'sálvia esclareia', 'benjoim'],
     texto: `Lavanda e sálvia, com a resina de benjoim por baixo, que é doce como
@@ -362,7 +357,6 @@ function pintarFim(letra) {
     </div>`;
 
   q('fim').innerHTML = `
-    <img class="foto" src="${a.foto}" width="1400" height="1050" alt="A areia da ${a.nome}: grãos de cera de soja tingidos.">
     <div class="rot">O seu aroma</div>
     <h2>${a.nome}</h2>
     <div class="carater">${a.carater}</div>

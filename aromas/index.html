@@ -66,57 +66,46 @@
      marca é acento em menos de 10% da tela, e um botão é exatamente o
      "elemento crucial" que a regra abre exceção para: é o único lugar onde se
      pede uma ação. */
-  /* O CARTÃO É DE PAPEL, e não do cinza, e a razão é a imagem: os três renders
-     têm o papel do site assado no fundo, então sobre o cinza cada um vira um
-     retângulo visível e o convite lê como três fotos coladas. Com o mesmo tom
-     dos dois lados eles pousam sem emenda, e quem separa o bloco da página é a
-     borda. */
+  /* O CARTÃO É DE PAPEL, e não do cinza: quem separa o bloco da página é a
+     borda, e o fundo igual deixa o convite leve, sem cara de anúncio. */
   .convite{text-align:center;padding:38px 24px 42px;margin-top:6px;
            background:var(--paper);border:1px solid var(--line);border-radius:18px}
   .convite h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);
-              line-height:1.15;margin-top:20px}
+              line-height:1.15;margin-top:30px}
   .convite p{margin:12px auto 0;font-size:15.5px;color:var(--smoke);
              line-height:1.65;max-width:46ch}
 
-  /* As três em fila. Elas encolhem juntas e nunca empilham: em duas linhas
-     viram "algumas fotos", e o que a imagem precisa dizer é TRÊS. */
-  /* SEM O NOME, as três areias são três manchas de cor e a pessoa não sabe o
-     que está vendo. O nome embaixo é o que transforma "três fotos" em "três
-     opções com nome", que é a pergunta que o bloco faz. */
-  .tres{max-width:520px;margin:0 auto}
-  .trio-video{
-    width:100%;height:auto;display:block;
-    /* O TOPO SE DISSOLVE NO PAPEL, e é isto que tira a cara de gif quadrado.
-       Não adiantou fazer os grãos nascerem acima do enquadramento: o que
-       desenha a linha reta é a BORDA DO VÍDEO cortando o campo de grãos. Onde
-       há grão até o limite do retângulo, o retângulo aparece.
+  /* As três em fila, e nunca empilhadas: em coluna viram uma lista, e o que
+     o bloco pergunta é QUAL DOS TRÊS. O fio entre elas é o mesmo `--line` da
+     borda do cartão, então a divisão pertence ao cartão e não é desenho novo.
 
-       A máscara resolve no navegador, sem re-render: os grãos vão perdendo
-       opacidade conforme sobem e somem no papel em vez de baterem numa aresta.
-       De quebra, eles agora parecem se formar no ar enquanto caem. */
-    -webkit-mask-image:linear-gradient(to bottom,
-      transparent 0%, rgba(0,0,0,.25) 12%, rgba(0,0,0,.75) 26%, #000 40%);
-    mask-image:linear-gradient(to bottom,
-      transparent 0%, rgba(0,0,0,.25) 12%, rgba(0,0,0,.75) 26%, #000 40%);
-    /* O VÍDEO É COMPOSTO SOBRE BRANCO, e `multiply` faz o branco sumir: branco
-       vezes qualquer cor é a própria cor, então o fundo do vídeo vira o papel
-       do cartão sem depender de o codificador devolver o RGB exato. Composto
-       sobre o creme, o H.264 devolvia um tom levemente deslocado e aparecia uma
-       placa mais clara em volta. Mesma solução do vídeo do David.
-
-       O `multiply` precisa de fundo pintado ATRÁS dele no mesmo contexto de
-       empilhamento, e o cartão já pinta `--paper`. */
-    mix-blend-mode:multiply;
-  }
-  /* OS NOMES EM TRÊS COLUNAS IGUAIS, porque os três montes estão em terços
-     iguais do quadro. Alinhar por medida do vídeo seria refazer a conta toda
-     vez que o enquadramento mudasse; em terços, o nome fica sob o monte por
-     construção. */
-  .nomes{display:grid;grid-template-columns:repeat(3,1fr);margin-top:2px}
-  .nomes span{
-    font-family:'Fraunces';font-weight:300;text-align:center;
-    font-size:clamp(12.5px,3.2vw,15px);line-height:1.25;color:var(--char);
-    text-wrap:balance;padding:0 4px;
+     A ordem dentro de cada uma vai do que a pessoa reconhece ao que ela
+     confere: a hora do dia (ela sabe a dela), o nome, o caráter, e por último
+     as notas, menores, para quem quer saber do que é feito. */
+  .tres{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);
+        max-width:600px;margin:0 auto}
+  /* SUBGRID, para as linhas valerem nas três colunas: no celular o caráter de
+     uma quebra em duas linhas e o da outra não, e as notas desciam em alturas
+     diferentes. Sem suporte, cada coluna se arruma sozinha, que é o de antes. */
+  .aroma{display:grid;grid-row:span 4;grid-template-rows:subgrid;justify-items:center;
+         align-items:start;padding:4px 10px 2px}
+  .aroma + .aroma{border-left:1px solid var(--line)}
+  .aroma .hora{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .aroma b{font-family:'Fraunces';font-weight:300;font-size:clamp(17px,4.4vw,22px);
+           line-height:1.18;margin-top:12px;text-wrap:balance}
+  .aroma i{font-family:'Fraunces';font-size:14px;color:var(--smoke);margin-top:6px;
+           line-height:1.35;text-wrap:balance}
+  /* O traço de brasa é o mesmo gesto da linha que abre cada bloco da página,
+     em miniatura, e é ele que separa o que a peça é do que ela leva. */
+  .aroma .notas{font-size:13px;line-height:1.75;color:var(--smoke);margin-top:16px;
+                padding-top:14px;position:relative}
+  .aroma .notas::before{content:'';position:absolute;top:0;left:50%;width:18px;height:1px;
+                        margin-left:-9px;background:var(--ember);opacity:.55}
+  @media (max-width:420px){
+    .convite{padding-left:14px;padding-right:14px}
+    .aroma{padding:4px 5px 2px}
+    .aroma .notas{font-size:12px}
+    .aroma i{font-size:13px}
   }
 
   /* AS TRÊS ENTRAM EM SEQUÊNCIA, e não juntas: escalonadas, elas lêem como
@@ -125,8 +114,8 @@
      O ESTADO DE REPOUSO É VISÍVEL, e isto não é detalhe: quem esconde por
      padrão e mostra por animação aposta que a animação vai rodar. Medido nesta
      página: em aba escondida o navegador CONGELA a animação no primeiro quadro,
-     e as três areias ficaram em opacidade zero, ou seja, o convite inteiro sem
-     imagem. O mesmo vale para quem cai num navegador que não anima.
+     e os três aromas ficaram em opacidade zero, ou seja, o convite inteiro
+     vazio. O mesmo vale para quem cai num navegador que não anima.
 
      Por isso quem esconde é o JavaScript, com a classe `.anima`, e só depois de
      ele estar rodando. Sem script, sem animação, ou com ela travada, o que
@@ -158,12 +147,12 @@
   .planta:hover .fig path[stroke="#1C1A17"],
   .planta:hover .fig circle[stroke="#1C1A17"]{stroke:var(--ember)}
 
-  .anima .nomes span{opacity:0;transform:translateY(14px)}
-  .anima .convite.vista .nomes span{
+  .anima .aroma{opacity:0;transform:translateY(14px)}
+  .anima .convite.vista .aroma{
     animation:sobe .7s cubic-bezier(.2,.7,.3,1) forwards;
   }
-  .anima .convite.vista .nomes span:nth-child(2){animation-delay:.12s}
-  .anima .convite.vista .nomes span:nth-child(3){animation-delay:.24s}
+  .anima .convite.vista .aroma:nth-child(2){animation-delay:.12s}
+  .anima .convite.vista .aroma:nth-child(3){animation-delay:.24s}
   @keyframes sobe{to{opacity:1;transform:none}}
 
   .bt-convite{
@@ -436,33 +425,32 @@
          abertura, ele pega a pessoa no instante em que ela acabou de descobrir
          que cheiro mexe com memória e ainda não sabe o que fazer com isso.
 
-         O desenho são as TRÊS AREIAS, e não um ícone: elas dizem, sem uma
-         palavra, que há três caminhos e que um deles é o dela. É a mesma imagem
-         que o oráculo mostra no fim, então a promessa e a entrega combinam. -->
+         O desenho é TIPOGRÁFICO, e já foi as três areias coloridas. Saiu em
+         nov/2026, quando a areia passou a ser fabricada sem aroma: três montes
+         de cor com nome de perfume diziam que cada areia é um cheiro, e o
+         produto deixou de ser assim. O que distingue os três agora é o que
+         eles são de fato, a hora do dia e as notas, e isso se escreve. -->
     <section class="convite">
-      <!-- UM vídeo, e não três visualizadores 3D. Grão caindo é MOVIMENTO, e
-           movimento em WebGL exigiria partícula, que o visualizador de glTF não
-           faz: ele toca animação de esqueleto, não chuva. Três telas de WebGL na
-           mesma página também são três contextos gráficos no celular de quem só
-           queria ler sobre cheiro. Isto aqui é o mesmo modelo 3D, renderizado
-           em movimento, num arquivo de 216 KB.
-
-           O laço fecha por construção: cada grão percorre um número inteiro de
-           vezes a altura da cena ao longo dos 96 quadros, então o último é
-           exatamente um passo antes do primeiro. Medido, e não suposto: a
-           diferença entre o primeiro e o último quadro é 3,24, a mesma que
-           entre dois quadros vizinhos. O vídeo do NFC precisou ir e voltar
-           porque lá não existia esse ponto. -->
-      <div class="tres">
-        <video id="trioAreia" class="trio-video" muted loop playsinline
-               preload="none" poster="/areia/trio.jpg" width="1240" height="460"
-               aria-label="As três areias da Cinérea, com grãos de cera caindo sobre cada uma."></video>
-        <div class="nomes" aria-hidden="true">
-          <span>Névoa da Manhã</span>
-          <span>Lenha &amp; Poesia</span>
-          <span>Sopro de Sono</span>
-        </div>
-      </div>
+      <ul class="tres">
+        <li class="aroma">
+          <span class="hora">de manhã</span>
+          <b>Névoa da Manhã</b>
+          <i>fresca, de ar frio</i>
+          <span class="notas">pinho silvestre<br>cipreste<br>alecrim</span>
+        </li>
+        <li class="aroma">
+          <span class="hora">à lareira</span>
+          <b>Lenha &amp; Poesia</b>
+          <i>quente, de madeira</i>
+          <span class="notas">cedro-do-atlas<br>patchouli<br>vetiver</span>
+        </li>
+        <li class="aroma">
+          <span class="hora">à noite</span>
+          <b>Sopro de Sono</b>
+          <i>floral, macia</i>
+          <span class="notas">lavanda<br>sálvia esclareia<br>benjoim</span>
+        </li>
+      </ul>
       <h2>Qual desses é o seu?</h2>
       <p>Três perguntas sobre o seu momento, e o aroma da casa que combina com
          ele. Leva menos de um minuto, e não pede cadastro nenhum.</p>
