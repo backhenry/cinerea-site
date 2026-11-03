@@ -146,11 +146,13 @@
  *
  * Ele NÃO vem no HTML com `src`: quem põe o endereço é este script, e só depois
  * de o navegador dizer que consegue tocar. Assim, arquivo ausente, rede ruim ou
- * formato não suportado deixam a capa exatamente como ela é hoje, em vez de um
+ * formato não suportado deixam a capa com o primeiro quadro do giro, que é o
+ * fundo dela desde a primeira pintura (ver o CSS da capa), em vez de um
  * retângulo preto no lugar da primeira coisa que a pessoa vê.
  *
- * PARA PUBLICAR UM VÍDEO: ponha `capa.mp4` na raiz do site (e, se quiser,
- * `capa.jpg` com o primeiro quadro). Nada mais precisa mudar.
+ * PARA TROCAR O VÍDEO: substitua `capa.mp4` na raiz do site e, JUNTO, o
+ * `capa.jpg` pelo primeiro quadro do novo. O jpg é o fundo da capa enquanto o
+ * vídeo não chega; fora de par, a capa troca de imagem quando ele começa.
  *
  *   formato   MP4, H.264, sem áudio (o laço toca mudo de qualquer jeito)
  *   tamanho   1920×864, deitado (o de hoje)
@@ -168,8 +170,8 @@
   var capa = document.getElementById('capa');
   if (!v || !capa) return;
 
-  // Quem pediu menos movimento não recebe vídeo nenhum. O pôster também não
-  // entra: sem o vídeo tocando, ele seria só uma foto escura sem propósito.
+  // Quem pediu menos movimento não recebe vídeo nenhum, e fica com o David
+  // parado, que é o fundo da capa.
   var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (quieto) return;
 
@@ -190,7 +192,7 @@
   function revelar() {
     if (revelado) return;
     revelado = true;
-    capa.classList.add('com-video');
+    capa.classList.add('tocando');
   }
 
   ['loadeddata', 'canplay', 'playing'].forEach(function (ev) {
@@ -200,14 +202,14 @@
       if (p && p.catch) p.catch(function () {
         // Autoplay recusado de verdade: tira o vídeo de cena em vez de deixar
         // um quadro congelado passando por decisão de design.
-        capa.classList.remove('com-video');
+        capa.classList.remove('tocando');
         revelado = false;
       });
     });
   });
 
   v.addEventListener('error', function () {
-    capa.classList.remove('com-video');
+    capa.classList.remove('tocando');
   });
 
   v.src = '/capa.mp4';

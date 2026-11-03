@@ -491,9 +491,11 @@
     background:var(--paper);border-left:1px solid var(--line);
     display:flex;flex-direction:column;
     transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.7,.3,1);
-    box-shadow:-18px 0 40px -30px rgba(28,26,23,.5);
   }
-  .gaveta.abre{transform:none}
+  /* A sombra só existe ABERTA. Fechada, a gaveta encosta na borda direita e a
+     sombra, que se projeta para a esquerda, vazava para dentro da tela: uma
+     faixa cinza de cima a baixo em toda a loja, no celular. */
+  .gaveta.abre{transform:none;box-shadow:-18px 0 40px -30px rgba(28,26,23,.5)}
   @media (prefers-reduced-motion:reduce){
     .gaveta,.gaveta-fundo{transition:none}
   }

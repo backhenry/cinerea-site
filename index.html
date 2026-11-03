@@ -24,7 +24,21 @@
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
-  .capa{text-align:center;padding:78px 22px 66px;position:relative;isolation:isolate}
+  /* A CAPA NASCE ESCURA (nov/2026). Antes ela abria creme, com texto escuro, e
+     virava carvão quando o vídeo chegava: no celular, 1 a 2 segundos depois, e
+     com o texto já branco enquanto o véu ainda entrava, texto branco sobre
+     creme na primeira tela de quem vem do Instagram. Agora o primeiro quadro do
+     giro (`capa.jpg`, 67 KB) é o fundo desde a primeira pintura, enquadrado
+     igual ao vídeo, e o vídeo só entra por cima dele. Quem não recebe vídeo
+     (menos movimento, economia de dados, arquivo que falha) fica com o David
+     parado, e não com outra capa. */
+  .capa{text-align:center;padding:78px 22px 66px;position:relative;isolation:isolate;
+    background:var(--char) url(/capa.jpg) 83% 50%/cover no-repeat}
+  /* A forma do texto vem antes das regras de cor e de lado, que dependem de
+     vir depois para valer: com o mesmo peso, a última declarada ganha. */
+  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(42px,11vw,64px);margin-top:22px;letter-spacing:.01em}
+  .capa .lema{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(16px,4.4vw,20px);margin-top:4px}
+  .capa p{max-width:38ch;margin:30px auto 0;font-size:16.5px}
   /* O vídeo cobre a capa inteira, atrás de tudo. `object-fit:cover` porque a
      proporção da tela nunca é a do arquivo, e distorcer rosto de escultura é
      pior que cortar. */
@@ -36,7 +50,7 @@
   /* O véu garante a leitura sobre qualquer quadro do vídeo. Sem ele, a
      legibilidade fica refém do que estiver passando na tela naquele segundo. */
   .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.42),rgba(20,19,17,.68))}
-  .capa.com-video .capa-video,.capa.com-video .capa-veu{opacity:1}
+  .capa .capa-veu,.capa.tocando .capa-video{opacity:1}
   /* O DAVID NA CAPA (nov/2026), no lugar da vela gerada que a loja não vendia.
      O vídeo é largo e a peça gira no terço direito, sobre o carvão do site.
 
@@ -53,25 +67,25 @@
      mais escuro o leva acima de 4,5. */
   @media(max-width:899px){ .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.5),rgba(20,19,17,.72))} }
   @media(min-width:900px){
-    .capa.com-video{text-align:left;padding-left:max(22px,calc(50vw - 470px))}
-    .capa.com-video p{margin-left:0}
-    .capa.com-video .bt{margin-left:0;margin-right:10px}
-    .capa-video{object-position:50% 50%}
+    .capa{text-align:left;padding-left:max(22px,calc(50vw - 470px))}
+    .capa p{margin-left:0}
+    .capa .bt{margin-left:0;margin-right:10px}
+    .capa,.capa-video{background-position:50% 50%;object-position:50% 50%}
     .capa-veu{background:linear-gradient(90deg,rgba(20,19,17,.72) 0%,rgba(20,19,17,.5) 45%,rgba(20,19,17,.08) 75%)}
   }
-  .capa.com-video{color:#fff}
-  .capa.com-video h1,.capa.com-video .lema,.capa.com-video p{color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.4)}
-  .capa.com-video .lema{opacity:.92}
-  .capa.com-video .selo{filter:drop-shadow(0 1px 10px rgba(0,0,0,.45))}
-  .capa.com-video .selo path{stroke:#fff}
+  .capa{color:#fff}
+  .capa h1,.capa .lema,.capa p{color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.4)}
+  .capa .lema{opacity:.92}
+  .capa .selo{filter:drop-shadow(0 1px 10px rgba(0,0,0,.45))}
+  .capa .selo path{stroke:#fff}
   /* SOBRE O VÍDEO O BOTÃO PRINCIPAL É CLARO (nov/2026). Carvão sobre um véu
      escuro era o botão mais apagado da tela, justo o que leva à loja, enquanto
      o contorno branco do segundo saltava mais que ele. Agora o principal é um
      bloco de papel, e o secundário continua contorno. */
-  .capa.com-video .bt{background:var(--paper);color:var(--char)}
-  .capa.com-video .bt:hover{background:var(--ember);color:var(--paper)}
-  .capa.com-video .bt2{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
-  .capa.com-video .bt2:hover{background:transparent;border-color:#fff;color:#fff}
+  .capa .bt{background:var(--paper);color:var(--char)}
+  .capa .bt:hover{background:var(--ember);color:var(--paper)}
+  .capa .bt2{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+  .capa .bt2:hover{background:transparent;border-color:#fff;color:#fff}
   .capa svg{width:58px;height:58px;overflow:visible}
   /* Compassos diferentes de propósito: em fase, os dois pareceriam um pisca-pisca.
      A aura respira devagar; a brasa varia pouco, só o bastante para não parecer
@@ -80,9 +94,6 @@
   .capa .brasa{animation:viva 3.4s ease-in-out infinite}
   @keyframes respira{0%,100%{transform:scale(.86);opacity:.75}50%{transform:scale(1.06);opacity:1}}
   @keyframes viva{0%,100%{opacity:1}50%{opacity:.88}}
-  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(42px,11vw,64px);margin-top:22px;letter-spacing:.01em}
-  .capa .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:clamp(16px,4.4vw,20px);margin-top:4px}
-  .capa p{max-width:38ch;margin:30px auto 0;font-size:16.5px}
   .bt{display:inline-block;margin:30px 5px 0;padding:15px 30px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
   .bt:hover{background:var(--ember)}
   /* Dois caminhos na capa: comprar o que existe, ou encomendar o que não
@@ -446,8 +457,9 @@
   <section class="capa" id="capa">
     <!-- O VÍDEO É OPCIONAL E SÓ APARECE QUANDO CARREGA.
          Se o arquivo não existir, ou a rede for ruim, ou a pessoa pedir menos
-         movimento, esta capa continua exatamente como sempre foi. É a mesma
-         regra das animações daqui: efeito nenhum pode esconder o conteúdo. -->
+         movimento, fica o primeiro quadro dele, que é o fundo da capa. É a
+         mesma regra das animações daqui: efeito nenhum pode esconder o
+         conteúdo. -->
     <video class="capa-video" id="capaVideo" muted loop playsinline preload="auto"
            poster="/capa.jpg" aria-hidden="true" tabindex="-1"></video>
     <div class="capa-veu" aria-hidden="true"></div>
