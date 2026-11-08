@@ -98,6 +98,34 @@
   .perguntas summary::after{content:'+';position:absolute;right:4px;top:12px;font-size:22px;color:var(--ember)}
   .perguntas details[open] summary::after{content:'\2212'}
   .perguntas details p{padding:0 0 18px;color:#45403A;line-height:1.65}
+
+  /* MOVIMENTO (nov/2026). O repouso é VISÍVEL; quem esconde é o script, com
+     `anima` no <html>, e só depois de ligar quem mostra de volta (a mesma
+     regra da página de contato e da de aromas: aba escondida congela a
+     animação no primeiro quadro). O atraso de cada item vem do script, pela
+     posição dele no grupo. */
+  .anima .surge{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+  .anima .surge.de-lado{transform:translateX(-42px)}
+  .anima .grupo.inverte .surge.de-lado,.anima .surge.de-lado.direita{transform:translateX(42px)}
+  .anima .surge.vista{opacity:1;transform:none}
+  /* o fio de cada passo se desenha da esquerda para a direita */
+  .passos li{position:relative;border-top-color:transparent}
+  .passos li::before{content:'';position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--char);transform-origin:left}
+  .anima .passos li.surge::before{transform:scaleX(0);transition:transform 1.1s cubic-bezier(.6,0,.2,1) .15s}
+  .anima .passos li.surge.vista::before{transform:scaleX(1)}
+  /* os ícones dos tipos se desenham pelo traço (pathLength=1, posto pelo script) */
+  /* O comprimento de cada traço é MEDIDO pelo script (getTotalLength) e
+     vai em --L. `pathLength="1"` seria o atalho, e o Chrome não o aplica ao
+     tracejado: o ícone virava pontinhos de 1 px. Keyframe e não transição,
+     porque a transição não abria e o traço ficava parado no começo. */
+  .anima .tipo.surge [data-traco]{stroke-dasharray:var(--L) var(--L);stroke-dashoffset:var(--L)}
+  .anima .tipo.surge.vista [data-traco]{animation:traco 1.1s ease forwards}
+  @keyframes traco{from{stroke-dashoffset:var(--L)}to{stroke-dashoffset:0}}
+  .anima .tipo.surge svg [fill="#B5462A"],.anima .tipo.surge svg g{opacity:0;transform:scale(.4);transform-box:fill-box;transform-origin:center;transition:opacity .4s ease 1s,transform .5s cubic-bezier(.3,1.6,.5,1) 1s}
+  .anima .tipo.surge.vista svg [fill="#B5462A"],.anima .tipo.surge.vista svg g{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .anima .surge,.anima .surge.de-lado{opacity:1;transform:none;transition:none}
+  }
 </style>
 </head>
 <body class="nova">
@@ -137,16 +165,16 @@
 
   <section class="capa" id="capa">
     <div class="capa-texto">
-      <p class="rot">Aplicações</p>
-      <h1 class="serifa">Encoste o celular.<br><em>A peça responde.</em></h1>
-      <p class="sub">O chaveiro e o David guardam um chip. Quem encosta o celular abre o que você deixou
+      <p class="rot surge">Aplicações</p>
+      <h1 class="serifa surge">Encoste o celular.<br><em>A peça responde.</em></h1>
+      <p class="sub surge">O chaveiro e o David guardam um chip. Quem encosta o celular abre o que você deixou
          ali, sem aplicativo nenhum. E você troca quando quiser, pelo site, de onde estiver.</p>
-      <div class="acoes">
+      <div class="acoes surge">
         <a class="bt" href="#pecas">Ver as peças com chip</a>
         <a class="bt bt2" href="#ideias">Ideias de uso</a>
       </div>
     </div>
-    <figure class="capa-video">
+    <figure class="capa-video surge de-lado direita">
       <video id="nfcVideo" muted loop playsinline preload="none" poster="/nfc.jpg"
              width="740" height="696"
              aria-label="Um celular se aproxima do chaveiro em gota e o campo do chip aparece em ondas."></video>
@@ -156,23 +184,23 @@
   <div class="envolve">
 
     <section class="como" id="como" aria-labelledby="comoTitulo">
-      <p class="rot">Como funciona</p>
-      <h2 class="serifa" id="comoTitulo">Grave uma vez. Troque sempre.</h2>
-      <ol class="passos">
-        <li><b class="serifa">Gravamos no ateliê</b><p>Antes de a peça sair, o chip recebe o endereço dela. Você não precisa de nenhum aparelho especial.</p></li>
-        <li><b class="serifa">Qualquer um encosta</b><p>Celulares com NFC abrem sozinhos: Android e iPhone do XS em diante. Sem baixar nada.</p></li>
-        <li><b class="serifa">Você troca pelo site</b><p>Em <a href="/perfil/">Meu perfil</a>, de qualquer aparelho. A peça na estante mostra o novo conteúdo na hora.</p></li>
+      <p class="rot surge">Como funciona</p>
+      <h2 class="serifa surge" id="comoTitulo">Grave uma vez. Troque sempre.</h2>
+      <ol class="passos" data-escalonar>
+        <li class="surge"><b class="serifa">Gravamos no ateliê</b><p>Antes de a peça sair, o chip recebe o endereço dela. Você não precisa de nenhum aparelho especial.</p></li>
+        <li class="surge"><b class="serifa">Qualquer um encosta</b><p>Celulares com NFC abrem sozinhos: Android e iPhone do XS em diante. Sem baixar nada.</p></li>
+        <li class="surge"><b class="serifa">Você troca pelo site</b><p>Em <a href="/perfil/">Meu perfil</a>, de qualquer aparelho. A peça na estante mostra o novo conteúdo na hora.</p></li>
       </ol>
-      <p class="rot rot-tipos">O que a peça pode guardar</p>
-      <div class="tipos">
-        <div class="tipo">
+      <p class="rot rot-tipos surge">O que a peça pode guardar</p>
+      <div class="tipos" data-escalonar>
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M24 23 v6 a2 2 0 0 1 -2 2 H10 a2 2 0 0 1 -2 -2 V13 a2 2 0 0 1 2 -2 h6" stroke="#1C1A17" stroke-width="2.1"/>
             <path d="M23 8 H32 V17" stroke="#B5462A" stroke-width="2.1"/>
             <path d="M32 8 L20 20" stroke="#B5462A" stroke-width="2.1"/>
           </svg><span>link</span>
         </div>
-        <div class="tipo">
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="13" cy="29" r="3.6" fill="#B5462A" stroke="none"/>
             <circle cx="27" cy="26" r="3.6" stroke="#1C1A17" stroke-width="2.1"/>
@@ -180,7 +208,7 @@
             <path d="M16.6 12.6 L30.6 9.6" stroke="#1C1A17" stroke-width="3"/>
           </svg><span>playlist</span>
         </div>
-        <div class="tipo">
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round">
             <path d="M4 14 a22.5 22.5 0 0 1 32 0" stroke="#1C1A17" stroke-width="2.1" opacity=".3"/>
             <path d="M8.5 19.5 a16 16 0 0 1 23 0" stroke="#1C1A17" stroke-width="2.1" opacity=".6"/>
@@ -188,7 +216,7 @@
             <circle cx="20" cy="31" r="2.6" fill="#B5462A" stroke="none"/>
           </svg><span>wi-fi</span>
         </div>
-        <div class="tipo">
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 6 h16 l6 6 v20 a2 2 0 0 1 -2 2 H11 a2 2 0 0 1 -2 -2 Z" stroke="#1C1A17" stroke-width="2.1"/>
             <path d="M25 6 v6 h6" stroke="#1C1A17" stroke-width="2.1"/>
@@ -196,19 +224,19 @@
             <path d="M14 27 h8" stroke="#B5462A" stroke-width="2.1"/>
           </svg><span>recado</span>
         </div>
-        <div class="tipo">
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 9 h22 a5 5 0 0 1 5 5 v11 a5 5 0 0 1 -5 5 H17 l-6 5 v-5 H9 a5 5 0 0 1 -5 -5 V14 a5 5 0 0 1 5 -5 Z" stroke="#1C1A17" stroke-width="2.1"/>
             <g fill="#B5462A"><circle cx="14" cy="19.5" r="1.9"/><circle cx="20" cy="19.5" r="1.9"/><circle cx="26" cy="19.5" r="1.9"/></g>
           </svg><span>WhatsApp</span>
         </div>
-        <div class="tipo">
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 35 C20 35,31 24,31 16 A11 11 0 0 0 9 16 C9 24,20 35,20 35 Z" stroke="#1C1A17" stroke-width="2.1"/>
             <circle cx="20" cy="16" r="4" fill="#B5462A" stroke="none"/>
           </svg><span>lugar</span>
         </div>
-        <div class="tipo">
+        <div class="tipo surge">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round">
             <circle cx="20" cy="14" r="5.6" stroke="#1C1A17" stroke-width="2.1"/>
             <path d="M9 32 a11 11 0 0 1 22 0" stroke="#B5462A" stroke-width="2.1"/>
@@ -218,17 +246,17 @@
     </section>
 
     <section class="pecas" id="pecas" aria-labelledby="pecasTitulo">
-      <p class="rot">As peças com chip</p>
-      <h2 class="serifa" id="pecasTitulo">Duas peças, o mesmo chip.</h2>
-      <div class="duas">
-        <a class="peca-card pousada" href="/loja/?peca=ms9oc0c711on">
+      <p class="rot surge">As peças com chip</p>
+      <h2 class="serifa surge" id="pecasTitulo">Duas peças, o mesmo chip.</h2>
+      <div class="duas" data-escalonar>
+        <a class="peca-card pousada surge" href="/loja/?peca=ms9oc0c711on">
           <img class="laje" src="/chaveiro-gota.jpg" width="1200" height="1200" loading="lazy" decoding="async"
                alt="O chaveiro de gesso em forma de gota, com a marca e o furo na ponta.">
           <span class="nome serifa">Chaveiro</span>
           <span class="desc">Vai no bolso, na mochila, na mão do convidado. O chip mora no miolo da gota.</span>
           <span class="ver">Ver na loja</span>
         </a>
-        <a class="peca-card pousada" href="/loja/?peca=msfkfkc56u43">
+        <a class="peca-card pousada surge" href="/loja/?peca=msfkfkc56u43">
           <img class="laje l3" src="/peca-david.jpg" width="1050" height="1400" loading="lazy" decoding="async"
                alt="O busto de David em gesso branco sobre a base, com o medalhão do chip encaixado.">
           <span class="nome serifa">David</span>
@@ -242,48 +270,48 @@
 
   <section class="ideias" id="ideias" aria-labelledby="ideiasTitulo">
     <div class="envolve">
-      <p class="rot">Ideias de uso</p>
-      <h2 class="serifa" id="ideiasTitulo">A peça é uma só.<br><em>O que ela diz muda.</em></h2>
+      <p class="rot surge">Ideias de uso</p>
+      <h2 class="serifa surge" id="ideiasTitulo">A peça é uma só.<br><em>O que ela diz muda.</em></h2>
     </div>
 
     <div class="grupo">
-      <figure class="pousada"><img class="laje" src="/aplic-casa.jpg" width="1600" height="900" loading="lazy" decoding="async"
-           alt="Um aparador de carvalho na entrada de casa, com luz de janela na parede."></figure>
+      <figure class="pousada surge de-lado"><img class="laje" src="/aplic-casa.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="O aparador da entrada: o pote Cúmulo aceso, a Concha vazia e o chaveiro em gota largado na madeira, com luz de janela."></figure>
       <div class="grupo-texto">
-        <h3 class="serifa">Em casa</h3>
-        <ul>
-          <li><b>A rede de wi-fi.</b> Encostou, conectou. Trocou a senha, troca no site.</li>
-          <li><b>Recado para quem chega.</b> Onde ficam as toalhas, a que horas é o café.</li>
-          <li><b>A trilha do jantar.</b> Quem perguntou leva a playlist embora no celular.</li>
-          <li><b>Quarto de hóspedes.</b> Wi-fi, mapa do bairro e o seu WhatsApp numa peça só.</li>
+        <h3 class="serifa surge">Em casa</h3>
+        <ul data-escalonar>
+          <li class="surge"><b>A rede de wi-fi.</b> Encostou, conectou. Trocou a senha, troca no site.</li>
+          <li class="surge"><b>Recado para quem chega.</b> Onde ficam as toalhas, a que horas é o café.</li>
+          <li class="surge"><b>A trilha do jantar.</b> Quem perguntou leva a playlist embora no celular.</li>
+          <li class="surge"><b>Quarto de hóspedes.</b> Wi-fi, mapa do bairro e o seu WhatsApp numa peça só.</li>
         </ul>
       </div>
     </div>
 
     <div class="grupo inverte">
-      <figure class="pousada"><img class="laje l2" src="/aplic-presente.jpg" width="1600" height="900" loading="lazy" decoding="async"
-           alt="Duas mãos segurando um presente embrulhado em linho, com um cartão escrito à mão."></figure>
+      <figure class="pousada surge de-lado"><img class="laje l2" src="/aplic-presente.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="O pote Plissado amarrado com barbante, com o chaveiro em gota pendurado no laço como etiqueta de presente."></figure>
       <div class="grupo-texto">
-        <h3 class="serifa">Presente e afeto</h3>
-        <ul>
-          <li><b>Casamento.</b> O recado dos noivos hoje, as fotos de cada aniversário depois.</li>
-          <li><b>Nascimento.</b> Um ano por vez: o primeiro passo, depois a escola.</li>
-          <li><b>Cápsula do tempo.</b> Uma carta para abrir daqui a quinze anos.</li>
-          <li><b>Homenagem.</b> A voz e as fotos de quem partiu, à mão da família.</li>
+        <h3 class="serifa surge">Presente e afeto</h3>
+        <ul data-escalonar>
+          <li class="surge"><b>Casamento.</b> O recado dos noivos hoje, as fotos de cada aniversário depois.</li>
+          <li class="surge"><b>Nascimento.</b> Um ano por vez: o primeiro passo, depois a escola.</li>
+          <li class="surge"><b>Cápsula do tempo.</b> Uma carta para abrir daqui a quinze anos.</li>
+          <li class="surge"><b>Homenagem.</b> A voz e as fotos de quem partiu, à mão da família.</li>
         </ul>
       </div>
     </div>
 
     <div class="grupo">
-      <figure class="pousada"><img class="laje l3" src="/aplic-restaurante.jpg" width="1600" height="900" loading="lazy" decoding="async"
-           alt="Uma mesa de mármore de bistrô à luz de vela, com duas taças."></figure>
+      <figure class="pousada surge de-lado"><img class="laje l3" src="/aplic-restaurante.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="Uma mesa de bistrô em mármore com o prato Ondas aceso no centro, uma taça e o chaveiro em gota sobre a pedra."></figure>
       <div class="grupo-texto">
-        <h3 class="serifa">Restaurantes e pousadas</h3>
-        <ul>
-          <li><b>Cardápio na mesa.</b> Mudou o prato, muda no site, e todas as mesas mudam juntas.</li>
-          <li><b>Quarto de pousada.</b> Wi-fi, horário do café e o mapa das trilhas.</li>
-          <li><b>Avaliação no balcão.</b> Encostou, abriu a página de avaliação.</li>
-          <li><b>Reservas.</b> O WhatsApp da casa com a conversa já começada.</li>
+        <h3 class="serifa surge">Restaurantes e pousadas</h3>
+        <ul data-escalonar>
+          <li class="surge"><b>Cardápio na mesa.</b> Mudou o prato, muda no site, e todas as mesas mudam juntas.</li>
+          <li class="surge"><b>Quarto de pousada.</b> Wi-fi, horário do café e o mapa das trilhas.</li>
+          <li class="surge"><b>Avaliação no balcão.</b> Encostou, abriu a página de avaliação.</li>
+          <li class="surge"><b>Reservas.</b> O WhatsApp da casa com a conversa já começada.</li>
         </ul>
       </div>
     </div>
@@ -291,14 +319,14 @@
 
   <section class="quantidade" id="quantidade" aria-labelledby="quantTitulo">
     <div class="envolve quant-in">
-      <figure class="pousada"><img class="laje l4" src="/aplic-eventos.jpg" width="1600" height="900" loading="lazy" decoding="async"
-           alt="O chaveiro de gesso em forma de gota, com a marca, sobre o guardanapo de um lugar marcado de casamento."></figure>
+      <figure class="pousada surge de-lado"><img class="laje l4" src="/aplic-eventos.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="Um lugar posto de casamento: prato branco com o chaveiro em gota em cima, guardanapo de linho, taça e o Seixo aceso ao fundo."></figure>
       <div>
-        <p class="rot">Em quantidade</p>
-        <h2 class="serifa" id="quantTitulo">Para o seu evento<br><em>ou a sua marca.</em></h2>
-        <p class="sub">Chaveiros para os convidados de um casamento, brinde de empresa, ou a peça que vai dentro
+        <p class="rot surge">Em quantidade</p>
+        <h2 class="serifa surge" id="quantTitulo">Para o seu evento<br><em>ou a sua marca.</em></h2>
+        <p class="sub surge">Chaveiros para os convidados de um casamento, brinde de empresa, ou a peça que vai dentro
            da caixa do que você vende. Cada um pode abrir o mesmo conteúdo, ou um diferente.</p>
-        <div class="acoes">
+        <div class="acoes surge">
           <a class="bt" href="/contato/">Pedir um orçamento</a>
         </div>
       </div>
@@ -307,14 +335,14 @@
 
   <div class="envolve">
     <section class="perguntas" aria-labelledby="pergTitulo">
-      <h2 class="serifa" id="pergTitulo">Perguntas rápidas</h2>
-      <details><summary>Funciona em qualquer celular?</summary>
+      <h2 class="serifa surge" id="pergTitulo">Perguntas rápidas</h2>
+      <details class="surge"><summary>Funciona em qualquer celular?</summary>
         <p>Em quase todos. Android com NFC e iPhone do XS em diante abrem o conteúdo só de encostar, sem aplicativo. Em celular mais antigo, a peça continua sendo uma peça bonita.</p></details>
-      <details><summary>Preciso de aplicativo para trocar o conteúdo?</summary>
+      <details class="surge"><summary>Preciso de aplicativo para trocar o conteúdo?</summary>
         <p>Não. Você troca pelo site, em <a href="/perfil/">Meu perfil</a>, de qualquer aparelho. O chip guarda o endereço da peça, e o que aparece nesse endereço é você quem decide.</p></details>
-      <details><summary>E se eu der a peça para outra pessoa?</summary>
+      <details class="surge"><summary>E se eu der a peça para outra pessoa?</summary>
         <p>Você apaga o registro da peça na sua conta, e quem recebe encosta o celular e cadastra como uma peça nova. A procedência da peça vai junto; o seu histórico, não.</p></details>
-      <details><summary>Os pratos e potes também têm chip?</summary>
+      <details class="surge"><summary>Os pratos e potes também têm chip?</summary>
         <p>Não. Hoje o chip está no chaveiro e no David. Os pratos e potes são para a areia e a chama.</p></details>
     </section>
   </div>
@@ -370,6 +398,39 @@
   </div>
 </footer>
 
+<script>
+  // As seções surgem ao chegar. Decoração: sem IntersectionObserver, ou com
+  // movimento reduzido, a classe `anima` nunca entra e tudo fica à vista.
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // ícones: o traço se desenha, e para isso cada caminho leva o próprio
+    // comprimento (+1 px de folga para a ponta redonda não sobrar)
+    document.querySelectorAll('.tipo svg path, .tipo svg circle').forEach(function (el) {
+      if (!el.getAttribute('stroke') || el.getAttribute('stroke') === 'none') return;
+      el.style.setProperty('--L', (el.getTotalLength() + 1).toFixed(1) + 'px');
+      el.setAttribute('data-traco', '');
+    });
+    // em grupo, cada item chega um pouco depois do anterior
+    document.querySelectorAll('[data-escalonar]').forEach(function (g) {
+      Array.prototype.forEach.call(g.querySelectorAll(':scope > .surge'), function (el, i) {
+        el.style.transitionDelay = (i * 0.09).toFixed(2) + 's';
+        // nos ícones, o traço e o ponto de brasa também esperam a vez deles
+        el.querySelectorAll('svg [data-traco]').forEach(function (c) { c.style.animationDelay = (0.2 + i * 0.12).toFixed(2) + 's'; });
+        el.querySelectorAll('svg [fill="#B5462A"], svg g').forEach(function (c) { c.style.transitionDelay = (1 + i * 0.12).toFixed(2) + 's'; });
+      });
+    });
+    var olho = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('vista');
+        olho.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.documentElement.classList.add('anima');
+    document.querySelectorAll('.surge').forEach(function (el) { olho.observe(el); });
+  })();
+</script>
 <script src="/vivo.js" defer></script>
 <script src="/contador.js" defer></script>
 </body>
