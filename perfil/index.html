@@ -1159,7 +1159,8 @@ async function telaFechar(){
   }).filter(Boolean);
 
   const foraDaVitrine = carga.itens.length - itens.length;
-  const embreve = itens.filter(i=>i.situacao==='embreve');
+  // em breve ou esgotada: as duas o servidor recusa na hora de cobrar
+  const embreve = itens.filter(i=>i.situacao==='embreve'||i.situacao==='esgotado');
 
   if(!itens.length){
     tela.innerHTML = `<div class="cartao"><h3>A sacola não existe mais</h3>
@@ -1188,7 +1189,7 @@ async function telaFechar(){
     <div class="cartao">
       <h3>Sua sacola</h3>
       ${foraDaVitrine>0 ? `<p class="sub" style="color:var(--ember)">${foraDaVitrine} peça(s) saíram da vitrine e não entram nesta compra.</p>` : ''}
-      ${embreve.length ? `<p class="sub" style="color:var(--ember)">Peça em produção na sacola: o pagamento vai recusar até ela voltar à vitrine.</p>` : ''}
+      ${embreve.length ? `<p class="sub" style="color:var(--ember)">Há peça esgotada ou em produção na sacola: tire ela para pagar o resto, ou fale com a gente que guardamos uma da próxima leva.</p>` : ''}
       <div id="ck_itens"></div>
     </div>
 

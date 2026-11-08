@@ -48,16 +48,43 @@
     '<path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>' +
     '<path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
 
+  var SELO = '<span class="vit-selo">esgotado</span>';
+
+  /* As sacolas que já estão escritas na página (a trilha dos pratos e potes)
+     apontam para peças fixas. Peça fora de venda perde a sacola e ganha o
+     selo; sem isso o toque levaria à loja e não poria nada na sacola. */
+  function marcarForaDeVenda(itens) {
+    var situacao = {};
+    itens.forEach(function (p) { situacao[p.id] = p.situacao || 'disponivel'; });
+    if (!document.querySelectorAll) return;
+    var links = document.querySelectorAll('a.vit-sacola[href*="sacola="]');
+    Array.prototype.forEach.call(links, function (a) {
+      var id = decodeURIComponent((a.getAttribute('href').split('sacola=')[1] || '').split('&')[0]);
+      var s = situacao[id];
+      if (!s || s === 'disponivel') return;
+      var selo = document.createElement('span');
+      selo.className = 'vit-selo';
+      selo.textContent = s === 'esgotado' ? 'esgotado' : 'em breve';
+      a.parentNode.replaceChild(selo, a);
+    });
+  }
+
   var brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
   function pinta(itens) {
     // Destaques primeiro, na ordem em que a gestão publicou; "em breve" e peça
-    // sem foto ficam de fora, porque a vitrine é do que se leva hoje.
+    // sem foto ficam de fora. ESGOTADA FICA, com o selo e sem sacola (nov/2026):
+    // a peça existe e vende, só acabou a leva, e mostrá-la é o que cria vontade.
+    // As que estão à venda vêm antes.
     var aVenda = itens.filter(function (p) {
       return p.situacao !== 'embreve' && fotoNossa(p.foto) && p.preco > 0;
     });
-    var escolhidas = aVenda.filter(function (p) { return p.destaque; })
-      .concat(aVenda.filter(function (p) { return !p.destaque; }))
+    var ordem = function (lista) {
+      return lista.filter(function (p) { return p.destaque; })
+        .concat(lista.filter(function (p) { return !p.destaque; }));
+    };
+    var escolhidas = ordem(aVenda.filter(function (p) { return p.situacao !== 'esgotado'; }))
+      .concat(ordem(aVenda.filter(function (p) { return p.situacao === 'esgotado'; })))
       .slice(0, 3);
     if (!escolhidas.length) return falha();
     // Como na loja: a segunda foto vem por cima e só aparece com o mouse
@@ -75,8 +102,9 @@
         '" loading="lazy" decoding="async" width="400" height="400">' + segunda + '</span>' +
         '<span class="vit-nome">' + esc(p.nome) + '</span>' +
         '<span class="vit-preco">' + esc(brl.format(p.preco)) + '</span></a>' +
-        '<span class="vit-sobre"><a class="vit-sacola" href="/loja/?sacola=' + id + '" title="Colocar na sacola"' +
-        ' aria-label="Colocar ' + esc(p.nome) + ' na sacola">' + SACOLA + '</a></span></div>';
+        '<span class="vit-sobre">' + (p.situacao === 'esgotado' ? SELO :
+        '<a class="vit-sacola" href="/loja/?sacola=' + id + '" title="Colocar na sacola"' +
+        ' aria-label="Colocar ' + esc(p.nome) + ' na sacola">' + SACOLA + '</a>') + '</span></div>';
     }).join('');
   }
 
@@ -93,7 +121,7 @@
     var doc = d.documents && d.documents[0];
     var lista = doc && doc.fields && doc.fields.itens && doc.fields.itens.arrayValue &&
                 doc.fields.itens.arrayValue.values || [];
-    pinta(lista.map(function (v) {
+    var itens = lista.map(function (v) {
       var m = (v.mapValue && v.mapValue.fields) || {};
       return {
         id: String(valor(m.id) || ''),
@@ -104,6 +132,8 @@
         situacao: valor(m.situacao),
         destaque: !!valor(m.destaque)
       };
-    }).filter(function (p) { return p.id; }));
+    }).filter(function (p) { return p.id; });
+    marcarForaDeVenda(itens);
+    pinta(itens);
   }).catch(falha);
 })();

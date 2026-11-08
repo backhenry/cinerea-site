@@ -786,7 +786,10 @@ async function carregar(){
     // campos, então campo novo que a gestão publique e não apareça nesta
     // linha é simplesmente descartado, sem erro, sem aviso.
     foto2:p.foto2||'',
-    linha:p.linha||'Cinérea', situacao:p.situacao==='embreve'?'embreve':'disponivel',
+    // Três situações. Esgotado entrou em nov/2026: a peça existe e vende, só
+    // acabou a leva. Antes daqui, qualquer valor que não fosse "embreve" virava
+    // "disponivel", e uma peça esgotada na gestão continuaria vendendo aqui.
+    linha:p.linha||'Cinérea', situacao:['embreve','esgotado'].includes(p.situacao)?p.situacao:'disponivel',
     desc:p.desc||'', longa:p.longa||'', ficha:lerFicha(p.ficha), modelo:p.modelo||'',
     colecao:p.colecao||'', destaque:!!p.destaque, pronto:Number(p.pronto)||0,
   }));
@@ -823,7 +826,8 @@ function lerFicha(f){
 }
 
 function cartao(p){
-  const breve = p.situacao === 'embreve';
+  const breve = p.situacao !== 'disponivel';
+  const selo = p.situacao === 'esgotado' ? 'esgotado' : 'em breve';
   // A SEGUNDA FOTO SÓ ENTRA SE EXISTIR. Sem ela o cartão volta ao que sempre
   // foi: uma imagem que se aproxima devagar. Duplicar a primeira para "ter o
   // efeito" seria pior que não ter, a pessoa passa o mouse e nada muda.
@@ -831,7 +835,7 @@ function cartao(p){
     ? `<div class="moldura${p.foto2 && comPonteiro()?' tem-dupla':''}">
          <img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">
          ${p.foto2 && comPonteiro()?`<img class="segunda" src="${esc(p.foto2)}" alt="" loading="lazy" aria-hidden="true">`:''}
-         ${breve?'<span class="breve">em breve</span>':''}
+         ${breve?`<span class="breve">${selo}</span>`:''}
        </div>`
     : marca();
 
@@ -886,7 +890,7 @@ function pintar(){
   // registrado não é pronta entrega: ela nem entra na sacola, e mostrá-la aqui
   // prometeria o que a loja recusa no clique seguinte.
   const passa = p => casa(p)
-    && (!soEstoque || (Number(p.pronto) > 0 && p.situacao !== 'embreve'));
+    && (!soEstoque || (Number(p.pronto) > 0 && p.situacao === 'disponivel'));
 
   // A ordenação é aplicada DENTRO de cada coleção, não sobre a vitrine inteira.
   // Ordenar por preço atravessando as seções misturaria refil com escultura, e
@@ -1376,7 +1380,7 @@ window.abrirFicha = id => {
           ${fotos.map((_, i) => `<button type="button" aria-label="Foto ${i + 1} de ${fotos.length}"${i ? '' : ' class="on" aria-current="true"'}></button>`).join('')}
         </div>
       </div>`;
-  const breve = p.situacao==='embreve';
+  const breve = p.situacao==='embreve', esgotado = p.situacao==='esgotado';
   document.getElementById('fmiolo').innerHTML = `${foto}
     ${p.linha?`<div class="rot">${esc(p.linha)}</div>`:''}
     <div class="ftitulo">${esc(p.nome)}</div>
@@ -1386,7 +1390,10 @@ window.abrirFicha = id => {
          1.220 px no celular, uma tela e meia abaixo do preço, depois da
          descrição, da ficha técnica e da realidade aumentada: a pessoa
          decidia comprar olhando o preço e tinha de rolar procurando onde. -->
-    ${breve
+    ${esgotado
+      ? `<p class="desc" style="margin-top:24px"><b>Esgotada.</b> Cada peça é moldada à mão, uma por vez, e esta leva acabou. Peça para ser avisado e a gente guarda uma da próxima para você.</p>
+         <button class="bt" onclick="avisarQuandoVoltar('${esc(p.id)}')">Quero ser avisado</button>`
+      : breve
       ? `<p class="desc" style="margin-top:24px">Esta peça ainda está sendo feita. Fale com a gente para saber quando ela chega.</p>
          <button class="bt fraco" onclick="fecharFicha()">Voltar à loja</button>`
       : `<button class="bt" onclick="juntar('${esc(p.id)}')">Colocar na sacola</button>`}
@@ -1658,6 +1665,10 @@ function passos(qual, nome, aberto){
 
 window.fecharFicha = () => document.getElementById('ficha').classList.remove('abre');
 window.juntar = id => {
+  // Última trava do site: peça fora de venda não entra na sacola por caminho
+  // nenhum (botão antigo em cache, link guardado). O servidor recusa também.
+  const peca = produtos.find(x => x.id === id);
+  if (peca && peca.situacao !== 'disponivel') return;
   sacola[id] = (sacola[id] || 0) + 1;
   pintarBarra(); fecharFicha();
   window.dispatchEvent(new Event('cinerea:topo'));
@@ -1729,6 +1740,14 @@ window.contatoWhats = () => {
   location.href = `https://wa.me/${numero}?text=`+encodeURIComponent('Olá! Tenho uma dúvida sobre uma peça da Cinérea.');
 };
 
+// Esgotado vira conversa: a pessoa pede para ser avisada e a mensagem já
+// vai com o nome da peça, que é o que o ateliê precisa para guardar uma.
+window.avisarQuandoVoltar = id => {
+  const p = produtos.find(x => x.id === id);
+  const numero = whats ? (whats.length>=12?whats:'55'+whats) : '5511958280174';
+  location.href = `https://wa.me/${numero}?text=`+encodeURIComponent(`Oi! Quero ser avisado quando ${p ? p.nome : 'a peça'} voltar.`);
+};
+
 // Link direto para uma coleção: /loja/?colecao=Refis. É o que permite à página
 // do convidado mandar alguém direto para os refis, em vez de largá-lo na loja
 // inteira para procurar. Casa sem diferenciar maiúsculas nem acentos, porque
@@ -1762,7 +1781,7 @@ try {
   // endereço na hora, senão recarregar a página somaria a peça de novo.
   { const q = new URLSearchParams(location.search), id = q.get('sacola');
     const p = id && produtos.find(x => x.id === id);
-    if(p && p.situacao !== 'embreve'){ juntar(id); abrirGaveta(); }
+    if(p && p.situacao === 'disponivel'){ juntar(id); abrirGaveta(); }
     if(id){ q.delete('sacola'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } }
   // A conferência do cupom vem DEPOIS de a loja aparecer, e não bloqueia: as
   // peças não podem esperar uma leitura que só decide se um código sai escrito
