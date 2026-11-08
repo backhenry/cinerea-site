@@ -278,10 +278,10 @@
   .secao{margin-bottom:56px;scroll-margin-top:80px}
   .secao-nome{font-family:'Bodoni Moda';font-weight:500;font-size:27px;margin-bottom:6px}
   .secao-desc{color:var(--smoke);font-size:14.5px;max-width:60ch;margin-bottom:26px}
-  /* `auto-fit` com teto de largura e centrado: com menos peças do que cabem
-     numa linha, elas ficam no meio, do mesmo tamanho, em vez de encostadas à
-     esquerda ao lado de uma coluna vazia. */
-  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:center;gap:30px 22px}
+  /* `auto-fit` com teto de largura, alinhado À ESQUERDA, junto com o nome da
+     coleção (nov/2026, pedido do dono). Centrado, uma coleção de uma peça só
+     deixava o cartão solto no meio da tela, longe do título que o apresenta. */
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:start;gap:30px 22px}
   /* DUAS POR LINHA NO CELULAR. Com uma, cada cartão tinha 460 px e a pessoa
      via uma peça por tela; com duas, a primeira linha cabe inteira na tela. */
   @media(max-width:560px){
