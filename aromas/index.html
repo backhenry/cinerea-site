@@ -43,8 +43,9 @@
   .capa h1{font-size:clamp(46px,11vw,84px);line-height:1;margin-top:14px}
   .selo{display:inline-block;margin-top:18px;font-size:13px;letter-spacing:.08em;color:var(--ember);font-weight:500}
   .capa-img{margin:0;rotate:1.2deg}
-  .capa-img img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
-  @media(min-width:900px){ .capa{grid-template-columns:1.1fr .9fr;gap:64px;padding-top:56px} }
+  /* os três vidrinhos, foto larga: aparece inteira, sem recorte */
+  .capa-img img{display:block;width:100%;height:auto}
+  @media(min-width:900px){ .capa{grid-template-columns:.9fr 1.1fr;gap:56px;padding-top:56px} }
 
   /* os três gestos */
   .gestos{padding:72px 0 64px;border-top:1px solid var(--line)}
@@ -62,15 +63,22 @@
   /* as assinaturas: três vidrinhos */
   .assinaturas{padding:72px 0 72px;border-top:1px solid var(--line);text-align:center}
   .vidros{display:grid;gap:22px;margin-top:40px;text-align:center}
-  .vidro{padding:30px 22px 32px;background:var(--ash);border-radius:2px;position:relative}
+  .vidro{padding:14px 14px 28px;background:var(--ash);border-radius:2px;position:relative}
   .vidro:nth-child(2){rotate:-.8deg}
   .vidro:nth-child(3){rotate:.6deg}
-  .vidro svg{width:58px;height:106px;display:block;margin:0 auto 14px}
+  .vidro img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;margin:0 0 16px}
   .vidro .hora{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);font-weight:500}
   .vidro h3{font-size:27px;margin-top:6px}
   .vidro .carater{font-style:italic;font-family:'Bodoni Moda',serif;font-size:18px;color:#45403A;margin-top:4px}
   .vidro .notas{font-size:14px;color:var(--smoke);margin-top:12px}
   @media(min-width:760px){ .vidros{grid-template-columns:repeat(3,1fr)} .vidro:nth-child(2){margin-top:26px} }
+
+  /* a estação: foto e texto lado a lado */
+  .estacao{display:grid;gap:30px;padding:24px 0 80px;align-items:center}
+  .estacao figure{margin:0;rotate:-.8deg}
+  .estacao img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+  .estacao h2{font-size:clamp(34px,8vw,54px);line-height:1.05;margin-top:12px}
+  @media(min-width:860px){ .estacao{grid-template-columns:.9fr 1.1fr;gap:56px} .estacao figure{max-width:440px} }
 
   /* trocar e combinar: a única faixa em cinza */
   .faixa-combina{background:var(--ash);padding:72px 0}
@@ -174,8 +182,8 @@
       </div>
     </div>
     <figure class="capa-img pousada">
-      <img class="laje" src="/areia.jpg" width="828" height="1108" fetchpriority="high" decoding="async"
-           alt="Areia de cera clara, sem aroma, escorrendo entre os dedos de uma mão.">
+      <img class="laje" src="/aromas/frascos/trio.jpg" width="1200" height="900" fetchpriority="high" decoding="async"
+           alt="Três vidrinhos de pingar com conta-gotas de gola de gesso e rótulo da Cinérea: Névoa da Manhã, Lenha & Poesia e Sopro de Sono.">
     </figure>
   </section>
 
@@ -225,21 +233,24 @@
       <h2 class="serifa" id="assTitulo">Três vidrinhos,<br><em>em breve.</em></h2>
       <div class="vidros">
         <article class="vidro" style="--tinta:#C9C6BC">
-          <svg viewBox="0 0 60 110" aria-hidden="true"><rect x="22" y="4" width="16" height="22" rx="6" fill="#161412"/><path d="M14 30 h32 a6 6 0 0 1 6 6 v62 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-62 a6 6 0 0 1 6 -6Z" fill="none" stroke="#161412" stroke-width="2"/><path d="M10 58 h40 v40 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6Z" fill="var(--tinta)"/></svg>
+          <img class="laje" src="/aromas/frascos/nevoa.jpg" width="1000" height="1250" loading="lazy" decoding="async"
+               alt="O vidrinho de Névoa da Manhã, com o líquido claro.">
           <p class="hora">de manhã</p>
           <h3 class="serifa">Névoa da Manhã</h3>
           <p class="carater">fresca, de ar frio</p>
           <p class="notas">pinho silvestre · cipreste · alecrim</p>
         </article>
         <article class="vidro" style="--tinta:#9C7656">
-          <svg viewBox="0 0 60 110" aria-hidden="true"><rect x="22" y="4" width="16" height="22" rx="6" fill="#161412"/><path d="M14 30 h32 a6 6 0 0 1 6 6 v62 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-62 a6 6 0 0 1 6 -6Z" fill="none" stroke="#161412" stroke-width="2"/><path d="M10 52 h40 v46 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6Z" fill="var(--tinta)"/></svg>
+          <img class="laje" src="/aromas/frascos/lenha.jpg" width="1000" height="1250" loading="lazy" decoding="async"
+               alt="O vidrinho de Lenha & Poesia, com o líquido âmbar.">
           <p class="hora">à lareira</p>
           <h3 class="serifa">Lenha &amp; Poesia</h3>
           <p class="carater">quente, de madeira</p>
           <p class="notas">cedro-do-atlas · patchouli · vetiver</p>
         </article>
         <article class="vidro" style="--tinta:#BDB0A8">
-          <svg viewBox="0 0 60 110" aria-hidden="true"><rect x="22" y="4" width="16" height="22" rx="6" fill="#161412"/><path d="M14 30 h32 a6 6 0 0 1 6 6 v62 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-62 a6 6 0 0 1 6 -6Z" fill="none" stroke="#161412" stroke-width="2"/><path d="M10 64 h40 v34 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6Z" fill="var(--tinta)"/></svg>
+          <img class="laje" src="/aromas/frascos/sopro.jpg" width="1000" height="1250" loading="lazy" decoding="async"
+               alt="O vidrinho de Sopro de Sono, com o líquido rosado claro.">
           <p class="hora">à noite</p>
           <h3 class="serifa">Sopro de Sono</h3>
           <p class="carater">floral, macia</p>
@@ -249,6 +260,24 @@
       <div class="acoes centro">
         <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20entrar%20na%20lista%20de%20espera%20dos%20aromas%20da%20Cin%C3%A9rea." target="_blank" rel="noopener">Entrar na lista de espera</a>
         <a class="bt bt2" href="/oraculo/">Descobrir o meu em três perguntas</a>
+      </div>
+    </section>
+
+    <!-- A estação (nov/2026): o suporte de gesso dos três vidrinhos, com o
+         lugar de cada coisa do ritual. Em breve, como os vidrinhos; leva à
+         mesma lista de espera. A foto é o render do modelo real. -->
+    <section class="estacao" id="estacao" aria-labelledby="estTitulo">
+      <figure class="pousada"><img class="laje l2" src="/aromas/frascos/estacao.jpg" width="1000" height="1250" loading="lazy" decoding="async"
+           alt="A estação de gesso com os três vidrinhos em degraus, um copo de fósforos com a faixa de lixa de riscar, o acendedor longo, o apagador e o rastelo."></figure>
+      <div>
+        <p class="rot">Em breve · a estação</p>
+        <h2 class="serifa" id="estTitulo">O lugar de<br><em>cada coisa.</em></h2>
+        <p class="sub">Um bloco de gesso só, ao lado da peça: os três vidrinhos em degraus, os fósforos com
+           a lixa de riscar, o acendedor, o apagador e o rastelo da areia. E um furo para o conta-gotas
+           ficar em pé enquanto você pinga.</p>
+        <div class="acoes">
+          <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20saber%20quando%20a%20esta%C3%A7%C3%A3o%20dos%20aromas%20da%20Cin%C3%A9rea%20chegar." target="_blank" rel="noopener">Avisar quando chegar</a>
+        </div>
       </div>
     </section>
 
