@@ -490,4 +490,21 @@ function ligarPorPavio(caixa, seletor) {
   pedir();
 }
 ligarPorPavio(document.getElementById('vitrine'), '.vit-foto');
-ligarPorPavio(document.querySelector('.novas-faixa'), 'figure img');
+ligarPorPavio(document.querySelector('.novas-faixa'), '.novas-foto');
+
+// A segunda foto dos pratos e potes, a vista de cima, só onde há mouse. Ela
+// existe para a troca no hover, e no toque seria peso baixado para nunca
+// aparecer: por isso o endereço mora em data-segunda e quem cria a imagem é
+// este trecho. Leva a mesma classe da primeira, que é a máscara de borda.
+if (window.matchMedia && matchMedia('(hover:hover)').matches) {
+  [].forEach.call(document.querySelectorAll('.novas-foto img[data-segunda]'), function (img) {
+    var s = new Image();
+    s.className = img.className + ' segunda';
+    s.alt = ''; s.setAttribute('aria-hidden', 'true');
+    s.loading = 'lazy'; s.decoding = 'async';
+    s.setAttribute('width', img.getAttribute('width'));
+    s.setAttribute('height', img.getAttribute('height'));
+    s.src = img.getAttribute('data-segunda');
+    img.parentNode.appendChild(s);
+  });
+}

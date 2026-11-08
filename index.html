@@ -230,6 +230,12 @@
   .novas-preco{display:block;margin-top:4px;font-size:14px;color:var(--smoke)}
   .novas-faixa figcaption b{display:block;font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;color:var(--char);margin-bottom:2px}
   .novas .bt{margin-top:30px}
+  /* a segunda foto e a sacola, as mesmas da vitrine; a foto não é quadrada
+     aqui, então a camada da sacola é o próprio quadro da foto */
+  .novas-quadro,.novas-foto{position:relative;display:block}
+  .novas-faixa .novas-foto .segunda{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .45s ease}
+  .novas-faixa .vit-sacola{display:grid;right:6%;bottom:6%;z-index:2}
+  @media(hover:hover){ .novas-quadro:hover .segunda{opacity:1} .novas-quadro:hover .vit-sacola{opacity:1;transform:none} }
   @media(min-width:900px){.novas-faixa img{height:440px}}
 
   /* ---- o chip -------------------------------------------------------------- */
@@ -429,7 +435,10 @@
        3D reais (atelier, out/peca3d/colecao e out/peca3d/ondas), na mesma luz e
        no mesmo papel das fotos da loja: a peça nunca é gerada. Substituíram os
        conceitos do Higgsfield. Estão à venda desde 07/11/2026, moldadas sob
-       encomenda (a ficha diz isso); cada foto abre a ficha da peça na loja. Peça baixa em paisagem, pote em retrato, para a faixa ter
+       encomenda (a ficha diz isso); cada foto abre a ficha da peça na loja. Como
+       na vitrine, a vista de cima (/novas/*-2.jpg, mesmo formato da primeira)
+       aparece com o mouse, e só é baixada onde há mouse (vivo.js); a sacola
+       laranja leva a peça para a sacola da loja. Peça baixa em paisagem, pote em retrato, para a faixa ter
        ritmo. Faixa que rola de lado e não grade: as fotos têm proporções diferentes,
        e com altura fixa cada uma aparece inteira, sem recorte. -->
   <section class="novas" id="novas" aria-labelledby="novasTitulo">
@@ -439,17 +448,17 @@
       <p class="sub">Gesso fosco, feito à mão. A areia vai direto na peça: quando a vela acaba, você enche de novo. Cada uma é moldada depois do pedido.</p>
     </div>
     <div class="novas-faixa" tabindex="0" aria-label="Peças novas, role para o lado">
-      <figure class="pousada"><a href="/loja/?peca=mw76wawuuxqy"><img class="laje" src="/novas/ondas.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Prato raso de gesso com relevo de ondas que se aproximam e se afastam, e a areia num poço no centro, com um pavio."></a>
+      <figure class="pousada"><div class="novas-quadro"><a href="/loja/?peca=mw76wawuuxqy"><span class="novas-foto"><img class="laje" src="/novas/ondas.jpg" data-segunda="/novas/ondas-2.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Prato raso de gesso com relevo de ondas que se aproximam e se afastam, e a areia num poço no centro, com um pavio."></span></a><a class="vit-sacola" href="/loja/?sacola=mw76wawuuxqy" title="Colocar na sacola" aria-label="Colocar Ondas na sacola"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a></div>
         <figcaption><b>Ondas</b>prato de mesa, a areia no centro<span class="novas-preco">R$ 229</span></figcaption></figure>
-      <figure class="pousada"><a href="/loja/?peca=mw76wp4hbn2w"><img class="laje l2" src="/novas/seixo.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote pequeno de gesso em forma de seixo de rio, com um pavio."></a>
+      <figure class="pousada"><div class="novas-quadro"><a href="/loja/?peca=mw76wp4hbn2w"><span class="novas-foto"><img class="laje l2" src="/novas/seixo.jpg" data-segunda="/novas/seixo-2.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote pequeno de gesso em forma de seixo de rio, com um pavio."></span></a><a class="vit-sacola" href="/loja/?sacola=mw76wp4hbn2w" title="Colocar na sacola" aria-label="Colocar Seixo na sacola"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a></div>
         <figcaption><b>Seixo</b>pote pequeno, uma pedra de rio<span class="novas-preco">R$ 119</span></figcaption></figure>
-      <figure class="pousada"><a href="/loja/?peca=mw770m9glivk"><img class="laje l3" src="/novas/jardim.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Bandeja redonda e rasa de gesso com areia penteada em linhas, vários pavios e um rastelo pequeno."></a>
+      <figure class="pousada"><div class="novas-quadro"><a href="/loja/?peca=mw770m9glivk"><span class="novas-foto"><img class="laje l3" src="/novas/jardim.jpg" data-segunda="/novas/jardim-2.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Bandeja redonda e rasa de gesso com areia penteada em linhas, vários pavios e um rastelo pequeno."></span></a><a class="vit-sacola" href="/loja/?sacola=mw770m9glivk" title="Colocar na sacola" aria-label="Colocar Jardim na sacola"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a></div>
         <figcaption><b>Jardim</b>bandeja rasa, a areia penteada<span class="novas-preco">R$ 229</span></figcaption></figure>
-      <figure class="pousada"><a href="/loja/?peca=mw76yg7vthu8"><img class="laje l4" src="/novas/derretido.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote de gesso com a borda escorrendo como cera derretida, cheio de areia."></a>
+      <figure class="pousada"><div class="novas-quadro"><a href="/loja/?peca=mw76yg7vthu8"><span class="novas-foto"><img class="laje l4" src="/novas/derretido.jpg" data-segunda="/novas/derretido-2.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote de gesso com a borda escorrendo como cera derretida, cheio de areia."></span></a><a class="vit-sacola" href="/loja/?sacola=mw76yg7vthu8" title="Colocar na sacola" aria-label="Colocar Derretido na sacola"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a></div>
         <figcaption><b>Derretido</b>pote com a borda escorrendo<span class="novas-preco">R$ 149</span></figcaption></figure>
-      <figure class="pousada"><a href="/loja/?peca=mw76zx1g957q"><img class="laje" src="/novas/canoa.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Travessa longa e orgânica de gesso com areia e três pavios."></a>
+      <figure class="pousada"><div class="novas-quadro"><a href="/loja/?peca=mw76zx1g957q"><span class="novas-foto"><img class="laje" src="/novas/canoa.jpg" data-segunda="/novas/canoa-2.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Travessa longa e orgânica de gesso com areia e três pavios."></span></a><a class="vit-sacola" href="/loja/?sacola=mw76zx1g957q" title="Colocar na sacola" aria-label="Colocar Canoa na sacola"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a></div>
         <figcaption><b>Canoa</b>travessa longa, três pavios<span class="novas-preco">R$ 179</span></figcaption></figure>
-      <figure class="pousada"><a href="/loja/?peca=mw76xiq8g32b"><img class="laje l2" src="/novas/cratera.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Esfera de gesso com a superfície marcada como a da lua e areia no topo."></a>
+      <figure class="pousada"><div class="novas-quadro"><a href="/loja/?peca=mw76xiq8g32b"><span class="novas-foto"><img class="laje l2" src="/novas/cratera.jpg" data-segunda="/novas/cratera-2.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Esfera de gesso com a superfície marcada como a da lua e areia no topo."></span></a><a class="vit-sacola" href="/loja/?sacola=mw76xiq8g32b" title="Colocar na sacola" aria-label="Colocar Cratera na sacola"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a></div>
         <figcaption><b>Cratera</b>esfera com a superfície da lua<span class="novas-preco">R$ 119</span></figcaption></figure>
     </div>
     <div class="envolve"><a class="bt" href="/loja/?colecao=Pratos">Ver as treze na loja</a></div>
