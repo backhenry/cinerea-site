@@ -306,6 +306,9 @@ window.velaDeEspera = function (texto) {
   // refil e a fumaça do pavio no bloco do livro.
   aoAparecer('refilVideo', '/areia.mp4');
   aoAparecer('livroVideo', '/fumaca.mp4');
+  // Aromas (nov/2026): o giro dos vidrinhos, na capa, e o da estação.
+  aoAparecer('giroVidrinhos', '/aromas/frascos/giro-trio.mp4');
+  aoAparecer('giroEstacao', '/aromas/frascos/giro-estacao.mp4');
 })();
 
 
@@ -433,9 +436,16 @@ window.velaDeEspera = function (texto) {
 // de passar pelo centro de cada foto ONDE ela estiver. Passa por TRÁS das
 // fotos (fica à vista só no vão), e se redesenha quando o /vitrine.js troca
 // as caixas ou a largura muda. A classe não é `.pavio`, que é a vela da margem.
-// Vale para a vitrine (#vitrine, fotos .vit-foto) e para a faixa dos pratos e
-// potes (.novas-faixa, fotos img): é a mesma função, chamada duas vezes.
-function ligarPorPavio(caixa, seletor) {
+// Vale para a vitrine (#vitrine, fotos .vit-foto) e para a trilha dos pratos e
+// potes (.novas-trilha, fotos .novas-foto): é a mesma função, chamada duas vezes.
+//
+// `vertical` é a trilha (nov/2026): as peças descem a página em zigue-zague, e
+// o fio não cai em barriga, ele SERPENTEIA. Cada trecho sai de uma foto e chega
+// na outra na vertical (os pontos de controle ficam acima e abaixo, e não ao
+// lado), o que dá um S em cada vão; um desvio alternado para um lado e para o
+// outro tira a cara de régua. Depois da última o fio desce, faz a volta por
+// baixo e sobe até a chama, que acende abaixo da peça.
+function ligarPorPavio(caixa, seletor, vertical) {
   if (!caixa || !window.ResizeObserver) return;
   var NS = 'http://www.w3.org/2000/svg';
   var svg = document.createElementNS(NS, 'svg');
@@ -458,20 +468,47 @@ function ligarPorPavio(caixa, seletor) {
     var pts = [].map.call(fotos, function (f) {
       var r = f.getBoundingClientRect();
       return { x: r.left - base.left + caixa.scrollLeft + r.width / 2,
-               y: r.top - base.top + r.height * 0.6, w: r.width, dir: r.right - base.left + caixa.scrollLeft };
+               y: r.top - base.top + r.height * (vertical ? 0.5 : 0.6), w: r.width,
+               dir: r.right - base.left + caixa.scrollLeft, fundo: r.bottom - base.top };
     });
     var W = Math.max(caixa.scrollWidth, caixa.clientWidth), H = caixa.scrollHeight;
     svg.setAttribute('width', W); svg.setAttribute('height', H);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    // de centro a centro, cada vão uma barriga: o fio pesa no meio
-    var d = 'M' + n(pts[0].x) + ' ' + n(pts[0].y);
-    for (var i = 1; i < pts.length; i++) {
-      var a = pts[i - 1], b = pts[i], vao = b.x - a.x;
-      d += ' C' + n(a.x + vao * .35) + ' ' + n(a.y + vao * .2) + ' ' + n(b.x - vao * .35) + ' ' + n(b.y + vao * .2) + ' ' + n(b.x) + ' ' + n(b.y);
+    var d = 'M' + n(pts[0].x) + ' ' + n(pts[0].y), u = pts[pts.length - 1], fx, fy, i, a, b;
+    if (vertical) {
+      // de centro a centro, um S por vão, desviando ora para um lado, ora para o outro
+      // O trecho que aparece é o do VÃO, entre as duas fotos, e um S simples
+      // atravessa o vão quase reto. Por isso cada trecho passa por um ponto do
+      // meio, fora da linha reta (ora acima, ora abaixo), e chega nele já
+      // ondulando: é essa ondulação, no vão, que lê como fio solto.
+      for (i = 1; i < pts.length; i++) {
+        a = pts[i - 1]; b = pts[i];
+        var desce = b.y - a.y, meio = (b.x - a.x) / 2, onda = (i % 2 ? 1 : -1) * Math.min(56, desce * .22),
+            mx = a.x + meio + onda * .6, my = a.y + desce / 2 + onda;
+        // sai pela LATERAL da foto, do lado da próxima, e não por baixo:
+        // embaixo da foto fica a legenda, e o fio passando ali riscava o texto
+        // e vai ALÉM da borda antes de descer: no celular as colunas quase se
+        // tocam, e meio vão para o lado ainda deixava o fio rente ao texto
+        var sai = a.x + (b.x > a.x ? 1 : -1) * (a.w / 2 + 56);
+        d += ' C' + n(sai) + ' ' + n(a.y + desce * .04) + ' ' + n(mx - meio * .55) + ' ' + n(my + onda * 1.1) + ' ' + n(mx) + ' ' + n(my) +
+             ' S' + n(b.x) + ' ' + n(b.y - desce * .55) + ' ' + n(b.x) + ' ' + n(b.y);
+      }
+      // A chama acende AO LADO da última, no vão da outra coluna, e não
+      // embaixo: embaixo da foto fica a legenda, e o fio descendo por ela
+      // riscava o nome e o preço. Sai pelo lado de dentro e sobe até a chama.
+      var lado = u.x > W / 2 ? -1 : 1, alto = u.fundo - u.y;
+      fx = u.x + lado * (u.w / 2 + Math.min(70, W * .06)); fy = u.y + alto * .15;
+      d += ' C' + n(u.x + lado * u.w * .4) + ' ' + n(u.y + alto * .55) + ' ' + n(fx) + ' ' + n(fy + alto * .5) + ' ' + n(fx) + ' ' + n(fy);
+    } else {
+      // de centro a centro, cada vão uma barriga: o fio pesa no meio
+      for (i = 1; i < pts.length; i++) {
+        a = pts[i - 1]; b = pts[i]; var vao = b.x - a.x;
+        d += ' C' + n(a.x + vao * .35) + ' ' + n(a.y + vao * .2) + ' ' + n(b.x - vao * .35) + ' ' + n(b.y + vao * .2) + ' ' + n(b.x) + ' ' + n(b.y);
+      }
+      // depois da última, o fio sai, sobe e acende
+      fx = u.dir + 34; fy = u.y - 46;
+      d += ' C' + n(u.x + u.w * .45) + ' ' + n(u.y + 26) + ' ' + n(fx - 6) + ' ' + n(fy + 34) + ' ' + n(fx) + ' ' + n(fy);
     }
-    // depois da última, o fio sai, sobe e acende
-    var u = pts[pts.length - 1], fx = u.dir + 34, fy = u.y - 46;
-    d += ' C' + n(u.x + u.w * .45) + ' ' + n(u.y + 26) + ' ' + n(fx - 6) + ' ' + n(fy + 34) + ' ' + n(fx) + ' ' + n(fy);
     svg.innerHTML =
       '<path class="fio" d="' + d + '"/>' +
       '<path class="trama" d="' + d + '"/>' +
@@ -490,7 +527,7 @@ function ligarPorPavio(caixa, seletor) {
   pedir();
 }
 ligarPorPavio(document.getElementById('vitrine'), '.vit-foto');
-ligarPorPavio(document.querySelector('.novas-faixa'), '.novas-foto');
+ligarPorPavio(document.querySelector('.novas-trilha'), '.novas-foto', true);
 
 // A segunda foto dos pratos e potes, a vista de cima, só onde há mouse. Ela
 // existe para a troca no hover, e no toque seria peso baixado para nunca
