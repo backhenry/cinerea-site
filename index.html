@@ -148,6 +148,11 @@
   @media(prefers-reduced-motion:no-preference){
     .vit-fio .chama{animation:vit-chama 2.4s ease-in-out infinite alternate}
   }
+  /* o pavio que queima com a rolagem (vivo.js): a chama só aparece quando o
+     fio chega ao fim, e uma brasa corre na ponta enquanto ele queima */
+  .vit-fio.queima .ponta{opacity:0;transition:opacity .9s ease}
+  .vit-fio.queima.acesa .ponta{opacity:1}
+  .vit-fio .frente{fill:#E9A04A;opacity:0;transition:opacity .3s ease;filter:drop-shadow(0 0 3px rgba(233,140,60,.95)) drop-shadow(0 0 7px rgba(184,70,43,.55))}
   @keyframes vit-chama{30%{transform:scale(.94,1.06) skewX(2deg)}70%{transform:scale(1.04,.95) skewX(-3deg)}100%{transform:scale(.97,1.03)}}
   .vit-peca:nth-child(3n+2){margin-top:58px}
   .vit-peca:nth-child(3n){margin-top:18px}

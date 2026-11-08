@@ -486,6 +486,16 @@ window.velaDeEspera = function (texto) {
 // lado), o que dá um S em cada vão; um desvio alternado para um lado e para o
 // outro tira a cara de régua. Depois da última o fio desce, faz a volta por
 // baixo e sobe até a chama, que acende abaixo da peça.
+//
+// O PAVIO QUEIMA COM A ROLAGEM nas trilhas verticais (nov/2026): o fio se
+// desenha conforme a pessoa desce, com uma brasa correndo na ponta, e a
+// chama só acende quando ele chega ao fim, ao lado da última peça. Quem pediu
+// menos movimento vê o pavio inteiro e a chama acesa, parados. O fio e a
+// trama ficam atrás de uma máscara (um traço branco largo com o mesmo
+// desenho), e é a máscara que avança: a trama já usa tracejado próprio, e
+// tracejar o fio por cima dela apagaria a textura de algodão.
+var pavioCalmo = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var pavioConta = 0;
 function ligarPorPavio(caixa, seletor, modoVertical) {
   if (!caixa || !window.ResizeObserver) return;
   var NS = 'http://www.w3.org/2000/svg';
@@ -493,6 +503,31 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
   svg.setAttribute('class', 'vit-fio');
   svg.setAttribute('aria-hidden', 'true');
   var pedido = false;
+  var revela = null, frente = null, comprimento = 0, inicio = 0, fim = 0;
+
+  // de 0 (o fio nem começou) a 1 (chegou à chama): a ponta acompanha um ponto
+  // a 65% da altura da janela, então o pavio queima um pouco abaixo de onde
+  // a pessoa está olhando, e não atrás dela
+  function queimar() {
+    if (!revela) return;
+    var topo = caixa.getBoundingClientRect().top;
+    var p = (window.innerHeight * 0.65 - (topo + inicio)) / Math.max(1, fim - inicio);
+    p = Math.max(0, Math.min(1, p));
+    revela.style.strokeDashoffset = comprimento * (1 - p);
+    var acesa = p >= 0.985;
+    svg.classList.toggle('acesa', acesa);
+    if (frente) {
+      var q = revela.getPointAtLength(comprimento * p);
+      frente.setAttribute('cx', n(q.x)); frente.setAttribute('cy', n(q.y));
+      frente.style.opacity = p > 0.005 && !acesa ? 1 : 0;
+    }
+  }
+  var pedidoQ = false;
+  window.addEventListener('scroll', function () {
+    if (!revela || pedidoQ) return;
+    pedidoQ = true;
+    requestAnimationFrame(function () { pedidoQ = false; queimar(); });
+  }, { passive: true });
 
   function n(v) { return Math.round(v * 10) / 10; }
 
@@ -553,14 +588,33 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
       fx = u.dir + 34; fy = u.y - 46;
       d += ' C' + n(u.x + u.w * .45) + ' ' + n(u.y + 26) + ' ' + n(fx - 6) + ' ' + n(fy + 34) + ' ' + n(fx) + ' ' + n(fy);
     }
-    svg.innerHTML =
-      '<path class="fio" d="' + d + '"/>' +
-      '<path class="trama" d="' + d + '"/>' +
+    var ponta =
       '<g class="ponta" transform="translate(' + n(fx) + ' ' + n(fy) + ')">' +
         '<circle class="brilho" r="13"/>' +
         '<path class="chama" d="M0 -3 C-4.2 -8 -3.6 -14 0 -21 C3.6 -14 4.2 -8 0 -3Z"/>' +
         '<circle class="brasa" r="2.6"/>' +
       '</g>';
+    var fios = '<path class="fio" d="' + d + '"/><path class="trama" d="' + d + '"/>';
+    if (vertical && !pavioCalmo) {
+      var id = 'pavio-' + (++pavioConta);
+      svg.innerHTML =
+        '<defs><mask id="' + id + '" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="' + H + '">' +
+          '<path class="revela" d="' + d + '" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round"/>' +
+        '</mask></defs>' +
+        '<g mask="url(#' + id + ')">' + fios + '</g>' + ponta +
+        '<circle class="frente" r="2.6"/>';
+      revela = svg.querySelector('.revela');
+      frente = svg.querySelector('.frente');
+      comprimento = revela.getTotalLength();
+      revela.style.strokeDasharray = comprimento + ' ' + comprimento;
+      inicio = pts[0].y; fim = Math.max(fy, u.y);
+      svg.classList.add('queima');
+      queimar();
+    } else {
+      revela = frente = null;
+      svg.classList.remove('queima', 'acesa');
+      svg.innerHTML = fios + ponta;
+    }
   }
 
   function pedir() { if (!pedido) { pedido = true; requestAnimationFrame(desenhar); } }
