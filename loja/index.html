@@ -16,8 +16,8 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <!-- A conexão com o Firestore abre junto com a página: o catálogo é a
      primeira coisa que o módulo pede, e é dele que a vitrine depende. -->
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
@@ -31,12 +31,12 @@
      não aparece: é o tipo de coisa que só quebra na máquina do outro. */
   html{scrollbar-gutter:stable}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--paper);color:var(--char);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{background:var(--paper);color:var(--char);font-family:'Hanken Grotesk',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
   a{color:inherit}
   header{padding:26px 22px 8px;text-align:center}
   header svg{width:38px;height:38px}
-  h1{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:10px}
-  .lema{font-family:'Fraunces';font-style:italic;font-weight:300;color:var(--smoke);font-size:15px}
+  h1{font-family:'Bodoni Moda';font-weight:500;font-size:34px;margin-top:10px}
+  .lema{font-family:'Bodoni Moda';font-style:italic;font-weight:500;color:var(--smoke);font-size:15px}
   .envolve{max-width:1000px;margin:0 auto;padding:0 22px}
   /* AS COLEÇÕES NÃO SÃO FILTROS, e antes pareciam.
      Elas respondem a OUTRA pergunta que os controles acima: lá é COMO ver
@@ -51,7 +51,7 @@
 
      Agora são gramáticas diferentes de propósito. Os controles seguem pílulas
      em Inter, que é a letra da interface. As coleções viram uma barra de
-     seções em Fraunces, a letra dos títulos, sem borda e sem fundo, com a
+     seções em Bodoni Moda, a letra dos títulos, sem borda e sem fundo, com a
      escolhida sublinhada em brasa sobre o fio que corre embaixo de todas. É a
      forma que um índice tem, e ela encosta na vitrine que ela governa. */
   .linhas{
@@ -73,7 +73,7 @@
   .linhas::-webkit-scrollbar{display:none}
   .linhas button{
     flex:0 0 auto;background:none;border:none;cursor:pointer;white-space:nowrap;
-    font-family:'Fraunces';font-weight:300;font-size:clamp(15.5px,3.8vw,18px);
+    font-family:'Bodoni Moda';font-weight:500;font-size:clamp(15.5px,3.8vw,18px);
     color:var(--smoke);padding:0 2px 12px;
     /* O sublinhado tem 2px e o fio tem 1: a margem negativa faz um cobrir o
        outro, senão a seção escolhida fica com dois traços empilhados. */
@@ -93,7 +93,7 @@
   .banner.brasa{background:var(--ember);color:#fff;border-color:var(--ember)}
   .banner.carvao{background:var(--char);color:var(--paper);border-color:var(--char)}
   .banner.areia{background:var(--ash);color:var(--char)}
-  .banner strong{font-family:'Fraunces';font-weight:400;font-size:clamp(16px,3.6vw,19px);display:block}
+  .banner strong{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(16px,3.6vw,19px);display:block}
   .banner .btexto{font-size:13.5px;opacity:.85;margin-top:3px;display:block}
   .banner .bcupom{
     display:inline-block;margin-top:9px;padding:5px 13px;border-radius:20px;
@@ -166,7 +166,7 @@
      celular, a primeira peça começava em 919 px numa tela de 812, e no
      notebook em 821 numa de 768. A loja abria sem nada à venda à vista. */
   .capa-loja{padding:30px 0 0;text-align:center}
-  .capa-loja h1{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,34px);line-height:1.15}
+  .capa-loja h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,34px);line-height:1.15}
   .sob-encomenda{margin:8px auto 0;max-width:46ch;text-align:center;font-size:15px;color:var(--smoke)}
   .sob-encomenda a{color:var(--ember)}
   /* Enquanto a loja abre, a grade ocupa a tela até o fim. Sem isso a nota
@@ -182,7 +182,7 @@
   /* O campo tem largura máxima de 420px e vivia encostado na esquerda, sob um
      título centrado. `justify-content` centra sem mexer na largura. */
   .buscar{margin:26px 0 6px;display:flex;justify-content:center}
-  .buscar input{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-family:'Inter';font-size:14.5px;color:var(--char)}
+  .buscar input{width:100%;max-width:420px;padding:12px 16px;border:1px solid var(--line);border-radius:24px;background:var(--paper);font-family:'Hanken Grotesk';font-size:14.5px;color:var(--char)}
   .buscar input:focus{outline:none;border-color:var(--char)}
   /* Controles de ordenação e filtro. Rolam de lado no celular, como os chips
      de coleção: quebrar em duas linhas empurra a vitrine para baixo da dobra. */
@@ -222,7 +222,7 @@
     appearance:none;-webkit-appearance:none;
     border:none;background:transparent;height:100%;
     padding:0 27px 0 0;margin:0;
-    font-family:'Inter';font-size:12.5px;color:var(--char);cursor:pointer;
+    font-family:'Hanken Grotesk';font-size:12.5px;color:var(--char);cursor:pointer;
     /* A seta é desenhada aqui, no traço fino dos outros símbolos do site. A
        nativa do macOS são duas setas empilhadas dentro de uma caixa cinza, que
        é a peça que mais destoava. */
@@ -234,7 +234,7 @@
   .marca-ctrl{
     display:inline-flex;align-items:center;
     padding:0 16px;border-radius:20px;border:1px solid var(--line);background:none;
-    font-family:'Inter';font-size:12.5px;color:var(--smoke);cursor:pointer;
+    font-family:'Hanken Grotesk';font-size:12.5px;color:var(--smoke);cursor:pointer;
     transition:background .15s ease,border-color .15s ease,color .15s ease;
     white-space:nowrap;
   }
@@ -246,7 +246,7 @@
      às outras faria dele mais uma opção a considerar. */
   .btfrouxo{
     background:none;border:none;padding:0 12px;color:var(--smoke);
-    cursor:pointer;font-size:12.5px;font-family:'Inter';
+    cursor:pointer;font-size:12.5px;font-family:'Hanken Grotesk';
     text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line);
     transition:color .15s ease,text-decoration-color .15s ease;
   }
@@ -276,7 +276,7 @@
   .so-leitor{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
   .secao{margin-bottom:56px;scroll-margin-top:80px}
-  .secao-nome{font-family:'Fraunces';font-weight:300;font-size:27px;margin-bottom:6px}
+  .secao-nome{font-family:'Bodoni Moda';font-weight:500;font-size:27px;margin-bottom:6px}
   .secao-desc{color:var(--smoke);font-size:14.5px;max-width:60ch;margin-bottom:26px}
   /* `auto-fit` com teto de largura e centrado: com menos peças do que cabem
      numa linha, elas ficam no meio, do mesmo tamanho, em vez de encostadas à
@@ -302,7 +302,7 @@
      pegar. `overflow:hidden` na moldura é o que segura a foto ampliada. */
   .peca{cursor:pointer;transition:transform .22s cubic-bezier(.2,.7,.3,1)}
   .peca:hover{transform:translateY(-4px)}
-  .moldura{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash);
+  .moldura{aspect-ratio:1;border-radius:2px;overflow:hidden;background:var(--ash);
            border:1px solid var(--line);position:relative;
            transition:border-color .22s ease, box-shadow .22s ease}
   .peca:hover .moldura{border-color:var(--ember);box-shadow:0 10px 26px -14px rgba(28,26,23,.4)}
@@ -349,7 +349,7 @@
     .peca:hover .moldura img{transform:none}
   }
   .breve{position:absolute;top:12px;left:12px;background:var(--char);color:var(--paper);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
-  .nome{font-family:'Fraunces';font-size:19px;margin-top:13px}
+  .nome{font-family:'Bodoni Moda';font-weight:500;font-size:19px;margin-top:13px}
   .desc{font-size:13.5px;color:var(--smoke);margin-top:3px}
   .preco{font-size:15px}
   .vazio{text-align:center;color:var(--smoke);padding:60px 0}
@@ -363,7 +363,7 @@
   /* A galeria da ficha: rola de lado, uma foto por vez, e os pontos dizem em
      qual se está. Cada ponto é um alvo de 44 px com um círculo de 7 dentro. */
   .galeria{margin-bottom:12px}
-  .galeria .fotos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:12px}
+  .galeria .fotos{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:2px}
   .galeria .fotos::-webkit-scrollbar{display:none}
   .galeria .fotos > .moldura{flex:0 0 100%;scroll-snap-align:center;margin:0}
   .pontos{display:flex;justify-content:center;margin-top:2px}
@@ -389,16 +389,16 @@
   .ar-passos a{color:var(--ember)}
   .mv{
     width:100%;height:min(62vh,460px);background:var(--ash);
-    border-radius:12px;--poster-color:transparent;
+    border-radius:2px;--poster-color:transparent;
   }
   .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
-  .ftitulo{font-family:'Fraunces';font-weight:300;font-size:34px;margin-top:6px}
-  .fpreco{font-family:'Fraunces';font-size:24px;margin-top:16px}
+  .ftitulo{font-family:'Bodoni Moda';font-weight:500;font-size:34px;margin-top:6px}
+  .fpreco{font-family:'Bodoni Moda';font-weight:500;font-size:24px;margin-top:16px}
   .flonga{margin-top:20px}
   .ftec{margin-top:26px;border-top:1px solid var(--line)}
   .ftec div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
   .ftec span:first-child{color:var(--smoke)}
-  .bt{display:block;width:100%;margin-top:24px;padding:16px;border:none;border-radius:10px;background:var(--char);color:var(--paper);font-size:15px;cursor:pointer}
+  .bt{display:block;width:100%;margin-top:24px;padding:16px;border:none;border-radius:2px;background:var(--char);color:var(--paper);font-size:15px;cursor:pointer}
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;border:1px solid var(--line);color:var(--char)}
   /* O BOTÃO DA REALIDADE AUMENTADA tinha a cara do "Voltar à loja": sem fundo,
@@ -445,7 +445,7 @@
   .topo-acoes .sacola-bt{
     display:flex;align-items:center;gap:8px;flex-shrink:0;
     background:var(--ember);border:1px solid var(--ember);border-radius:22px;
-    padding:9px 17px 9px 14px;cursor:pointer;font-family:'Inter';font-size:13.5px;
+    padding:9px 17px 9px 14px;cursor:pointer;font-family:'Hanken Grotesk';font-size:13.5px;
     color:#fff;font-weight:500;letter-spacing:.01em;
     /* A sombra dá o degrau que separa "botão" de "texto do menu" num cabeçalho
        claro. Sem ela, uma pastilha chapada some no papel quando a rolagem leva
@@ -465,7 +465,7 @@
   .topo-acoes .sacola-bt{position:relative}
   .topo-acoes .sacola-bt::after{content:'';position:absolute;inset:-4px -1px}
   .topo-acoes .sacola-bt .n{
-    background:#fff;color:var(--ember);border-radius:11px;min-width:20px;
+    background:#fff;color:var(--ember);border-radius:2px;min-width:20px;
     padding:1px 6px;font-size:12px;line-height:1.5;text-align:center;font-weight:600;
   }
   .topo-acoes .sacola-bt .n.vazia{display:none}
@@ -503,11 +503,11 @@
     display:flex;align-items:center;justify-content:space-between;gap:12px;
     padding:18px 20px;border-bottom:1px solid var(--line);flex:0 0 auto;
   }
-  .gaveta-topo strong{font-family:'Fraunces';font-weight:400;font-size:19px}
+  .gaveta-topo strong{font-family:'Bodoni Moda';font-weight:500;font-size:19px}
   .gaveta-topo button{background:none;border:none;color:var(--smoke);font-size:13.5px;cursor:pointer;text-decoration:underline}
   .gaveta-itens{flex:1 1 auto;overflow-y:auto;padding:8px 20px}
   .gitem{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:16px 0;border-bottom:1px solid var(--line)}
-  .gitem .gnome{font-family:'Fraunces';font-size:16px;line-height:1.25}
+  .gitem .gnome{font-family:'Bodoni Moda';font-weight:500;font-size:16px;line-height:1.25}
   .gitem .gpreco{font-size:14px;text-align:right;white-space:nowrap}
   .gitem .gqtd{display:flex;align-items:center;gap:10px;margin-top:4px}
   .gitem .gqtd button{
@@ -521,10 +521,10 @@
   .gcupom{display:flex;gap:8px}
   .gcupom input{
     flex:1 1 auto;min-width:0;padding:11px 13px;border:1px solid var(--line);
-    border-radius:10px;background:var(--paper);font-family:'Inter';font-size:14px;color:var(--char);
+    border-radius:2px;background:var(--paper);font-family:'Hanken Grotesk';font-size:14px;color:var(--char);
   }
   .gcupom input:focus{outline:none;border-color:var(--ember)}
-  .gcupom button{padding:11px 16px;border:1px solid var(--line);border-radius:10px;background:none;font-size:14px;cursor:pointer;color:var(--char)}
+  .gcupom button{padding:11px 16px;border:1px solid var(--line);border-radius:2px;background:none;font-size:14px;cursor:pointer;color:var(--char)}
   .gcupom button:hover{border-color:var(--ember);color:var(--ember)}
   .grecado{font-size:12.5px;color:var(--smoke);margin-top:8px}
   .grecado.ok{color:var(--ember)}
@@ -533,15 +533,15 @@
   .gtotais .gfim{border-top:1px solid var(--line);margin-top:8px;padding-top:10px;font-size:16px}
   .gnota{font-size:11.5px;color:var(--smoke);text-align:center;margin-top:8px;line-height:1.45}
   .gfechar{
-    display:block;width:100%;margin-top:14px;padding:15px;border:none;border-radius:10px;
-    background:var(--char);color:var(--paper);font-family:'Inter';font-size:15px;cursor:pointer;
+    display:block;width:100%;margin-top:14px;padding:15px;border:none;border-radius:2px;
+    background:var(--char);color:var(--paper);font-family:'Hanken Grotesk';font-size:15px;cursor:pointer;
   }
   .gfechar:hover{background:var(--ember)}
   .gfechar[disabled]{opacity:.4;cursor:default}
   .gfechar[disabled]:hover{background:var(--char)}
 </style>
 </head>
-<body>
+<body class="nova">
 
 <!-- A mesma vela da página inicial. `aria-hidden`: é imagem, não informação. -->
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
@@ -1729,7 +1729,7 @@ catch { document.getElementById('grade').innerHTML='<p class="vazio">Não conseg
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>

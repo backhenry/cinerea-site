@@ -15,8 +15,8 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
   /* O roteiro pedia um quarto tom para detalhes, que a paleta do site nao tem.
@@ -27,8 +27,8 @@
   .palco{max-width:640px;margin:0 auto;padding:56px 22px 80px;min-height:70vh}
 
   .abertura{text-align:center}
-  .abertura .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .abertura h1{font-family:'Fraunces';font-weight:300;font-size:clamp(30px,7.6vw,44px);
+  .abertura .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .abertura h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(30px,7.6vw,44px);
                line-height:1.14;margin-top:12px;text-wrap:balance}
   .abertura p{margin-top:18px;font-size:16.5px;color:var(--smoke);line-height:1.7}
 
@@ -41,58 +41,58 @@
   .passo[hidden]{display:none}
 
   .conta{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .passo h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,33px);
+  .passo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,33px);
             line-height:1.16;margin-top:10px;text-wrap:balance}
   .passo .guia{margin-top:12px;font-size:15.5px;color:var(--smoke);line-height:1.7;
-               font-family:'Fraunces';font-style:italic}
+               font-family:'Bodoni Moda';font-weight:500;font-style:italic}
 
   .opcoes{margin-top:30px;display:grid;gap:10px}
   .opcao{
     display:block;width:100%;text-align:left;background:none;cursor:pointer;
-    border:1px solid var(--line);border-radius:14px;padding:18px 20px;
-    font-family:'Inter';font-size:15.5px;line-height:1.6;color:var(--char);
+    border:1px solid var(--line);border-radius:4px;padding:18px 20px;
+    font-family:'Hanken Grotesk';font-size:15.5px;line-height:1.6;color:var(--char);
     transition:border-color .2s ease,background .2s ease;
   }
   .opcao:hover{border-color:var(--morno);background:rgba(138,126,112,.05)}
   .opcao:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
 
   .voltar{margin-top:22px;background:none;border:none;padding:0;cursor:pointer;
-          font-family:'Inter';font-size:13.5px;color:var(--smoke)}
+          font-family:'Hanken Grotesk';font-size:13.5px;color:var(--smoke)}
   .voltar:hover{color:var(--ember)}
 
   /* ---- o resultado ---- */
   /* O resultado abre pelo NOME, sem foto. Era a areia tingida de cada aroma,
      e saiu em nov/2026, quando a areia passou a ser fabricada sem aroma: a
      foto prometia um grão de cada cor para cada cheiro, que não é o que chega. */
-  .achado .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .achado h2{font-family:'Fraunces';font-weight:300;font-size:clamp(28px,7vw,40px);
+  .achado .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .achado h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(28px,7vw,40px);
              line-height:1.14;margin-top:10px}
-  .achado .carater{margin-top:6px;font-family:'Fraunces';font-style:italic;
+  .achado .carater{margin-top:6px;font-family:'Bodoni Moda';font-weight:500;font-style:italic;
                    font-size:17px;color:var(--morno)}
   .achado p{margin-top:18px;font-size:16px;line-height:1.74}
   .achado .notas{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
   .achado .nota{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
                 color:var(--smoke);border:1px solid var(--line);border-radius:20px;padding:3px 11px}
 
-  .caixa{margin-top:28px;background:var(--ash);border-radius:14px;padding:22px 22px}
-  .caixa h3{font-family:'Fraunces';font-weight:300;font-size:19px}
+  .caixa{margin-top:28px;background:var(--ash);border-radius:4px;padding:22px 22px}
+  .caixa h3{font-family:'Bodoni Moda';font-weight:500;font-size:19px}
   .caixa p{margin-top:8px;font-size:14.5px;color:var(--smoke);line-height:1.65}
 
   .bt{display:inline-block;margin-top:20px;padding:15px 28px;background:var(--char);
-      color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;
-      border:none;cursor:pointer;font-family:'Inter';transition:.15s}
+      color:var(--paper);text-decoration:none;border-radius:2px;font-size:15px;
+      border:none;cursor:pointer;font-family:'Hanken Grotesk';transition:.15s}
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
   .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
   .refazer{display:block;margin-top:34px;background:none;border:none;padding:0;
-           cursor:pointer;font-family:'Inter';font-size:13.5px;color:var(--smoke)}
+           cursor:pointer;font-family:'Hanken Grotesk';font-size:13.5px;color:var(--smoke)}
   .refazer:hover{color:var(--ember)}
 
   .rodape-nota{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
                font-size:13px;color:var(--smoke);line-height:1.65}
 </style>
 </head>
-<body>
+<body class="nova">
 
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
 
@@ -172,7 +172,7 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>

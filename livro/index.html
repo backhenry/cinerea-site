@@ -14,8 +14,8 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
   /* O quarto tom, o mesmo do oráculo, declarado aqui e não no comum.css: cor
@@ -38,10 +38,10 @@
     box-shadow:0 18px 40px -22px rgba(28,26,23,.75), 0 2px 6px -2px rgba(28,26,23,.25);
   }
 
-  .oferta .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .oferta h1{font-family:'Fraunces';font-weight:300;font-size:clamp(29px,7vw,42px);
+  .oferta .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .oferta h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(29px,7vw,42px);
              line-height:1.13;margin-top:12px;text-wrap:balance}
-  .oferta .sub{margin-top:12px;font-family:'Fraunces';font-style:italic;
+  .oferta .sub{margin-top:12px;font-family:'Bodoni Moda';font-weight:500;font-style:italic;
                font-size:17.5px;color:var(--morno);line-height:1.5}
   .oferta p{margin-top:16px;font-size:16px;line-height:1.72;max-width:52ch}
 
@@ -50,7 +50,7 @@
     padding:16px 30px;background:var(--ember);color:var(--paper);
     /* Raio 10 como todo botão de ação do site (ver comum.css). Pílula é
        desenho de controle, de filtro que liga e desliga. */
-    text-decoration:none;border-radius:10px;font-size:16px;
+    text-decoration:none;border-radius:2px;font-size:16px;
     box-shadow:0 6px 18px -8px rgba(181,70,42,.7);
     transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
   }
@@ -61,24 +61,24 @@
 
   /* ---- o que tem dentro ---- */
   .dentro{margin-top:64px;padding-top:36px;border-top:1px solid var(--line)}
-  .dentro > .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .dentro h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.4vw,30px);
+  .dentro > .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .dentro h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(23px,5.4vw,30px);
              line-height:1.16;margin-top:10px}
   .capitulos{margin-top:26px;display:grid;gap:0}
   .cap{display:grid;grid-template-columns:38px 1fr;gap:4px 14px;padding:16px 0;
        border-bottom:1px solid var(--line)}
   .cap:last-child{border-bottom:none}
-  .cap .n{font-family:'Fraunces';font-size:17px;color:var(--ember);grid-row:span 2}
+  .cap .n{font-family:'Bodoni Moda';font-weight:500;font-size:17px;color:var(--ember);grid-row:span 2}
   .cap b{font-size:15.5px}
   .cap span{font-size:14.5px;color:var(--smoke);line-height:1.6;grid-column:2}
 
-  .nota{margin-top:44px;background:var(--ash);border-radius:14px;padding:26px 24px}
-  .nota h3{font-family:'Fraunces';font-weight:300;font-size:20px}
+  .nota{margin-top:44px;background:var(--ash);border-radius:4px;padding:26px 24px}
+  .nota h3{font-family:'Bodoni Moda';font-weight:500;font-size:20px}
   .nota p{margin-top:10px;font-size:15px;color:var(--smoke);line-height:1.7}
   .nota p + p{margin-top:12px}
 </style>
 </head>
-<body>
+<body class="nova">
 
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
 
@@ -193,7 +193,7 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>

@@ -4,397 +4,280 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cinérea · esculturas que guardam o que você quiser dizer</title>
-<meta name="description" content="Ateliê em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Você preenche com areia perfumada e repõe quando acabar. A escultura fica. E um chip dentro dela guarda o que você escolher dizer.">
+<meta name="description" content="Ateliê em Campos do Jordão. Esculturas de gesso moldadas à mão, uma por vez. Você enche com areia de cera e repõe quando acabar. A escultura fica, e um chip dentro dela guarda o que você escolher dizer.">
 <meta property="og:title" content="Cinérea">
 <meta property="og:image" content="https://cinerea.com.br/compartilhar.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:description" content="A base permanece, o conteúdo se renova.">
 <meta property="og:type" content="website">
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#F2EFEA">
+<meta name="theme-color" content="#F4F1EC">
 <link rel="icon" href="/icone.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
-  /* As âncoras do menu deslizam em vez de saltar. */
+  /* A HOME NA IDENTIDADE NOVA (nov/2026). Era uma capa escura em vídeo e doze
+     telas de texto; agora é foto primeiro e uma frase por bloco. O que cada
+     bloco dizia em parágrafos continua no site, nas páginas que existem para
+     isso (loja, aromas, aplicações, livro): a home leva até elas.
+
+     Bodoni Moda só em tamanho de título. É uma didone, de traço fino demais
+     para corpo de texto no celular, e por isso nada abaixo de 19 px usa ela. */
   html{scroll-behavior:smooth}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  /* O cabeçalho é fixo: sem isto, quem chega por /#areia ou /#chip (links do
+     rodapé) tem o título escondido atrás dele. */
+  main section[id]{scroll-margin-top:84px}
 
-  /* A CAPA NASCE ESCURA (nov/2026). Antes ela abria creme, com texto escuro, e
-     virava carvão quando o vídeo chegava: no celular, 1 a 2 segundos depois, e
-     com o texto já branco enquanto o véu ainda entrava, texto branco sobre
-     creme na primeira tela de quem vem do Instagram. Agora o primeiro quadro do
-     giro (`capa.jpg`, 67 KB) é o fundo desde a primeira pintura, enquadrado
-     igual ao vídeo, e o vídeo só entra por cima dele. Quem não recebe vídeo
-     (menos movimento, economia de dados, arquivo que falha) fica com o David
-     parado, e não com outra capa. */
-  .capa{text-align:center;padding:78px 22px 66px;position:relative;isolation:isolate;
-    background:var(--char) url(/capa.jpg) 83% 50%/cover no-repeat}
-  /* A forma do texto vem antes das regras de cor e de lado, que dependem de
-     vir depois para valer: com o mesmo peso, a última declarada ganha. */
-  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(42px,11vw,64px);margin-top:22px;letter-spacing:.01em}
-  .capa .lema{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(16px,4.4vw,20px);margin-top:4px}
-  .capa p{max-width:38ch;margin:30px auto 0;font-size:16.5px}
-  /* O vídeo cobre a capa inteira, atrás de tudo. `object-fit:cover` porque a
-     proporção da tela nunca é a do arquivo, e distorcer rosto de escultura é
-     pior que cortar. */
-  .capa-video,.capa-veu{
-    position:absolute;inset:0;width:100%;height:100%;z-index:-1;
-    opacity:0;transition:opacity .8s ease;pointer-events:none;
-  }
-  .capa-video{object-fit:cover}
-  /* O véu garante a leitura sobre qualquer quadro do vídeo. Sem ele, a
-     legibilidade fica refém do que estiver passando na tela naquele segundo. */
-  .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.42),rgba(20,19,17,.68))}
-  .capa .capa-veu,.capa.tocando .capa-video{opacity:1}
-  /* O DAVID NA CAPA (nov/2026), no lugar da vela gerada que a loja não vendia.
-     O vídeo é largo e a peça gira no terço direito, sobre o carvão do site.
+  .serifa{font-family:'Bodoni Moda',serif;font-weight:500}
+  /* Rótulo em caixa alta: 12,5 px e peso 500. Com 11,5 e peso normal, em cinza,
+     ele era o texto mais difícil de ler da página. */
+  .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
 
-     No computador o texto vai para a esquerda e o véu escurece só desse lado:
-     centrado, o título cobriria o rosto da peça, que é a razão do vídeo.
-     No celular não há lado, e o recorte é puxado para o David ficar no meio,
-     atrás do texto, com o véu de cima a baixo garantindo a leitura. A conta
-     do 83%: o quadro de 1920x864 escalado para 634 px de altura tem 1409 de
-     largura, o David está em 74% dela, e centrá-lo numa tela de 375 pede
-     deslocar 856 dos 1034 px que sobram. */
-  .capa-video{object-position:83% 50%}
-  /* No celular o texto fica SOBRE a peça iluminada: medido nos quadros, o pior
-     ponto atrás da frase em itálico dava 4,4:1 com o véu antigo. Um degrau
-     mais escuro o leva acima de 4,5. */
-  @media(max-width:899px){ .capa-veu{background:linear-gradient(180deg,rgba(20,19,17,.5),rgba(20,19,17,.72))} }
+  /* Os botões da identidade nova: cantos quase retos, caixa alta espaçada. São
+     a gramática de ação do comum.css (54 px, carvão cheio ou contorno) com
+     outra roupa, e não um terceiro desenho. */
+  .bt{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 28px;
+      background:var(--char);color:var(--paper);text-decoration:none;border:1px solid var(--char);
+      border-radius:2px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:.15s}
+  .bt:hover{background:var(--ember);border-color:var(--ember)}
+  .bt2{background:transparent;color:var(--char)}
+  .bt2:hover{background:transparent;color:var(--ember);border-color:var(--ember)}
+
+  /* ---- capa: a peça, e uma frase ------------------------------------------ */
+  .heroi{display:grid;max-width:1100px;margin:0 auto}
+  .heroi-foto{background:var(--paper)}
+  /* A foto é o render de verdade da peça, sobre o mesmo papel da página: não há
+     moldura porque não há borda para esconder. Mas só vale se o fundo da foto
+     for EXATAMENTE o --paper desta página (#F4F1EC): pousado no papel antigo,
+     #F2EFEA, aparecia um retângulo em volta do David no computador. Trocou o
+     papel, recompor a foto. O recorte no celular sobe um pouco para o rosto
+     não ficar no meio exato, que é onde o olho não para. */
+  /* A sombra é longa (luz baixa da esquerda) e passa da borda direita da foto.
+     A máscara a apaga aos poucos: como o fundo da foto é o papel da página, o
+     que some é só a sombra, e não aparece corte reto no meio da tela. */
+  .heroi-foto img{display:block;width:100%;height:min(118vw,560px);object-fit:cover;object-position:50% 50%;
+    -webkit-mask-image:linear-gradient(90deg,#000 72%,transparent 99%);mask-image:linear-gradient(90deg,#000 72%,transparent 99%)}
+  .heroi-texto{padding:26px 22px 44px}
+  .heroi h1{font-size:clamp(42px,11.5vw,70px);line-height:1.02;letter-spacing:-.005em;margin-top:14px}
+  .heroi h1 em{font-style:italic}
+  .heroi .sub{margin-top:18px;max-width:34ch;font-size:16.5px;color:var(--smoke);line-height:1.55}
+  .heroi .acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
   @media(min-width:900px){
-    .capa{text-align:left;padding-left:max(22px,calc(50vw - 470px))}
-    .capa p{margin-left:0}
-    .capa .bt{margin-left:0;margin-right:10px}
-    .capa,.capa-video{background-position:50% 50%;object-position:50% 50%}
-    .capa-veu{background:linear-gradient(90deg,rgba(20,19,17,.72) 0%,rgba(20,19,17,.5) 45%,rgba(20,19,17,.08) 75%)}
+    /* O texto pede ~520 px para o título caber em duas linhas a 64 px; com a
+       coluna mais estreita ele quebrava em quatro ("A vela / acaba."). */
+    .heroi{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:32px;padding:20px 22px 0}
+    .heroi-texto{padding:0}
+    .heroi h1{font-size:clamp(52px,4.7vw,66px)}
+    .heroi-foto{order:2}
+    .heroi-foto img{height:auto;aspect-ratio:3/4;max-height:720px}
   }
-  .capa{color:#fff}
-  .capa h1,.capa .lema,.capa p{color:#fff;text-shadow:0 1px 14px rgba(0,0,0,.4)}
-  .capa .lema{opacity:.92}
-  .capa .selo{filter:drop-shadow(0 1px 10px rgba(0,0,0,.45))}
-  .capa .selo path{stroke:#fff}
-  /* SOBRE O VÍDEO O BOTÃO PRINCIPAL É CLARO (nov/2026). Carvão sobre um véu
-     escuro era o botão mais apagado da tela, justo o que leva à loja, enquanto
-     o contorno branco do segundo saltava mais que ele. Agora o principal é um
-     bloco de papel, e o secundário continua contorno. */
-  .capa .bt{background:var(--paper);color:var(--char)}
-  .capa .bt:hover{background:var(--ember);color:var(--paper)}
-  .capa .bt2{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
-  .capa .bt2:hover{background:transparent;border-color:#fff;color:#fff}
-  .capa svg{width:58px;height:58px;overflow:visible}
-  /* Compassos diferentes de propósito: em fase, os dois pareceriam um pisca-pisca.
-     A aura respira devagar; a brasa varia pouco, só o bastante para não parecer
-     um desenho impresso. */
-  .capa .aura{transform-box:fill-box;transform-origin:50% 50%;animation:respira 5.2s ease-in-out infinite}
-  .capa .brasa{animation:viva 3.4s ease-in-out infinite}
-  @keyframes respira{0%,100%{transform:scale(.86);opacity:.75}50%{transform:scale(1.06);opacity:1}}
-  @keyframes viva{0%,100%{opacity:1}50%{opacity:.88}}
-  .bt{display:inline-block;margin:30px 5px 0;padding:15px 30px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
-  .bt:hover{background:var(--ember)}
-  /* Dois caminhos na capa: comprar o que existe, ou encomendar o que não
-     existe. O segundo é o do ateliê, e por isso não compete visualmente com
-     o primeiro: contorno, não bloco. */
-  .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
-  .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
 
-  /* A VITRINE, logo abaixo da capa (nov/2026). A home tinha doze telas de
-     história e nenhuma peça com preço: quem chega pelo Instagram querendo saber
-     quanto custa tinha de adivinhar que a resposta estava em "Ver as peças".
-     As caixas nascem com o tamanho final, foto quadrada e duas linhas de nome,
-     para a página não pular quando o catálogo chega. */
-  .vitrine{padding:52px 0 44px;border-top:1px solid var(--line);text-align:center}
-  .vitrine .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .vitrine h2{font-family:'Fraunces';font-weight:300;font-size:clamp(27px,7vw,38px);margin-top:10px;line-height:1.15}
-  .vit-grade{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:30px auto 0;max-width:780px;text-align:left}
-  .vit-peca{display:block;text-decoration:none;color:var(--char)}
-  .vit-foto{display:block;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--ash)}
-  .vit-foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
-  .vit-peca:hover .vit-foto img{transform:scale(1.04)}
+  /* ---- matéria: três fotos, uma palavra cada ------------------------------ */
+  /* Colagem, e não grade (o dono pediu orgânico e sem cortar a foto, nov/2026):
+     três tamanhos, três alturas, um grau de giro em cada, como objetos
+     pousados numa mesa. A foto é inteira, 3:4, como saiu; o que é orgânico é
+     a BORDA (.laje, em comum.css), não um recorte que come a imagem. */
+  .materia{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:12px;row-gap:0;padding:12px 0 64px;margin:0;align-items:start}
+  .materia figure{margin:0}
+  /* `height:auto` é o que deixa o `aspect-ratio` valer: sem ele, o atributo
+     height="800" da tag vira altura em CSS e a foto estica a 1:6. */
+  .materia img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;background:var(--ash)}
+  .materia .m-gesso{grid-column:1/8;rotate:-1.6deg}
+  .materia .m-cera{grid-column:8/13;margin-top:64px;rotate:1.4deg}
+  .materia .m-chama{grid-column:4/11;margin-top:-28px;rotate:-.8deg}
+  /* A palavra em Bodoni itálica, e não etiqueta: é o nome do material, dito. */
+  .materia figcaption{margin-top:12px;font-family:'Bodoni Moda',serif;font-weight:500;font-style:italic;font-size:clamp(19px,4.6vw,26px);color:var(--char)}
+  .materia figcaption::after{content:'.';color:var(--ember)}
+  .materia .m-cera figcaption{text-align:right}
+  @media(min-width:900px){
+    .materia{column-gap:28px;padding:32px 2% 104px}
+    .materia .m-gesso{grid-column:1/6}
+    .materia .m-cera{grid-column:6/9;margin-top:140px}
+    .materia .m-chama{grid-column:9/13;margin-top:40px}
+    .materia .m-cera figcaption{text-align:left}
+  }
+
+
+  /* ---- vitrine ------------------------------------------------------------ */
+  .vitrine{padding:56px 0 52px;border-top:1px solid var(--line);text-align:center}
+  .vitrine h2{font-size:clamp(30px,7.5vw,44px);line-height:1.08;margin-top:12px}
+  /* As caixas nascem do tamanho final, foto quadrada e duas linhas de nome,
+     para a página não pular quando o catálogo chega (/vitrine.js). */
+  /* Desalinhadas de propósito (o dono pediu menos reto, nov/2026), como a
+     matéria lá em cima: a do meio maior e mais baixa, cada foto com um grau
+     de giro. O texto NÃO gira, só a foto: nome e preço tortos se leem pior.
+     O padrão se repete a cada três, para quando a vitrine tiver mais peças.
+     A máscara vai na imagem e a sombra na caixa dela, porque máscara corta
+     a sombra do próprio elemento. */
+  .vit-grade{display:grid;grid-template-columns:1fr 1.18fr 1fr;column-gap:56px;margin:40px auto 0;max-width:920px;text-align:left;align-items:start}
+  .vit-peca{display:block;text-decoration:none;color:var(--char);position:relative;z-index:1}
+  /* O pavio que liga as peças (desenhado pelo vivo.js): atrás das fotos, à
+     vista só nos vãos, e aceso depois da última. Fio de carvão com uma trama
+     clara por cima, que é o que faz ler como algodão trançado e não risco. */
+  .vit-grade{position:relative}
+  .vit-fio{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+  .vit-fio .fio{fill:none;stroke:#2A2420;stroke-width:2.6;stroke-linecap:round}
+  .vit-fio .trama{fill:none;stroke:rgba(244,241,236,.5);stroke-width:1.1;stroke-dasharray:2.2 3.2;stroke-linecap:round}
+  .vit-fio .brilho{fill:var(--ember);opacity:.14}
+  .vit-fio .chama{fill:#E9A04A;transform-origin:0 -3px}
+  .vit-fio .brasa{fill:var(--ember)}
+  @media(prefers-reduced-motion:no-preference){
+    .vit-fio .chama{animation:vit-chama 2.4s ease-in-out infinite alternate}
+  }
+  @keyframes vit-chama{30%{transform:scale(.94,1.06) skewX(2deg)}70%{transform:scale(1.04,.95) skewX(-3deg)}100%{transform:scale(.97,1.03)}}
+  .vit-peca:nth-child(3n+2){margin-top:58px}
+  .vit-peca:nth-child(3n){margin-top:18px}
+  .vit-foto{display:block;aspect-ratio:1;rotate:-1.6deg;transition:rotate .5s cubic-bezier(.2,.7,.3,1);
+    filter:drop-shadow(0 16px 18px rgba(22,20,18,.12)) drop-shadow(0 2px 3px rgba(22,20,18,.07))}
+  .vit-peca:nth-child(3n+2) .vit-foto{rotate:1.3deg}
+  .vit-peca:nth-child(3n) .vit-foto{rotate:-.7deg}
+  .vit-peca:hover .vit-foto{rotate:0deg}
+  .vit-foto img,.vit-foto:empty{-webkit-mask:var(--laje2) center/100% 100% no-repeat;mask:var(--laje2) center/100% 100% no-repeat}
+  .vit-foto:empty{height:100%;background:var(--ash)}
+  .vit-peca:nth-child(3n+2) .vit-foto img,.vit-peca:nth-child(3n+2) .vit-foto:empty{-webkit-mask-image:var(--laje3);mask-image:var(--laje3)}
+  .vit-peca:nth-child(3n) .vit-foto img,.vit-peca:nth-child(3n) .vit-foto:empty{-webkit-mask-image:var(--laje1);mask-image:var(--laje1)}
+  .vit-foto img{width:100%;height:100%;object-fit:cover;display:block;background:var(--ash)}
+  /* o nome acompanha a foto um pouco para dentro, alternando o lado */
+  .vit-peca:nth-child(3n+2) .vit-nome,.vit-peca:nth-child(3n+2) .vit-preco{padding-left:14%}
   .vit-nome{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-    font-family:'Fraunces';font-weight:300;font-size:19px;line-height:1.25;margin-top:12px;min-height:2.5em}
+    font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;line-height:1.2;margin-top:12px;min-height:2.4em}
   .vit-preco{display:block;font-size:14.5px;color:var(--smoke);margin-top:4px;min-height:1.5em}
-  .vit-mais{display:inline-block;margin-top:30px;color:var(--ember);font-size:15px}
+  .vit-mais{display:inline-block;margin-top:30px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--char);padding:12px 0}
+  .vit-mais:hover{color:var(--ember)}
   /* No celular, duas e meia por tela, rolando de lado: a terceira aparecendo
      pela metade é o que diz que há mais para ver. */
   @media(max-width:560px){
-    .vit-grade{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
-      margin:26px -22px 0;padding:0 22px;scrollbar-width:none;
-      /* Sem isto o encaixe alinha a primeira peça na BORDA da tela e come o
-         recuo: medido, ela abria a 4 px da margem e não a 26. */
-      scroll-padding-inline:22px}
+    .vit-grade{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;
+      margin:26px -22px 0;padding:0 22px;scrollbar-width:none;scroll-padding-inline:22px}
     .vit-grade::-webkit-scrollbar{display:none}
     .vit-peca{flex:0 0 42%;scroll-snap-align:start}
-    .vit-nome{font-size:16px}
+    /* rolando de lado não cabe a do meio maior; fica só o desnível e o giro */
+    .vit-grade{align-items:flex-start;padding-top:8px;padding-bottom:14px;padding-right:74px}
+    .vit-peca:nth-child(3n+2){margin-top:34px}
+    .vit-peca:nth-child(3n){margin-top:12px}
+    .vit-peca:nth-child(3n+2) .vit-nome,.vit-peca:nth-child(3n+2) .vit-preco{padding-left:0}
+    .vit-nome{font-size:18px}
   }
 
-  /* O verbete. Tratamento de dicionário, e não de seção: é uma definição, e
-     lida como definição ela convence sem precisar afirmar nada. Centrado e
-     estreito para ninguém confundir com o corpo do texto. */
-  .verbete{padding:52px 0 48px;border-top:1px solid var(--line);text-align:center}
-  .verbete .palavra{font-family:'Fraunces';font-weight:300;font-size:clamp(34px,9vw,50px);line-height:1}
-  .verbete .classe{margin-top:12px;font-size:12.5px;color:var(--smoke);letter-spacing:.02em}
-  .verbete .classe i{font-style:italic}
-  .verbete .def{
-    font-family:'Fraunces';font-style:italic;font-weight:300;
-    font-size:clamp(19px,4.8vw,25px);line-height:1.4;
-    margin:22px auto 0;max-width:26ch;
-  }
-  .verbete .nota{margin:22px auto 0;max-width:48ch;font-size:15.5px;color:var(--smoke);line-height:1.6}
-  /* O ponto de brasa entre a definição e a nota: a mesma marca da capa, do
-     tamanho de um pingo. É a única cor do bloco. */
-  .verbete .def::after{
-    content:'';display:block;width:5px;height:5px;border-radius:50%;
-    background:var(--ember);margin:22px auto 0;
-  }
+  /* ---- o verbete ---------------------------------------------------------- */
+  .verbete{padding:60px 0 64px;border-top:1px solid var(--line);text-align:center}
+  .verbete .palavra{font-size:clamp(40px,10vw,60px);line-height:1}
+  .verbete .classe{margin-top:12px;font-size:12.5px;color:var(--smoke)}
+  .verbete .def{font-family:'Bodoni Moda',serif;font-weight:500;font-style:italic;font-size:clamp(20px,5vw,27px);line-height:1.35;margin:22px auto 0;max-width:24ch}
+  /* O ponto de brasa: o mesmo do logo, do tamanho de um pingo. É a única cor. */
+  .verbete .def::after{content:'';display:block;width:6px;height:6px;border-radius:50%;background:var(--ember);margin:24px auto 0}
 
-  .ideia{padding:56px 0;border-top:1px solid var(--line)}
-  .ideia .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  /* `balance` evita a linha órfã: com 18ch o título quebrava deixando um "A"
-     sozinho no fim da primeira linha. */
-  .ideia h2{font-family:'Fraunces';font-weight:300;font-size:clamp(27px,7vw,38px);margin-top:10px;line-height:1.15;max-width:24ch;text-wrap:balance}
-  .ideia p{margin-top:16px;max-width:56ch;font-size:16px}
-  .ideia p+p{margin-top:12px}
-  .ideia .frisa{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:19px;color:var(--char);margin-top:22px;padding-left:16px;border-left:2px solid var(--ember);max-width:44ch}
-  .passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:22px;margin-top:32px}
-  .passo .n{font-family:'Fraunces';font-size:26px;color:var(--ember)}
-  .passo h3{font-family:'Fraunces';font-weight:400;font-size:17px;margin-top:4px}
-  .passo p{font-size:14px;color:var(--smoke);margin-top:5px;max-width:none}
-.desenho{display:block;width:100%;max-width:470px;height:auto;margin:26px 0 6px}
-  @media(max-width:560px){ .desenho{margin-left:auto;margin-right:auto} }
-
-  /* Tudo que muda quando o desenho é recortado pende de UMA classe, posta pelo
-     script junto com o viewBox. Já tentei separar (media query esconde o rótulo,
-     script recorta o quadro) e os dois dessincronizaram: rótulo visível dentro
-     de um quadro que não o contém. Uma decisão, um lugar. */
-  .desenho.cortado text,.desenho.cortado .chamada{display:none}
-  .desenho.cortado{max-width:300px}
-  #areia .desenho.cortado{max-width:180px}
-
-  /* Em tela larga o desenho anda AO LADO do texto. Empilhado, ele virava uma
-     interrupção no meio de uma coluna estreita, com meia tela vazia à direita. */
-  .dupla{display:grid;gap:30px;align-items:center;margin-top:24px}
-  .dupla p{max-width:52ch}
-
-  /* ---- a peça girando --------------------------------------------------- */
-  /* O vídeo já foi composto sobre o creme do site na hora de codificar, em vez
-     de carregar transparência: alfa em vídeo exige webm com VP9 e cai fora no
-     Safari, e o fundo aqui é uma cor chapada que nunca muda. Um `overlay` de
-     ffmpeg resolveu de vez o que seria um problema de compatibilidade eterno. */
-  /* O FUNDO PRECISA ESTAR AQUI, e essa foi a parte que não se adivinha.
-     `mix-blend-mode` mistura com o que está atrás DENTRO do mesmo contexto de
-     empilhamento, e a seção `.ideia` cria um: ela tem `transform` por causa da
-     animação de revelação. Com o pai transparente, o vídeo multiplicava contra
-     nada e o branco continuava branco, que foi exatamente o que apareceu na prova.
-     Pintar o papel aqui dá ao `multiply` o que ele precisa. */
-  .giro{display:flex;justify-content:center;background:var(--paper)}
-  .giro-video{
-    width:100%;max-width:330px;height:auto;display:block;
-    /* O VÍDEO É COMPOSTO SOBRE BRANCO, e `multiply` faz o branco sumir.
-       Não é detalhe: `branco × qualquer cor = a própria cor`, então o fundo do
-       vídeo vira exatamente o papel da página, seja ele qual for, e sem
-       depender de o codificador devolver o RGB exato.
-
-       Tentei antes compor sobre o próprio creme, e não funciona por dois
-       motivos que só aparecem na tela. O H.264 guarda a imagem em YUV com
-       faixa limitada, e a ida e volta desloca o tom o suficiente para o olho
-       ver uma placa mais clara em volta da peça. E `multiply` de creme contra
-       creme dá um creme MAIS ESCURO, o que trocou a placa clara por uma
-       escura. Branco resolve os dois de uma vez. */
-    mix-blend-mode:multiply;
-  }
-  @media(min-width:880px){ .giro-video{max-width:400px} }
-  @media(min-width:880px){
-    .dupla{grid-template-columns:430px 1fr;gap:46px}
-    .dupla .desenho{margin:0}
+  /* ---- faixas de foto e texto --------------------------------------------- */
+  .faixa{display:grid;background:var(--ash)}
+  .faixa img,.faixa video{display:block;width:100%;height:min(110vw,520px);object-fit:cover;background:var(--ash)}
+  .faixa-texto{padding:34px 22px 48px;align-self:center}
+  /* O vídeo do refil inteiro, numa laje sobre o cinza: cobrir a coluna
+     cortava a mão e a areia caindo, que são o assunto. */
+  .faixa-midia{padding:40px 22px 0;display:grid;place-items:center}
+  .faixa .faixa-midia video{width:min(100%,420px);height:auto;aspect-ratio:828/1108;object-fit:cover}
+  .faixa h2{font-size:clamp(32px,8vw,50px);line-height:1.05;margin-top:12px}
+  .faixa h2 em{font-style:italic}
+  .faixa p{margin-top:16px;max-width:40ch;font-size:16.5px;line-height:1.6;color:#45403A}
+  .faixa .bt{margin-top:26px}
+  @media(min-width:900px){
+    .faixa{grid-template-columns:1fr 1fr}
+    .faixa img,.faixa video{height:640px}
+    .faixa-midia{padding:64px 0 64px max(22px,calc(50vw - 520px))}
+    .faixa .faixa-midia video{height:auto;width:min(100%,440px)}
+    .faixa-texto{padding:48px max(22px,calc(50vw - 520px)) 48px 64px}
   }
 
-  /* O vídeo do NFC, num cartão. `overflow:hidden` é o que faz o arredondamento
-     valer para o vídeo, que não respeita `border-radius` do pai sem isso. */
-  .medalhao{margin-top:34px}
-  /* A foto entra MENOR que o vídeo, e recuada: ela é a resposta secundária
-     ("como o objeto é"), e do mesmo tamanho competiria com a cena que explica
-     a tecnologia. */
-  .medalhao-foto{width:62%;max-width:250px;height:auto;display:block;margin:14px auto 0}
+  /* ---- peças novas: faixa que rola de lado --------------------------------- */
+  .novas{padding:72px 0 64px;border-top:1px solid var(--line)}
+  .novas h2{font-size:clamp(32px,8vw,50px);line-height:1.05;margin-top:12px}
+  .novas h2 em{font-style:italic}
+  .novas .sub{margin-top:16px;max-width:40ch;font-size:16.5px;line-height:1.6;color:#45403A}
+  .novas-faixa{display:flex;gap:clamp(30px,5vw,52px);align-items:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;margin-top:34px;
+    padding:6px calc(max(22px,calc(50vw - 520px)) + 64px) 26px max(22px,calc(50vw - 520px));scroll-padding-inline:max(22px,calc(50vw - 520px));scrollbar-width:thin}
+  /* o mesmo pavio da vitrine liga os pratos e potes: a faixa é o chão do fio,
+     as peças ficam por cima dele, e sobra espaço à direita para a ponta acesa */
+  .novas-faixa{position:relative}
+  .novas-faixa figure{flex:0 0 auto;scroll-snap-align:start;margin:0;position:relative;z-index:1}
+  .novas-faixa img{display:block;height:min(64vw,340px);width:auto;background:var(--ash)}
+  /* alturas desencontradas, como a matéria lá em cima */
+  .novas-faixa figure:nth-child(even){margin-top:34px}
+  .novas-faixa figcaption{margin-top:12px;font-size:14px;color:var(--smoke);max-width:30ch}
+  .novas-faixa figcaption b{display:block;font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;color:var(--char);margin-bottom:2px}
+  .novas .bt{margin-top:30px}
+  @media(min-width:900px){.novas-faixa img{height:440px}}
 
-  /* O RAIO X OCUPA O LUGAR DA FOTO, e não um espaço novo. A seção já tinha
-     crescido demais uma vez; aqui a foto e a vista explodida são dois estados
-     do mesmo slot, então o bloco não engorda por existir mais uma coisa. */
-  .medalhao-vista{min-height:1px}
-  .medalhao-vista model-viewer{
-    width:100%;height:260px;display:block;margin-top:14px;
-    background:var(--ash);border:1px solid var(--line);border-radius:14px;
-    --poster-color:transparent;
-  }
-  .btlink{background:none;border:none;padding:0;font:inherit;color:var(--ember);
-          cursor:pointer;margin-top:12px;display:block;text-align:center;width:100%}
-  .btlink[disabled]{color:var(--smoke);cursor:default}
-  /* As legendas do desenho: pequenas, claras, e sem caixa colorida, que
-     brigaria com a brasa. `data-visibility-attribute` faz o model-viewer
-     esconder sozinho a que estiver atrás da peça. */
-  .zap{
-    background:var(--paper);border:1px solid var(--line);border-radius:20px;
-    padding:3px 9px;font-size:10.5px;color:var(--char);white-space:nowrap;
-    transform:translate(-50%,-50%);
-  }
-  .zap[data-visible="false"]{opacity:0;pointer-events:none;transition:opacity .2s}
-  .nfc-cartao{
-    /* O cinza do render (#E1E0DC) e o `--ash` são praticamente a mesma cor, então
-       o cartão não tem emenda com o vídeo. A borda é o que o faz parecer painel
-       de demonstração e não remendo: sem ela, a placa cinza sobre o creme lê
-       como erro de recorte. Mesmo desenho do visualizador 3D da loja. */
-    background:var(--ash);border:1px solid var(--line);
-    border-radius:14px;overflow:hidden;
-    max-width:400px;margin:0 auto;
-  }
-  .nfc-video{width:100%;height:auto;display:block}
-
-  /* O CARTÃO DO LIVRO. A capa é escura e pesada sobre o creme, então ela é o
-     único elemento que precisa de sombra na página inteira: sem peso, um
-     retângulo preto flutua. */
-  .livro-cartao{display:grid;gap:22px;align-items:center;text-decoration:none;
-                color:inherit}
-  .livro-cartao img{width:150px;height:auto;display:block;border-radius:4px;
-    box-shadow:0 16px 34px -20px rgba(28,26,23,.8),0 2px 6px -2px rgba(28,26,23,.25);
-    transition:transform .25s ease}
-  .livro-cartao:hover img{transform:translateY(-3px)}
-  .livro-cartao h2{margin-top:8px}
-  .livro-cartao .linkinho{display:inline-block;margin-top:16px}
-  @media(min-width:700px){ .livro-cartao{grid-template-columns:150px 1fr;gap:38px} }
-
-  /* Os três passos são uma sequência física, desenhada explica melhor que
-     numerada. O mesmo copo nos três, mudando só o que acontece com ele. */
-  .passo .fig{display:block;width:62px;height:62px;margin-bottom:8px}
-  .passo .n{font-family:'Fraunces';font-size:17px;color:var(--ember);margin-right:3px}
-
-  /* Os sete tipos de conteúdo: dizer "a peça diz o que você quiser" e mostrar
-     sete pictogramas não é a mesma coisa. */
-  /* 92px e o que faz caber 3 colunas num celular de 375px (2 deixava quatro
-     fileiras) sem tirar as 7 numa linha so no desktop. */
-  .tipos{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));
-         gap:20px 12px;margin-top:30px;padding-top:28px;border-top:1px solid var(--line)}
+  /* ---- o chip -------------------------------------------------------------- */
+  .chip{padding:72px 0 24px;text-align:center}
+  .chip h2{font-size:clamp(32px,8vw,50px);line-height:1.05;margin-top:12px}
+  .chip .sub{margin:16px auto 0;max-width:40ch;font-size:16.5px;color:var(--smoke)}
+  /* 92 px é o que faz caber 3 colunas num celular de 375 sem tirar as 7 numa
+     linha só no computador. */
+  .tipos{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:20px 12px;margin:36px auto 0;max-width:760px}
   .tipo{text-align:center}
-  .tipo svg{width:38px;height:38px;display:block;margin:0 auto 8px}
+  .tipo svg{width:36px;height:36px;display:block;margin:0 auto 8px}
   .tipo span{font-size:13px;color:var(--smoke)}
-  /* O esticar da chama vem por CSS, e não por `animateTransform`: aquele escala
-     a partir da origem do SVG e a chama sairia do lugar. `transform-box:fill-box`
-     faz a origem ser a própria forma, e daí ela cresce de onde o fogo nasce, a base do pavio. Fora de compasso com o halo, de propósito. */
-  .fogo{transform-box:fill-box;transform-origin:50% 100%;animation:subir 2.7s ease-in-out infinite}
-  @keyframes subir{0%,100%{transform:scale(1,1)}50%{transform:scale(1.03,1.09)}}
 
-  /* ---- movimento que EXPLICA ----------------------------------------
-     Regra que segui: cada animação diz o que a coisa faz. A onda sai da peça
-     porque é isso que o chip faz; a areia cai porque é assim que se enche; a
-     seta gira porque o ciclo recomeça. Nenhuma existe só para se mexer. */
-
-  /* As ondas saem em sequência, o atraso é o que dá a direção. */
-  /* Repousam VISÍVEIS: travando a animação, as ondas continuam desenhadas, o mesmo cuidado das seções. O ciclo só modula em volta desse repouso. */
-  .onda{opacity:.5;animation:pulso 3.4s ease-out infinite}
-  .o1{animation-delay:0s} .o2{animation-delay:.42s} .o3{animation-delay:.84s}
-  @keyframes pulso{0%{opacity:.22}18%{opacity:.9}55%{opacity:.3}100%{opacity:.22}}
-
-  /* A areia cai e recomeça. Cada grão com seu tempo: em bloco pareceria chuva. */
-  .graos circle{animation:cair 2.6s ease-in infinite}
-  .graos circle:nth-child(2){animation-delay:.5s}
-  .graos circle:nth-child(3){animation-delay:.9s}
-  .graos circle:nth-child(4){animation-delay:1.4s}
-  .graos circle:nth-child(5){animation-delay:1.9s}
-  /* Idem: o grão nunca chega a opacidade 0 no repouso do ciclo. */
-  @keyframes cair{0%{transform:translateY(-6px);opacity:.15}25%{opacity:1}100%{transform:translateY(22px);opacity:.15}}
-
-  .chaminha{transform-box:fill-box;transform-origin:50% 100%;animation:subir 2.9s ease-in-out infinite}
-
-  /* Uma volta a cada ciclo, com pausa longa: girar sem parar viraria carrossel. */
-  .recomeco{transform-box:fill-box;transform-origin:50% 78%;animation:volta 6s cubic-bezier(.5,0,.2,1) infinite}
-  @keyframes volta{0%,55%{transform:rotate(0)}85%,100%{transform:rotate(360deg)}}
-
-  /* As seções entram subindo, SÓ deslocamento, nunca opacidade.
-     A diferença não é estética, é de modo de falha. Animar opacidade esconde o
-     texto para mostrá-lo depois, e qualquer coisa que trave a animação (aba
-     oculta, `IntersectionObserver` que não dispara, erro de script) deixa a
-     página em branco. Medi isso acontecendo. Animando só o `translateY`, o pior
-     caso é a seção ficar 14px fora do lugar, e ninguém percebe. */
-  .ideia{animation:sobe .8s cubic-bezier(.2,.7,.3,1) both}
-  #areia{animation-delay:.05s} #chip{animation-delay:.14s}
-  #app{animation-delay:.23s}   #marca{animation-delay:.32s}
-  @keyframes sobe{from{transform:translateY(14px)}to{transform:none}}
-
-  /* Fogo é movimento contínuo: quem pediu menos movimento não quer isto. */
-  @media (prefers-reduced-motion:reduce){
-    .fogo{filter:none!important;animation:none!important}
-    .fogo animate,.calor animate{display:none}
-    .capa .aura,.capa .brasa{animation:none!important}
-    .onda,.graos circle,.chaminha,.recomeco{animation:none!important;opacity:1;transform:none}
-    .pavio .cinzas i,.acoes text{animation:none!important}
-    .acoes .a1{opacity:1}
-    .ideia{animation:none!important;transform:none}
-  }
-  /* O menu marca em que seção você está. Decoração pura: não disparando, o
-     menu fica como sempre foi. */
-  .topo nav a.lendo{color:var(--char)}
-  .topo nav a.lendo::after{
-    content:'';display:block;height:1px;margin-top:3px;background:var(--ember);
-    animation:risca .4s ease-out both;
-  }
-  @keyframes risca{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-
-  /* margem à direita porque na seção "A marca" há dois lado a lado: sem ela o
-     espaço entre os dois é o de uma palavra, e eles viram um borrão só. */
-  .linkinho{display:inline-block;margin-top:22px;margin-right:28px;color:var(--ember);font-size:15px}
-
-  /* ---- experimente ------------------------------------------------------ */
-  .experimente{display:grid;gap:30px;margin-top:36px;padding-top:30px;border-top:1px solid var(--line);align-items:center}
+  /* Experimente: o quadro é um iframe da página do convidado de verdade, e não
+     uma imitação dela, que envelheceria em separado. */
+  .experimente{display:grid;gap:30px;margin-top:56px;padding-top:44px;border-top:1px solid var(--line);align-items:center;text-align:left}
   @media(min-width:880px){.experimente{grid-template-columns:1fr 300px;gap:44px}}
-  .exp-titulo{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,29px);margin-top:8px;line-height:1.15}
-  .exp-nota{color:var(--smoke);font-size:15px;margin-top:10px;max-width:44ch}
+  .exp-titulo{font-size:clamp(26px,6vw,34px);line-height:1.1;margin-top:10px}
+  .exp-nota{color:var(--smoke);font-size:15.5px;margin-top:10px;max-width:44ch}
   .exp-rot{display:block;font-size:12px;color:var(--smoke);margin:22px 0 6px}
-  #expTexto{
-    width:100%;max-width:44ch;padding:13px 15px;border:1px solid var(--line);
-    border-radius:10px;background:rgba(255,255,255,.5);color:var(--char);
-    font-family:inherit;font-size:15px;line-height:1.5;resize:vertical;
-  }
-  #expTexto:focus{outline:2px solid var(--ember);outline-offset:1px;border-color:transparent}
+  #expTexto{width:100%;max-width:44ch;padding:13px 15px;border:1px solid var(--line);border-radius:2px;
+    background:rgba(255,255,255,.55);color:var(--char);font-family:inherit;font-size:15px;line-height:1.5;resize:vertical}
+  #expTexto:focus{outline:2px solid var(--char);outline-offset:1px;border-color:transparent}
   .exp-tipos{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-  .exp-tipo{
-    padding:8px 15px;border-radius:20px;border:1px solid var(--line);
-    background:transparent;color:var(--smoke);font-family:inherit;font-size:13.5px;
-    cursor:pointer;transition:.18s;
-  }
-  .exp-tipo:hover{border-color:var(--ember);color:var(--ember)}
+  .exp-tipo{min-height:40px;padding:8px 16px;border-radius:20px;border:1px solid var(--line);background:transparent;
+    color:var(--smoke);font-family:inherit;font-size:13.5px;cursor:pointer;transition:.18s}
+  .exp-tipo:hover{border-color:var(--char);color:var(--char)}
   .exp-tipo.on{background:var(--char);border-color:var(--char);color:var(--paper)}
-
-  /* O celular é desenhado em CSS: nenhuma imagem para carregar, e ele se ajusta
-     ao que estiver dentro. A tela guarda um iframe da página de verdade. */
-  .aparelho{
-    width:264px;max-width:100%;margin:0 auto;padding:11px;border-radius:32px;
-    background:var(--char);box-shadow:0 20px 44px -22px rgba(28,26,23,.55);
-  }
+  .experimente .bt{margin-top:24px}
+  .aparelho{width:264px;max-width:100%;margin:0 auto;padding:11px;border-radius:32px;background:var(--char);box-shadow:0 20px 44px -22px rgba(22,20,18,.55)}
   .aparelho-tela{position:relative;border-radius:22px;overflow:hidden;background:var(--paper);aspect-ratio:9/17}
-  .aparelho-tela::before{
-    content:'';position:absolute;left:50%;top:7px;transform:translateX(-50%);
-    width:52px;height:5px;border-radius:3px;background:rgba(242,239,234,.35);z-index:2;
-  }
+  .aparelho-tela::before{content:'';position:absolute;left:50%;top:7px;transform:translateX(-50%);width:52px;height:5px;border-radius:3px;background:rgba(244,241,236,.35);z-index:2}
   #expQuadro{width:100%;height:100%;border:0;display:block}
+  .linkinho{display:inline-block;margin-top:18px;font-size:15px;color:var(--char)}
+  .linkinho:hover{color:var(--ember)}
 
-  /* ---- a seção acende ao chegar -----------------------------------------
-     Uma brasa no rótulo, como se o pavio tivesse acendido aquela parte. Só
-     DECORAÇÃO: se o observador nunca disparar, o rótulo fica como sempre foi. */
-  .ideia .rot{position:relative;display:inline-block}
-  .ideia .rot::after{
-    content:''; position:absolute; right:-13px; top:50%;
-    width:5px; height:5px; margin-top:-2.5px; border-radius:50%;
-    background:var(--ember); opacity:0; transform:scale(.4);
+  /* ---- o ateliê ------------------------------------------------------------ */
+  .atelie{padding:72px 0 80px;border-top:1px solid var(--line);margin-top:56px;display:grid;gap:18px}
+  .atelie h2{font-size:clamp(32px,8vw,50px);line-height:1.05}
+  .atelie p{max-width:52ch;font-size:16.5px;color:#45403A}
+  .atelie .acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+  @media(min-width:900px){ .atelie{grid-template-columns:1fr 1fr;column-gap:64px;align-items:start} .atelie .rot{grid-column:1/-1} }
+
+  /* ---- o livro, no escuro -------------------------------------------------- */
+  /* A única faixa escura da página, e é a do livro de propósito: o título dele
+     é a frase da marca dita no fim do dia, "quando a chama passa". */
+  /* O fundo é o preto do vídeo da fumaça (neutro, #080808 a #161616 com a
+     vinheta), e não o grafite quente do site: com o grafite, a coluna do vídeo
+     aparecia como um retângulo mais frio. As bordas do vídeo ainda esmaecem. */
+  .escuro{position:relative;overflow:hidden;background:#0C0C0B;color:var(--paper)}
+  .livro-video{display:block;width:100%;height:380px;object-fit:cover;object-position:50% 30%;
+    -webkit-mask-image:linear-gradient(180deg,#000 50%,transparent);mask-image:linear-gradient(180deg,#000 50%,transparent)}
+  @media(min-width:900px){
+    .livro-video{position:absolute;top:0;right:0;width:min(44vw,600px);height:100%;object-position:50% 50%;
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 40%);mask-image:linear-gradient(90deg,transparent,#000 40%)}
   }
-  .ideia.acesa .rot::after{animation:acende 1.5s ease-out forwards}
-  @keyframes acende{
-    0%{opacity:0;transform:scale(.4);box-shadow:0 0 0 0 rgba(181,70,42,.5)}
-    35%{opacity:1;transform:scale(1.35);box-shadow:0 0 10px 4px rgba(181,70,42,.32)}
-    100%{opacity:.85;transform:scale(1);box-shadow:0 0 5px 1px rgba(181,70,42,.18)}
-  }
+  .livro-cartao{position:relative;display:grid;gap:26px;align-items:center;text-decoration:none;color:inherit;max-width:1000px;margin:0 auto;padding:64px 22px 72px}
+  @media(max-width:899px){ .livro-cartao{padding-top:0;margin-top:-40px} }
+  .livro-cartao img{width:150px;height:auto;display:block;border-radius:2px;box-shadow:0 18px 40px -18px rgba(0,0,0,.9);transition:transform .25s ease}
+  .livro-cartao:hover img{transform:translateY(-3px)}
+  .livro-cartao .rot{color:#CFC7BB}
+  .livro-cartao h2{font-size:clamp(30px,7vw,44px);line-height:1.08;margin-top:10px}
+  .livro-cartao p{margin-top:14px;max-width:46ch;font-size:16px;color:#CFC7BB}
+  .livro-cartao .bt{margin-top:24px;background:var(--paper);color:var(--char);border-color:var(--paper)}
+  .livro-cartao:hover .bt{background:var(--ember);border-color:var(--ember);color:var(--paper)}
+  @media(min-width:700px){ .livro-cartao{grid-template-columns:170px 1fr;gap:48px} .livro-cartao img{width:170px} }
+  /* O rodapé encosta na faixa escura: a margem dele criaria uma tira de papel
+     entre os dois. */
+  .nova .rodape{margin-top:0}
 </style>
 <!-- Dados estruturados (nov/2026): é por aqui que o Google liga o site ao
      perfil da Cinérea no Maps. Nome, endereço e telefone têm de ser IDÊNTICOS
@@ -424,7 +307,7 @@
 }
 </script>
 </head>
-<body>
+<body class="nova">
 
 <!-- A vela que queima enquanto se lê. `aria-hidden`: é imagem, não informação: quem usa leitor de tela não perde nada. -->
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
@@ -454,43 +337,52 @@
 </div></header>
 
 <main>
-  <section class="capa" id="capa">
-    <!-- O VÍDEO É OPCIONAL E SÓ APARECE QUANDO CARREGA.
-         Se o arquivo não existir, ou a rede for ruim, ou a pessoa pedir menos
-         movimento, fica o primeiro quadro dele, que é o fundo da capa. É a
-         mesma regra das animações daqui: efeito nenhum pode esconder o
-         conteúdo. -->
-    <video class="capa-video" id="capaVideo" muted loop playsinline preload="auto"
-           poster="/capa.jpg" aria-hidden="true" tabindex="-1"></video>
-    <div class="capa-veu" aria-hidden="true"></div>
-    <!-- A marca da capa acende. Nenhum desenho novo: o ponto de brasa do logo
-         já era fogo, só nunca tinha queimado. É o gesto mais contido possível
-         aqui: a primeira tela precisa de presença, não de espetáculo. -->
-    <svg class="selo" viewBox="0 0 150 150" fill="none" aria-hidden="true">
-      <defs>
-        <radialGradient id="aura">
-          <stop offset="0%" stop-color="#B5462A" stop-opacity=".55"/>
-          <stop offset="55%" stop-color="#B5462A" stop-opacity=".18"/>
-          <stop offset="100%" stop-color="#B5462A" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <circle class="aura" cx="112" cy="75" r="30" fill="url(#aura)"/>
-      <path d="M108 46 C97 31,70 28,53 42 C36 56,36 94,53 108 C70 122,97 119,108 104" stroke="#1C1A17" stroke-width="8" fill="none" stroke-linecap="round"/>
-      <circle class="brasa" cx="112" cy="75" r="10" fill="#B5462A"/>
-    </svg>
-    <h1>Cinérea</h1>
-    <p class="lema">a base permanece, o conteúdo se renova</p>
-    <p>Ateliê em Campos do Jordão. Cada escultura de gesso é moldada, curada e
-       acabada à mão, uma por vez. O que elas guardam muda. A escultura, não.</p>
-    <a class="bt" href="/loja/">Ver as peças</a>
-    <a class="bt bt2" href="/contato/">Encomendar no ateliê</a>
+  <!-- A CAPA É A PEÇA (nov/2026). O render de verdade do David, com a mesma
+       luz das fotos de produto, e não um vídeo escuro com texto por cima: no
+       celular a foto vem primeiro e o texto embaixo, sem véu nenhum para
+       garantir leitura. A peça nunca é gerada; só o redor pode ser. -->
+  <section class="heroi" id="capa">
+    <div class="heroi-foto">
+      <img src="/peca-david.jpg" width="1050" height="1400" fetchpriority="high" decoding="async"
+           alt="O busto de David em gesso branco sobre a base, com o medalhão do chip encaixado.">
+    </div>
+    <div class="heroi-texto">
+      <p class="rot">Ateliê em Campos do Jordão</p>
+      <h1 class="serifa">A vela acaba.<br><em>A escultura fica.</em></h1>
+      <p class="sub">Esculturas de gesso feitas à mão, uma por vez, com refil de areia de cera.</p>
+      <div class="acoes">
+        <a class="bt" href="/loja/">Ver as peças</a>
+        <a class="bt bt2" href="/contato/">Encomendar no ateliê</a>
+      </div>
+    </div>
   </section>
 
   <div class="envolve">
 
+    <!-- Do que a peça é feita, em três fotos e três palavras. São fotos de
+         MATERIAL, não da peça: gesso, cera e o pavio apagado. Cada uma com a
+         borda de uma laje de gesso, e a foto inteira. -->
+    <section class="materia" aria-label="Do que a peça é feita">
+      <figure class="m-gesso pousada">
+        <img class="laje" src="/materia-gesso.jpg" width="597" height="800" loading="lazy" decoding="async"
+             alt="Gesso em pó com a marca de uma digital e lascas quebradas.">
+        <figcaption>Gesso</figcaption>
+      </figure>
+      <figure class="m-cera pousada">
+        <img class="laje l2" src="/materia-cera.jpg" width="597" height="800" loading="lazy" decoding="async"
+             alt="Cera clara escorrendo e endurecendo em gotas.">
+        <figcaption>Cera</figcaption>
+      </figure>
+      <figure class="m-chama pousada">
+        <img class="laje l3" src="/materia-chama.jpg" width="597" height="800" loading="lazy" decoding="async"
+             alt="Um fio de fumaça subindo de um pavio recém-apagado, no escuro.">
+        <figcaption>Chama</figcaption>
+      </figure>
+    </section>
+
     <section class="vitrine" aria-labelledby="vitTitulo">
       <div class="rot">Na vitrine</div>
-      <h2 id="vitTitulo">Pronto no ateliê, para levar.</h2>
+      <h2 class="serifa" id="vitTitulo">Pronto no ateliê, para levar.</h2>
       <!-- Três caixas vazias do tamanho final: quem preenche é /vitrine.js,
            com o mesmo catálogo que a loja lê. Sem rede, elas viram um convite
            para a loja em vez de ficarem vazias. -->
@@ -502,238 +394,68 @@
       <a class="vit-mais" href="/loja/">Ver a loja inteira</a>
     </section>
 
-    <!-- O nome, antes de qualquer coisa. Quem chega aqui leu "Cinérea" no
-         Instagram e não sabe o que a palavra quer dizer: sem isso, o nome é só
-         um som bonito. Com isso, ele é a marca inteira em uma palavra. Fica
-         ANTES da vela de areia de propósito, porque explica por que a vela
-         acaba e a escultura não. -->
+    <!-- O nome. Quem chega pelo Instagram leu "Cinérea" e não sabe o que a
+         palavra quer dizer; a definição explica a marca sem afirmar nada. -->
     <section class="verbete">
-      <p class="palavra">cinérea</p>
+      <p class="palavra serifa">cinérea</p>
       <p class="classe">ci·né·re·a &nbsp;·&nbsp; adjetivo &nbsp;·&nbsp; do latim <i>cinereus</i>, de <i>cinis</i>, cinza</p>
       <p class="def">Da cor da cinza. Que tem cinzas, ou que delas se formou.</p>
-      <p class="nota">A vela queima até o fim e vira cinza. O gesso que a
-         sustenta continua ali, pronto para receber areia nova. O nome não
-         descreve a peça: descreve o que acontece com ela.</p>
     </section>
 
-    <section class="ideia" id="areia">
-      <div class="rot">A vela de areia</div>
-      <!-- O espaço rígido cola "A" em "escultura": sem ele o corte cai entre os
-           dois e a primeira linha termina num artigo solto. -->
-      <h2>A vela acaba. A&nbsp;escultura, não.</h2>
-      <div class="dupla">
-      <svg class="desenho" viewBox="0 0 470 372" role="img" aria-label="Corte de uma vela Cinérea: a escultura de gesso sustenta uma taça com camadas de areia perfumada e um pavio aceso.">
-        <!-- A chama viva. Sem biblioteca: `feTurbulence` gera um ruído orgânico e
-             `feDisplacementMap` empurra os contornos com ele, o que dá o bruxuleio
-             que uma animação de forma nunca acerta, porque fogo não repete o movimento.
-             A `baseFrequency` anima devagar para o ruído não parecer um laço. -->
-        <defs>
-          <filter id="bruxuleio" x="-60%" y="-30%" width="220%" height="180%">
-            <!-- O ruído é ESTÁTICO de propósito. Animar a `baseFrequency` obriga o
-                 navegador a gerar a textura de novo a cada quadro, que é a parte
-                 cara do efeito; animando só o deslocamento, o mesmo ruído é
-                 reaproveitado e o bruxuleio sai igual. -->
-            <feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="2" seed="7" result="ruido"/>
-            <feDisplacementMap in="SourceGraphic" in2="ruido" xChannelSelector="R" yChannelSelector="G" scale="2.6">
-              <animate attributeName="scale" dur="3.1s" values="2.2;4.4;2.6;4.0;2.2"
-                       keyTimes="0;0.3;0.55;0.8;1" repeatCount="indefinite"/>
-            </feDisplacementMap>
-          </filter>
-          <radialGradient id="calor">
-            <stop offset="0%" stop-color="#B5462A" stop-opacity=".30"/>
-            <stop offset="100%" stop-color="#B5462A" stop-opacity="0"/>
-          </radialGradient>
-          <linearGradient id="chama" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stop-color="#B5462A"/>
-            <stop offset="65%" stop-color="#D9663F"/>
-            <stop offset="100%" stop-color="#E8A15C"/>
-          </linearGradient>
-        </defs>
+  </div>
 
-        <!-- O halo respira em outro compasso que a chama: em fase, os dois
-             pareceriam uma coisa só piscando. -->
-        <circle class="calor" cx="150" cy="74" r="34" fill="url(#calor)">
-          <animate attributeName="r" dur="4.3s" values="30;36;30" repeatCount="indefinite"/>
-          <animate attributeName="opacity" dur="4.3s" values=".75;1;.75" repeatCount="indefinite"/>
-        </circle>
+  <!-- PEÇAS NOVAS (nov/2026). As fotos em /novas/ são os RENDERS dos modelos
+       3D reais (atelier, out/peca3d/colecao e out/peca3d/ondas), na mesma luz e
+       no mesmo papel das fotos da loja: a peça nunca é gerada. Substituíram os
+       conceitos do Higgsfield. Ainda não existem moldadas, por isso a seção diz
+       "em breve". Peça baixa em paisagem, pote em retrato, para a faixa ter
+       ritmo. Faixa que rola de lado e não grade: as fotos têm proporções diferentes,
+       e com altura fixa cada uma aparece inteira, sem recorte. -->
+  <section class="novas" id="novas" aria-labelledby="novasTitulo">
+    <div class="envolve novas-topo">
+      <p class="rot">Em breve no ateliê</p>
+      <h2 class="serifa" id="novasTitulo">Pratos e potes<br><em>para a areia.</em></h2>
+      <p class="sub">Gesso fosco, feito à mão. A areia vai direto na peça: quando a vela acaba, você enche de novo.</p>
+    </div>
+    <div class="novas-faixa" tabindex="0" aria-label="Peças novas, role para o lado">
+      <figure class="pousada"><img class="laje" src="/novas/ondas.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Prato raso de gesso com relevo de ondas que se aproximam e se afastam, e a areia num poço no centro, com um pavio.">
+        <figcaption><b>Ondas</b>prato de mesa, a areia no centro</figcaption></figure>
+      <figure class="pousada"><img class="laje l2" src="/novas/seixo.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote pequeno de gesso em forma de seixo de rio, com um pavio.">
+        <figcaption><b>Seixo</b>pote pequeno, uma pedra de rio</figcaption></figure>
+      <figure class="pousada"><img class="laje l3" src="/novas/jardim.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Bandeja redonda e rasa de gesso com areia penteada em linhas, vários pavios e um rastelo pequeno.">
+        <figcaption><b>Jardim</b>bandeja rasa, a areia penteada</figcaption></figure>
+      <figure class="pousada"><img class="laje l4" src="/novas/derretido.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote de gesso com a borda escorrendo como cera derretida, cheio de areia.">
+        <figcaption><b>Derretido</b>pote com a borda escorrendo</figcaption></figure>
+      <figure class="pousada"><img class="laje" src="/novas/canoa.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Travessa longa e orgânica de gesso com areia e três pavios.">
+        <figcaption><b>Canoa</b>travessa longa, três pavios</figcaption></figure>
+      <figure class="pousada"><img class="laje l2" src="/novas/cratera.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Esfera de gesso com a superfície marcada como a da lua e areia no topo.">
+        <figcaption><b>Cratera</b>esfera com a superfície da lua</figcaption></figure>
+    </div>
+    <div class="envolve"><a class="bt bt2" href="/contato/">Quero saber quando chegar</a></div>
+  </section>
 
-        <g class="fogo" filter="url(#bruxuleio)">
-          <path d="M150 54 C150 54,140 71,140 80 a10 10 0 0 0 20 0 C160 71,150 54,150 54Z" fill="url(#chama)"/>
-          <!-- O núcleo claro é o que faz parecer quente por dentro. -->
-          <path d="M150 66 C150 66,145 74,145 79 a5 5 0 0 0 10 0 C155 74,150 66,150 66Z" fill="#F2EFEA" opacity=".55"/>
-        </g>
-        <path d="M150 82 L150 146" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M98 124 L108 232 a8 8 0 0 0 8 7 h68 a8 8 0 0 0 8 -7 L202 124 Z" stroke="#1C1A17" stroke-width="2.5" fill="#FFFFFF" fill-opacity=".5"/>
-        <clipPath id="taca"><path d="M100 128 L109 230 a6 6 0 0 0 6 5 h70 a6 6 0 0 0 6 -5 L200 128 Z"/></clipPath>
-        <g clip-path="url(#taca)">
-          <rect x="90" y="146" width="120" height="28" fill="#E7E3DC"/>
-          <rect x="90" y="174" width="120" height="24" fill="#C9BCA8"/>
-          <rect x="90" y="198" width="120" height="20" fill="#B5462A" fill-opacity=".26"/>
-          <rect x="90" y="218" width="120" height="24" fill="#8A7E70" fill-opacity=".42"/>
-        </g>
-        <path d="M98 124 L202 124" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M112 240 C92 254,90 288,116 296" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M188 240 C208 254,210 288,184 296" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M116 296 h68" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
-        <rect x="86" y="296" width="128" height="20" rx="5" stroke="#1C1A17" stroke-width="2.5" fill="none"/>
-        <g class="chamada" stroke="#C9BCA8" stroke-width="1.3">
-          <path d="M158 88 h84"/><path d="M214 186 h28"/><path d="M220 292 h22"/>
-        </g>
-        <g font-family="Inter" font-size="13" fill="#6E6862">
-          <text x="250" y="92">o pavio, que você troca</text>
-          <text x="250" y="182">a areia perfumada,</text>
-          <text x="250" y="199">é ela que se esgota</text>
-          <text x="250" y="288">a escultura de gesso,</text>
-          <text x="250" y="305">essa fica para sempre</text>
-        </g>
-      </svg>
-      <div>
-        <p>Vela comum se consome inteira: quando a cera acaba, acabou o objeto
-           também. A nossa separa as duas coisas. A escultura é de gesso e fica
-           para sempre; o que queima é a areia perfumada que você põe dentro.</p>
-        <p>Sem molde, sem cera grudada no vidro, sem raspar nada. Acabou, você
-           repõe a areia e o pavio, e recomeça.</p>
-      </div>
-      </div>
-      <div class="passos">
-        <div class="passo">
-          <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="Areia perfumada caindo dentro da taça.">
-            <g class="graos" fill="#C9BCA8"><circle cx="26" cy="11" r="1.7"/><circle cx="34" cy="6" r="1.7"/><circle cx="39" cy="15" r="1.7"/><circle cx="30" cy="20" r="1.7"/><circle cx="37" cy="25" r="1.7"/></g>
-            <clipPath id="c1"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
-            <g clip-path="url(#c1)">
-              <rect x="17" y="44" width="30" height="6" fill="#E7E3DC"/>
-              <rect x="17" y="50" width="30" height="8" fill="#C9BCA8"/>
-            </g>
-            <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
-          </svg>
-          <h3><span class="n">1</span> Preencha</h3>
-          <p>Areia perfumada na taça, em camadas de cor à sua escolha.</p></div>
-        <div class="passo">
-          <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="O pavio aceso sobre a taça cheia de areia.">
-            <path class="chaminha" d="M32 8 C32 8,27 17,27 22 a5 5 0 0 0 10 0 C37 17,32 8,32 8Z" fill="#B5462A"/>
-            <path d="M32 24 L32 30" stroke="#1C1A17" stroke-width="2.2" stroke-linecap="round"/>
-            <clipPath id="c2"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
-            <g clip-path="url(#c2)">
-              <rect x="17" y="34" width="30" height="8" fill="#E7E3DC"/>
-              <rect x="17" y="42" width="30" height="8" fill="#C9BCA8"/>
-              <rect x="17" y="50" width="30" height="8" fill="#8A7E70" fill-opacity=".42"/>
-            </g>
-            <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
-          </svg>
-          <h3><span class="n">2</span> Acenda</h3>
-          <p>Fixe o pavio e acenda. O aroma sobe, a escultura fica intacta.</p></div>
-        <div class="passo">
-          <svg class="fig" viewBox="0 0 64 64" role="img" aria-label="A taça quase vazia e a seta do recomeço: repõe-se a areia.">
-            <g class="recomeco">
-              <path d="M40 15 A11 11 0 1 1 32 4" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-              <path d="M28 1 L32.6 4.3 L28 7.8" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </g>
-            <clipPath id="c3"><path d="M19 31 H45 L42 53 a3 3 0 0 1 -3 3 H25 a3 3 0 0 1 -3 -3 Z"/></clipPath>
-            <g clip-path="url(#c3)"><rect x="17" y="52" width="30" height="6" fill="#C9BCA8"/></g>
-            <path d="M18 30 H46 L43 54 a4 4 0 0 1 -4 4 H25 a4 4 0 0 1 -4 -4 Z" stroke="#1C1A17" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
-          </svg>
-          <h3><span class="n">3</span> Reponha</h3>
-          <p>Quando a fragrância se esgotar, troque só a areia.</p></div>
-      </div>
-      <a class="linkinho" href="/loja/">Ver os refis de areia perfumada →</a>
-    </section>
+  <!-- O REFIL. A areia vem SEM aroma desde nov/2026, e por isso nada aqui fala
+       em perfume: o vídeo é o grão escorrendo, e o texto diz só o que
+       acontece. O pôster é o primeiro quadro: sem vídeo (menos movimento,
+       economia de dados), fica a mão parada, e não um buraco. -->
+  <section class="faixa" id="areia">
+    <div class="faixa-midia pousada"><video class="faixa-video laje l4" id="refilVideo" muted loop playsinline preload="none"
+           poster="/areia.jpg" width="828" height="1108"
+           aria-label="Areia de cera clara escorrendo entre os dedos de uma mão."></video></div>
+    <div class="faixa-texto">
+      <p class="rot">O refil</p>
+      <h2 class="serifa">A peça fica.<br><em>A vela recomeça.</em></h2>
+      <p>Quando a vela acaba, a escultura continua. Você enche de novo com areia de cera, troca o pavio e acende.</p>
+      <a class="bt bt2" href="/loja/?colecao=Refis">Ver o refil</a>
+    </div>
+  </section>
 
-    <!-- ─────────────────────────────────────────────────────────────────────
-         A PEÇA GIRANDO.
+  <div class="envolve">
 
-         Seção nova, e não a troca de um desenho existente: os quatro SVGs do
-         site explicam mecanismos (a vela em corte, o chip, os três passos, os
-         sete tipos). Trocar qualquer um deles daria beleza e tiraria
-         explicação, e o site precisa das duas coisas.
-
-         Ela vem logo depois de "a vela acaba, a escultura não" porque é a
-         resposta daquela frase: a pessoa acabou de ler que a escultura
-         permanece, e aqui ela vê a escultura.
-
-         O VÍDEO É UM RENDER, e o texto diz isso. Foi ele que virou o molde, o
-         que é verdade e é a razão de a seção existir, mas passar render por
-         fotografia de produto é prometer um acabamento que o gesso não tem.
-
-         E ELE É O MODELO COM A MALHA À MOSTRA (nov/2026), não a peça pronta.
-         Quando a capa passou a ser o David girando à luz de vela, este giro
-         virou repetição: a mesma peça, o mesmo movimento, duas vezes na mesma
-         página. Em traço ele mostra o que o título diz, que antes do gesso a
-         peça é um desenho, e a capa fica com a peça acabada. Sai de
-         `atelier turntable --desenho 9000`: o milhão de faces do David
-         reduzido a nove mil, porque com o original cada triângulo teria menos
-         de um pixel e o traço viraria mancha cinza. O medalhão foi tirado da
-         cena, solto em cima da base ele lia como uma moeda esquecida.
-
-         O FUNDO É BRANCO PURO, e isso é condição, não coincidência: qualquer
-         ajuste que tinja o branco quebra o `multiply` e traz o retângulo de
-         volta. O `giro.mp4` antigo continua no ar porque a página de aromas
-         ainda usa.
-    ────────────────────────────────────────────────────────────────────────── -->
-    <section class="ideia" id="nasce">
-      <div class="rot">Como a peça nasce</div>
-      <h2>Antes do gesso, ela é um&nbsp;desenho.</h2>
-      <div class="dupla">
-        <div class="giro">
-          <video class="giro-video" id="giroVideo" muted loop playsinline
-                 preload="none" poster="/desenho.jpg"
-                 aria-label="O modelo em três dimensões do David girando, com a malha do desenho à mostra."></video>
-        </div>
-        <div class="texto">
-          <p>Cada peça começa modelada em três dimensões. É desse modelo que sai
-             o molde, e é do molde que sai o gesso, um de cada vez, à mão.</p>
-          <p>O que você vê aqui é o modelo, girando. A peça que chega na sua
-             casa é de gesso: fosca, com o peso e a textura que só o material
-             tem.</p>
-          <a class="linkinho" href="/loja/">Ver as peças da vitrine →</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="ideia" id="chip">
-      <div class="rot">O chip</div>
-      <h2>A peça diz o que você quiser.</h2>
-      <div class="dupla">
-      <svg class="desenho" viewBox="0 0 470 320" role="img" aria-label="Um celular encostado na base de uma peça Cinérea abre o conteúdo guardado no chip.">
-        <path d="M64 118 L128 118 L120 172 L72 172 Z" stroke="#1C1A17" stroke-width="2.5" fill="#FFFFFF" fill-opacity=".45"/>
-        <path d="M72 174 C52 190,52 220,74 228" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M120 174 C140 190,140 220,118 228" stroke="#1C1A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M74 228 h44" stroke="#1C1A17" stroke-width="2.5" stroke-linecap="round"/>
-        <rect x="50" y="228" width="92" height="18" rx="5" stroke="#1C1A17" stroke-width="2.5" fill="none"/>
-        <rect x="84" y="231" width="24" height="12" rx="3" fill="#B5462A" fill-opacity=".2" stroke="#B5462A" stroke-width="1.4"/>
-        <!-- As ondas saem em sequência, da peça para o celular: é literalmente
-             o que o chip faz. O atraso entre elas é o que dá a direção. -->
-        <path class="onda o1" d="M160 228 a24 24 0 0 0 0 -32" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path class="onda o2" d="M173 240 a40 40 0 0 0 0 -56" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path class="onda o3" d="M186 252 a56 56 0 0 0 0 -80" stroke="#B5462A" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <rect x="212" y="142" width="88" height="136" rx="13" stroke="#1C1A17" stroke-width="2.5" fill="#F2EFEA"/>
-        <rect x="242" y="151" width="28" height="5" rx="2.5" fill="#D8D2C8"/>
-        <circle cx="256" cy="176" r="9" fill="none" stroke="#B5462A" stroke-width="2"/>
-        <rect x="226" y="196" width="60" height="7" rx="3.5" fill="#D8D2C8"/>
-        <rect x="226" y="210" width="42" height="7" rx="3.5" fill="#D8D2C8"/>
-        <rect x="226" y="232" width="60" height="24" rx="6" fill="#1C1A17"/>
-        <g font-family="Inter" font-size="10.5" fill="#F2EFEA" text-anchor="middle" class="acoes">
-          <!-- O celular do desenho troca o que oferece. Explica os sete tipos
-               sem uma linha de texto. A primeira repousa VISÍVEL: travando a
-               animação, o botão continua dizendo alguma coisa. -->
-          <text x="256" y="248" class="a1">ouvir</text>
-          <text x="256" y="248" class="a2">conectar</text>
-          <text x="256" y="248" class="a3">abrir</text>
-        </g>
-        <g class="chamada" stroke="#C9BCA8" stroke-width="1.3"><path d="M96 250 V286"/><path d="M306 210 h20"/></g>
-        <g font-family="Inter" font-size="13" fill="#6E6862">
-          <text x="96" y="302" text-anchor="middle">o medalhão fica na base</text>
-          <text x="332" y="206">abre sozinho,</text>
-          <text x="332" y="223">sem instalar nada</text>
-        </g>
-      </svg>
-      <div>
-        <p>Dentro de cada peça há um chip. Quem encostar o celular nela abre o que
-           você escolheu deixar ali: uma playlist, a rede de wi-fi da casa, um
-           recado, um endereço. Sem aplicativo, sem cadastro: encostou, abriu.</p>
-        <p>E quando você quiser dizer outra coisa, é só trocar. A peça continua a
-           mesma.</p>
-      </div>
-      </div>
+    <section class="chip" id="chip">
+      <p class="rot">O chip</p>
+      <h2 class="serifa">Encoste o celular na base.</h2>
+      <p class="sub">A peça mostra o que você guardou nela, e você troca quando quiser. Sem aplicativo para quem encosta.</p>
       <div class="tipos">
         <div class="tipo">
           <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -785,58 +507,10 @@
           </svg><span>contato</span>
         </div>
       </div>
-
-      <!-- O MEDALHÃO. Um bloco só, e não dois: o que ele é e como ele funciona
-           são a mesma história, e contá-las separadas repetia a cena do desenho
-           logo acima (celular, peça, ondas) a 500 px de distância. Medido num
-           celular de 375px, a seção tinha passado de 2.150 para 3.465 px.
-
-           O vídeo vem primeiro porque é ele que mostra a tecnologia acontecendo.
-           A foto vem embaixo, menor, porque responde uma pergunta mais simples e
-           secundária: como o objeto é.
-
-           O vídeo vive num cartão com borda. O render tem fundo cinza chapado
-           (#E1E0DC), sem alfa, e o truque do vídeo do David não serve aqui:
-           `multiply` de cinza contra creme dá um creme mais escuro, uma placa
-           suja em volta. A foto tem alfa e sombra própria, então pousa no papel
-           sem moldura nenhuma. -->
-      <div class="dupla medalhao">
-        <div>
-          <div class="nfc-cartao">
-            <video class="nfc-video" id="nfcVideo" muted loop playsinline
-                   preload="none" poster="/nfc.jpg" width="740" height="696"
-                   aria-label="Um celular se aproxima do medalhão e o campo do chip aparece em ondas."></video>
-          </div>
-          <div class="medalhao-vista" id="medalhaoVista">
-            <img class="medalhao-foto" src="/chaveiro.webp" width="1100" height="862"
-                 loading="lazy" decoding="async"
-                 alt="O medalhão: um disco de gesso com a marca da Cinérea rebaixada e um ponto cor de brasa.">
-          </div>
-          <button type="button" class="btlink" id="btDentro">Ver o medalhão por dentro →</button>
-        </div>
-        <div>
-          <div class="rot">O medalhão</div>
-          <p>O chip não fica solto no gesso: ele vive num <b>medalhão</b>, encaixado
-             num lugar próprio da escultura. Como é um objeto à parte, sai da peça e
-             volta, e pode passar de uma escultura para outra.</p>
-          <p>O mesmo medalhão existe em <b>versão chaveiro</b>, para levar no bolso o
-             que a peça diria. Ele não tem bateria: quem acorda o chip é o campo do
-             próprio celular, no instante em que os dois se aproximam. É a mesma
-             tecnologia do cartão por aproximação, e o motivo de a peça continuar
-             funcionando daqui a dez anos.</p>
-          <a class="linkinho" href="/loja/?colecao=Acessorios">Ver o chaveiro na loja →</a>
-        </div>
-      </div>
-
-
-      <!-- EXPERIMENTE. Explicar que a peça guarda um recado é uma coisa; ver o
-           SEU recado dentro de um celular é outra. O quadro é um iframe da
-           página do convidado de verdade, não uma imitação dela, que
-           envelheceria em separado. -->
       <div class="experimente">
         <div class="exp-lado">
           <p class="rot">Experimente</p>
-          <h3 class="exp-titulo">O que a sua peça diria?</h3>
+          <h3 class="exp-titulo serifa">O que a sua peça diria?</h3>
           <p class="exp-nota">Escreva e veja, ao lado, o que apareceria no celular
              de quem encostasse nela.</p>
           <label class="exp-rot" for="expTexto">Seu recado</label>
@@ -847,7 +521,7 @@
             <button type="button" class="exp-tipo" data-tipo="wifi">Wi-fi</button>
             <button type="button" class="exp-tipo" data-tipo="link">Link</button>
           </div>
-          <a class="linkinho" href="/loja/">Quero uma peça assim →</a>
+          <a class="bt" href="/loja/">Quero uma peça assim</a>
         </div>
 
         <div class="aparelho" aria-label="prévia da página da peça">
@@ -857,67 +531,47 @@
           </div>
         </div>
       </div>
-
-      <div class="frisa">O gesso permanece. O conteúdo se renova.</div>
     </section>
 
-    <section class="ideia" id="app">
-      <div class="rot">O aplicativo</div>
-      <h2>Para quem tem uma peça.</h2>
-      <p>O app da Cinérea é de quem já levou uma peça para casa. É por ele que
-         você escolhe o que ela guarda, vê o que ela já disse antes, e repõe a
-         areia quando acabar.</p>
-      <p>Quem ganha a peça de presente não precisa de nada disso para usá-la:
-         basta encostar o celular.</p>
-      <p style="color:var(--smoke);font-size:14.5px">Em breve nas lojas de
-         aplicativos.</p>
-    </section>
-
-    <section class="ideia" id="marca">
-      <div class="rot">O ateliê</div>
-      <h2>Feito à mão, em Campos do Jordão.</h2>
-      <p>A Cinérea é um ateliê, não uma fábrica. Cada peça é moldada, curada e
-         acabada à mão, uma por vez, e por isso nenhuma sai exatamente igual à
-         outra. É essa a razão de existir da marca: fazer objetos que durem mais
-         que o próprio conteúdo.</p>
-      <p>As peças numeradas trazem certidão de origem: encostando o celular,
-         aparece o modelo, o número da série e quando ela foi feita. Quem faz
-         assina o que fez.</p>
-      <p>Boa parte do que sai daqui nasce de encomenda: um formato para um
-         lugar, uma peça para uma data, uma quantidade para uma empresa. Se o
-         que você precisa não está na loja, é porque ainda não foi feito.</p>
-      <a class="linkinho" href="https://instagram.com/cinerea.velas" rel="noopener">Acompanhar no Instagram →</a>
-      <a class="linkinho" href="https://www.tiktok.com/@cinerea.velas" rel="noopener">Ver o processo no TikTok →</a>
-    </section>
-
-    <!-- O LIVRO NA HOME, e a posição foi escolhida: depois de o ateliê ter se
-         apresentado, e antes do rodapé. Aqui a pessoa já sabe quem fala, então
-         o livro lê como o que ele é, um ateliê devolvendo o que estudou, e não
-         como isca de página de captura. No alto da home ele roubaria o lugar
-         dos botões de comprar, que é o que a home existe para fazer. -->
-    <section class="ideia" id="livro">
-      <a class="livro-cartao" href="/livro/">
-        <img src="/livro/capa.webp" width="1165" height="1654" loading="lazy"
-             alt="Capa do livro O que permanece quando a chama passa.">
-        <div>
-          <div class="rot">Um presente do ateliê</div>
-          <h2>O que permanece quando a chama&nbsp;passa</h2>
-          <p>Antes de fazer qualquer peça, precisamos entender o que estávamos
-             manipulando. Escrevemos 86 páginas sobre olfato, fogo e a arte de
-             habitar a própria casa, e elas são suas.</p>
-          <span class="linkinho">Ler e baixar, de graça →</span>
+    <section class="atelie" id="marca">
+      <p class="rot">O ateliê</p>
+      <h2 class="serifa">Feito à mão,<br><em>uma peça por vez.</em></h2>
+      <div>
+        <p>Cada escultura é moldada, curada e acabada à mão em Campos do Jordão, e nenhuma sai igual à outra. Boa parte nasce de encomenda: se o que você procura não está na loja, ainda não foi feito.</p>
+        <div class="acoes">
+          <a class="bt bt2" href="/contato/">Encomendar</a>
+          <a class="bt bt2" href="https://instagram.com/cinerea.velas" rel="noopener">Instagram</a>
         </div>
-      </a>
+      </div>
     </section>
 
   </div>
+
+  <!-- O livro na home, no fim: depois de o ateliê se apresentar ele lê como o
+       que é, um ateliê devolvendo o que estudou, e não como isca. -->
+  <section class="escuro" id="livro">
+    <!-- A fumaça do pavio recém-apagado: "quando a chama passa", literal. É
+         decoração, e por isso aria-hidden; o pôster segura a cena sem vídeo. -->
+    <video class="livro-video" id="livroVideo" muted loop playsinline preload="none"
+           poster="/fumaca.jpg" width="828" height="1108" aria-hidden="true" tabindex="-1"></video>
+    <a class="livro-cartao" href="/livro/">
+      <img src="/livro/capa.webp" width="1165" height="1654" loading="lazy"
+           alt="Capa do livro O que permanece quando a chama passa.">
+      <div>
+        <p class="rot">Um presente do ateliê</p>
+        <h2 class="serifa">O que permanece quando a chama&nbsp;passa</h2>
+        <p>86 páginas sobre olfato, fogo e a arte de habitar a própria casa. De graça, sem cadastro.</p>
+        <span class="bt">Ler o livro</span>
+      </div>
+    </a>
+  </section>
 </main>
 
 <footer class="rodape">
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>
@@ -961,40 +615,6 @@
     <span class="direita"><a href="/privacidade/">Privacidade</a> · <a href="/perfil/">Meu perfil</a></span>
   </div>
 </footer>
-
-<script>
-// O único script ESCRITO AQUI, e existe por um motivo estreito: o `viewBox` de um
-// SVG não se muda por CSS. Os dois desenhos têm quadro largo para caber os
-// rótulos laterais; no celular esses rótulos somem e sobraria metade do quadro
-// vazia à direita. Aqui o quadro é recortado para só a ilustração.
-//
-// Escuta o `change` do matchMedia, não o `resize` da janela: o primeiro dispara
-// exatamente quando o limite é cruzado. Com `resize` a troca já foi perdida
-// (viewBox recortado, rótulos visíveis, texto fora do quadro).
-//
-// Sem JavaScript nada é escondido e o quadro fica o largo: desenho pequeno no
-// celular, com os rótulos miúdos. Menos bonito, e inteiro.
-(function () {
-  var recortes = [
-    // O topo subiu de 44 para 36 para caber o halo da chama, que chega a y=38
-    // quando o raio está no máximo. Antes ele era cortado em 6px no celular.
-    ['#areia .desenho', '0 0 470 372', '76 36 148 290'],
-    ['#chip .desenho',  '0 0 470 320', '40 108 270 180']
-  ];
-  var estreito = window.matchMedia('(max-width:560px)');
-  function ajusta() {
-    recortes.forEach(function (r) {
-      var el = document.querySelector(r[0]);
-      if (!el) return;
-      // A classe e o viewBox andam juntos, é o que impede a dessincronia.
-      el.classList.toggle('cortado', estreito.matches);
-      el.setAttribute('viewBox', estreito.matches ? r[2] : r[1]);
-    });
-  }
-  ajusta();
-  estreito.addEventListener('change', ajusta);
-})();
-</script>
 
 <script src="/vivo.js" defer></script>
 <script src="/vitrine.js" defer></script>

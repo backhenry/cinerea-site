@@ -15,13 +15,13 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
   .capa{text-align:center;padding:66px 22px 40px;max-width:660px;margin:0 auto}
-  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px;text-wrap:balance}
+  .capa .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .capa h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px;text-wrap:balance}
   .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke)}
 
   /* ---- como nasce a peça ------------------------------------------------
@@ -29,7 +29,7 @@
      de prateleira: cada peça é encomendada e moldada para o uso. É o que separa
      uma Cinérea de um adesivo com QR, e é o que sustenta o preço. */
   .trilho{padding:40px 0 8px;border-top:1px solid var(--line)}
-  .trilho h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,30px);line-height:1.15}
+  .trilho h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(23px,5.6vw,30px);line-height:1.15}
   .trilho .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
   .passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;margin-top:28px;counter-reset:p}
   .passo{position:relative;padding-left:40px}
@@ -38,13 +38,13 @@
     width:27px;height:27px;border-radius:50%;border:1px solid var(--line);
     display:grid;place-items:center;font-size:12px;color:var(--ember);
   }
-  .passo h3{font-family:'Fraunces';font-weight:400;font-size:17.5px;line-height:1.25}
+  .passo h3{font-family:'Bodoni Moda';font-weight:500;font-size:17.5px;line-height:1.25}
   .passo p{margin-top:7px;font-size:14.5px;color:var(--smoke);line-height:1.55}
 
   .grupo{padding:44px 0;border-top:1px solid var(--line)}
   .grupo{scroll-margin-top:70px}
   .indice{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 22px;padding:30px 0 34px;border-top:1px solid var(--line)}
-  .indice a{font-family:'Fraunces';font-weight:300;font-size:18px;color:var(--char);text-decoration:none;
+  .indice a{font-family:'Bodoni Moda';font-weight:500;font-size:18px;color:var(--char);text-decoration:none;
     border-bottom:1px solid var(--line);padding:10px 0 2px}
   .indice a:hover{border-bottom-color:var(--ember)}
   /* NO CELULAR CADA GRUPO ABRE COM DOIS CASOS, e o resto vem por um toque.
@@ -55,11 +55,11 @@
   @media(max-width:560px){
     .casos.recolhida .caso:nth-child(n+3){display:none}
     .casos.recolhida + .mais-casos{display:block;width:100%;margin-top:14px;padding:14px;
-      background:transparent;border:1px solid var(--line);border-radius:10px;
-      font-family:'Inter';font-size:15px;color:var(--char);cursor:pointer}
+      background:transparent;border:1px solid var(--line);border-radius:2px;
+      font-family:'Hanken Grotesk';font-size:15px;color:var(--char);cursor:pointer}
   }
 
-  .grupo h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);line-height:1.15}
+  .grupo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,32px);line-height:1.15}
   .grupo .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
 
   /* Os casos são cartões porque a lista é longa: em texto corrido ninguém
@@ -76,11 +76,11 @@
      com `viraveis`. É a mesma política das animações daqui: se o roteiro não
      rodar, o pior caso é a página antiga, nunca um cartão em branco. */
   .face{
-    background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:14px;
+    background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:4px;
     padding:20px;
   }
   .caso .fig{display:block;width:56px;height:56px;margin-bottom:14px;color:var(--char);overflow:visible}
-  .caso h3{font-family:'Fraunces';font-weight:400;font-size:18px;line-height:1.25}
+  .caso h3{font-family:'Bodoni Moda';font-weight:500;font-size:18px;line-height:1.25}
   .dica,.voltar{display:none}
 
   /* A altura sai do VERSO, que continua no fluxo: o grid iguala as linhas
@@ -114,7 +114,7 @@
   .falar:hover{text-decoration:underline}
   .viraveis .voltar{
     display:inline-block;margin-top:10px;padding:0;border:0;background:none;
-    font-family:'Inter';font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    font-family:'Hanken Grotesk';font-size:11px;letter-spacing:.09em;text-transform:uppercase;
     color:var(--smoke);cursor:pointer;text-align:left;
   }
   .viraveis .voltar:hover{color:var(--char)}
@@ -210,20 +210,32 @@
   .caso .ficha b{font-weight:400;font-size:12.5px;line-height:1.45;color:var(--smoke)}
 
   .frisa{
-    font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(19px,4.6vw,23px);
+    font-family:'Bodoni Moda';font-style:italic;font-weight:500;font-size:clamp(19px,4.6vw,23px);
     line-height:1.45;margin:0 auto;padding:38px 0 0;max-width:46ch;text-align:center;
   }
   .fecho{padding:44px 0 10px;border-top:1px solid var(--line);margin-top:44px;text-align:center}
-  .fecho h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px)}
+  .fecho h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,32px)}
   .fecho p{margin-top:12px;color:var(--smoke);max-width:52ch;margin-left:auto;margin-right:auto}
   .botoes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
-  .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+  .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:2px;font-size:15px;transition:.15s}
   .bt:hover{background:var(--ember)}
   .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
   .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
+
+  /* As cenas dos grupos (nov/2026). A peça em cada cena é o render real; só o
+     lugar foi gerado. Uma imagem por grupo, logo depois da introdução: a pessoa
+     se reconhece no lugar antes de ler os casos. */
+  .capa-video{max-width:520px;margin:0 auto 12px;padding:0 22px}
+  .capa-video video{display:block;width:100%;height:auto;background:#E1E0DC;border:1px solid var(--line);border-radius:4px}
+  .grupo-foto{margin:22px 0 0}
+  /* 16:9 também no celular, que é a foto como saiu: em 4:3 o celular perdia
+     um quarto da cena. A borda de gesso vem de .laje, em comum.css. */
+  .grupo-foto img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:var(--ash)}
+  .grupo-foto:nth-of-type(odd){rotate:-.6deg}
+  .grupo-foto:nth-of-type(even){rotate:.6deg}
 </style>
 </head>
-<body>
+<body class="nova">
 
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
 
@@ -259,6 +271,15 @@
        Quem encostar o celular abre o que você deixou ali. E você troca depois,
        de onde estiver, sem tocar na peça.</p>
   </section>
+
+  <!-- O topo mostra o que a página inteira promete: encostar e abrir. É o
+       render de verdade do medalhão (o mesmo vídeo da antiga seção do chip),
+       carregado pelo vivo.js só quando aparece. -->
+  <figure class="capa-video">
+    <video id="nfcVideo" muted loop playsinline preload="none" poster="/nfc.jpg"
+           width="740" height="696"
+           aria-label="Um celular se aproxima do medalhão e o campo do chip aparece em ondas."></video>
+  </figure>
 
   <div class="envolve">
 
@@ -306,6 +327,10 @@
       <h2>Em casa</h2>
       <p class="intro">A peça fica na entrada, na sala ou no quarto de hóspedes, e
          responde o que todo mundo pergunta.</p>
+      <figure class="grupo-foto pousada">
+        <img class="laje" src="/aplic-casa.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="Um aparador de carvalho na entrada de casa, com luz de janela na parede.">
+      </figure>
       <div class="casos">
         <div class="caso">
           <div class="giro">
@@ -423,6 +448,10 @@
       <h2>Presente e afeto</h2>
       <p class="intro">Aqui a peça faz o que nenhum cartão faz: continua falando
          depois que a data passou, e diz outra coisa no ano seguinte.</p>
+      <figure class="grupo-foto pousada">
+        <img class="laje l2" src="/aplic-presente.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="Duas mãos oferecendo uma caixa de presente embrulhada em linho, com um cartão escrito à mão.">
+      </figure>
       <div class="casos">
         <div class="caso">
           <div class="giro">
@@ -581,6 +610,10 @@
       <p class="intro">Trocar o que a peça diz não custa impressão, nem tempo, nem
          uma peça nova. É aqui que ela se paga, e costuma se pagar na primeira
          mudança de cardápio.</p>
+      <figure class="grupo-foto pousada">
+        <img class="laje l3" src="/aplic-restaurante.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="Uma mesa de mármore de bistrô à luz de vela, com duas taças.">
+      </figure>
       <div class="casos">
         <div class="caso">
           <div class="giro">
@@ -740,6 +773,10 @@
       <h2>Eventos e convites</h2>
       <p class="intro">O convite que ninguém joga fora, porque ele é um objeto. E
          que depois do evento vira outra coisa, em vez de virar lixo bonito.</p>
+      <figure class="grupo-foto pousada">
+        <img class="laje l4" src="/aplic-eventos.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="O chaveiro de gesso com o medalhão sobre o guardanapo de um lugar marcado de casamento.">
+      </figure>
       <div class="casos">
         <div class="caso">
           <div class="giro">
@@ -880,6 +917,10 @@
       <h2>Trabalho e ofício</h2>
       <p class="intro">Para quem vende o que faz, e precisa que o trabalho continue
          falando depois que a conversa acabou e o cliente foi embora.</p>
+      <figure class="grupo-foto pousada">
+        <img class="laje" src="/aplic-trabalho.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="O balcão de pedra de uma recepção, com luz de janela.">
+      </figure>
       <div class="casos">
         <div class="caso">
           <div class="giro">
@@ -1041,6 +1082,10 @@
       <p class="intro">Aqui a peça não é o presente: ela acompanha o produto. Sai da
          sua loja dentro da caixa, entra na casa do cliente e fica lá, com a sua
          marca dentro, dizendo o que o papel dizia e depois deixava de dizer.</p>
+      <figure class="grupo-foto pousada">
+        <img class="laje l2" src="/aplic-junto.jpg" width="1600" height="900" loading="lazy" decoding="async"
+             alt="O chaveiro de gesso com o medalhão do chip, em fundo claro.">
+      </figure>
       <div class="casos">
         <div class="caso">
           <div class="giro">
@@ -1152,7 +1197,7 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>

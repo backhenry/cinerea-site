@@ -15,30 +15,30 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
   .envolve{max-width:760px;margin:0 auto;padding:0 22px}
   .capa{text-align:center;padding:52px 22px 8px}
-  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(28px,7vw,40px);line-height:1.15;margin-top:10px}
+  .capa .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .capa h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(28px,7vw,40px);line-height:1.15;margin-top:10px}
   .capa p{margin-top:14px;color:var(--smoke);font-size:15.5px;max-width:46ch;margin-left:auto;margin-right:auto}
 
-  .cartao{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px}
-  .cartao h3{font-family:'Fraunces';font-weight:400;font-size:19px;line-height:1.25}
+  .cartao{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:4px;padding:20px;margin-bottom:14px}
+  .cartao h3{font-family:'Bodoni Moda';font-weight:500;font-size:19px;line-height:1.25}
   .cartao .sub{font-size:13px;color:var(--smoke);margin-top:4px}
 
   label{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--smoke);margin:16px 0 6px}
   input,select,textarea{
-    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
-    background:var(--paper);font-family:'Inter';font-size:15px;color:var(--char);
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:2px;
+    background:var(--paper);font-family:'Hanken Grotesk';font-size:15px;color:var(--char);
   }
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ember)}
   textarea{min-height:92px;resize:vertical;line-height:1.5}
 
   .bt{display:inline-block;padding:13px 24px;background:var(--char);color:var(--paper);border:none;
-      border-radius:10px;font-family:'Inter';font-size:15px;cursor:pointer;text-decoration:none}
+      border-radius:2px;font-family:'Hanken Grotesk';font-size:15px;cursor:pointer;text-decoration:none}
   .bt:hover{background:var(--ember)}
   .bt[disabled]{opacity:.45;cursor:default}
   .bt[disabled]:hover{background:var(--char)}
@@ -90,7 +90,7 @@
   .abas::-webkit-scrollbar{display:none}
   .abas button{
     flex:0 0 auto;padding:9px 16px;border-radius:20px;border:1px solid var(--line);
-    background:none;font-family:'Inter';font-size:13.5px;color:var(--smoke);cursor:pointer;
+    background:none;font-family:'Hanken Grotesk';font-size:13.5px;color:var(--smoke);cursor:pointer;
     white-space:nowrap;transition:.15s;
   }
   .abas button:hover{border-color:var(--ember);color:var(--ember)}
@@ -100,7 +100,7 @@
   .linha.forte{border-top:1px solid var(--line);margin-top:8px;padding-top:10px;font-size:15.5px}
   .selo{
     display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-    padding:3px 10px;border-radius:12px;border:1px solid var(--line);color:var(--smoke);
+    padding:3px 10px;border-radius:2px;border:1px solid var(--line);color:var(--smoke);
   }
   .selo.viva{border-color:var(--ember);color:var(--ember)}
 
@@ -118,7 +118,7 @@
   /* A prévia mostra a página do convidado em miniatura. Sem ela, escolher cor
      é apostar: o resultado só apareceria depois de publicar numa peça real. */
   .previa{
-    margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:20px;
+    margin-top:16px;border:1px solid var(--line);border-radius:2px;padding:20px;
     display:flex;flex-direction:column;gap:9px;text-align:center;
   }
   .previa .p-marca{font-family:'Fraunces';font-size:15px;letter-spacing:.02em}
@@ -129,7 +129,7 @@
 
   .logolinha{display:flex;gap:14px;align-items:flex-start}
   .logopreview{
-    width:78px;height:78px;flex:0 0 auto;border:1px dashed var(--line);border-radius:10px;
+    width:78px;height:78px;flex:0 0 auto;border:1px dashed var(--line);border-radius:2px;
     display:grid;place-items:center;overflow:hidden;color:var(--smoke);font-size:11px;text-align:center;
   }
   .logopreview img{max-width:100%;max-height:100%;object-fit:contain}
@@ -140,8 +140,8 @@
   /* ---- fechar a compra --------------------------------------------------- */
   .ck-opcoes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
   .ck-op{
-    flex:1 1 160px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
-    background:var(--paper);color:var(--smoke);font-family:'Inter';font-size:13.5px;cursor:pointer;
+    flex:1 1 160px;padding:12px 14px;border:1px solid var(--line);border-radius:2px;
+    background:var(--paper);color:var(--smoke);font-family:'Hanken Grotesk';font-size:13.5px;cursor:pointer;
     transition:border-color .15s,color .15s,background .15s;
   }
   .ck-op:hover{border-color:var(--char);color:var(--char)}
@@ -156,9 +156,9 @@
   .ck-linha b{font-variant-numeric:tabular-nums}
   .ck-total{
     border-top:1px solid var(--line);margin-top:6px;padding-top:12px;
-    font-family:'Fraunces';font-size:18px;
+    font-family:'Bodoni Moda';font-weight:500;font-size:18px;
   }
-  .ck-total b{font-family:'Fraunces'}
+  .ck-total b{font-family:'Bodoni Moda';font-weight:500}
   .ck-desconto{color:var(--ok)}
   /* Alinhado à direita, debaixo do valor do frete: é dele que o prazo fala. */
   .ck-prazo{text-align:right;font-size:12px;color:var(--smoke);margin:-2px 0 6px}
@@ -191,7 +191,7 @@
   input:disabled{background:var(--ash);color:var(--smoke);cursor:not-allowed}
 </style>
 </head>
-<body>
+<body class="nova">
 
 <div class="pavio" aria-hidden="true"><span class="queimado"></span><span class="cera"><i></i><i></i><i></i><i></i></span><span class="poca"></span><span class="chama"></span><span class="cinzas"><i></i><i></i><i></i></span></div>
 
@@ -240,7 +240,7 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>

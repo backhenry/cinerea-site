@@ -15,13 +15,13 @@
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Cinérea">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
   .capa{text-align:center;padding:66px 22px 40px;max-width:660px;margin:0 auto}
-  .capa .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .capa h1{font-family:'Fraunces';font-weight:300;font-size:clamp(32px,8.4vw,46px);
+  .capa .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .capa h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(32px,8.4vw,46px);
            line-height:1.12;margin-top:12px;text-wrap:balance}
   .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke);line-height:1.65}
 
@@ -49,8 +49,8 @@
      e é o que faz o índice acima ter sentido: o leitor reconhece onde caiu. */
   .rot b{font-weight:500;color:var(--char);margin-right:2px}
   .bloco{padding:44px 0;border-top:1px solid var(--line)}
-  .bloco .rot{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
-  .bloco h2{font-family:'Fraunces';font-weight:300;font-size:clamp(23px,5.6vw,31px);
+  .bloco .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .bloco h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(23px,5.6vw,31px);
             line-height:1.16;margin-top:10px;text-wrap:balance}
   .bloco p{margin-top:16px;font-size:16px;line-height:1.72;max-width:56ch}
   /* O PARÁGRAFO DE ABERTURA de cada seção entra um ponto maior. É o recurso
@@ -70,7 +70,7 @@
      borda, e o fundo igual deixa o convite leve, sem cara de anúncio. */
   .convite{text-align:center;padding:38px 24px 42px;margin-top:6px;
            background:var(--paper);border:1px solid var(--line);border-radius:18px}
-  .convite h2{font-family:'Fraunces';font-weight:300;font-size:clamp(24px,6vw,32px);
+  .convite h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,32px);
               line-height:1.15;margin-top:30px}
   .convite p{margin:12px auto 0;font-size:15.5px;color:var(--smoke);
              line-height:1.65;max-width:46ch}
@@ -91,9 +91,9 @@
          align-items:start;padding:4px 10px 2px}
   .aroma + .aroma{border-left:1px solid var(--line)}
   .aroma .hora{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .aroma b{font-family:'Fraunces';font-weight:300;font-size:clamp(17px,4.4vw,22px);
+  .aroma b{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(17px,4.4vw,22px);
            line-height:1.18;margin-top:12px;text-wrap:balance}
-  .aroma i{font-family:'Fraunces';font-size:14px;color:var(--smoke);margin-top:6px;
+  .aroma i{font-family:'Bodoni Moda';font-weight:500;font-size:14px;color:var(--smoke);margin-top:6px;
            line-height:1.35;text-wrap:balance}
   /* O traço de brasa é o mesmo gesto da linha que abre cada bloco da página,
      em miniatura, e é ele que separa o que a peça é do que ela leva. */
@@ -141,7 +141,7 @@
   /* A PLANTA REAGE AO TOQUE: o desenho vira brasa e a linha inteira clareia.
      É pequeno de propósito, e existe porque a lista tem seis itens e nada
      ali indicava que cada linha é uma coisa em si. */
-  .planta{transition:background .25s ease;border-radius:10px}
+  .planta{transition:background .25s ease;border-radius:2px}
   .planta:hover{background:rgba(181,70,42,.045)}
   .planta .fig path,.planta .fig circle{transition:stroke .25s ease}
   .planta:hover .fig path[stroke="#1C1A17"],
@@ -160,7 +160,7 @@
     padding:16px 30px;background:var(--ember);color:var(--paper);
     /* Raio 10 como todo botão de ação do site (ver comum.css). Pílula é
        desenho de controle, de filtro que liga e desliga. */
-    text-decoration:none;border-radius:10px;font-size:16px;
+    text-decoration:none;border-radius:2px;font-size:16px;
     box-shadow:0 6px 18px -8px rgba(181,70,42,.7);
     transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
   }
@@ -276,7 +276,7 @@
 
   .acoes{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
   .bt{display:inline-block;padding:14px 26px;background:var(--char);color:var(--paper);
-      text-decoration:none;border-radius:10px;font-size:15px;transition:.15s}
+      text-decoration:none;border-radius:2px;font-size:15px;transition:.15s}
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
   .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
@@ -300,13 +300,13 @@
   .livro-faixa{
     display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;
     margin-top:28px;padding:16px 18px;background:var(--paper);
-    border:1px solid var(--line);border-radius:14px;text-decoration:none;
+    border:1px solid var(--line);border-radius:4px;text-decoration:none;
     transition:border-color .2s ease,transform .2s ease;
   }
   .livro-faixa:hover{border-color:var(--ember);transform:translateY(-1px)}
   .livro-faixa img{width:64px;height:auto;display:block;border-radius:3px;
                    box-shadow:0 6px 14px -8px rgba(28,26,23,.7)}
-  .livro-faixa b{display:block;font-family:'Fraunces';font-weight:300;
+  .livro-faixa b{display:block;font-family:'Bodoni Moda';font-weight:500;
                  font-size:17px;color:var(--char);margin-bottom:4px}
   .livro-faixa span{font-size:14px;color:var(--smoke);line-height:1.6}
 
@@ -350,16 +350,16 @@
      mesma cara dos quatro que só explicam. Ele ganha o mesmo cartão do aviso,
      que é o recurso que a página já tinha para dizer "isto aqui é de outra
      natureza". Não é destaque gritado: é parar de disfarçar. */
-  #cinerea{background:var(--ash);border-radius:14px;padding:30px 24px;
+  #cinerea{background:var(--ash);border-radius:4px;padding:30px 24px;
            border-top:none;margin-top:20px}
   #cinerea::before{display:none}
 
-  .aviso{background:var(--ash);border-radius:14px;padding:26px 24px;margin-top:8px}
+  .aviso{background:var(--ash);border-radius:4px;padding:26px 24px;margin-top:8px}
   .aviso h2{margin-top:6px}
   .fonte{margin-top:18px;font-size:13px;color:var(--smoke);line-height:1.6}
 </style>
 </head>
-<body>
+<body class="nova">
 
 <!-- A vela que queima enquanto se lê. `aria-hidden`: é imagem, não informação:
      quem usa leitor de tela não perde nada. Ela é a MESMA das outras páginas,
@@ -415,6 +415,12 @@
       <a href="#aviso">Sem promessas</a>
     </nav>
   </section>
+
+  <figure class="capa-foto">
+    <img src="/fosforo.jpg" width="896" height="1200" decoding="async"
+         style="object-position:35% 72%"
+         alt="Um fósforo no instante em que acende, no escuro.">
+  </figure>
 
   <div class="miolo">
 
@@ -698,7 +704,7 @@
   <div class="rodape-in">
     <div>
       <h3>Cinérea</h3>
-      <p>Ateliê de esculturas de gesso e velas de areia perfumada, em Campos do
+      <p>Ateliê de esculturas de gesso e velas de areia, em Campos do
          Jordão. Cada peça moldada à mão, uma por vez.</p>
       <p class="lema">a base permanece, o conteúdo se renova</p>
     </div>

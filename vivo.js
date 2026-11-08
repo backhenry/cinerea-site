@@ -302,6 +302,10 @@ window.velaDeEspera = function (texto) {
   aoAparecer('giroVideo', '/desenho.mp4');
   aoAparecer('nfcVideo', '/nfc.mp4');
   aoAparecer('giroAromas', '/giro.mp4');
+  // A home na identidade nova (nov/2026): a areia escorrendo na faixa do
+  // refil e a fumaça do pavio no bloco do livro.
+  aoAparecer('refilVideo', '/areia.mp4');
+  aoAparecer('livroVideo', '/fumaca.mp4');
 })();
 
 
@@ -421,3 +425,69 @@ window.velaDeEspera = function (texto) {
   // pisca no cabeçalho, e ele não pode piscar fora da tela.
   window.addEventListener('cinerea:topo', mostrar);
 })();
+
+// O PAVIO DAS FAIXAS DE PEÇAS (nov/2026). As peças ficam enfiadas
+// num pavio, que cai em barriga entre uma e outra e termina aceso depois da
+// última. Desenhado por script, e não por SVG fixo, porque as peças são
+// desalinhadas de propósito e a vitrine rola de lado no celular: o fio tem
+// de passar pelo centro de cada foto ONDE ela estiver. Passa por TRÁS das
+// fotos (fica à vista só no vão), e se redesenha quando o /vitrine.js troca
+// as caixas ou a largura muda. A classe não é `.pavio`, que é a vela da margem.
+// Vale para a vitrine (#vitrine, fotos .vit-foto) e para a faixa dos pratos e
+// potes (.novas-faixa, fotos img): é a mesma função, chamada duas vezes.
+function ligarPorPavio(caixa, seletor) {
+  if (!caixa || !window.ResizeObserver) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'vit-fio');
+  svg.setAttribute('aria-hidden', 'true');
+  var pedido = false;
+
+  function n(v) { return Math.round(v * 10) / 10; }
+
+  function desenhar() {
+    pedido = false;
+    // por ÚLTIMO, e não primeiro: o desalinhamento usa :nth-child nas peças
+    if (svg.parentNode !== caixa || svg.nextSibling) caixa.appendChild(svg);
+    var fotos = caixa.querySelectorAll(seletor);
+    if (fotos.length < 2) { svg.innerHTML = ''; return; }
+    // zera antes de medir: o próprio fio conta na largura rolável, e um fio
+    // largo de antes (girou o celular, encolheu a janela) mediria a si mesmo
+    svg.setAttribute('width', 0); svg.setAttribute('height', 0);
+    var base = caixa.getBoundingClientRect();
+    var pts = [].map.call(fotos, function (f) {
+      var r = f.getBoundingClientRect();
+      return { x: r.left - base.left + caixa.scrollLeft + r.width / 2,
+               y: r.top - base.top + r.height * 0.6, w: r.width, dir: r.right - base.left + caixa.scrollLeft };
+    });
+    var W = Math.max(caixa.scrollWidth, caixa.clientWidth), H = caixa.scrollHeight;
+    svg.setAttribute('width', W); svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    // de centro a centro, cada vão uma barriga: o fio pesa no meio
+    var d = 'M' + n(pts[0].x) + ' ' + n(pts[0].y);
+    for (var i = 1; i < pts.length; i++) {
+      var a = pts[i - 1], b = pts[i], vao = b.x - a.x;
+      d += ' C' + n(a.x + vao * .35) + ' ' + n(a.y + vao * .2) + ' ' + n(b.x - vao * .35) + ' ' + n(b.y + vao * .2) + ' ' + n(b.x) + ' ' + n(b.y);
+    }
+    // depois da última, o fio sai, sobe e acende
+    var u = pts[pts.length - 1], fx = u.dir + 34, fy = u.y - 46;
+    d += ' C' + n(u.x + u.w * .45) + ' ' + n(u.y + 26) + ' ' + n(fx - 6) + ' ' + n(fy + 34) + ' ' + n(fx) + ' ' + n(fy);
+    svg.innerHTML =
+      '<path class="fio" d="' + d + '"/>' +
+      '<path class="trama" d="' + d + '"/>' +
+      '<g class="ponta" transform="translate(' + n(fx) + ' ' + n(fy) + ')">' +
+        '<circle class="brilho" r="13"/>' +
+        '<path class="chama" d="M0 -3 C-4.2 -8 -3.6 -14 0 -21 C3.6 -14 4.2 -8 0 -3Z"/>' +
+        '<circle class="brasa" r="2.6"/>' +
+      '</g>';
+  }
+
+  function pedir() { if (!pedido) { pedido = true; requestAnimationFrame(desenhar); } }
+  new ResizeObserver(pedir).observe(caixa);
+  // o /vitrine.js troca o conteúdo inteiro, e leva o fio junto: põe de volta
+  new MutationObserver(function () { if (svg.parentNode !== caixa || svg.nextSibling) pedir(); }).observe(caixa, { childList: true });
+  window.addEventListener('load', pedir);
+  pedir();
+}
+ligarPorPavio(document.getElementById('vitrine'), '.vit-foto');
+ligarPorPavio(document.querySelector('.novas-faixa'), 'figure > img');
