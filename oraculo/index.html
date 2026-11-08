@@ -126,7 +126,7 @@
     <div class="rot">Oráculo</div>
     <h1>Três perguntas, e o aroma que combina com o seu&nbsp;momento.</h1>
     <p>Não é teste de personalidade nem consulta. É a conversa que a gente teria
-       no ateliê antes de você escolher uma areia: como está o seu dia, e o que o
+       no ateliê antes de você escolher um vidrinho: como está o seu dia, e o que o
        seu nariz está pedindo.</p>
     <button class="bt" id="comecar">Começar</button>
   </section>
@@ -350,8 +350,8 @@ function pintarFim(letra) {
 
   const aviso = a.naLoja ? '' : `
     <div class="caixa">
-      <h3>Esta ainda está sendo feita</h3>
-      <p>A ${a.nome} está em preparo no ateliê e ainda não está à venda. Pode
+      <h3>Este vidrinho chega em breve</h3>
+      <p>A ${a.nome} vai num vidrinho de pingar e ainda não está à venda. Pode
          deixar seu recado no WhatsApp que a gente avisa quando ela sair, sem
          cadastro e sem lista de e-mail.</p>
     </div>`;
@@ -364,11 +364,12 @@ function pintarFim(letra) {
     <div class="notas">${a.notas.map((n) => `<span class="nota">${n}</span>`).join('')}</div>
     ${aviso}
     <div class="caixa">
-      <h3>A areia precisa de uma peça</h3>
-      <p>A areia perfumada não queima sozinha: ela vai dentro de uma escultura de
-         gesso da Cinérea, que é permanente. Você compra a peça uma vez, e daí em
-         diante repõe só a areia. Se ainda não tem uma, comece por ela.</p>
-      <a class="bt fraco" href="/loja/">Ver as esculturas</a>
+      <h3>O aroma vai numa peça com areia</h3>
+      <p>A areia de cera vem sem aroma e mora dentro de uma peça de gesso da
+         Cinérea, que é permanente. Você pinga algumas gotas em volta do pavio,
+         com a vela apagada e fria, e acende. Se ainda não tem uma peça, comece
+         por ela.</p>
+      <a class="bt fraco" href="/loja/?colecao=Pratos">Ver os pratos e potes</a>
     </div>
     ${compra}
     <button class="refazer" id="refazer">Responder de novo</button>

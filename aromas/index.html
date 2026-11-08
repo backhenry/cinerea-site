@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aromas · Cinérea</title>
-<meta name="description" content="Por que um cheiro chega antes do pensamento, como um aroma se sustenta em três tempos, e o que muda quando o óleo é de verdade. O aroma da sua peça você troca quando quiser: a escultura fica, a areia se repõe.">
+<meta name="description" content="A areia da Cinérea vem sem aroma. O perfume chega num vidrinho de pingar: você escolhe o seu, troca quando quiser e combina como quiser. Três assinaturas da casa, em breve.">
 <meta property="og:title" content="Aromas · Cinérea">
 <meta property="og:image" content="https://cinerea.com.br/compartilhar.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:description" content="A base permanece, o conteúdo se renova.">
+<meta property="og:description" content="A areia vem sem aroma. O perfume chega num vidrinho de pingar: você escolhe, troca e combina.">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#F2EFEA">
 <link rel="icon" href="/icone.svg" type="image/svg+xml">
@@ -19,344 +19,104 @@
 <link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
-  .capa{text-align:center;padding:66px 22px 40px;max-width:660px;margin:0 auto}
-  .capa .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .capa h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(32px,8.4vw,46px);
-           line-height:1.12;margin-top:12px;text-wrap:balance}
-  .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke);line-height:1.65}
-
-  .miolo{max-width:760px;margin:0 auto;padding:0 22px 20px}
-
-  /* O ÍNDICE. Discreto de propósito: ele é mapa, não chamada. A brasa já está
-     toda gasta no botão do convite, logo abaixo. */
-  .indice{margin-top:26px;display:flex;flex-wrap:wrap;justify-content:center;
-          gap:8px 6px}
-  .indice a{
-    font-size:12.5px;color:var(--smoke);text-decoration:none;
-    border:1px solid var(--line);border-radius:20px;padding:5px 12px;
-    transition:border-color .18s ease,color .18s ease;
-  }
-  .indice a:hover{border-color:var(--ember);color:var(--ember)}
-
-  /* O CABEÇALHO É FIXO, então âncora sem folga leva o título para debaixo dele.
-     A barra mede 86px no celular e 59px acima de 780px; 100 cobre os dois com
-     sobra, e sobra aqui é ar antes do título, que não incomoda. */
-  .bloco{scroll-margin-top:100px}
+  /* AROMAS, refeita em nov/2026: menos texto, a ideia do vidrinho na frente,
+     e o conteúdo de perfumaria resumido ao que ajuda a escolher. */
   html{scroll-behavior:smooth}
-  @media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  main section[id]{scroll-margin-top:84px}
+  .serifa{font-family:'Bodoni Moda',serif;font-weight:500}
+  .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .bt{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 26px;
+      background:var(--char);color:var(--paper);text-decoration:none;border:1px solid var(--char);
+      border-radius:2px;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:.15s;text-align:center}
+  .bt:hover{background:var(--ember);border-color:var(--ember)}
+  .bt2{background:transparent;color:var(--char)}
+  .bt2:hover{background:transparent;color:var(--ember);border-color:var(--ember)}
+  .acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .acoes.centro{justify-content:center}
+  h1 em,h2 em{font-style:italic}
+  .sub{font-size:16.5px;line-height:1.6;color:#45403A;max-width:44ch;margin-top:16px}
+  .nota{font-size:14.5px;line-height:1.6;color:var(--smoke);max-width:60ch;margin-top:26px}
 
-  /* O NÚMERO no rótulo transforma cinco parágrafos empilhados numa sequência,
-     e é o que faz o índice acima ter sentido: o leitor reconhece onde caiu. */
-  .rot b{font-weight:500;color:var(--char);margin-right:2px}
-  .bloco{padding:44px 0;border-top:1px solid var(--line)}
-  .bloco .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .bloco h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(23px,5.6vw,31px);
-            line-height:1.16;margin-top:10px;text-wrap:balance}
-  .bloco p{margin-top:16px;font-size:16px;line-height:1.72;max-width:56ch}
-  /* O PARÁGRAFO DE ABERTURA de cada seção entra um ponto maior. É o recurso
-     mais velho da tipografia editorial e o mais barato: dá um degrau de entrada
-     ao olho e quebra a impressão de bloco único, sem acrescentar um elemento
-     sequer. Não vale para o cartão do aviso, que é curto e já tem contraste
-     próprio. */
-  .bloco:not(.aviso) > p:first-of-type{font-size:17.5px;line-height:1.68}
-  .bloco p.calmo{color:var(--smoke)}
+  /* capa: texto e a areia lado a lado; no celular a foto vem depois */
+  .capa{display:grid;gap:34px;max-width:1080px;margin:0 auto;padding:34px 22px 64px;align-items:center}
+  .capa h1{font-size:clamp(46px,11vw,84px);line-height:1;margin-top:14px}
+  .selo{display:inline-block;margin-top:18px;font-size:13px;letter-spacing:.08em;color:var(--ember);font-weight:500}
+  .capa-img{margin:0;rotate:1.2deg}
+  .capa-img img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+  @media(min-width:900px){ .capa{grid-template-columns:1.1fr .9fr;gap:64px;padding-top:56px} }
 
-  /* ---- o convite para o oráculo -----------------------------------------
-     A brasa cheia entra AQUI e em nenhum outro lugar da página. A regra da
-     marca é acento em menos de 10% da tela, e um botão é exatamente o
-     "elemento crucial" que a regra abre exceção para: é o único lugar onde se
-     pede uma ação. */
-  /* O CARTÃO É DE PAPEL, e não do cinza: quem separa o bloco da página é a
-     borda, e o fundo igual deixa o convite leve, sem cara de anúncio. */
-  .convite{text-align:center;padding:38px 24px 42px;margin-top:6px;
-           background:var(--paper);border:1px solid var(--line);border-radius:18px}
-  .convite h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,32px);
-              line-height:1.15;margin-top:30px}
-  .convite p{margin:12px auto 0;font-size:15.5px;color:var(--smoke);
-             line-height:1.65;max-width:46ch}
+  /* os três gestos */
+  .gestos{padding:72px 0 64px;border-top:1px solid var(--line)}
+  .gestos h2,.assinaturas h2,.tempos h2,.origem h2,.faixa-combina h2{font-size:clamp(34px,8vw,54px);line-height:1.05;margin-top:12px}
+  .passos{list-style:none;padding:0;margin:40px 0 0;display:grid;gap:34px;counter-reset:p}
+  .passos li{counter-increment:p}
+  .passos svg{width:110px;height:110px;display:block}
+  .passos b{display:block;font-size:26px;margin-top:10px}
+  .passos b::before{content:counter(p) " ";color:var(--ember);font-size:16px;vertical-align:middle;margin-right:6px}
+  .passos p{margin-top:8px;color:#45403A;line-height:1.6;max-width:30ch}
+  @media(min-width:760px){ .passos{grid-template-columns:repeat(3,1fr)} }
+  .cuidado{margin-top:36px;padding:16px 18px;border-left:3px solid var(--ember);background:var(--ash);
+           font-size:14.5px;line-height:1.55;color:var(--char);max-width:62ch}
 
-  /* As três em fila, e nunca empilhadas: em coluna viram uma lista, e o que
-     o bloco pergunta é QUAL DOS TRÊS. O fio entre elas é o mesmo `--line` da
-     borda do cartão, então a divisão pertence ao cartão e não é desenho novo.
+  /* as assinaturas: três vidrinhos */
+  .assinaturas{padding:72px 0 72px;border-top:1px solid var(--line);text-align:center}
+  .vidros{display:grid;gap:22px;margin-top:40px;text-align:center}
+  .vidro{padding:30px 22px 32px;background:var(--ash);border-radius:2px;position:relative}
+  .vidro:nth-child(2){rotate:-.8deg}
+  .vidro:nth-child(3){rotate:.6deg}
+  .vidro svg{width:58px;height:106px;display:block;margin:0 auto 14px}
+  .vidro .hora{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke);font-weight:500}
+  .vidro h3{font-size:27px;margin-top:6px}
+  .vidro .carater{font-style:italic;font-family:'Bodoni Moda',serif;font-size:18px;color:#45403A;margin-top:4px}
+  .vidro .notas{font-size:14px;color:var(--smoke);margin-top:12px}
+  @media(min-width:760px){ .vidros{grid-template-columns:repeat(3,1fr)} .vidro:nth-child(2){margin-top:26px} }
 
-     A ordem dentro de cada uma vai do que a pessoa reconhece ao que ela
-     confere: a hora do dia (ela sabe a dela), o nome, o caráter, e por último
-     as notas, menores, para quem quer saber do que é feito. */
-  .tres{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);
-        max-width:600px;margin:0 auto}
-  /* SUBGRID, para as linhas valerem nas três colunas: no celular o caráter de
-     uma quebra em duas linhas e o da outra não, e as notas desciam em alturas
-     diferentes. Sem suporte, cada coluna se arruma sozinha, que é o de antes. */
-  .aroma{display:grid;grid-row:span 4;grid-template-rows:subgrid;justify-items:center;
-         align-items:start;padding:4px 10px 2px}
-  .aroma + .aroma{border-left:1px solid var(--line)}
-  .aroma .hora{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .aroma b{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(17px,4.4vw,22px);
-           line-height:1.18;margin-top:12px;text-wrap:balance}
-  .aroma i{font-family:'Bodoni Moda';font-weight:500;font-size:14px;color:var(--smoke);margin-top:6px;
-           line-height:1.35;text-wrap:balance}
-  /* O traço de brasa é o mesmo gesto da linha que abre cada bloco da página,
-     em miniatura, e é ele que separa o que a peça é do que ela leva. */
-  .aroma .notas{font-size:13px;line-height:1.75;color:var(--smoke);margin-top:16px;
-                padding-top:14px;position:relative}
-  .aroma .notas::before{content:'';position:absolute;top:0;left:50%;width:18px;height:1px;
-                        margin-left:-9px;background:var(--ember);opacity:.55}
-  @media (max-width:420px){
-    .convite{padding-left:14px;padding-right:14px}
-    .aroma{padding:4px 5px 2px}
-    .aroma .notas{font-size:12px}
-    .aroma i{font-size:13px}
-  }
+  /* trocar e combinar: a única faixa em cinza */
+  .faixa-combina{background:var(--ash);padding:72px 0}
+  .pares{list-style:none;padding:0;margin:34px 0 0;display:grid;gap:14px}
+  .pares li{display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:center;
+            padding:16px 18px;background:var(--paper);border-radius:2px;color:#45403A;line-height:1.4}
+  .pares b{font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;color:var(--char);display:block}
+  .pares .dupla{grid-row:span 2;display:flex}
+  .pares .dupla i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--paper);display:block}
+  .pares .dupla i+i{margin-left:-9px}
+  @media(min-width:760px){ .pares{grid-template-columns:repeat(3,1fr)} }
 
-  /* AS TRÊS ENTRAM EM SEQUÊNCIA, e não juntas: escalonadas, elas lêem como
-     três coisas para escolher; ao mesmo tempo, leem como uma imagem só.
+  /* os três tempos: o sopro sobe em velocidades diferentes */
+  .tempos{padding:72px 0 56px}
+  .faixas{display:grid;gap:12px;margin-top:36px}
+  .tempo{display:grid;grid-template-columns:44px 1fr;column-gap:18px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+  .tempo b{font-size:23px}
+  .tempo p{grid-column:2;color:#45403A;line-height:1.55;margin-top:2px}
+  .trilho{grid-row:span 2;width:44px;height:64px;position:relative;border-left:1px dashed var(--line);margin-left:20px}
+  .trilho i{position:absolute;left:-5px;bottom:0;width:9px;height:9px;border-radius:50%;background:var(--ember);opacity:.85}
+  .anima .tempos .trilho i{opacity:0}
+  .anima .tempos.vista .trilho i{animation:sopro var(--dura) ease-out infinite}
+  @keyframes sopro{0%{transform:translateY(0);opacity:.9}80%{opacity:.25}100%{transform:translateY(-62px);opacity:0}}
+  @media (prefers-reduced-motion:reduce){ .trilho i{animation:none!important;opacity:.85!important} }
 
-     O ESTADO DE REPOUSO É VISÍVEL, e isto não é detalhe: quem esconde por
-     padrão e mostra por animação aposta que a animação vai rodar. Medido nesta
-     página: em aba escondida o navegador CONGELA a animação no primeiro quadro,
-     e os três aromas ficaram em opacidade zero, ou seja, o convite inteiro
-     vazio. O mesmo vale para quem cai num navegador que não anima.
+  /* de onde vem */
+  .origem{padding:56px 0 64px;border-top:1px solid var(--line)}
+  .plantas{list-style:none;padding:0;margin:30px 0 0;display:grid;grid-template-columns:repeat(2,1fr);gap:22px 18px}
+  .plantas li{border-top:1px solid var(--char);padding-top:12px}
+  .plantas b{display:block;font-size:21px}
+  .plantas span{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ember);margin-top:4px}
+  .plantas i{display:block;font-size:14px;color:var(--smoke);margin-top:4px}
+  @media(min-width:760px){ .plantas{grid-template-columns:repeat(3,1fr)} }
 
-     Por isso quem esconde é o JavaScript, com a classe `.anima`, e só depois de
-     ele estar rodando. Sem script, sem animação, ou com ela travada, o que
-     sobra é a página inteira à mostra. */
-  /* CADA BLOCO ENTRA SUBINDO, como as seções da página inicial. Só
-     deslocamento, nunca opacidade zero permanente: o pior caso de uma animação
-     que não roda tem de ser um bloco 14px fora do lugar, e não um bloco
-     invisível. É a mesma regra que a home já segue. */
-  .anima .bloco{transform:translateY(16px);opacity:.001;
-                transition:transform .6s cubic-bezier(.2,.7,.3,1),opacity .6s ease}
-  .anima .bloco.vista{transform:none;opacity:1}
+  .remedio{padding:56px 0 40px;border-top:1px solid var(--line);max-width:62ch}
+  .remedio h2{font-size:clamp(28px,6vw,40px)}
+  .remedio p{margin-top:14px;line-height:1.65;color:#45403A}
+  .remedio .fonte{font-size:13.5px;color:var(--smoke)}
 
-  /* A LINHA DE CIMA DO BLOCO se estende quando ele entra. É o gesto mais barato
-     que existe e o que mais parece cuidado: o bloco não aparece, ele se
-     apresenta. */
-  .bloco{position:relative}
-  .anima .bloco::before{
-    content:'';position:absolute;top:-1px;left:0;height:1px;width:0;
-    background:var(--ember);opacity:.55;transition:width .9s ease .15s;
-  }
-  .anima .bloco.vista::before{width:56px}
-
-  /* A PLANTA REAGE AO TOQUE: o desenho vira brasa e a linha inteira clareia.
-     É pequeno de propósito, e existe porque a lista tem seis itens e nada
-     ali indicava que cada linha é uma coisa em si. */
-  .planta{transition:background .25s ease;border-radius:2px}
-  .planta:hover{background:rgba(181,70,42,.045)}
-  .planta .fig path,.planta .fig circle{transition:stroke .25s ease}
-  .planta:hover .fig path[stroke="#1C1A17"],
-  .planta:hover .fig circle[stroke="#1C1A17"]{stroke:var(--ember)}
-
-  .anima .aroma{opacity:0;transform:translateY(14px)}
-  .anima .convite.vista .aroma{
-    animation:sobe .7s cubic-bezier(.2,.7,.3,1) forwards;
-  }
-  .anima .convite.vista .aroma:nth-child(2){animation-delay:.12s}
-  .anima .convite.vista .aroma:nth-child(3){animation-delay:.24s}
-  @keyframes sobe{to{opacity:1;transform:none}}
-
-  .bt-convite{
-    display:inline-flex;align-items:center;gap:10px;margin-top:24px;
-    padding:16px 30px;background:var(--ember);color:var(--paper);
-    /* Raio 10 como todo botão de ação do site (ver comum.css). Pílula é
-       desenho de controle, de filtro que liga e desliga. */
-    text-decoration:none;border-radius:2px;font-size:16px;
-    box-shadow:0 6px 18px -8px rgba(181,70,42,.7);
-    transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
-  }
-  .bt-convite svg{width:20px;height:20px;transition:transform .15s ease}
-  .bt-convite:hover{background:var(--char);box-shadow:0 8px 22px -8px rgba(28,26,23,.5)}
-  .bt-convite:hover svg{transform:translateX(3px)}
-
-  /* ---- os três tempos ----------------------------------------------------
-     A coluna de cor à esquerda é a única ilustração da página, e ela existe
-     porque a ideia É vertical: a nota de saída está por cima, a de fundo por
-     baixo, e o que segura a de cima é a de baixo. Um desenho horizontal
-     contaria a mesma coisa pior. */
-  .tempos{margin-top:26px;display:grid;gap:2px}
-  .tempo{padding:18px 20px;border-left:3px solid var(--ember)}
-  .tempo:nth-child(1){background:rgba(181,70,42,.05);border-left-color:rgba(181,70,42,.35)}
-  .tempo:nth-child(2){background:rgba(181,70,42,.08);border-left-color:rgba(181,70,42,.6)}
-  .tempo:nth-child(3){background:rgba(181,70,42,.12);border-left-color:var(--ember)}
-  /* A ANIMAÇÃO QUE EXPLICA, e não a que enfeita.
-     O bloco inteiro diz que a nota de saída evapora depressa e a de fundo
-     demora. Em vez de repetir isso por escrito, cada faixa tem um sopro que
-     sobe e some, e a única diferença entre as três é a DURAÇÃO: 3,5s na saída,
-     9s no coração, 19s no fundo. Quem olhar dez segundos vê a de cima subir
-     três vezes enquanto a de baixo ainda está no meio do caminho, e entende
-     sem ler.
-
-     Fica em `::after` com `pointer-events:none` para não atrapalhar seleção de
-     texto, e o `overflow:hidden` é o que recorta o sopro na faixa. */
-  .tempo{position:relative;overflow:hidden}
-  .tempo::after{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(to top,rgba(181,70,42,.20),rgba(181,70,42,.05) 45%,transparent 75%);
-    transform:translateY(70%);opacity:0;
-    animation:evapora var(--dur,6s) linear infinite;
-  }
-  .tempo:nth-child(1)::after{--dur:3.5s}
-  .tempo:nth-child(2)::after{--dur:9s}
-  .tempo:nth-child(3)::after{--dur:19s}
-  @keyframes evapora{
-    0%   {transform:translateY(70%); opacity:0}
-    12%  {opacity:1}
-    70%  {opacity:.55}
-    100% {transform:translateY(-105%); opacity:0}
-  }
-
-  /* Quem pediu menos movimento não recebe nenhum. A mesma recusa que o vídeo
-     da capa e a vela de espera já respeitam. */
-  @media(prefers-reduced-motion:reduce){
-    .tempo::after{animation:none;opacity:0}
-    /* A gota parada na ponta continua dizendo "aqui pinga", sem se mexer. */
-    .pipeta i{animation:none;opacity:1;transform:translateY(0) scale(1)}
-  }
-
-  .tempo b{display:block;font-size:14.5px;letter-spacing:.02em}
-  .tempo span{display:block;margin-top:5px;font-size:14.5px;color:var(--smoke);line-height:1.6}
-  .tempo em{font-style:normal;color:var(--char)}
-
-  /* ---- as plantas -------------------------------------------------------- */
-  .plantas{margin-top:24px;display:grid;gap:0}
-  .planta{display:grid;gap:3px 18px;padding:15px 0;border-bottom:1px solid var(--line)}
-  .planta:last-child{border-bottom:none}
-  .planta b{font-size:15.5px}
-  .planta i{font-style:italic;color:var(--smoke);font-size:13.5px}
-  .planta span{font-size:14.5px;color:var(--smoke);line-height:1.62}
-  /* O DESENHO MARCA A PARTE, e é só isso que ele faz: pétala, casca, cerne,
-     folha, raiz. A seção inteira existe para dizer que a parte da planta muda o
-     óleo, e uma lista de nomes botânicos não diz isso a quem passa o olho. */
-  /* LINHA POR LINHA, e não por posicionamento automático. Com a figura ocupando
-     quatro linhas na primeira coluna, o preenchimento automático não seguiu a
-     ordem do documento e a etiqueta da parte foi parar ACIMA do nome da planta.
-     Dizer em que linha cada um entra tira a adivinhação. */
-  .planta{grid-template-columns:34px 1fr;align-items:start;gap:2px 16px}
-  .planta .fig{width:34px;height:34px;grid-column:1;grid-row:1/span 3;align-self:start}
-  .planta b{grid-column:2;grid-row:1}
-  .planta i{grid-column:2;grid-row:2}
-  .planta .parte{grid-column:2;grid-row:3;justify-self:start}
-  .planta span{grid-column:2;grid-row:4}
-  @media(min-width:660px){
-    .planta{grid-template-columns:34px 200px 1fr}
-    .planta span{grid-column:3;grid-row:1/span 3;align-self:center}
-  }
-
-  /* EM LINHA PRÓPRIA, e não colado ao nome. Ao lado dele, "casca do fruto" e
-     "cerne da madeira" quebravam no meio e a etiqueta virava duas linhas soltas,
-     que lê como defeito. Sozinha ela também fica mais fácil de varrer: a coluna
-     inteira passa a ser uma lista de partes da planta, que é o assunto. */
-  /* OS DESENHOS SE DESENHAM ao entrar na tela, com o traço correndo do começo
-     ao fim. É a mesma ideia da vela da margem: mostrar o mecanismo em vez de
-     enfeitar. Aqui o mecanismo é a própria planta sendo identificada, e o traço
-     correndo é o gesto de quem desenha.
-
-     `stroke-dasharray` grande o bastante para qualquer um dos traços deste
-     desenho, e `stroke-dashoffset` indo a zero. Sem `pathLength` porque os
-     caminhos têm comprimentos muito diferentes e normalizar cada um exigiria
-     medir; um valor único e generoso faz todos terminarem, uns antes de outros,
-     o que até ajuda: o desenho nasce em partes. */
-  /* Mesma regra do convite: o desenho nasce PRONTO, e só some para ser
-     desenhado quando o script garante que vai desenhá-lo. Sem isso, os seis
-     pictogramas ficam em branco na cara de quem tem a aba em segundo plano. */
-  .anima .planta .fig path,.anima .planta .fig circle{
-    stroke-dasharray:220;stroke-dashoffset:220;
-  }
-  .anima .planta.vista .fig path,.anima .planta.vista .fig circle{
-    animation:tracar 1.1s ease-out forwards;
-  }
-  .planta.vista .fig *:nth-child(2){animation-delay:.16s}
-  .planta.vista .fig *:nth-child(3){animation-delay:.32s}
-  .planta.vista .fig *:nth-child(4){animation-delay:.46s}
-  @keyframes tracar{to{stroke-dashoffset:0}}
-
-  .parte{display:inline-block;font-size:10.5px;letter-spacing:.1em;
-         text-transform:uppercase;color:var(--ember);white-space:nowrap;
-         border:1px solid var(--line);border-radius:20px;padding:2px 9px;margin-top:4px}
-
-  .acoes{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
-  .bt{display:inline-block;padding:14px 26px;background:var(--char);color:var(--paper);
-      text-decoration:none;border-radius:2px;font-size:15px;transition:.15s}
-  .bt:hover{background:var(--ember)}
-  .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
-  .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
-
-  /* A PEÇA AO LADO DO TEXTO, e empilhada no celular. O vídeo é composto sobre
-     branco e sumido com `multiply`, como o da página inicial e o das areias: o
-     `.giro` pinta o papel atrás porque `multiply` mistura com o que está no
-     mesmo contexto de empilhamento, e sem fundo pintado o branco continua
-     branco. */
-  .par{display:grid;gap:18px;margin-top:26px;align-items:center}
-  .par .giro{display:flex;justify-content:center;background:var(--ash)}
-  .par .giro-video{width:100%;max-width:240px;height:auto;display:block;
-                   mix-blend-mode:multiply}
-  .par .perto{margin-top:0}
-  .par .acoes{margin-top:20px}
-  @media(min-width:640px){ .par{grid-template-columns:240px 1fr;gap:26px} }
-
-  /* A FAIXA DO LIVRO. Cartão de papel sobre o cinza do bloco, com a capa
-     pequena à esquerda: a capa é escura e chama sozinha, então o resto do
-     convite pode ser silencioso. */
-  .livro-faixa{
-    display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;
-    margin-top:28px;padding:16px 18px;background:var(--paper);
-    border:1px solid var(--line);border-radius:4px;text-decoration:none;
-    transition:border-color .2s ease,transform .2s ease;
-  }
-  .livro-faixa:hover{border-color:var(--ember);transform:translateY(-1px)}
-  .livro-faixa img{width:64px;height:auto;display:block;border-radius:3px;
-                   box-shadow:0 6px 14px -8px rgba(28,26,23,.7)}
-  .livro-faixa b{display:block;font-family:'Bodoni Moda';font-weight:500;
-                 font-size:17px;color:var(--char);margin-bottom:4px}
-  .livro-faixa span{font-size:14px;color:var(--smoke);line-height:1.6}
-
-  /* ---- as gotas -----------------------------------------------------------
-     Cada pipeta é um traço fino com uma gota que engorda na ponta, se solta e
-     cai. A ÚNICA diferença entre as três é a duração, como nas faixas dos três
-     tempos: quem olhar quinze segundos vê a primeira pingar seis vezes e o
-     vetiver uma só. A informação está no ritmo, não no desenho. */
-  .gotas{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);
-         gap:10px;align-items:end}
-  .pipeta{position:relative;height:132px;display:flex;flex-direction:column;
-          align-items:center;justify-content:flex-end}
-  .pipeta::before{
-    content:'';position:absolute;top:0;left:50%;width:1px;height:26px;
-    background:var(--line);transform:translateX(-50%);
-  }
-  .pipeta i{
-    position:absolute;top:20px;left:50%;width:11px;height:11px;
-    margin-left:-5.5px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
-    background:var(--ember);opacity:0;
-    animation:pingar var(--t) cubic-bezier(.45,0,.75,.35) infinite;
-  }
-  @keyframes pingar{
-    0%   {transform:translateY(0) scale(.2);  opacity:0}
-    /* engorda parada na ponta: é o tempo que a gota leva para vencer a
-       tensão superficial, e é ele que muda com a viscosidade */
-    22%  {transform:translateY(0) scale(1);   opacity:1}
-    30%  {transform:translateY(4px) scale(1.06); opacity:1}
-    100% {transform:translateY(96px) scale(.72); opacity:0}
-  }
-  .pipeta span{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
-               color:var(--smoke);text-align:center;line-height:1.3}
-  .legenda-gotas{font-size:14.5px;color:var(--smoke);margin-top:14px}
-
-  /* ---- o aviso -----------------------------------------------------------
-     Ele fica no FIM e com o mesmo peso do resto, sem letra miúda e sem caixa
-     de advertência. Letra miúda é o formato de quem quer que não seja lido, e
-     aqui a intenção é a contrária: dizer o que a peça não faz é o que dá
-     crédito ao que ela faz. */
-  /* O BLOCO DA CINÉREA é o único da página que pede uma compra, e estava com a
-     mesma cara dos quatro que só explicam. Ele ganha o mesmo cartão do aviso,
-     que é o recurso que a página já tinha para dizer "isto aqui é de outra
-     natureza". Não é destaque gritado: é parar de disfarçar. */
-  #cinerea{background:var(--ash);border-radius:4px;padding:30px 24px;
-           border-top:none;margin-top:20px}
-  #cinerea::before{display:none}
-
-  .aviso{background:var(--ash);border-radius:4px;padding:26px 24px;margin-top:8px}
-  .aviso h2{margin-top:6px}
-  .fonte{margin-top:18px;font-size:13px;color:var(--smoke);line-height:1.6}
+  .livro-link{display:grid;grid-template-columns:96px 1fr;gap:22px;align-items:center;margin:24px 0 88px;
+              padding:22px;background:#0C0C0B;color:var(--paper);text-decoration:none;border-radius:2px}
+  .livro-link img{width:96px;height:auto;display:block;box-shadow:0 14px 30px -14px rgba(0,0,0,.9)}
+  .livro-link .rot{color:#CFC7BB;display:block}
+  .livro-link b{display:block;font-size:24px;line-height:1.15;margin-top:8px}
+  .livro-link .txt{display:block;margin-top:8px;color:#CFC7BB;font-size:14.5px;line-height:1.5}
+  .livro-link:hover b{color:#E9A04A}
 </style>
 </head>
 <body class="nova">
@@ -392,310 +152,176 @@
   </div>
 </div></header>
 
-<main>
-  <section class="capa">
-    <div class="rot">Aromas</div>
-    <h1>O cheiro chega antes do&nbsp;pensamento.</h1>
-    <p>Todos os outros sentidos passam por uma triagem no cérebro antes de virar
-       sensação. O olfato não: ele entra direto na região da memória e da emoção.
-       É por isso que um aroma abre uma lembrança inteira antes de você conseguir
-       dar nome a ele.</p>
 
-    <!-- O ÍNDICE, e não um menu lateral.
-         A página tem 9,5 telas de leitura no celular, e sem nenhum mapa quem
-         chega não sabe o que vem nem onde está. Uma linha de cinco links custa
-         uma linha e resolve as duas coisas: diz do que a página trata e deixa
-         pular direto para o que interessa. Menu fixo lateral custaria espaço
-         permanente numa tela de 375px para o mesmo serviço. -->
-    <nav class="indice" aria-label="Seções desta página">
-      <a href="#tempos">Os tempos</a>
-      <a href="#plantas">De onde vem</a>
-      <a href="#qualidade">Qualidade</a>
-      <a href="#cinerea">Na Cinérea</a>
-      <a href="#aviso">Sem promessas</a>
-    </nav>
+<main>
+  <!-- AROMAS, refeita em nov/2026. A areia passou a vir SEM aroma, e o aroma
+       vai num vidrinho de pingar, à parte: a pessoa escolhe, troca e combina.
+       O vidrinho ainda não está à venda (é saneante para a ANVISA e depende de
+       fabricante regularizado), por isso tudo aqui leva à lista de espera e
+       nada leva à sacola. A linha das promessas continua a mesma: pode falar
+       do que a pessoa vive, não do que o aroma faz no corpo. -->
+
+  <section class="capa" id="capa">
+    <div class="capa-texto">
+      <p class="rot">Aromas</p>
+      <h1 class="serifa">O cheiro,<br><em>você escolhe.</em></h1>
+      <p class="sub">A areia da Cinérea vem sem aroma, de propósito. O perfume chega à parte,
+         num vidrinho de pingar: você escolhe o seu, troca quando quiser e combina como quiser.</p>
+      <p class="selo">Os vidrinhos chegam em breve.</p>
+      <div class="acoes">
+        <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20entrar%20na%20lista%20de%20espera%20dos%20aromas%20da%20Cin%C3%A9rea." target="_blank" rel="noopener">Entrar na lista de espera</a>
+        <a class="bt bt2" href="/oraculo/">Qual combina comigo</a>
+      </div>
+    </div>
+    <figure class="capa-img pousada">
+      <img class="laje" src="/areia.jpg" width="828" height="1108" fetchpriority="high" decoding="async"
+           alt="Areia de cera clara, sem aroma, escorrendo entre os dedos de uma mão.">
+    </figure>
   </section>
 
-  <figure class="capa-foto">
-    <img src="/fosforo.jpg" width="896" height="1200" decoding="async"
-         style="object-position:35% 72%"
-         alt="Um fósforo no instante em que acende, no escuro.">
-  </figure>
+  <div class="envolve">
 
-  <div class="miolo">
+    <section class="gestos" id="como" aria-labelledby="comoTitulo">
+      <p class="rot">Como funciona</p>
+      <h2 class="serifa" id="comoTitulo">Três gestos.</h2>
+      <ol class="passos">
+        <li>
+          <svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 64 C22 56,98 56,98 64 C98 92,84 102,60 102 C36 102,22 92,22 64Z" stroke="#161412" stroke-width="2.2"/>
+            <path d="M24 64 C40 70,80 70,96 64" stroke="#161412" stroke-width="1.4" opacity=".5"/>
+            <g fill="#161412" opacity=".55"><circle cx="38" cy="74" r="1.6"/><circle cx="48" cy="80" r="1.6"/><circle cx="60" cy="76" r="1.6"/><circle cx="72" cy="81" r="1.6"/><circle cx="82" cy="74" r="1.6"/><circle cx="54" cy="88" r="1.6"/><circle cx="68" cy="90" r="1.6"/></g>
+            <path d="M60 64 V48" stroke="#161412" stroke-width="2.2"/>
+          </svg>
+          <b class="serifa">Encha</b>
+          <p>Areia de cera na peça, em volta do pavio. Ela não tem cheiro nenhum.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 76 C22 70,98 70,98 76 C98 98,84 106,60 106 C36 106,22 98,22 76Z" stroke="#161412" stroke-width="2.2"/>
+            <path d="M60 76 V64" stroke="#161412" stroke-width="2.2"/>
+            <rect x="72" y="10" width="14" height="22" rx="5" stroke="#161412" stroke-width="2.2"/>
+            <path d="M75 32 h8 l-2 16 h-4 Z" stroke="#161412" stroke-width="2.2"/>
+            <path d="M79 54 C76 58,75 61,79 63 C83 61,82 58,79 54Z" fill="#B8462B" stroke="none"/>
+          </svg>
+          <b class="serifa">Pingue</b>
+          <p>Algumas gotas na areia em volta do pavio, sem molhar o pavio. Mais gotas, mais presença.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 76 C22 70,98 70,98 76 C98 98,84 106,60 106 C36 106,22 98,22 76Z" stroke="#161412" stroke-width="2.2"/>
+            <path d="M60 76 V64" stroke="#161412" stroke-width="2.2"/>
+            <path d="M60 30 C52 42,52 52,60 58 C68 52,68 42,60 30Z" fill="#B8462B" stroke="none"/>
+            <path d="M40 40 C36 30,44 24,40 14 M80 40 C84 30,76 24,80 14" stroke="#161412" stroke-width="1.6" opacity=".35"/>
+          </svg>
+          <b class="serifa">Acenda</b>
+          <p>O calor da chama leva o aroma para a casa. Quando acabar, pingue de novo.</p>
+        </li>
+      </ol>
+      <p class="cuidado">Pingue sempre com a vela apagada e fria. Nunca no pavio, nunca numa vela acesa ou ainda quente.</p>
+    </section>
 
-    <!-- O CONVITE VEM AQUI, e não no fim da página.
-         Ele estava depois de cinco blocos de texto, ou seja, oferecido a quem
-         já tinha lido tudo, que é justamente quem menos precisa de ajuda para
-         escolher. Quem chega sem saber nada desiste antes. Logo depois da
-         abertura, ele pega a pessoa no instante em que ela acabou de descobrir
-         que cheiro mexe com memória e ainda não sabe o que fazer com isso.
+    <section class="assinaturas" id="assinaturas" aria-labelledby="assTitulo">
+      <p class="rot">As assinaturas da casa</p>
+      <h2 class="serifa" id="assTitulo">Três vidrinhos,<br><em>em breve.</em></h2>
+      <div class="vidros">
+        <article class="vidro" style="--tinta:#C9C6BC">
+          <svg viewBox="0 0 60 110" aria-hidden="true"><rect x="22" y="4" width="16" height="22" rx="6" fill="#161412"/><path d="M14 30 h32 a6 6 0 0 1 6 6 v62 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-62 a6 6 0 0 1 6 -6Z" fill="none" stroke="#161412" stroke-width="2"/><path d="M10 58 h40 v40 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6Z" fill="var(--tinta)"/></svg>
+          <p class="hora">de manhã</p>
+          <h3 class="serifa">Névoa da Manhã</h3>
+          <p class="carater">fresca, de ar frio</p>
+          <p class="notas">pinho silvestre · cipreste · alecrim</p>
+        </article>
+        <article class="vidro" style="--tinta:#9C7656">
+          <svg viewBox="0 0 60 110" aria-hidden="true"><rect x="22" y="4" width="16" height="22" rx="6" fill="#161412"/><path d="M14 30 h32 a6 6 0 0 1 6 6 v62 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-62 a6 6 0 0 1 6 -6Z" fill="none" stroke="#161412" stroke-width="2"/><path d="M10 52 h40 v46 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6Z" fill="var(--tinta)"/></svg>
+          <p class="hora">à lareira</p>
+          <h3 class="serifa">Lenha &amp; Poesia</h3>
+          <p class="carater">quente, de madeira</p>
+          <p class="notas">cedro-do-atlas · patchouli · vetiver</p>
+        </article>
+        <article class="vidro" style="--tinta:#BDB0A8">
+          <svg viewBox="0 0 60 110" aria-hidden="true"><rect x="22" y="4" width="16" height="22" rx="6" fill="#161412"/><path d="M14 30 h32 a6 6 0 0 1 6 6 v62 a8 8 0 0 1 -8 8 h-28 a8 8 0 0 1 -8 -8 v-62 a6 6 0 0 1 6 -6Z" fill="none" stroke="#161412" stroke-width="2"/><path d="M10 64 h40 v34 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6Z" fill="var(--tinta)"/></svg>
+          <p class="hora">à noite</p>
+          <h3 class="serifa">Sopro de Sono</h3>
+          <p class="carater">floral, macia</p>
+          <p class="notas">lavanda · sálvia esclareia · benjoim</p>
+        </article>
+      </div>
+      <div class="acoes centro">
+        <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20entrar%20na%20lista%20de%20espera%20dos%20aromas%20da%20Cin%C3%A9rea." target="_blank" rel="noopener">Entrar na lista de espera</a>
+        <a class="bt bt2" href="/oraculo/">Descobrir o meu em três perguntas</a>
+      </div>
+    </section>
 
-         O desenho é TIPOGRÁFICO, e já foi as três areias coloridas. Saiu em
-         nov/2026, quando a areia passou a ser fabricada sem aroma: três montes
-         de cor com nome de perfume diziam que cada areia é um cheiro, e o
-         produto deixou de ser assim. O que distingue os três agora é o que
-         eles são de fato, a hora do dia e as notas, e isso se escreve. -->
-    <section class="convite">
-      <ul class="tres">
-        <li class="aroma">
-          <span class="hora">de manhã</span>
-          <b>Névoa da Manhã</b>
-          <i>fresca, de ar frio</i>
-          <span class="notas">pinho silvestre<br>cipreste<br>alecrim</span>
-        </li>
-        <li class="aroma">
-          <span class="hora">à lareira</span>
-          <b>Lenha &amp; Poesia</b>
-          <i>quente, de madeira</i>
-          <span class="notas">cedro-do-atlas<br>patchouli<br>vetiver</span>
-        </li>
-        <li class="aroma">
-          <span class="hora">à noite</span>
-          <b>Sopro de Sono</b>
-          <i>floral, macia</i>
-          <span class="notas">lavanda<br>sálvia esclareia<br>benjoim</span>
-        </li>
+  </div>
+
+  <section class="faixa-combina" id="combinar" aria-labelledby="combTitulo">
+    <div class="envolve">
+      <p class="rot">Trocar e combinar</p>
+      <h2 class="serifa" id="combTitulo">Uma peça,<br><em>muitos cheiros.</em></h2>
+      <p class="sub">Como o aroma não mora na areia, a peça não fica presa a um cheiro só.
+         Duas gotas de um, uma do outro, e a sala ganha uma assinatura que é só sua.</p>
+      <ul class="pares">
+        <li><span class="dupla"><i style="background:#C9C6BC"></i><i style="background:#9C7656"></i></span><b>Névoa + Lenha</b>a manhã fria com a lareira acesa</li>
+        <li><span class="dupla"><i style="background:#9C7656"></i><i style="background:#BDB0A8"></i></span><b>Lenha + Sopro</b>o fim de semana inteiro em casa</li>
+        <li><span class="dupla"><i style="background:#C9C6BC"></i><i style="background:#BDB0A8"></i></span><b>Névoa + Sopro</b>a casa recém-arrumada, janela aberta</li>
       </ul>
-      <h2>Qual desses é o seu?</h2>
-      <p>Três perguntas sobre o seu momento, e o aroma da casa que combina com
-         ele. Leva menos de um minuto, e não pede cadastro nenhum.</p>
-      <a class="bt-convite" href="/oraculo/">
-        Descobrir o meu aroma
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M5 12h13M13 7l5 5-5 5" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-    </section>
+      <p class="nota">Para trocar de aroma, troque a areia em volta do pavio: a maior parte do cheiro antigo
+         sai junto com o bloco de cera que se forma quando a vela apaga. Aromas de fundo, como
+         patchouli e vetiver, demoram um pouco mais para ir embora.</p>
+    </div>
+  </section>
 
-    <section class="bloco" id="tempos">
-      <div class="rot"><b>I.</b> Como um aroma se sustenta</div>
-      <h2>Todo aroma tem três tempos, e você sente os&nbsp;três.</h2>
-      <p>O que se sente numa vela recém-acesa não é o que fica na sala uma hora
-         depois. Isso não é impressão sua nem defeito da peça: é a velocidade com
-         que cada molécula evapora. A perfumaria organiza isso em três camadas, e
-         entender as três muda o que você procura numa vela.</p>
+  <div class="envolve">
 
-      <div class="tempos">
-        <div class="tempo">
-          <b>Saída</b>
-          <span>Leve e volátil, é a primeira coisa que chega e a primeira que vai
-            embora. Quase sempre cítrica: <em>bergamota</em>, limão, mandarina.
-            É o aceno de entrada.</span>
-        </div>
-        <div class="tempo">
-          <b>Coração</b>
-          <span>O corpo do aroma, o que acompanha a peça acesa. Costuma ser floral
-            ou herbáceo: <em>ylang-ylang</em>, gerânio, camomila-romana. É o que a
-            pessoa lembra depois.</span>
-        </div>
-        <div class="tempo">
-          <b>Fundo</b>
-          <span>Raízes, madeiras e resinas. Evaporam devagar, e é justamente por
-            isso que <em>seguram</em> as notas de saída em vez de deixá-las fugir.
-            <em>Vetiver</em> e <em>patchouli</em> são os dois clássicos.</span>
-        </div>
+    <section class="tempos" id="tempos" aria-labelledby="tempTitulo">
+      <p class="rot">Como um aroma se sustenta</p>
+      <h2 class="serifa" id="tempTitulo">Todo cheiro tem três tempos.</h2>
+      <!-- A única diferença entre as três faixas é a duração do sopro: 3,5 s,
+           9 s e 19 s. Quem olha dez segundos vê a de cima subir três vezes
+           enquanto a de baixo ainda está no meio, e entende sem ler. -->
+      <div class="faixas">
+        <div class="tempo" style="--dura:3.5s"><span class="trilho"><i></i></span><b class="serifa">Saída</b><p>Chega primeiro e vai primeiro. Quase sempre cítrica: bergamota, limão.</p></div>
+        <div class="tempo" style="--dura:9s"><span class="trilho"><i></i></span><b class="serifa">Coração</b><p>O corpo do aroma, o que acompanha a peça acesa. Floral ou herbáceo.</p></div>
+        <div class="tempo" style="--dura:19s"><span class="trilho"><i></i></span><b class="serifa">Fundo</b><p>Madeiras e raízes. Evaporam devagar e seguram o resto no ar.</p></div>
       </div>
-
-      <p><b>Com uma ressalva honesta:</b> essa divisão em três é jeito de explicar,
-         não lei da física, e o rótulo não corresponde ao relógio. A bergamota,
-         chamada de nota de saída, dura seis horas numa tira de papel, e a lavanda,
-         que a perfumaria costuma pôr no coração, evapora quase tão depressa quanto
-         uma saída. Jean-Claude Ellena, que assinou os perfumes da Hermès por treze
-         anos, chega a chamar de erro ensinar um perfume repartido em três andares:
-         para quem cheira, a impressão é inteira e de uma vez. Quem diz quanto um
-         aroma dura não é a etiqueta, é o cronômetro.</p>
-
-      <p>E há aromas leves de propósito. A estrutura de colônia, a do cítrico com a
-         flor, escolhe a simplicidade e a leveza, e a sucessão rápida das notas nos
-         faz acreditar que o perfume não se sustenta, quando na verdade ele é
-         assim. Não é um aroma menor: é um aroma que não grita.</p>
-
-      <p>É aqui que se separa um aroma bom de um aroma barato. Sem nota de fundo
-         para fixar o resto, o cheiro sobe forte no primeiro minuto e desaparece
-         no terceiro. Forte não é o mesmo que duradouro, e quem já comprou vela
-         perfumada que "não cheira mais" conhece a diferença sem saber o nome
-         dela.</p>
+      <p class="nota">É jeito de explicar, não lei da física: a bergamota, chamada de nota de saída,
+         dura horas numa tira de papel. Quem diz quanto um aroma dura é o cronômetro, não o rótulo.</p>
     </section>
 
-    <section class="bloco" id="plantas">
-      <div class="rot"><b>II.</b> De onde ele vem</div>
-      <h2>A parte da planta muda tudo.</h2>
-      <p>Não existe "o óleo da lavanda". Existe o óleo da flor da lavanda, e ele é
-         outra coisa do que sairia da folha. A mesma planta dá aromas diferentes
-         conforme o que se destila, e é por isso que a origem vem escrita com nome
-         botânico, e não só com nome de fantasia.</p>
-
-      <div class="plantas">
-        <div class="planta">
-          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><path d="M20 33 V17" stroke="#1C1A17" stroke-width="1.8"/><path d="M20 17 c-4 0-6-3-6-5 s2-5 6-5 6 3 6 5 -2 5-6 5Z" stroke="#B5462A" stroke-width="1.8"/><path d="M14.6 11.5 h10.8 M15.6 8.2 h8.8" stroke="#B5462A" stroke-width="1.4"/><path d="M20 27 l-5-3 M20 23 l5-3" stroke="#1C1A17" stroke-width="1.6"/></svg>
-          <b>Lavanda</b>
-          <span class="parte">flor</span>
-          <i>Lavandula angustifolia</i>
-          <span>Floral, doce e herbácea. "Lavanda" no rótulo diz pouco: existem
-            várias, com perfumes e comportamentos distintos, e só o nome botânico
-            separa uma da outra.</span>
-        </div>
-        <div class="planta">
-          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><circle cx="20" cy="22" r="11" stroke="#1C1A17" stroke-width="1.8"/><path d="M20 11 a11 11 0 0 1 11 11" stroke="#B5462A" stroke-width="3.2" stroke-linecap="round"/><circle cx="20" cy="22" r="6.6" stroke="#1C1A17" stroke-width="1.3" opacity=".45"/><path d="M20 11 v-3.4" stroke="#1C1A17" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <b>Bergamota</b>
-          <span class="parte">casca do fruto</span>
-          <i>Citrus &times; bergamia</i>
-          <span>Um cruzamento de laranja-amarga com lima-doce. É a nota de saída
-            da água de colônia criada em 1709, e é ela que faz o chá Earl Grey
-            cheirar a Earl Grey desde os anos 1820.</span>
-        </div>
-        <div class="planta">
-          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><circle cx="20" cy="20" r="12" stroke="#1C1A17" stroke-width="1.8"/><circle cx="20" cy="20" r="8" stroke="#1C1A17" stroke-width="1.2" opacity=".4"/><circle cx="20" cy="20" r="4.6" stroke="#B5462A" stroke-width="2"/><circle cx="20" cy="20" r="1.5" fill="#B5462A" stroke="none"/></svg>
-          <b>Cedro-do-atlas</b>
-          <span class="parte">cerne da madeira</span>
-          <i>Cedrus atlantica</i>
-          <span>Quente, amadeirado e adocicado, com um fundo quase canforado. Sai
-            do miolo do tronco, não da casca nem da folha.</span>
-        </div>
-        <div class="planta">
-          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><path d="M20 34 V14" stroke="#B5462A" stroke-width="1.8"/><path d="M20 22 c-8 0-11-5-11-9 6 0 11 3 11 9Z" stroke="#1C1A17" stroke-width="1.7" stroke-linejoin="round"/><path d="M20 16 c8 0 11-4 11-8 -6 0-11 2-11 8Z" stroke="#1C1A17" stroke-width="1.7" stroke-linejoin="round"/></svg>
-          <b>Patchouli</b>
-          <span class="parte">folha e caule</span>
-          <i>Pogostemon cablin</i>
-          <span>Denso, terroso e adocicado. É dos poucos aromas que melhoram com
-            o tempo: envelhecendo, fica mais redondo e mais rico.</span>
-        </div>
-        <div class="planta">
-          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><path d="M12 11 h16" stroke="#1C1A17" stroke-width="1.8" stroke-linecap="round"/><path d="M16 11 c0-3 1-5 2-6 M24 11 c0-3-1-5-2-6" stroke="#1C1A17" stroke-width="1.5" stroke-linecap="round"/><path d="M17 11 v9 c0 5-2 8-4 12 M23 11 v7 c0 6 2 9 4 13 M20 11 v22" stroke="#B5462A" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <b>Vetiver</b>
-          <span class="parte">raiz</span>
-          <i>Vetiveria zizanioides</i>
-          <span>O único óleo de raiz entre as gramíneas aromáticas, e um dos mais
-            viscosos que existem: escorre devagar, e dura na mesma medida.</span>
-        </div>
-        <div class="planta">
-          <svg class="fig" viewBox="0 0 40 40" fill="none" aria-hidden="true" stroke-linecap="round"><circle cx="20" cy="20" r="3" stroke="#B5462A" stroke-width="1.8"/><path d="M20 17 c1-6 4-9 7-10 -1 4-3 8-7 10Z M23 20 c6 1 9 4 10 7 -4-1-8-3-10-7Z M20 23 c-1 6-4 9-7 10 1-4 3-8 7-10Z M17 20 c-6-1-9-4-10-7 4 1 8 3 10 7Z" stroke="#1C1A17" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          <b>Ylang-ylang</b>
-          <span class="parte">flor</span>
-          <i>Cananga odorata</i>
-          <span>Floral intenso com um fio cítrico por cima. O nome que lhe deram
-            nas Filipinas quer dizer, mais ou menos, flor das flores.</span>
-        </div>
-      </div>
+    <section class="origem" id="origem" aria-labelledby="oriTitulo">
+      <p class="rot">De onde vem</p>
+      <h2 class="serifa" id="oriTitulo">A parte da planta muda tudo.</h2>
+      <p class="sub">O óleo da flor da lavanda é outra coisa do que sairia da folha. Por isso a origem vem
+         com o nome botânico, e não só com um nome bonito.</p>
+      <ul class="plantas">
+        <li><b class="serifa">Lavanda</b><span>flor</span><i>Lavandula angustifolia</i></li>
+        <li><b class="serifa">Bergamota</b><span>casca do fruto</span><i>Citrus × bergamia</i></li>
+        <li><b class="serifa">Cedro-do-atlas</b><span>cerne da madeira</span><i>Cedrus atlantica</i></li>
+        <li><b class="serifa">Patchouli</b><span>folha e caule</span><i>Pogostemon cablin</i></li>
+        <li><b class="serifa">Vetiver</b><span>raiz</span><i>Vetiveria zizanioides</i></li>
+        <li><b class="serifa">Ylang-ylang</b><span>flor</span><i>Cananga odorata</i></li>
+      </ul>
     </section>
 
-    <section class="bloco" id="qualidade">
-      <div class="rot"><b>III.</b> Qualidade</div>
-      <h2>Dá para perceber um óleo adulterado.</h2>
-      <p>Cor, viscosidade e cheiro são a identidade de um óleo essencial. Quando
-         algum dos três destoa do que aquele óleo deveria ser, quase sempre há
-         adulteração, ou oxidação por armazenagem ruim e tempo demais no vidro.
-         Não é misticismo: é a mesma lógica de reconhecer azeite bom.</p>
-
-      <!-- A VISCOSIDADE ACONTECENDO, em vez de descrita.
-           O parágrafo cita três identificadores e a página não mostrava nenhum.
-           Este é o único dos três que se pode mostrar sem cheirar nem ver a cor:
-           a velocidade da gota. Os tempos não são de fantasia, são a ordem que
-           os perfis descrevem: a maioria dos óleos corre como água, o patchouli
-           é xaroposo e o vetiver é dos mais viscosos que existem. -->
-      <div class="gotas" aria-hidden="true">
-        <div class="pipeta" style="--t:2.2s"><i></i><span>óleos comuns</span></div>
-        <div class="pipeta" style="--t:6s"><i></i><span>patchouli</span></div>
-        <div class="pipeta" style="--t:11s"><i></i><span>vetiver</span></div>
-      </div>
-      <p class="legenda-gotas">A viscosidade é o identificador que dá para ver sem
-         abrir o vidro. Óleo que deveria escorrer devagar e corre como água quase
-         sempre está diluído.</p>
-      <p>O patchouli é o exemplo mais triste disso. É um dos óleos mais adulterados
-         do mundo, e o patchouli barato que correu o planeta nos anos 1970 é a
-         razão de muita gente jurar que detesta patchouli, sem nunca ter chegado
-         perto do verdadeiro.</p>
-
-      <p><b>Adulterado não é o mesmo que sintético</b>, e essa confusão custa
-         caro a quem compra. Adulterar é vender uma coisa dizendo que é outra.
-         Uma molécula feita em laboratório, declarada como tal, não engana
-         ninguém: a perfumaria moderna nasceu dela, e boa parte do que existe de
-         mais bonito num vidro não pode ser extraído de planta nenhuma, por
-         técnica ou por preço. O âmbar dos perfumistas, por exemplo, não vem de
-         âmbar: é baunilha de laboratório com uma resina de verdade, e virou um
-         padrão que sustenta um número enorme de perfumes.</p>
-
-      <p>Ou seja: natural não quer dizer melhor, e sintético não quer dizer falso.
-         O que existe é escolher pelo resultado e dizer a verdade sobre o que se
-         usou. É o que fazemos.</p>
-      <!-- ENTRA AQUI: uma frase do dono sobre a areia da casa, e ela precisa ser
-           VERDADE conferível. "Óleo essencial puro", "sem fragrância sintética" e
-           "grau terapêutico" são afirmações com consequência: a primeira e a
-           segunda o cliente cobra, e a terceira não significa nada, porque não
-           existe órgão que certifique "grau terapêutico". Enquanto a frase não
-           vier do ateliê, esta seção fala de como reconhecer, e não do que
-           usamos. -->
+    <section class="remedio" aria-labelledby="remTitulo">
+      <h2 class="serifa" id="remTitulo">Aroma não é remédio.</h2>
+      <p>Uma vela não é tratamento, e a Cinérea não promete efeito nenhum sobre a sua saúde. O que uma
+         peça acesa faz é o que o olfato faz de melhor sem precisar prometer nada: dar prazer, marcar
+         presença e guardar memória. Já é bastante.</p>
+      <p class="fonte">Os fatos de botânica e extração desta página vêm de <i>Aromatica</i>, volumes 1 e 2,
+         de Peter Holmes (Singing Dragon), e os de perfumaria de <i>Perfume: The Alchemy of Scent</i> e do
+         <i>Diário de um perfumista</i>, de Jean-Claude Ellena. O texto é nosso.</p>
     </section>
 
-    <section class="bloco" id="cinerea">
-      <div class="rot"><b>IV.</b> Na Cinérea</div>
-      <h2>A escultura fica. O aroma&nbsp;troca.</h2>
-      <p>Numa vela comum o perfume está preso na cera, então quando o aroma acaba,
-         acabou a vela junto, e o que sobra é um vidro sujo. Aqui é o contrário: a
-         escultura de gesso é permanente e o aroma vive na areia. Acabou, você
-         repõe a areia e a peça volta a dizer outra coisa.</p>
-      <p>Na prática isso quer dizer que o cheiro da sua casa pode acompanhar a
-         estação, a ocasião ou o humor, sem trocar o objeto que está na estante.
-         Cítrico e claro no verão, madeira e raiz quando esfria, e a mesma peça
-         atravessando tudo.</p>
-      <!-- A PEÇA APARECE AQUI, e é a única imagem de escultura da página.
-           O bloco pedia a compra falando de "sua escultura de gesso" sem nunca
-           mostrar uma: quem chega do Instagram não sabe o que é uma Cinérea, e
-           estava sendo convidado a comprar um objeto que não viu. É o mesmo
-           vídeo da página inicial, e reusar é de propósito: a peça que ele
-           conhece lá é a que ele encontra aqui. -->
-      <div class="par">
-        <div class="giro">
-          <video class="giro-video" id="giroAromas" muted loop playsinline
-                 preload="none" poster="/giro.jpg"
-                 aria-label="A escultura do David girando, vista de todos os lados."></video>
-        </div>
-        <div>
-          <p class="perto">Esta é uma delas. O gesso é maciço e fica para sempre;
-             a areia por dentro é que se gasta e se repõe, quantas vezes você
-             quiser, com o aroma que quiser.</p>
-          <div class="acoes">
-            <a class="bt" href="/loja/?colecao=Refis">Ver os refis de areia</a>
-            <a class="bt fraco" href="/loja/">Ver as peças</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- O LIVRO ENTRA AQUI, e não no alto da página. Quem chegou até este
-           ponto leu cinco seções sobre cheiro por vontade própria: é o leitor
-           do livro, e não precisa ser convencido de que o assunto interessa.
-           No alto, ele competiria com o oráculo, que é o caminho curto para
-           quem tem pressa. Um leva a comprar hoje, o outro a voltar depois. -->
-      <a class="livro-faixa" href="/livro/">
-        <img src="/livro/capa.webp" width="1165" height="1654" loading="lazy"
-             alt="Capa do livro O que permanece quando a chama passa.">
-        <span>
-          <b>E tem um livro, de graça</b>
-          Escrevemos 86 páginas sobre olfato, fogo e a arte de habitar a própria
-          casa. Sem cadastro e sem contrapartida.
-        </span>
-      </a>
-    </section>
-
-    <section class="bloco aviso" id="aviso">
-      <div class="rot"><b>V.</b> Uma coisa dita com todas as letras</div>
-      <h2>Aroma não é remédio.</h2>
-      <p class="calmo">Existe uma literatura clínica séria sobre óleos essenciais,
-         escrita para terapeutas, e é dela que vêm os fatos desta página. Mas uma
-         vela não é tratamento, e a Cinérea não promete efeito nenhum sobre a sua
-         saúde. Quem tem uma questão de saúde merece um profissional, e não uma
-         chama bonita.</p>
-      <p class="calmo">O que uma peça acesa faz é o que o olfato faz de melhor sem
-         precisar prometer nada: dar prazer, marcar presença e guardar memória. Já
-         é bastante.</p>
-      <p class="fonte">Os fatos de botânica e extração desta página foram apurados
-         em <i>Aromatica</i>, volumes 1 e 2, de Peter Holmes (Singing Dragon), e os
-         de perfumaria em <i>Perfume: The Alchemy of Scent</i>, de Jean-Claude
-         Ellena (Arcade), e no <i>Diário de um perfumista</i>, do mesmo autor
-         (Record). Onde as fontes discordam, está dito. O texto é nosso.</p>
-    </section>
+    <a class="livro-link" href="/livro/">
+      <img src="/livro/capa.webp" width="1165" height="1654" loading="lazy" decoding="async"
+           alt="Capa do livro O que permanece quando a chama passa.">
+      <span>
+        <span class="rot">E tem um livro, de graça</span>
+        <b class="serifa">O que permanece quando a chama passa</b>
+        <span class="txt">86 páginas sobre olfato, fogo e a arte de habitar a própria casa. Sem cadastro.</span>
+      </span>
+    </a>
 
   </div>
 </main>
@@ -751,32 +377,18 @@
 
 <script src="/vivo.js" defer></script>
 <script>
-/* As animações que dependem de a pessoa CHEGAR no bloco.
- *
- * `IntersectionObserver` e não posição de rolagem: rolagem dispara dezenas de
- * vezes por segundo e obriga a medir na mão, que é a medida que erra quando a
- * aba está escondida. Aqui basta saber que entrou.
- *
- * `once`: a classe entra e fica. Reanimar a cada passagem transforma a página
- * num painel piscando para quem sobe e desce procurando um parágrafo.
- */
+/* As faixas dos tempos só sopram quando a pessoa chega nelas. A classe que
+ * esconde o ponto (.anima) entra AQUI, e não no HTML: sem script, ou com aba
+ * escondida congelando animação, o ponto fica à vista e nada some. */
 (function () {
   var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var alvos = document.querySelectorAll('.convite, .planta, .bloco');
-  if (quieto || !('IntersectionObserver' in window)) return;
-
-  // A CLASSE QUE ESCONDE ENTRA AQUI, e não no HTML. Enquanto ela não existe, o
-  // conteúdo está à mostra: é o que garante que uma animação travada ou um
-  // navegador sem suporte deixem a página legível em vez de vazia.
+  var alvo = document.querySelector('.tempos');
+  if (!alvo || quieto || !('IntersectionObserver' in window)) return;
   document.documentElement.classList.add('anima');
-  var olho = new IntersectionObserver(function (entradas) {
-    entradas.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('vista');
-      olho.unobserve(e.target);
-    });
+  var olho = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('vista'); olho.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -12% 0px' });
-  alvos.forEach(function (el) { olho.observe(el); });
+  olho.observe(alvo);
 })();
 </script>
 <script src="/contador.js" defer></script>

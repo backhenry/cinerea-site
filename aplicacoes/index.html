@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aplicações · Cinérea</title>
-<meta name="description" content="Peças de gesso feitas à mão no ateliê, com um chip dentro: guardam um endereço que nunca muda e um conteúdo que muda sempre. Convite de casamento, cardápio de restaurante, wi-fi da pousada, homenagem. O que a peça diz é você quem escolhe.">
+<meta name="description" content="O chaveiro e o David guardam um chip: quem encosta o celular abre o que você deixou ali, sem aplicativo. Ideias para casa, presente, restaurantes e eventos.">
 <meta property="og:title" content="Aplicações · Cinérea">
 <meta property="og:image" content="https://cinerea.com.br/compartilhar.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:description" content="A base permanece, o conteúdo se renova.">
+<meta property="og:description" content="Encoste o celular. A peça responde.">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#F2EFEA">
 <link rel="icon" href="/icone.svg" type="image/svg+xml">
@@ -19,220 +19,85 @@
 <link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
-  .capa{text-align:center;padding:66px 22px 40px;max-width:660px;margin:0 auto}
-  .capa .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .capa h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px;text-wrap:balance}
-  .capa p{margin-top:18px;font-size:16.5px;color:var(--smoke)}
+  /* APLICAÇÕES, refeita em nov/2026: o que a peça faz, as duas peças que têm o
+     chip, poucas ideias com foto, encomenda em quantidade e perguntas. */
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  main section[id]{scroll-margin-top:84px}
+  .serifa{font-family:'Bodoni Moda',serif;font-weight:500}
+  .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .bt{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 26px;
+      background:var(--char);color:var(--paper);text-decoration:none;border:1px solid var(--char);
+      border-radius:2px;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:.15s;text-align:center}
+  .bt:hover{background:var(--ember);border-color:var(--ember)}
+  .bt2{background:transparent;color:var(--char)}
+  .bt2:hover{background:transparent;color:var(--ember);border-color:var(--ember)}
+  .acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  h1 em,h2 em{font-style:italic}
+  .sub{font-size:16.5px;line-height:1.6;color:#45403A;max-width:46ch;margin-top:16px}
+  main a:not(.bt):not(.peca-card){color:var(--char);text-decoration-color:var(--ember);text-underline-offset:3px}
 
-  /* ---- como nasce a peça ------------------------------------------------
-     Esta faixa existe para dizer, antes dos casos, que nada aqui é escolhido
-     de prateleira: cada peça é encomendada e moldada para o uso. É o que separa
-     uma Cinérea de um adesivo com QR, e é o que sustenta o preço. */
-  .trilho{padding:40px 0 8px;border-top:1px solid var(--line)}
-  .trilho h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(23px,5.6vw,30px);line-height:1.15}
-  .trilho .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
-  .passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;margin-top:28px;counter-reset:p}
-  .passo{position:relative;padding-left:40px}
-  .passo::before{
-    counter-increment:p;content:counter(p);position:absolute;left:0;top:-1px;
-    width:27px;height:27px;border-radius:50%;border:1px solid var(--line);
-    display:grid;place-items:center;font-size:12px;color:var(--ember);
-  }
-  .passo h3{font-family:'Bodoni Moda';font-weight:500;font-size:17.5px;line-height:1.25}
-  .passo p{margin-top:7px;font-size:14.5px;color:var(--smoke);line-height:1.55}
+  .capa{display:grid;gap:30px;max-width:1080px;margin:0 auto;padding:34px 22px 64px;align-items:center}
+  .capa h1{font-size:clamp(42px,10vw,76px);line-height:1.02;margin-top:14px}
+  .capa-video{margin:0;rotate:1deg;filter:drop-shadow(0 16px 18px rgba(22,20,18,.13))}
+  .capa-video video{display:block;width:100%;height:auto;background:#E1E0DC;
+    -webkit-mask:var(--laje2) center/100% 100% no-repeat;mask:var(--laje2) center/100% 100% no-repeat}
+  @media(min-width:900px){ .capa{grid-template-columns:1.1fr .9fr;gap:60px;padding-top:56px} }
 
-  .grupo{padding:44px 0;border-top:1px solid var(--line)}
-  .grupo{scroll-margin-top:70px}
-  .indice{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 22px;padding:30px 0 34px;border-top:1px solid var(--line)}
-  .indice a{font-family:'Bodoni Moda';font-weight:500;font-size:18px;color:var(--char);text-decoration:none;
-    border-bottom:1px solid var(--line);padding:10px 0 2px}
-  .indice a:hover{border-bottom-color:var(--ember)}
-  /* NO CELULAR CADA GRUPO ABRE COM DOIS CASOS, e o resto vem por um toque.
-     Quem chegou pelo índice quer ver o grupo dele, não rolar por trinta
-     cartões dos outros. A classe é posta pelo script: sem ele, tudo aparece,
-     que é a regra desta página, efeito nenhum esconde texto sozinho. */
-  .mais-casos{display:none}
-  @media(max-width:560px){
-    .casos.recolhida .caso:nth-child(n+3){display:none}
-    .casos.recolhida + .mais-casos{display:block;width:100%;margin-top:14px;padding:14px;
-      background:transparent;border:1px solid var(--line);border-radius:2px;
-      font-family:'Hanken Grotesk';font-size:15px;color:var(--char);cursor:pointer}
-  }
+  .como{padding:72px 0 56px;border-top:1px solid var(--line)}
+  .como h2,.pecas h2,.ideias h2,.quantidade h2{font-size:clamp(32px,7.5vw,52px);line-height:1.05;margin-top:12px}
+  .passos{list-style:none;padding:0;margin:36px 0 0;display:grid;gap:26px;counter-reset:p}
+  .passos li{counter-increment:p;border-top:1px solid var(--char);padding-top:14px}
+  .passos b{display:block;font-size:24px}
+  .passos b::before{content:counter(p);color:var(--ember);font-size:16px;margin-right:10px}
+  .passos p{margin-top:8px;color:#45403A;line-height:1.6}
+  @media(min-width:760px){ .passos{grid-template-columns:repeat(3,1fr);gap:30px} }
+  .rot-tipos{margin-top:52px;text-align:center}
+  .tipos{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:20px 10px;margin:22px auto 0;max-width:760px}
+  .tipo{text-align:center}
+  .tipo svg{width:36px;height:36px;display:block;margin:0 auto 8px}
+  .tipo span{font-size:13px;color:var(--smoke)}
 
-  .grupo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,32px);line-height:1.15}
-  .grupo .intro{margin-top:10px;color:var(--smoke);font-size:15.5px;max-width:60ch}
+  .pecas{padding:64px 0 80px;border-top:1px solid var(--line)}
+  .duas{display:grid;gap:30px;margin-top:36px}
+  .peca-card{display:block;text-decoration:none;color:var(--char)}
+  .peca-card img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;background:var(--ash);transition:rotate .4s ease}
+  .peca-card:nth-child(1) img{rotate:-1.2deg}
+  .peca-card:nth-child(2) img{rotate:1deg}
+  .peca-card:hover img{rotate:0deg}
+  .peca-card .nome{display:block;font-size:28px;margin-top:16px}
+  .peca-card .desc{display:block;color:#45403A;line-height:1.55;margin-top:6px;max-width:36ch}
+  .peca-card .ver{display:inline-block;margin-top:12px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--char);padding-bottom:3px}
+  .peca-card:hover .ver,.peca-card:hover .nome{color:var(--ember);border-color:var(--ember)}
+  @media(min-width:760px){ .duas{grid-template-columns:1fr 1fr;gap:48px} .peca-card:nth-child(2){margin-top:60px} }
 
-  /* Os casos são cartões porque a lista é longa: em texto corrido ninguém
-     acharia o próprio caso. Em cartão, a pessoa varre e para no dela. */
-  .casos{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:16px;margin-top:26px}
+  .ideias{background:var(--ash);padding:72px 0 40px}
+  .grupo{display:grid;gap:26px;max-width:1080px;margin:44px auto 0;padding:0 22px 32px;align-items:center}
+  .grupo figure{margin:0}
+  .grupo img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+  .grupo:nth-of-type(odd) figure{rotate:-.6deg}
+  .grupo:nth-of-type(even) figure{rotate:.6deg}
+  .grupo h3{font-size:30px}
+  .grupo ul{list-style:none;padding:0;margin:14px 0 0}
+  .grupo li{padding:12px 0;border-top:1px solid var(--line);color:#45403A;line-height:1.5}
+  .grupo li b{color:var(--char);font-weight:600}
+  @media(min-width:900px){ .grupo{grid-template-columns:1.15fr .85fr;gap:56px} .grupo.inverte figure{order:2} }
 
-  /* ---- o cartão de duas faces -------------------------------------------
-     São 36 casos. Com a descrição e a ficha à mostra em todos, a página vira
-     uma parede de texto e ninguém acha o próprio caso. A frente traz só o
-     desenho e o título; o detalhe vem quando a pessoa pede.
+  .quantidade{padding:80px 0}
+  .quant-in{display:grid;gap:30px;align-items:center}
+  .quant-in figure{margin:0;rotate:-.8deg}
+  .quant-in img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+  @media(min-width:900px){ .quant-in{grid-template-columns:1fr 1fr;gap:56px} }
 
-     SEM JAVASCRIPT AS DUAS FACES FICAM VISÍVEIS, empilhadas, exatamente como a
-     página era antes. O giro só passa a existir quando o script marca a grade
-     com `viraveis`. É a mesma política das animações daqui: se o roteiro não
-     rodar, o pior caso é a página antiga, nunca um cartão em branco. */
-  .face{
-    background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:4px;
-    padding:20px;
-  }
-  .caso .fig{display:block;width:56px;height:56px;margin-bottom:14px;color:var(--char);overflow:visible}
-  .caso h3{font-family:'Bodoni Moda';font-weight:500;font-size:18px;line-height:1.25}
-  .dica,.voltar{display:none}
-
-  /* A altura sai do VERSO, que continua no fluxo: o grid iguala as linhas
-     sozinho e ninguém precisa medir nada com JavaScript nem refazer a conta a
-     cada `resize`. A frente é que fica absoluta, por cima. */
-  .viraveis .caso{display:grid;perspective:1100px}
-  .viraveis .giro{
-    position:relative;transform-style:preserve-3d;
-    transition:transform .62s cubic-bezier(.2,.7,.3,1);
-  }
-  .viraveis .caso.virado .giro{transform:rotateY(180deg)}
-  .viraveis .frente{
-    position:absolute;inset:0;backface-visibility:hidden;cursor:pointer;
-    display:flex;flex-direction:column;justify-content:center;
-    transition:border-color .2s ease;
-  }
-  .viraveis .frente:hover,.viraveis .frente:focus-visible{border-color:var(--ember);outline:none}
-  .viraveis .frente:focus-visible{box-shadow:0 0 0 2px rgba(181,70,42,.35)}
-  /* O verso já nasce virado: com o giro em repouso é a costa dele que aponta
-     para a tela, e `backface-visibility` a esconde. */
-  .viraveis .verso{transform:rotateY(180deg);backface-visibility:hidden}
-  .viraveis .caso:not(.virado) .verso{pointer-events:none}
-  .viraveis .caso.virado .frente{pointer-events:none}
-  .viraveis .dica{
-    display:inline-block;margin-top:12px;font-size:11px;letter-spacing:.09em;
-    text-transform:uppercase;color:var(--ember);
-  }
-  .viraveis .verso{display:flex;flex-direction:column}
-  .viraveis .verso .ficha{margin-bottom:auto}
-  .falar{display:inline-block;margin-top:14px;font-size:13.5px;color:var(--ember);text-decoration:none}
-  .falar:hover{text-decoration:underline}
-  .viraveis .voltar{
-    display:inline-block;margin-top:10px;padding:0;border:0;background:none;
-    font-family:'Hanken Grotesk';font-size:11px;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--smoke);cursor:pointer;text-align:left;
-  }
-  .viraveis .voltar:hover{color:var(--char)}
-  @media (prefers-reduced-motion:reduce){
-    .viraveis .giro{transition:none}
-  }
-
-  /* ---- vocabulário de animação -----------------------------------------
-     Um punhado de movimentos para 36 desenhos. Um repertório pequeno é o que
-     faz a página parecer uma coisa só, em vez de 36 enfeites diferentes.
-     TODOS repousam visíveis: travando a animação, o desenho continua inteiro,
-     que é a regra que ficou da rodada das seções. */
-
-  .pulsa{animation:apulsa 3.2s ease-in-out infinite}
-  @keyframes apulsa{0%,100%{opacity:1}50%{opacity:.45}}
-
-  /* As ondas saem em sequência: o atraso é o que dá a direção do sinal. */
-  .onda1{animation:aonda 2.8s ease-out infinite}
-  .onda2{animation:aonda 2.8s ease-out infinite .3s}
-  .onda3{animation:aonda 2.8s ease-out infinite .6s}
-  @keyframes aonda{0%{opacity:.3}25%{opacity:1}70%{opacity:.35}100%{opacity:.3}}
-
-  .gira{transform-box:fill-box;transform-origin:50% 50%;animation:agira 9s linear infinite}
-  .gira.lenta{animation-duration:13s;animation-direction:reverse}
-  @keyframes agira{to{transform:rotate(360deg)}}
-
-  /* Pêndulo curto: a etiqueta do presente, o cordão da formatura. */
-  .balanca{transform-box:fill-box;transform-origin:50% 0;animation:abalanca 3.4s ease-in-out infinite}
-  @keyframes abalanca{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-
-  .respira{transform-box:fill-box;transform-origin:50% 50%;animation:arespira 5s ease-in-out infinite}
-  @keyframes arespira{0%,100%{transform:scale(.9);opacity:.6}50%{transform:scale(1.05);opacity:1}}
-
-  .chamica{transform-box:fill-box;transform-origin:50% 100%;animation:achama 2.6s ease-in-out infinite}
-  @keyframes achama{0%,100%{transform:scale(1,1)}50%{transform:scale(.94,1.1)}}
-
-  /* Os específicos, um por desenho, quando o movimento É o significado. */
-  .escreve{stroke-dasharray:14;animation:aescreve 3.6s ease-in-out infinite}
-  @keyframes aescreve{0%,100%{stroke-dashoffset:0}50%{stroke-dashoffset:-7}}
-  .nota1{animation:anota 2.4s ease-in-out infinite}
-  .nota2{animation:anota 2.4s ease-in-out infinite .6s}
-  @keyframes anota{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
-  .talher{transform-box:fill-box;transform-origin:50% 100%;animation:abalanca 4.2s ease-in-out infinite}
-  .talher.atrasa{animation-delay:.5s}
-  .enche{transform-box:fill-box;transform-origin:50% 100%;animation:aenche 4.6s ease-in-out infinite}
-  @keyframes aenche{0%,100%{transform:scaleY(.72)}50%{transform:scaleY(1)}}
-  .ponto{animation:aponto 1.5s ease-in-out infinite}
-  .p2{animation-delay:.18s} .p3{animation-delay:.36s}
-  @keyframes aponto{0%,100%{transform:translateY(0);opacity:.55}40%{transform:translateY(-3px);opacity:1}}
-  .brilha{transform-box:fill-box;transform-origin:50% 50%;animation:abrilha 4s ease-in-out infinite}
-  @keyframes abrilha{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
-  .abre{stroke-dasharray:60;animation:aabre 4.4s ease-in-out infinite}
-  @keyframes aabre{0%,100%{stroke-dashoffset:0;opacity:1}45%{stroke-dashoffset:-12;opacity:.5}}
-  .marca-dia{animation:apulsa 2.8s ease-in-out infinite}
-  .cresce{transform-box:fill-box;transform-origin:50% 100%;animation:acresce 5.2s ease-in-out infinite}
-  .cresce.atrasa{animation-delay:.7s}
-  @keyframes acresce{0%,100%{transform:scale(.94)}50%{transform:scale(1.04)}}
-  .obturador{transform-box:fill-box;transform-origin:50% 50%;animation:agira 16s linear infinite}
-  .flash{animation:apulsa 3.8s ease-in-out infinite}
-  .toldo{transform-box:fill-box;transform-origin:50% 100%;animation:atoldo 4.8s ease-in-out infinite}
-  @keyframes atoldo{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.08)}}
-  .abre-porta{transform-box:fill-box;transform-origin:0% 100%;animation:aporta 5.4s ease-in-out infinite}
-  @keyframes aporta{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.62)}}
-  /* A areia da cápsula do tempo cai devagar: é o desenho em que o movimento
-     conta o assunto inteiro. */
-  .areia{animation:aareia 3.6s ease-in-out infinite}
-  @keyframes aareia{0%{transform:translateY(-3px);opacity:0}25%{opacity:1}75%{opacity:1}100%{transform:translateY(7px);opacity:0}}
-  .gira-chave{transform-box:fill-box;transform-origin:22% 50%;animation:achave 5s ease-in-out infinite}
-  @keyframes achave{0%,100%{transform:rotate(0)}55%{transform:rotate(-16deg)}}
-  .senta{animation:asenta 4.4s ease-in-out infinite}
-  .s2{animation-delay:.5s} .s3{animation-delay:1s}
-  @keyframes asenta{0%,100%{opacity:.35}45%{opacity:1}}
-  .confere{stroke-dasharray:22;animation:aconfere 4.2s ease-in-out infinite}
-  @keyframes aconfere{0%,100%{stroke-dashoffset:0}45%{stroke-dashoffset:22}}
-
-  @media (prefers-reduced-motion:reduce){
-    .caso .fig *{animation:none!important;transform:none!important;opacity:1!important;stroke-dashoffset:0!important}
-  }
-  .caso p{margin-top:7px;font-size:14px;color:var(--smoke);line-height:1.55}
-
-  /* ---- a ficha do caso ---------------------------------------------------
-     Duas linhas: o que a peça guarda hoje e no que ela vira depois. A segunda
-     é a que importa, e é a que faltava: sem ela o cartão descreve uma
-     etiqueta de QR. Com ela, descreve um objeto que sobrevive à data. */
-  .caso .ficha{
-    margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
-    display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:baseline;
-  }
-  .caso .ficha i{
-    font-style:normal;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--ember);white-space:nowrap;
-  }
-  .caso .ficha b{font-weight:400;font-size:12.5px;line-height:1.45;color:var(--smoke)}
-
-  .frisa{
-    font-family:'Bodoni Moda';font-style:italic;font-weight:500;font-size:clamp(19px,4.6vw,23px);
-    line-height:1.45;margin:0 auto;padding:38px 0 0;max-width:46ch;text-align:center;
-  }
-  .fecho{padding:44px 0 10px;border-top:1px solid var(--line);margin-top:44px;text-align:center}
-  .fecho h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(24px,6vw,32px)}
-  .fecho p{margin-top:12px;color:var(--smoke);max-width:52ch;margin-left:auto;margin-right:auto}
-  .botoes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:26px}
-  .bt{display:inline-block;padding:15px 28px;background:var(--char);color:var(--paper);text-decoration:none;border-radius:2px;font-size:15px;transition:.15s}
-  .bt:hover{background:var(--ember)}
-  .bt2{background:transparent;color:var(--char);border:1px solid var(--line)}
-  .bt2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
-
-  /* As cenas dos grupos (nov/2026). A peça em cada cena é o render real; só o
-     lugar foi gerado. Uma imagem por grupo, logo depois da introdução: a pessoa
-     se reconhece no lugar antes de ler os casos. */
-  .capa-video{max-width:520px;margin:0 auto 12px;padding:0 22px}
-  .capa-video video{display:block;width:100%;height:auto;background:#E1E0DC;border:1px solid var(--line);border-radius:4px}
-  .grupo-foto{margin:22px 0 0}
-  /* 16:9 também no celular, que é a foto como saiu: em 4:3 o celular perdia
-     um quarto da cena. A borda de gesso vem de .laje, em comum.css. */
-  .grupo-foto img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:var(--ash)}
-  .grupo-foto:nth-of-type(odd){rotate:-.6deg}
-  .grupo-foto:nth-of-type(even){rotate:.6deg}
+  .perguntas{padding:56px 0 96px;border-top:1px solid var(--line);max-width:720px}
+  .perguntas h2{font-size:clamp(28px,6vw,40px);margin-bottom:18px}
+  .perguntas details{border-top:1px solid var(--line);padding:4px 0}
+  .perguntas details:last-of-type{border-bottom:1px solid var(--line)}
+  .perguntas summary{cursor:pointer;list-style:none;padding:16px 28px 16px 0;font-size:17px;position:relative;min-height:44px}
+  .perguntas summary::-webkit-details-marker{display:none}
+  .perguntas summary::after{content:'+';position:absolute;right:4px;top:12px;font-size:22px;color:var(--ember)}
+  .perguntas details[open] summary::after{content:'\2212'}
+  .perguntas details p{padding:0 0 18px;color:#45403A;line-height:1.65}
 </style>
 </head>
 <body class="nova">
@@ -264,934 +129,197 @@
 </div></header>
 
 <main>
-  <section class="capa">
-    <div class="rot">Aplicações</div>
-    <h1>A peça é uma só. O que ela diz muda quantas vezes você quiser.</h1>
-    <p>Cada Cinérea sai do ateliê moldada à mão, uma por vez, com um chip dentro.
-       Quem encostar o celular abre o que você deixou ali. E você troca depois,
-       de onde estiver, sem tocar na peça.</p>
-  </section>
+  <!-- APLICAÇÕES, refeita em nov/2026. Duas coisas mudaram e a página antiga
+       não sabia: o chip está no CHAVEIRO e no DAVID (os pratos e potes não têm),
+       e quem troca o conteúdo é o SITE, em Meu perfil, e não o aplicativo, que
+       não está nas lojas. Os casos ficaram poucos e curtos, cada grupo com uma
+       foto, em vez de seis grupos de sanfonas. -->
 
-  <!-- O topo mostra o que a página inteira promete: encostar e abrir. É o
-       render de verdade do medalhão (o mesmo vídeo da antiga seção do chip),
-       carregado pelo vivo.js só quando aparece. -->
-  <figure class="capa-video">
-    <video id="nfcVideo" muted loop playsinline preload="none" poster="/nfc.jpg"
-           width="740" height="696"
-           aria-label="Um celular se aproxima do medalhão e o campo do chip aparece em ondas."></video>
-  </figure>
+  <section class="capa" id="capa">
+    <div class="capa-texto">
+      <p class="rot">Aplicações</p>
+      <h1 class="serifa">Encoste o celular.<br><em>A peça responde.</em></h1>
+      <p class="sub">O chaveiro e o David guardam um chip. Quem encosta o celular abre o que você deixou
+         ali, sem aplicativo nenhum. E você troca quando quiser, pelo site, de onde estiver.</p>
+      <div class="acoes">
+        <a class="bt" href="#pecas">Ver as peças com chip</a>
+        <a class="bt bt2" href="#ideias">Ideias de uso</a>
+      </div>
+    </div>
+    <figure class="capa-video">
+      <video id="nfcVideo" muted loop playsinline preload="none" poster="/nfc.jpg"
+             width="740" height="696"
+             aria-label="Um celular se aproxima do medalhão e o campo do chip aparece em ondas."></video>
+    </figure>
+  </section>
 
   <div class="envolve">
 
-    <section class="trilho">
-      <h2>Uma peça de uso não se escolhe de prateleira.</h2>
-      <p class="intro">Todos os casos desta página começaram como encomenda. O que
-         muda de um para o outro não é só o conteúdo: é o formato, o tamanho e onde
-         a peça vai ficar. Por isso o caminho é sempre o mesmo, e começa por
-         conversa.</p>
-      <div class="passos">
-        <div class="passo">
-          <h3>A conversa</h3>
-          <p>Você conta o que a peça vai precisar dizer e onde ela vai ficar. Mesa
-             de restaurante, entrada de casa e mão de convidado pedem peças
-             diferentes.</p>
+    <section class="como" id="como" aria-labelledby="comoTitulo">
+      <p class="rot">Como funciona</p>
+      <h2 class="serifa" id="comoTitulo">Grave uma vez. Troque sempre.</h2>
+      <ol class="passos">
+        <li><b class="serifa">Gravamos no ateliê</b><p>Antes de a peça sair, o chip recebe o endereço dela. Você não precisa de nenhum aparelho especial.</p></li>
+        <li><b class="serifa">Qualquer um encosta</b><p>Celulares com NFC abrem sozinhos: Android e iPhone do XS em diante. Sem baixar nada.</p></li>
+        <li><b class="serifa">Você troca pelo site</b><p>Em <a href="/perfil/">Meu perfil</a>, de qualquer aparelho. A peça na estante mostra o novo conteúdo na hora.</p></li>
+      </ol>
+      <p class="rot rot-tipos">O que a peça pode guardar</p>
+      <div class="tipos">
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 23 v6 a2 2 0 0 1 -2 2 H10 a2 2 0 0 1 -2 -2 V13 a2 2 0 0 1 2 -2 h6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M23 8 H32 V17" stroke="#B5462A" stroke-width="2.1"/>
+            <path d="M32 8 L20 20" stroke="#B5462A" stroke-width="2.1"/>
+          </svg><span>link</span>
         </div>
-        <div class="passo">
-          <h3>O ateliê</h3>
-          <p>Moldada, curada e acabada à mão, uma por vez, em Campos do Jordão.
-             Nenhuma sai igual à outra. As numeradas levam série e certidão de
-             origem dentro do próprio chip.</p>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13" cy="29" r="3.6" fill="#B5462A" stroke="none"/>
+            <circle cx="27" cy="26" r="3.6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M16.6 29 V12 M30.6 26 V9" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M16.6 12.6 L30.6 9.6" stroke="#1C1A17" stroke-width="3"/>
+          </svg><span>playlist</span>
         </div>
-        <div class="passo">
-          <h3>O conteúdo</h3>
-          <p>Entra pelo aplicativo, em um minuto, e sai quando você quiser. A peça
-             continua a mesma. É por isso que ela não vence.</p>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round">
+            <path d="M4 14 a22.5 22.5 0 0 1 32 0" stroke="#1C1A17" stroke-width="2.1" opacity=".3"/>
+            <path d="M8.5 19.5 a16 16 0 0 1 23 0" stroke="#1C1A17" stroke-width="2.1" opacity=".6"/>
+            <path d="M13 25 a10 10 0 0 1 14 0" stroke="#1C1A17" stroke-width="2.1"/>
+            <circle cx="20" cy="31" r="2.6" fill="#B5462A" stroke="none"/>
+          </svg><span>wi-fi</span>
         </div>
-      </div>
-    </section>
-
-    <!-- O ÍNDICE (nov/2026). São 36 casos em seis grupos, e no celular a página
-         media 19 telas: quem procurava "restaurante" rolava por dez delas sem
-         saber se o assunto existia. Desenho de índice, igual às coleções da
-         loja, porque é navegação e não filtro. -->
-    <nav class="indice" aria-label="Grupos de aplicações">
-      <a href="#em-casa">Em casa</a>
-      <a href="#presente">Presente</a>
-      <a href="#restaurantes">Restaurantes</a>
-      <a href="#eventos">Eventos</a>
-      <a href="#trabalho">Trabalho</a>
-      <a href="#junto">Junto do que você vende</a>
-    </nav>
-
-    <section class="grupo" id="em-casa">
-      <h2>Em casa</h2>
-      <p class="intro">A peça fica na entrada, na sala ou no quarto de hóspedes, e
-         responde o que todo mundo pergunta.</p>
-      <figure class="grupo-foto pousada">
-        <img class="laje" src="/aplic-casa.jpg" width="1600" height="900" loading="lazy" decoding="async"
-             alt="Um aparador de carvalho na entrada de casa, com luz de janela na parede.">
-      </figure>
-      <div class="casos">
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="A rede de wi-fi"><path class="onda3" d="M8 22 a26 26 0 0 1 40 0" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="onda2" d="M14 30 a18 18 0 0 1 28 0" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="onda1" d="M20 38 a10 10 0 0 1 16 0" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="brasa pulsa" cx="28" cy="46" r="3.2" fill="#B5462A"/></svg>
-              <h3>A rede de wi-fi</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Ninguém mais soletra senha na porta. Encostou, conectou. E no dia em
-             que você trocar a senha, troca no aplicativo: a peça na estante já
-             está certa antes da próxima visita chegar.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o nome da rede e a senha</b>
-            <i>depois</i><b>o mapa do bairro, quando a visita for dormir</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6 h16 l6 6 v20 a2 2 0 0 1 -2 2 H11 a2 2 0 0 1 -2 -2 Z" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M25 6 v6 h6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M14 21 h12" stroke="#1C1A17" stroke-width="2.1" opacity=".35"/>
+            <path d="M14 27 h8" stroke="#B5462A" stroke-width="2.1"/>
+          </svg><span>recado</span>
         </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Recado para quem chega"><path d="M12 10 h22 l10 10 v26 a2 2 0 0 1 -2 2 H14 a2 2 0 0 1 -2 -2 Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M34 10 v10 h10" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M19 28 h18 M19 35 h18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".38"/>
-<path class="escreve" d="M19 42 h12" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round"/></svg>
-              <h3>Recado para quem chega</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Onde ficam as toalhas, a que horas é o café, o que fazer com a chave.
-             A pousada da sua casa, sem bilhete preso na geladeira com ímã.</p>
-              <div class="ficha">
-            <i>guarda</i><b>um recado escrito por você</b>
-            <i>depois</i><b>outro recado, para a próxima pessoa</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 9 h22 a5 5 0 0 1 5 5 v11 a5 5 0 0 1 -5 5 H17 l-6 5 v-5 H9 a5 5 0 0 1 -5 -5 V14 a5 5 0 0 1 5 -5 Z" stroke="#1C1A17" stroke-width="2.1"/>
+            <g fill="#B5462A"><circle cx="14" cy="19.5" r="1.9"/><circle cx="20" cy="19.5" r="1.9"/><circle cx="26" cy="19.5" r="1.9"/></g>
+          </svg><span>WhatsApp</span>
         </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="A trilha da casa"><path d="M22 42 V16 l18 -5 v26" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="nota1" cx="17" cy="42" r="5" fill="#B5462A"/>
-<circle class="nota2" cx="35" cy="37" r="5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <h3>A trilha da casa</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A playlist que toca no jantar. Em vez de soletrar o nome dela para
-             quem perguntou, a pessoa encosta o celular e leva embora exatamente o
-             que estava tocando.</p>
-              <div class="ficha">
-            <i>guarda</i><b>uma playlist</b>
-            <i>depois</i><b>a trilha do próximo jantar</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 35 C20 35,31 24,31 16 A11 11 0 0 0 9 16 C9 24,20 35,20 35 Z" stroke="#1C1A17" stroke-width="2.1"/>
+            <circle cx="20" cy="16" r="4" fill="#B5462A" stroke="none"/>
+          </svg><span>lugar</span>
         </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="O manual da casa"><rect x="13" y="10" width="30" height="36" rx="3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M23 10 v-2 a2 2 0 0 1 2 -2 h6 a2 2 0 0 1 2 2 v2Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M20 32 h16 M20 39 h11" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".38"/>
-<path class="pulsa" d="M20 25 l8 -7 8 7" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <h3>O manual da casa</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A cor exata da tinta da sala, o telefone do eletricista que fez a
-             instalação, a garantia da geladeira, a data da última dedetização.
-             Tudo o que você procura na gaveta errada, no dia errado.</p>
-              <div class="ficha">
-            <i>guarda</i><b>os dados que a casa exige e ninguém decora</b>
-            <i>depois</i><b>o que a próxima reforma mudar</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Quarto de hóspedes"><path d="M8 40 v-8 a4 4 0 0 1 4 -4 h32 a4 4 0 0 1 4 4 v8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M8 40 h40 M12 28 v-6 a3 3 0 0 1 3 -3 h10 a3 3 0 0 1 3 3 v6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M8 40 v5 M48 40 v5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="onda1" d="M34 22 a9 9 0 0 1 12 0" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-<circle class="pulsa" cx="40" cy="26" r="2.4" fill="#B5462A"/></svg>
-              <h3>Quarto de hóspedes</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Wi-fi, o mapa do bairro, a padaria que abre cedo, o seu WhatsApp para
-             o caso de alguma coisa. Uma peça só na mesa de cabeceira, no lugar de
-             quatro avisos colados.</p>
-              <div class="ficha">
-            <i>guarda</i><b>vários endereços numa página só</b>
-            <i>depois</i><b>o que o próximo hóspede precisar</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
+        <div class="tipo">
+          <svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke-linecap="round">
+            <circle cx="20" cy="14" r="5.6" stroke="#1C1A17" stroke-width="2.1"/>
+            <path d="M9 32 a11 11 0 0 1 22 0" stroke="#B5462A" stroke-width="2.1"/>
+          </svg><span>contato</span>
         </div>
       </div>
     </section>
 
-    <section class="grupo" id="presente">
-      <h2>Presente e afeto</h2>
-      <p class="intro">Aqui a peça faz o que nenhum cartão faz: continua falando
-         depois que a data passou, e diz outra coisa no ano seguinte.</p>
-      <figure class="grupo-foto pousada">
-        <img class="laje l2" src="/aplic-presente.jpg" width="1600" height="900" loading="lazy" decoding="async"
-             alt="Duas mãos oferecendo uma caixa de presente embrulhada em linho, com um cartão escrito à mão.">
-      </figure>
-      <div class="casos">
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Casamento"><circle class="gira" cx="23" cy="30" r="11" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="gira lenta" cx="35" cy="30" r="11" stroke="#B5462A" stroke-width="2.2" fill="none"/></svg>
-              <h3>Casamento</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A lembrança que os convidados levam abre o recado dos noivos, gravado
-             na voz de vocês. Um ano depois, vocês trocam pela foto do primeiro
-             aniversário, e a peça na estante do convidado conta a história junto,
-             sem pedir nada de volta.</p>
-              <div class="ficha">
-            <i>guarda</i><b>um recado dos noivos</b>
-            <i>depois</i><b>as fotos, a cada aniversário de casamento</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=casamento">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Nascimento"><path class="cresce" d="M28 46 V24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="cresce" d="M28 30 c-10 0,-13 -8,-13 -13 c9 -1,13 5,13 13Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="cresce atrasa" d="M28 26 c9 0,12 -7,12 -12 c-8 -1,-12 5,-12 12Z" fill="#B5462A" opacity=".85" stroke="none"/></svg>
-              <h3>Nascimento</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A escultura acompanha a criança de quarto em quarto. O conteúdo muda a
-             cada ano: a foto do primeiro passo, depois o vídeo da escola, depois o
-             que ela mesma quiser guardar ali.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o que aquele ano foi</b>
-            <i>depois</i><b>o ano seguinte, e o seguinte</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Cápsula do tempo"><path d="M16 8 h24 M16 48 h24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-<path d="M18 8 c0 12,10 16,10 20 c0 -4,10 -8,10 -20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M18 48 c0 -12,10 -16,10 -20 c0 4,10 8,10 20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="areia" cx="28" cy="30" r="2.6" fill="#B5462A"/></svg>
-              <h3>Cápsula do tempo</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Uma carta escrita hoje para ser lida daqui a quinze anos. A peça fica à
-             vista o tempo inteiro, como objeto, e ninguém precisa lembrar onde
-             guardou o envelope, porque o envelope é a escultura.</p>
-              <div class="ficha">
-            <i>guarda</i><b>uma carta com data para abrir</b>
-            <i>depois</i><b>a resposta de quem leu</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Homenagem"><path d="M20 46 h16 M22 46 V30 h12 v16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M28 30 V22" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="chamica" d="M28 8 C28 8,22 16,22 20 a6 6 0 0 0 12 0 C34 16,28 8,28 8Z" fill="#B5462A"/></svg>
-              <h3>Homenagem</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Para quem partiu: a peça guarda a voz, as fotos, a história contada
-             por quem conviveu. Fica na sala como objeto, e abre como memória
-             quando alguém da família quiser, sem precisar procurar pasta em
-             computador nenhum.</p>
-              <div class="ficha">
-            <i>guarda</i><b>uma voz, fotos, uma história</b>
-            <i>depois</i><b>o que os outros forem acrescentando</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=homenagem">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Bodas"><rect x="10" y="14" width="36" height="28" rx="3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M10 34 l10 -9 8 7 7 -6 11 9" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="pulsa" cx="20" cy="23" r="3.4" fill="#B5462A"/></svg>
-              <h3>Bodas</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Vinte e cinco anos numa peça que abre o álbum inteiro, do casamento até
-             ontem. Sem caixa de sapato, sem álbum que ninguém tira da prateleira
-             porque pesa três quilos.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o álbum, do começo ao fim</b>
-            <i>depois</i><b>as fotos que ainda vão existir</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Presente com remetente"><rect x="10" y="22" width="36" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M10 30 h36 M28 22 v24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="balanca" d="M28 22 c0 -6,-8 -10,-8 -4 c0 3,4 4,8 4 c4 0,8 -1,8 -4 c0 -6,-8 0,-8 4Z" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
-              <h3>Presente com remetente</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Quem deu fica gravado dentro do presente. Meses depois, quando a pessoa
-             quiser agradecer de novo ou perguntar onde você achou aquilo, ela
-             encosta o celular e tem o seu contato de volta.</p>
-              <div class="ficha">
-            <i>guarda</i><b>quem deu, e como falar com você</b>
-            <i>depois</i><b>o que fizer sentido no próximo ano</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Formatura"><path d="M28 14 L48 22 28 30 8 22Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14 26 v10 c0 4,28 4,28 0 V26" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="balanca" d="M46 23 v10" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round"/></svg>
-              <h3>Formatura</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>O discurso, a foto da turma inteira, o grupo que continua vivo dez anos
-             depois. A peça fica na estante do escritório, e quando a turma se
-             reencontrar é ela que tem o link do reencontro.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o dia, e a turma</b>
-            <i>depois</i><b>o próximo reencontro</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
+    <section class="pecas" id="pecas" aria-labelledby="pecasTitulo">
+      <p class="rot">As peças com chip</p>
+      <h2 class="serifa" id="pecasTitulo">Duas peças, o mesmo chip.</h2>
+      <div class="duas">
+        <a class="peca-card pousada" href="/loja/?peca=ms9oc0c711on">
+          <img class="laje" src="/chaveiro-gota.jpg" width="1200" height="1200" loading="lazy" decoding="async"
+               alt="O chaveiro de gesso em forma de gota, com a marca e o furo na ponta.">
+          <span class="nome serifa">Chaveiro</span>
+          <span class="desc">Vai no bolso, na mochila, na mão do convidado. O chip mora no miolo da gota.</span>
+          <span class="ver">Ver na loja</span>
+        </a>
+        <a class="peca-card pousada" href="/loja/?peca=msfkfkc56u43">
+          <img class="laje l3" src="/peca-david.jpg" width="1050" height="1400" loading="lazy" decoding="async"
+               alt="O busto de David em gesso branco sobre a base, com o medalhão do chip encaixado.">
+          <span class="nome serifa">David</span>
+          <span class="desc">Fica na estante. O chip está no medalhão da base, e a vela no alto da cabeça.</span>
+          <span class="ver">Ver na loja</span>
+        </a>
       </div>
     </section>
 
-    <section class="grupo" id="restaurantes">
-      <h2>Restaurantes, bares e hotéis</h2>
-      <p class="intro">Trocar o que a peça diz não custa impressão, nem tempo, nem
-         uma peça nova. É aqui que ela se paga, e costuma se pagar na primeira
-         mudança de cardápio.</p>
-      <figure class="grupo-foto pousada">
-        <img class="laje l3" src="/aplic-restaurante.jpg" width="1600" height="900" loading="lazy" decoding="async"
-             alt="Uma mesa de mármore de bistrô à luz de vela, com duas taças.">
-      </figure>
-      <div class="casos">
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Cardápio na mesa"><circle cx="28" cy="30" r="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="28" cy="30" r="7" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
-<path class="talher" d="M8 16 v12 M12 16 v12 M10 28 v14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="talher atrasa" d="M46 16 c4 0,4 12,0 12 v14" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
-              <h3>Cardápio na mesa</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Uma escultura em cada mesa abre o cardápio do dia. Mudou o preço, saiu
-             um prato, chegou a safra? Muda no aplicativo, e todas as mesas mudam
-             juntas. Nenhuma reimpressão, nenhum adesivo de preço novo colado
-             torto por cima do antigo.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o cardápio de hoje</b>
-            <i>depois</i><b>o do jantar, o da semana, o do inverno</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=cardapio">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Carta de vinhos"><path d="M18 10 h20 l-2 14 a8 8 0 0 1 -16 0Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M28 32 v12 M20 46 h16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="enche" d="M19.4 17 h17.2 l-1 7 a8 8 0 0 1 -15.2 0Z" fill="#B5462A" opacity=".8" stroke="none"/></svg>
-              <h3>Carta de vinhos</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A peça no balcão abre a carta com a ficha de cada rótulo, a uva, a
-             harmonização e a foto da garrafa. Some o calhamaço plastificado, e a
-             garrafa que acabou sai da carta no mesmo minuto em que acaba.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a carta com o que existe na adega hoje</b>
-            <i>depois</i><b>a carta de amanhã, sem reimprimir</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=cardapio">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Quarto de pousada"><path d="M10 42 v-8 a4 4 0 0 1 4 -4 h28 a4 4 0 0 1 4 4 v8 M10 42 h36" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M15 30 v-6 a3 3 0 0 1 3 -3 h8 a3 3 0 0 1 3 3 v6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="onda1" d="M36 20 a8 8 0 0 1 10 0" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-<circle class="brasa pulsa" cx="41" cy="26" r="2.6" fill="#B5462A"/></svg>
-              <h3>Quarto de pousada</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Wi-fi do quarto, horário do café, o mapa das trilhas, o telefone da
-             recepção. Substitui aquele cartão plastificado ao lado da TV, e cada
-             quarto pode dizer uma coisa diferente, porque cada peça tem endereço
-             próprio.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a rede e o que o hóspede pergunta</b>
-            <i>depois</i><b>a programação da temporada</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=pousada">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Aluguel por temporada"><g class="gira-chave"><circle cx="18" cy="30" r="9" stroke="currentColor" stroke-width="2.2" fill="none"/>
-<path d="M27 30 h20 M40 30 v7 M46 30 v6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
-<circle class="pulsa" cx="18" cy="30" r="3.4" fill="#B5462A"/></svg>
-              <h3>Aluguel por temporada</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Tudo o que você responde por mensagem cinco vezes por mês: como
-             funciona o chuveiro, onde fica o lixo, a senha do portão, o horário do
-             check-out. E no último dia, a peça passa a abrir a página de
-             avaliação, que é quando o hóspede ainda está de bom humor.</p>
-              <div class="ficha">
-            <i>guarda</i><b>as regras da casa e a rede</b>
-            <i>depois</i><b>o pedido de avaliação, no dia da saída</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=pousada">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Reservas"><path d="M10 14 h36 a3 3 0 0 1 3 3 v18 a3 3 0 0 1 -3 3 H24 l-9 8 v-8 h-5 a3 3 0 0 1 -3 -3 V17 a3 3 0 0 1 3 -3Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="ponto p1" cx="20" cy="26" r="2.6" fill="#B5462A"/>
-<circle class="ponto p2" cx="28" cy="26" r="2.6" fill="#B5462A"/>
-<circle class="ponto p3" cx="36" cy="26" r="2.6" fill="#B5462A"/></svg>
-              <h3>Reservas</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A peça na recepção ou na vitrine abre o WhatsApp da casa com a conversa
-             já começada, dizendo de onde a pessoa veio. Quem passou na porta e
-             gostou não precisa procurar o perfil depois, quando já esqueceu.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o WhatsApp, com a mensagem pronta</b>
-            <i>depois</i><b>a agenda direta, quando você tiver uma</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Avaliação"><path class="brilha" d="M28 10 l5.6 11.6 12.4 1.8 -9 8.9 2.2 12.7L28 39l-11.2 6 2.2 -12.7 -9 -8.9 12.4 -1.8Z" fill="#B5462A" stroke="none"/></svg>
-              <h3>Avaliação</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>No balcão, ao lado da maquininha: encostou, abriu a página de
-             avaliação. O pedido acontece no melhor momento possível, logo depois da
-             sobremesa, sem garçom precisar pedir e sem ninguém se constranger.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o link da avaliação</b>
-            <i>depois</i><b>o clube de fidelidade, a newsletter</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Ambiente"><path d="M12 22 h8 l10 -8 v32 l-10 -8 h-8Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="onda1" d="M36 22 a10 10 0 0 1 0 16" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-<path class="onda2" d="M42 16 a18 18 0 0 1 0 28" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
-              <h3>Ambiente</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A playlist que toca no salão, para quem perguntar. Já perguntaram, e
-             hoje a resposta é o garçom tentando lembrar o nome. Do lado da caixa de
-             som, a peça responde melhor que ele.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a playlist da casa</b>
-            <i>depois</i><b>a do verão, a da noite de sexta</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
+  </div>
+
+  <section class="ideias" id="ideias" aria-labelledby="ideiasTitulo">
+    <div class="envolve">
+      <p class="rot">Ideias de uso</p>
+      <h2 class="serifa" id="ideiasTitulo">A peça é uma só.<br><em>O que ela diz muda.</em></h2>
+    </div>
+
+    <div class="grupo">
+      <figure class="pousada"><img class="laje" src="/aplic-casa.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="Um aparador de carvalho na entrada de casa, com luz de janela na parede."></figure>
+      <div class="grupo-texto">
+        <h3 class="serifa">Em casa</h3>
+        <ul>
+          <li><b>A rede de wi-fi.</b> Encostou, conectou. Trocou a senha, troca no site.</li>
+          <li><b>Recado para quem chega.</b> Onde ficam as toalhas, a que horas é o café.</li>
+          <li><b>A trilha do jantar.</b> Quem perguntou leva a playlist embora no celular.</li>
+          <li><b>Quarto de hóspedes.</b> Wi-fi, mapa do bairro e o seu WhatsApp numa peça só.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grupo inverte">
+      <figure class="pousada"><img class="laje l2" src="/aplic-presente.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="Duas mãos segurando um presente embrulhado em linho, com um cartão escrito à mão."></figure>
+      <div class="grupo-texto">
+        <h3 class="serifa">Presente e afeto</h3>
+        <ul>
+          <li><b>Casamento.</b> O recado dos noivos hoje, as fotos de cada aniversário depois.</li>
+          <li><b>Nascimento.</b> Um ano por vez: o primeiro passo, depois a escola.</li>
+          <li><b>Cápsula do tempo.</b> Uma carta para abrir daqui a quinze anos.</li>
+          <li><b>Homenagem.</b> A voz e as fotos de quem partiu, à mão da família.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <figure class="pousada"><img class="laje l3" src="/aplic-restaurante.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="Uma mesa de mármore de bistrô à luz de vela, com duas taças."></figure>
+      <div class="grupo-texto">
+        <h3 class="serifa">Restaurantes e pousadas</h3>
+        <ul>
+          <li><b>Cardápio na mesa.</b> Mudou o prato, muda no site, e todas as mesas mudam juntas.</li>
+          <li><b>Quarto de pousada.</b> Wi-fi, horário do café e o mapa das trilhas.</li>
+          <li><b>Avaliação no balcão.</b> Encostou, abriu a página de avaliação.</li>
+          <li><b>Reservas.</b> O WhatsApp da casa com a conversa já começada.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="quantidade" id="quantidade" aria-labelledby="quantTitulo">
+    <div class="envolve quant-in">
+      <figure class="pousada"><img class="laje l4" src="/aplic-eventos.jpg" width="1600" height="900" loading="lazy" decoding="async"
+           alt="O chaveiro de gesso em forma de gota, com a marca, sobre o guardanapo de um lugar marcado de casamento."></figure>
+      <div>
+        <p class="rot">Em quantidade</p>
+        <h2 class="serifa" id="quantTitulo">Para o seu evento<br><em>ou a sua marca.</em></h2>
+        <p class="sub">Chaveiros para os convidados de um casamento, brinde de empresa, ou a peça que vai dentro
+           da caixa do que você vende. Cada um pode abrir o mesmo conteúdo, ou um diferente.</p>
+        <div class="acoes">
+          <a class="bt" href="/contato/">Pedir um orçamento</a>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="grupo" id="eventos">
-      <h2>Eventos e convites</h2>
-      <p class="intro">O convite que ninguém joga fora, porque ele é um objeto. E
-         que depois do evento vira outra coisa, em vez de virar lixo bonito.</p>
-      <figure class="grupo-foto pousada">
-        <img class="laje l4" src="/aplic-eventos.jpg" width="1600" height="900" loading="lazy" decoding="async"
-             alt="O chaveiro de gesso em forma de gota, com a marca, sobre o guardanapo de um lugar marcado de casamento.">
-      </figure>
-      <div class="casos">
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Convite de casamento"><rect x="8" y="16" width="40" height="26" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="abre" d="M8 18 L28 32 48 18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="pulsa" d="M28 30 c0 -5,-7 -8,-7 -3 c0 3,4 4,7 6 c3 -2,7 -3,7 -6 c0 -5,-7 -2,-7 3Z" fill="#B5462A" stroke="none"/></svg>
-              <h3>Convite de casamento</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Entregue como peça, não como papel. Abre a lista de presentes, o mapa
-             da cerimônia, o dress code e a confirmação de presença. Convite
-             impresso custa uma vez e morre no dia; este muda de conteúdo até a
-             véspera, se o local mudar.</p>
-              <div class="ficha">
-            <i>guarda</i><b>tudo o que o convidado precisa saber</b>
-            <i>depois</i><b>as fotos da festa, na semana seguinte</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=casamento">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Save the date"><rect x="9" y="14" width="38" height="32" rx="3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9 24 h38 M19 10 v8 M37 10 v8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="marca-dia" cx="28" cy="35" r="5" fill="#B5462A"/></svg>
-              <h3>Save the date</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Chega meses antes e já entra no calendário de quem recebeu, com um
-             toque. Fica na estante até a festa, e nesse meio tempo é ele que abre
-             o convite completo, quando o convite ficar pronto.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a data, para salvar no calendário</b>
-            <i>depois</i><b>o convite inteiro, quando sair</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Uma peça por mesa"><circle cx="28" cy="30" r="12" stroke="currentColor" stroke-width="2.2" fill="none"/>
-<circle class="senta" cx="28" cy="12" r="3.4" fill="#B5462A"/>
-<circle class="senta s2" cx="44" cy="30" r="3.4" stroke="currentColor" stroke-width="2.2" fill="none"/>
-<circle class="senta s3" cx="28" cy="48" r="3.4" stroke="currentColor" stroke-width="2.2" fill="none"/>
-<circle class="senta s2" cx="12" cy="30" r="3.4" stroke="currentColor" stroke-width="2.2" fill="none"/></svg>
-              <h3>Uma peça por mesa</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Cada mesa recebe uma peça, e cada peça diz uma coisa diferente: como os
-             noivos conheceram aquele grupo, a foto da viagem com aqueles amigos, o
-             recado para a mesa da família. O centro de mesa deixa de ser enfeite e
-             vira a conversa da noite.</p>
-              <div class="ficha">
-            <i>guarda</i><b>uma história por mesa</b>
-            <i>depois</i><b>cada convidado leva a sua para casa</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=casamento">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Aniversário"><path d="M12 44 v-10 a3 3 0 0 1 3 -3 h26 a3 3 0 0 1 3 3 v10Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 38 c4 0,4 3,8 3 s4 -3,8 -3 s4 3,8 3 s4 -3,8 -3" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M28 31 V24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="chamica" d="M28 12 C28 12,24 18,24 21 a4 4 0 0 0 8 0 C32 18,28 12,28 12Z" fill="#B5462A"/></svg>
-              <h3>Aniversário</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>O convite abre o local, o horário e a lista de presentes. No dia
-             seguinte, a mesma peça abre o álbum da festa, e quem levou para casa
-             recebe as fotos sem você ter que mandar nada para ninguém.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o convite e a lista</b>
-            <i>depois</i><b>as fotos, no dia seguinte</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Lembrança corporativa"><rect x="9" y="22" width="38" height="24" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9 30 h38 M28 22 v24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="balanca" d="M28 22 c-8 -10,-16 -2,-8 0 M28 22 c8 -10,16 -2,8 0" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
-              <h3>Lembrança corporativa</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>O brinde de fim de ano que abre a retrospectiva da empresa, em vez de
-             mais uma caneta na gaveta. E que no ano seguinte abre o balanço novo,
-             sem custo de brinde novo: você comprou o objeto uma vez e continua
-             falando com aquela pessoa todo dezembro.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o que a empresa quer dizer este ano</b>
-            <i>depois</i><b>o que ela vai querer dizer no próximo</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=empresa">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Feira e estande"><path d="M10 22 h36 v20 a2 2 0 0 1 -2 2 H12 a2 2 0 0 1 -2 -2Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M8 22 l4 -10 h32 l4 10" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="onda1" d="M22 32 h12 M22 38 h8" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
-              <h3>Feira e estande</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A peça no balcão abre o seu portfólio. O visitante leva o link sem
-             pegar um cartão que vai amassar no bolso junto com outros quarenta. E
-             na feira seguinte, a mesma peça abre o catálogo novo.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o portfólio e o contato</b>
-            <i>depois</i><b>o catálogo da próxima feira</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=empresa">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="grupo" id="trabalho">
-      <h2>Trabalho e ofício</h2>
-      <p class="intro">Para quem vende o que faz, e precisa que o trabalho continue
-         falando depois que a conversa acabou e o cliente foi embora.</p>
-      <figure class="grupo-foto pousada">
-        <img class="laje" src="/aplic-trabalho.jpg" width="1600" height="900" loading="lazy" decoding="async"
-             alt="O balcão de pedra de uma recepção, com luz de janela.">
-      </figure>
-      <div class="casos">
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Ateliê e galeria"><rect x="10" y="12" width="36" height="32" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14 38 l9 -11 7 8 5 -5 7 8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="pulsa" cx="36" cy="22" r="3.6" fill="#B5462A"/></svg>
-              <h3>Ateliê e galeria</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Ao lado da obra, a peça abre o áudio do artista contando o que aquilo
-             é. Uma exposição que se explica sozinha, sem plaquinha de acrílico e
-             sem monitor. Trocou a mostra? Troca o áudio, e as peças ficam.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a história da obra, na voz de quem fez</b>
-            <i>depois</i><b>a próxima exposição</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Fotógrafo"><path d="M8 20 h9 l4 -6 h14 l4 6 h9 a2 2 0 0 1 2 2 v20 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2V22 a2 2 0 0 1 2 -2Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="obturador" cx="28" cy="32" r="9" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="flash" cx="28" cy="32" r="4" fill="#B5462A"/></svg>
-              <h3>Fotógrafo</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Entregue o álbum dentro de uma escultura, não num pen drive que vai
-             para a gaveta. O cliente ganha um objeto que fica à vista, e você
-             troca a galeria quando quiser sem pedir a peça de volta, o que
-             transforma a entrega num contato que não acaba.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a galeria do ensaio</b>
-            <i>depois</i><b>o ensaio seguinte, do mesmo cliente</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Consultório e terapia"><circle class="respira" cx="28" cy="29" r="15" stroke="#B5462A" stroke-width="2.2" fill="none"/>
-<circle cx="28" cy="29" r="8" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M28 44 v4" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/></svg>
-              <h3>Consultório e terapia</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Na sala de espera: o áudio de respiração para os cinco minutos antes da
-             sessão, o agendamento da próxima, o material que você recomenda entre
-             uma consulta e outra. Uma peça de gesso combina com a sala; um cartaz
-             plastificado, não.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o que acalma, e a próxima sessão</b>
-            <i>depois</i><b>o material daquela semana</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Obra entregue"><rect x="9" y="11" width="38" height="34" rx="2" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9 27 h20 M29 11 v34 M29 34 h18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".45"/>
-<path class="abre-porta" d="M13 27 v-9 h9" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <h3>Obra entregue</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>O arquiteto entrega a casa com uma peça no hall que guarda a planta
-             final, as cores exatas, os fornecedores, as garantias e o contato do
-             escritório. Dois anos depois, quando o cliente for reformar a área
-             gourmet, o telefone que ele acha primeiro é o seu.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a planta, as cores, os fornecedores</b>
-            <i>depois</i><b>o próximo projeto do escritório</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=empresa">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Imóvel decorado"><path d="M9 27 L28 11 47 27" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14 25 v19 h28 V25" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="abre-porta" d="M24 44 V32 h8 v12" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linejoin="round"/></svg>
-              <h3>Imóvel decorado</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A peça no apartamento modelo abre o tour em vídeo, a planta e o contato
-             do corretor que está de plantão hoje. Fica bonita na bancada, e
-             trabalha: quem visitou no domingo leva o link em vez de um folder que
-             some no carro.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o tour, a planta, o corretor da vez</b>
-            <i>depois</i><b>o próximo lançamento</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=empresa">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Marca e loja"><path d="M11 24 v20 h34 V24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="toldo" d="M8 24 l4 -11 h32 l4 11Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M22 44 V32 h12 v12" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
-<circle class="brasa pulsa" cx="28" cy="19" r="2.8" fill="#B5462A"/></svg>
-              <h3>Marca e loja</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>No balcão, abrindo o seu catálogo, a coleção da estação e o cupom de
-             quem encostou o celular ali dentro. Um cartão de visitas que ninguém
-             perde, porque ninguém joga fora uma escultura.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o catálogo e a coleção da estação</b>
-            <i>depois</i><b>a coleção seguinte, sem material novo</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=parceria">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Músico"><circle class="gira" cx="28" cy="30" r="17" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="gira" cx="28" cy="30" r="9" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/>
-<circle cx="28" cy="30" r="3.4" fill="#B5462A"/></svg>
-              <h3>Músico</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A peça vendida na mesa do show abre o disco novo, e no próximo
-             lançamento abre o próximo, sem virar lixo. É o merchandise que não
-             envelhece: quem comprou em 2026 continua ouvindo o que sai em 2030.</p>
-              <div class="ficha">
-            <i>guarda</i><b>o álbum e as datas da turnê</b>
-            <i>depois</i><b>o próximo disco, para o mesmo fã</b>
-          </div>
-              <a class="falar" href="/contato/">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="grupo" id="junto">
-      <h2>O que vai junto com o que você vende</h2>
-      <p class="intro">Aqui a peça não é o presente: ela acompanha o produto. Sai da
-         sua loja dentro da caixa, entra na casa do cliente e fica lá, com a sua
-         marca dentro, dizendo o que o papel dizia e depois deixava de dizer.</p>
-      <figure class="grupo-foto pousada">
-        <img class="laje l2" src="/aplic-junto.jpg" width="1600" height="900" loading="lazy" decoding="async"
-             alt="O chaveiro de gesso em forma de gota, com a marca e o furo na ponta, em fundo claro.">
-      </figure>
-      <div class="casos">
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Ficha de cuidado"><g class="balanca"><path d="M28 8 L46 24 30 42 12 26Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="21" cy="19" r="3" stroke="currentColor" stroke-width="2.2" fill="none"/></g>
-<path class="escreve" d="M26 26 h12" stroke="#B5462A" stroke-width="2.2" stroke-linecap="round"/></svg>
-              <h3>Ficha de cuidado</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Móvel de madeira, cerâmica, joia, peça de couro: como limpar, o que
-             nunca usar, de quanto em quanto tempo passar óleo. A etiqueta de papel
-             se perde na primeira semana; a peça fica na estante ao lado do
-             objeto.</p>
-              <div class="ficha">
-            <i>guarda</i><b>como conservar o que você vendeu</b>
-            <i>depois</i><b>o aviso de manutenção, no prazo certo</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=parceria">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Procedência da obra"><circle cx="28" cy="24" r="13" stroke="currentColor" stroke-width="2.2" fill="none"/>
-<path d="M21 35 l-3 13 10 -5 10 5 -3 -13" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<circle class="brilha" cx="28" cy="24" r="5.4" fill="#B5462A"/></svg>
-              <h3>Procedência da obra</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>O certificado de autenticidade que não se imita numa gráfica. O chip
-             fica dentro da própria obra, e a página de origem só pode ser escrita
-             por quem fez. Vale para arte, para peça de coleção e para série
-             limitada.</p>
-              <div class="ficha">
-            <i>guarda</i><b>autor, série, data e a história</b>
-            <i>depois</i><b>o histórico de quem foi dono</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=parceria">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Garantia e assistência"><path class="respira" d="M28 8 l17 6 v14 c0 11,-8 17,-17 20 -9 -3,-17 -9,-17 -20V14Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="confere" d="M20 27 l6 6 11 -12" stroke="#B5462A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <h3>Garantia e assistência</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>A nota, o prazo, o número de série e o telefone da assistência certa,
-             dentro do produto. Ninguém mais liga para a loja procurando um papel
-             que ficou na caixa que já foi para o lixo, e você deixa de perder o
-             cliente para o primeiro concorrente que ele encontrar buscando.</p>
-              <div class="ficha">
-            <i>guarda</i><b>nota, prazo e quem consertar</b>
-            <i>depois</i><b>a oferta de troca, quando a garantia vencer</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=parceria">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-        <div class="caso">
-          <div class="giro">
-            <div class="frente face">
-              <svg class="fig" viewBox="0 0 56 56" role="img" aria-label="Origem e preparo"><path d="M17 20 h22 a3 3 0 0 1 3 3 v21 a3 3 0 0 1 -3 3 H17 a3 3 0 0 1 -3 -3V23 a3 3 0 0 1 3 -3Z" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M22 20 v-5 a3 3 0 0 1 3 -3 h6 a3 3 0 0 1 3 3 v5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="pulsa" d="M14 30 h28 v7 H14Z" fill="#B5462A" opacity=".85" stroke="none"/></svg>
-              <h3>Origem e preparo</h3>
-              <span class="dica">ver detalhes</span>
-            </div>
-            <div class="verso face">
-              <p>Café, azeite, mel, geleia, cachaça: quem plantou, em que altitude, como
-             preparar, com o que combina. O rótulo tem espaço para oito palavras; a
-             peça que vai junto com a caixa tem espaço para a história inteira, e
-             muda a cada safra.</p>
-              <div class="ficha">
-            <i>guarda</i><b>a origem, o modo de preparo, o produtor</b>
-            <i>depois</i><b>a safra nova, e onde comprar de novo</b>
-          </div>
-              <a class="falar" href="/contato/?sobre=parceria">Falar sobre isso →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <p class="frisa">Todas essas são a mesma peça.<br>O que muda é o que ela guarda.</p>
-
-    <section class="fecho">
-      <h2>Tem uma ideia que não está aqui?</h2>
-      <p>A maioria dos usos desta página nasceu de alguém perguntando se dava. O
-         ateliê trabalha por encomenda, então o seu caso não precisa caber em
-         nenhum destes: conte o que a peça vai precisar dizer, e a gente desenha
-         a partir daí. Quantidade para empresa a gente combina.</p>
-      <div class="botoes">
-        <a class="bt" href="/contato/">Encomendar no ateliê</a>
-        <a class="bt bt2" href="/loja/">Ver as peças prontas</a>
-      </div>
+  <div class="envolve">
+    <section class="perguntas" aria-labelledby="pergTitulo">
+      <h2 class="serifa" id="pergTitulo">Perguntas rápidas</h2>
+      <details><summary>Funciona em qualquer celular?</summary>
+        <p>Em quase todos. Android com NFC e iPhone do XS em diante abrem o conteúdo só de encostar, sem aplicativo. Em celular mais antigo, a peça continua sendo uma peça bonita.</p></details>
+      <details><summary>Preciso de aplicativo para trocar o conteúdo?</summary>
+        <p>Não. Você troca pelo site, em <a href="/perfil/">Meu perfil</a>, de qualquer aparelho. O chip guarda o endereço da peça, e o que aparece nesse endereço é você quem decide.</p></details>
+      <details><summary>E se eu der a peça para outra pessoa?</summary>
+        <p>Você apaga o registro da peça na sua conta, e quem recebe encosta o celular e cadastra como uma peça nova. A procedência da peça vai junto; o seu histórico, não.</p></details>
+      <details><summary>Os pratos e potes também têm chip?</summary>
+        <p>Não. Hoje o chip está no chaveiro e no David. Os pratos e potes são para a areia e a chama.</p></details>
     </section>
   </div>
 </main>
+
 
 <footer class="rodape">
   <div class="rodape-in">
@@ -1243,92 +371,6 @@
 </footer>
 
 <script src="/vivo.js" defer></script>
-<script>
-/**
- * Os cartões viram.
- *
- * Tudo o que faz o cartão virar é ligado DAQUI, nunca do HTML: a classe da
- * grade, o `role`, a ordem de tabulação e o botão de voltar. Se este arquivo
- * não rodar, o HTML que sobra é a página de antes, com as duas faces à mostra.
- * A regra que ficou das rodadas anteriores é essa: efeito nenhum pode ter o
- * poder de esconder texto por conta própria.
- */
-(function () {
-  var grades = [].slice.call(document.querySelectorAll('.casos'));
-  if (!grades.length) return;
-  grades.forEach(function (g) { g.classList.add('viraveis'); });
-
-  // Dois casos por grupo no celular, e um botão com o número do que falta.
-  // O CSS só esconde dentro da faixa de celular, então numa tela larga a
-  // classe não muda nada e o botão nem aparece.
-  grades.forEach(function (g) {
-    var n = g.querySelectorAll('.caso').length;
-    if (n <= 2) return;
-    g.classList.add('recolhida');
-    var bt = document.createElement('button');
-    bt.type = 'button';
-    bt.className = 'mais-casos';
-    bt.textContent = 'Ver mais ' + (n - 2) + (n - 2 === 1 ? ' ideia' : ' ideias');
-    bt.addEventListener('click', function () {
-      g.classList.remove('recolhida');
-      bt.parentNode.removeChild(bt);
-      // O foco vai para o primeiro cartão revelado, senão quem usa teclado
-      // fica num botão que deixou de existir.
-      var terceiro = g.querySelectorAll('.caso .frente')[2];
-      if (terceiro) terceiro.focus({ preventScroll: true });
-    });
-    g.parentNode.insertBefore(bt, g.nextSibling);
-  });
-
-  [].slice.call(document.querySelectorAll('.caso')).forEach(function (caso, i) {
-    var frente = caso.querySelector('.frente');
-    var verso  = caso.querySelector('.verso');
-    if (!frente || !verso) return;
-
-    verso.id = 'verso-' + i;
-    frente.setAttribute('role', 'button');
-    frente.setAttribute('aria-controls', verso.id);
-
-    var voltar = document.createElement('button');
-    voltar.type = 'button';
-    voltar.className = 'voltar';
-    voltar.textContent = '← voltar';
-    verso.appendChild(voltar);
-
-    function mostrar(aberto, porTeclado) {
-      caso.classList.toggle('virado', aberto);
-      frente.setAttribute('aria-expanded', aberto ? 'true' : 'false');
-      // A face escondida sai da árvore de acessibilidade E da tabulação: sem
-      // isso o Tab entra num cartão de costas e o foco some da tela.
-      frente.setAttribute('aria-hidden', aberto ? 'true' : 'false');
-      verso.setAttribute('aria-hidden', aberto ? 'false' : 'true');
-      frente.tabIndex = aberto ? -1 : 0;
-      [].slice.call(verso.querySelectorAll('a,button')).forEach(function (e) {
-        e.tabIndex = aberto ? 0 : -1;
-      });
-      // Só mexe no foco quem chegou pelo teclado. No clique de mouse, roubar o
-      // foco faz a página saltar até o cartão.
-      if (porTeclado) (aberto ? voltar : frente).focus();
-    }
-    mostrar(false);
-
-    frente.addEventListener('click', function () { mostrar(true); });
-    frente.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault();            // espaço rolaria a página
-        mostrar(true, true);
-      }
-    });
-    voltar.addEventListener('click', function (e) {
-      mostrar(false, e.detail === 0); // detail 0 = veio do teclado
-    });
-    // Esc fecha, que é o que a pessoa tenta primeiro.
-    caso.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && caso.classList.contains('virado')) mostrar(false, true);
-    });
-  });
-})();
-</script>
 <script src="/contador.js" defer></script>
 </body>
 </html>
