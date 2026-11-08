@@ -18,35 +18,125 @@
 <link rel="preload" href="/fonts/bodoni.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/comum.css">
 <style>
-  .capa{text-align:center;padding:66px 22px 34px;max-width:600px;margin:0 auto}
-  .capa .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
-  .capa h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(32px,8.4vw,46px);line-height:1.12;margin-top:12px}
-  .capa p{margin-top:16px;font-size:16.5px;color:var(--smoke)}
-
-  /* O WhatsApp é o caminho principal porque é como a casa já atende, e porque
-     a mensagem já vai escrita, que é o que faz a pessoa mandar em vez de
-     desistir na frente do campo em branco. */
-  .canais{display:grid;gap:14px;max-width:520px;margin:8px auto 0}
-  .canal{
-    display:block;padding:20px 22px;border:1px solid var(--line);border-radius:4px;
-    background:rgba(255,255,255,.5);text-decoration:none;color:var(--char);
-    transition:border-color .2s ease,transform .2s ease;
+  /* A página é uma conversa começando. O WhatsApp é o caminho principal
+     porque é como a casa já atende, e porque a mensagem já vai escrita:
+     campo em branco é onde a intenção morre. O balão mostra a mensagem
+     ANTES de abrir o aplicativo, então a pessoa sabe o que vai mandar. */
+  .contato{display:grid;gap:34px;max-width:1100px;margin:0 auto;padding:54px 22px 30px;align-items:center}
+  @media(min-width:900px){ .contato{grid-template-columns:1.05fr .95fr;gap:64px;padding-top:72px} }
+  /* no celular o botão do WhatsApp tem de caber na primeira tela */
+  @media(max-width:899px){
+    .contato{padding-top:30px}
+    .contato .intro{margin-top:12px;font-size:16px}
+    .compor{margin-top:22px}
+    .temas{gap:7px}
+    .temas button{min-height:38px;padding:0 13px}
+    .balao{margin-top:16px}
+    .enviar{margin-top:16px}
   }
-  .canal:hover{border-color:var(--ember);transform:translateY(-2px)}
-  .canal strong{display:block;font-family:'Bodoni Moda';font-weight:500;font-size:19px}
-  .canal span{display:block;margin-top:5px;font-size:14px;color:var(--smoke);line-height:1.5}
-  .canal.destaque{background:var(--char);border-color:var(--char);color:var(--paper)}
-  .canal.destaque span{color:rgba(242,239,234,.72)}
-  .canal.destaque:hover{background:var(--ember);border-color:var(--ember)}
+  .contato .rot{font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--smoke)}
+  .contato h1{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(38px,8.6vw,62px);line-height:1.04;margin-top:14px}
+  .contato h1 em{font-style:italic;color:var(--ember)}
+  .contato .intro{margin-top:18px;font-size:16.5px;line-height:1.6;color:var(--smoke);max-width:470px}
 
-  .assuntos{margin-top:46px;padding-top:34px;border-top:1px solid var(--line)}
-  .assuntos h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(23px,5.6vw,29px);text-align:center}
-  .lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px;margin-top:26px}
-  .item{padding:18px 20px;border-left:2px solid var(--line)}
-  .item h3{font-family:'Bodoni Moda';font-weight:500;font-size:17px}
-  .item p{margin-top:6px;font-size:14px;color:var(--smoke);line-height:1.55}
+  .compor{margin-top:30px;max-width:470px}
+  .compor .q{font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
+  /* controle é pílula (a gramática dos botões em comum.css) */
+  .temas{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .temas button{font:inherit;font-size:14px;min-height:40px;padding:0 15px;border-radius:20px;border:1px solid var(--line);
+    background:transparent;color:var(--char);cursor:pointer;transition:border-color .18s,background .18s,color .18s}
+  .temas button:hover{border-color:var(--char)}
+  .temas button[aria-pressed="true"]{background:var(--char);border-color:var(--char);color:var(--paper)}
 
-  .nota{margin-top:40px;text-align:center;font-size:14px;color:var(--smoke)}
+  .balao{position:relative;margin-top:20px;padding:16px 18px 12px;background:#FBFAF7;border:1px solid var(--line);
+    border-radius:16px 16px 16px 4px;box-shadow:0 14px 30px -18px rgba(22,20,18,.35)}
+  .balao .para{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke)}
+  /* O texto inteiro fica no balão, invisível, e o que está sendo digitado
+     vai POR CIMA, na mesma célula: o balão já nasce com a altura final e o
+     botão embaixo não pula a cada linha nova. */
+  .balao .msg{display:grid;margin-top:7px;font-size:16.5px;line-height:1.5;color:var(--char)}
+  .balao .msg>span{grid-area:1/1}
+  .balao .fantasma{visibility:hidden}
+  .balao .digitado::after{content:'';display:inline-block;width:1.5px;height:1.05em;margin-left:2px;vertical-align:-2px;background:var(--ember);opacity:0}
+  .balao.escrevendo .digitado::after{opacity:1;animation:cursor .8s steps(1) infinite}
+  .balao .hora{display:block;text-align:right;margin-top:4px;font-size:11.5px;color:var(--smoke);opacity:0;transition:opacity .3s}
+  .balao.pronto .hora{opacity:1}
+  .balao .hora b{color:var(--ember);font-weight:600;letter-spacing:-.18em;margin-left:5px}
+  .digitando{position:absolute;left:18px;top:42px;display:none;gap:5px;height:1.5em;align-items:center}
+  .balao.pensando .digitando{display:flex}
+  .balao.pensando .digitado{visibility:hidden}
+  .digitando i{width:7px;height:7px;border-radius:50%;background:var(--smoke);opacity:.35;animation:pulo 1s ease-in-out infinite}
+  .digitando i:nth-child(2){animation-delay:.15s}
+  .digitando i:nth-child(3){animation-delay:.3s}
+  @keyframes pulo{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4px);opacity:.9}}
+  @keyframes cursor{50%{opacity:0}}
+
+  .enviar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:20px}
+  .bt{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 28px;
+      background:var(--char);color:var(--paper);text-decoration:none;border:1px solid var(--char);
+      border-radius:2px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:.15s}
+  .bt:hover{background:var(--ember);border-color:var(--ember)}
+  .bt svg{width:19px;height:19px;flex:none}
+  .enviar small{font-size:13.5px;color:var(--smoke);line-height:1.45}
+
+  /* a foto do gesso, numa laje, respirando devagar */
+  .contato figure{margin:0}
+  .contato figure .moldura{overflow:hidden;aspect-ratio:4/5}
+  .contato figure img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 55%;background:var(--ash)}
+  .contato figcaption{margin-top:12px;font-size:14px;color:var(--smoke);text-align:right;font-style:italic;font-family:'Bodoni Moda'}
+  @media(max-width:899px){ .contato figure .moldura{aspect-ratio:4/3} }
+
+  /* os assuntos são botões: escolhem o tema e sobem até o balão */
+  .assuntos{max-width:1100px;margin:30px auto 0;padding:52px 22px 0;border-top:1px solid var(--line)}
+  .assuntos h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(26px,6vw,36px);text-align:center}
+  .assuntos .sub{text-align:center;margin-top:10px;color:var(--smoke);font-size:15px}
+  /* fio de 1px entre os cartões: o fundo da grade aparece pelo vão */
+  .lista{display:grid;grid-template-columns:1fr;gap:1px;margin-top:34px;background:var(--line);border:1px solid var(--line)}
+  @media(min-width:560px){ .lista{grid-template-columns:repeat(2,1fr)} }
+  @media(min-width:900px){ .lista{grid-template-columns:repeat(3,1fr)} }
+  /* botão centra o conteúdo na vertical por padrão; aqui tudo começa no topo */
+  .item{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;
+    font:inherit;color:var(--char);background:var(--paper);border:0;padding:28px 26px 26px;cursor:pointer;transition:background .25s}
+  .item:hover{background:var(--ash)}
+  .item .n{font-family:'Bodoni Moda';font-style:italic;font-size:15px;color:var(--ember)}
+  .item h3{font-family:'Bodoni Moda';font-weight:500;font-size:21px;margin-top:6px}
+  .item p{margin-top:8px;font-size:14.5px;color:var(--smoke);line-height:1.55;flex:1}
+  .item .ir{position:relative;margin-top:16px;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--char);padding-bottom:3px;transition:color .2s}
+  .item .ir::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+  .item:hover .ir,.item:focus-visible .ir{color:var(--ember)}
+  .item:hover .ir::after,.item:focus-visible .ir::after{transform:scaleX(1)}
+
+  /* os outros caminhos, discretos: ninguém precisa de quatro caixas iguais */
+  .caminhos{max-width:1100px;margin:56px auto 0;padding:0 22px;display:grid;grid-template-columns:1fr}
+  @media(min-width:760px){ .caminhos{grid-template-columns:repeat(3,1fr)} }
+  .caminhos a{display:block;padding:22px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--char)}
+  @media(min-width:760px){
+    .caminhos a{padding:22px 24px;border-bottom:0;border-left:1px solid var(--line)}
+    .caminhos a:first-child{border-left:0;padding-left:0}
+  }
+  .caminhos small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
+  .caminhos strong{display:flex;align-items:center;gap:10px;margin-top:6px;font-family:'Bodoni Moda';font-weight:500;font-size:20px}
+  .caminhos strong::after{content:'\2192';font-family:'Hanken Grotesk';font-size:16px;transition:transform .25s ease}
+  .caminhos a:hover strong{color:var(--ember)}
+  .caminhos a:hover strong::after{transform:translateX(6px)}
+  .caminhos span{display:block;margin-top:5px;font-size:14px;color:var(--smoke);line-height:1.5}
+
+  .nota{margin:46px auto 0;text-align:center;font-size:14px;color:var(--smoke);padding:0 22px}
+  .nota .vivo{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ember);margin-right:9px;vertical-align:1px;animation:brasa 2.6s ease-out infinite}
+  @keyframes brasa{0%{box-shadow:0 0 0 0 rgba(184,70,43,.45)}70%,100%{box-shadow:0 0 0 9px rgba(184,70,43,0)}}
+
+  /* MOVIMENTO. O repouso é VISÍVEL; quem esconde é o script, com a classe
+     `anima` no <html>, e só depois de ligar quem mostra de volta. Aba
+     escondida congela animação no primeiro quadro, e esconder por padrão já
+     deixou imagem em opacidade zero no site (a página de aromas). */
+  .anima .surge{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+  .anima .surge.vista{opacity:1;transform:none}
+  .anima .contato figure img{animation:respira 16s ease-in-out infinite alternate}
+  @keyframes respira{from{transform:scale(1)}to{transform:scale(1.08) translateY(-1.5%)}}
+  @media (prefers-reduced-motion: reduce){
+    .anima .surge{opacity:1;transform:none;transition:none}
+    .anima .contato figure img,.nota .vivo,.digitando i,.balao.escrevendo .digitado::after{animation:none}
+  }
 </style>
 </head>
 <body class="nova">
@@ -78,65 +168,82 @@
 </div></header>
 
 <main>
-  <section class="capa">
-    <div class="rot">Contato</div>
-    <h1>Fale com quem faz.</h1>
-    <p>O ateliê é pequeno de propósito e não há atendimento terceirizado: quem
-       responde é quem molda, cura e acaba cada peça à mão. Encomenda começa por
-       conversa, não por formulário.</p>
-  </section>
+  <section class="contato">
+    <div>
+      <div class="rot surge">Contato</div>
+      <h1 class="surge">Fale com<br><em>quem faz.</em></h1>
+      <p class="intro surge">O ateliê é pequeno de propósito: quem responde é quem molda, cura e
+         acaba cada peça à mão. Encomenda começa por conversa, não por formulário.</p>
 
-  <figure class="capa-foto">
-    <img src="/gesso-despejo.jpg" width="896" height="1200" decoding="async"
-         style="object-position:50% 55%"
-         alt="Gesso líquido sendo despejado num molde, no ateliê.">
-  </figure>
+      <div class="compor surge" id="compor">
+        <div class="q" id="rotTemas">Sobre o que você quer falar?</div>
+        <div class="temas" role="group" aria-labelledby="rotTemas">
+          <button type="button" data-tema="peca" aria-pressed="true">Uma peça</button>
+          <button type="button" data-tema="especial" aria-pressed="false">Encomenda especial</button>
+          <button type="button" data-tema="empresa" aria-pressed="false">Empresa</button>
+          <button type="button" data-tema="casamento" aria-pressed="false">Casamento</button>
+          <button type="button" data-tema="homenagem" aria-pressed="false">Homenagem</button>
+          <button type="button" data-tema="refil" aria-pressed="false">Refil</button>
+          <button type="button" data-tema="parceria" aria-pressed="false">Parceria</button>
+        </div>
 
-  <div class="envolve">
-    <div class="canais">
-      <a class="canal destaque" id="zap" href="https://wa.me/5511958280174" rel="noopener">
-        <strong>WhatsApp</strong>
-        <span>O caminho mais rápido. A conversa já abre com o assunto escrito.</span>
-      </a>
-      <a class="canal" href="https://instagram.com/cinerea.velas" rel="noopener">
-        <strong>Instagram · @cinerea.velas</strong>
-        <span>As peças que saíram do ateliê, e o que está em produção.</span>
-      </a>
-      <a class="canal" href="https://www.tiktok.com/@cinerea.velas" rel="noopener">
-        <strong>TikTok · @cinerea.velas</strong>
-        <span>O processo em vídeo: a areia, o molde, a cura e o chip entrando na peça.</span>
-      </a>
-      <a class="canal" href="/loja/">
-        <strong>Comprar uma peça</strong>
-        <span>Para encomenda comum, a loja resolve sem conversa nenhuma.</span>
-      </a>
+        <div class="balao pronto" id="balao" aria-live="polite">
+          <div class="para">Sua mensagem para o ateliê</div>
+          <div class="digitando" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="msg"><span class="fantasma" id="fantasma" aria-hidden="true">Oi! Vim pelo site da Cinérea e gostaria de falar sobre uma peça.</span><span class="digitado" id="msg">Oi! Vim pelo site da Cinérea e gostaria de falar sobre uma peça.</span></div>
+          <span class="hora">pronta para enviar<b aria-hidden="true">&#10003;&#10003;</b></span>
+        </div>
+
+        <div class="enviar">
+          <a class="bt" id="zap" href="https://wa.me/5511958280174" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.4a8.6 8.6 0 0 0-7.35 13.05L3.5 20.5l4.15-1.1A8.6 8.6 0 1 0 12 3.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.35 8.05c-.17-.38-.35-.39-.51-.39h-.44c-.15 0-.4.06-.61.28-.21.22-.8.78-.8 1.9s.82 2.2.93 2.35c.12.15 1.58 2.53 3.9 3.45 1.93.76 2.32.61 2.74.57.42-.04 1.36-.55 1.55-1.09.19-.53.19-.99.13-1.09-.06-.09-.21-.15-.44-.26-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.13.15-.27.17-.5.06-.23-.12-.97-.36-1.85-1.14-.68-.61-1.15-1.36-1.28-1.59-.13-.23-.01-.35.1-.47.1-.1.23-.27.34-.4.11-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.51-1.24-.7-1.7Z" fill="currentColor"/></svg>
+            Abrir no WhatsApp</a>
+          <small>Você ainda pode mudar o texto<br>antes de enviar.</small>
+        </div>
+      </div>
     </div>
 
-    <section class="assuntos">
-      <h2>Do que costumam falar</h2>
-      <div class="lista">
-        <div class="item"><h3>Encomenda especial</h3>
-          <p>Uma peça feita para uma data, um nome, um formato que não está na loja.</p></div>
-        <div class="item"><h3>Quantidade para empresa</h3>
-          <p>Lembrança de evento, brinde de fim de ano, peça de mesa para
-             restaurante ou pousada, com o conteúdo do chip já configurado.</p></div>
-        <div class="item"><h3>Convite de casamento</h3>
-          <p>O convite como objeto, que depois da festa vira lembrança. Costuma
-             pedir conversa antes, porque cada casamento é um.</p></div>
-        <div class="item"><h3>Homenagem</h3>
-          <p>Peça para guardar a memória de alguém. Fazemos com calma e sem pressa
-             de orçamento.</p></div>
-        <div class="item"><h3>Refil de areia</h3>
-          <p>Sua peça acabou a fragrância e você não sabe qual repor. Diga o modelo
-             que a gente indica.</p></div>
-        <div class="item"><h3>Parceria</h3>
-          <p>Lojas, pousadas e ateliês que querem trabalhar com as peças, ou usar
-             o chip nos próprios produtos.</p></div>
-      </div>
-    </section>
+    <figure class="surge">
+      <div class="moldura laje l3 pousada"><img src="/gesso-despejo.jpg" width="896" height="1200" decoding="async"
+           alt="Gesso líquido sendo despejado num molde, no ateliê."></div>
+      <figcaption>o gesso, antes de virar peça</figcaption>
+    </figure>
+  </section>
 
-    <p class="nota">Campos do Jordão · São Paulo<br>Respondemos em até um dia útil.</p>
-  </div>
+  <section class="assuntos">
+    <h2 class="surge">Do que costumam falar</h2>
+    <p class="sub surge">Escolha um, e a mensagem já sai com o assunto.</p>
+    <div class="lista surge">
+      <button type="button" class="item" data-tema="especial"><span class="n">i.</span><h3>Encomenda especial</h3>
+        <p>Uma peça feita para uma data, um nome, um formato que não está na loja.</p><span class="ir">Escrever sobre isso</span></button>
+      <button type="button" class="item" data-tema="empresa"><span class="n">ii.</span><h3>Quantidade para empresa</h3>
+        <p>Lembrança de evento, brinde de fim de ano, peça de mesa para restaurante ou
+           pousada, com o conteúdo do chip já configurado.</p><span class="ir">Escrever sobre isso</span></button>
+      <button type="button" class="item" data-tema="casamento"><span class="n">iii.</span><h3>Convite de casamento</h3>
+        <p>O convite como objeto, que depois da festa vira lembrança. Costuma pedir
+           conversa antes, porque cada casamento é um.</p><span class="ir">Escrever sobre isso</span></button>
+      <button type="button" class="item" data-tema="homenagem"><span class="n">iv.</span><h3>Homenagem</h3>
+        <p>Peça para guardar a memória de alguém. Fazemos com calma e sem pressa
+           de orçamento.</p><span class="ir">Escrever sobre isso</span></button>
+      <button type="button" class="item" data-tema="refil"><span class="n">v.</span><h3>Refil de areia</h3>
+        <p>A areia da sua peça acabou e você não sabe qual repor. Diga o modelo
+           que a gente indica.</p><span class="ir">Escrever sobre isso</span></button>
+      <button type="button" class="item" data-tema="parceria"><span class="n">vi.</span><h3>Parceria</h3>
+        <p>Lojas, pousadas e ateliês que querem trabalhar com as peças, ou usar
+           o chip nos próprios produtos.</p><span class="ir">Escrever sobre isso</span></button>
+    </div>
+  </section>
+
+  <nav class="caminhos" aria-label="Outros caminhos">
+    <a class="surge" href="https://instagram.com/cinerea.velas" rel="noopener"><small>Instagram</small>
+      <strong>@cinerea.velas</strong><span>As peças que saíram do ateliê, e o que está em produção.</span></a>
+    <a class="surge" href="https://www.tiktok.com/@cinerea.velas" rel="noopener"><small>TikTok</small>
+      <strong>@cinerea.velas</strong><span>O processo em vídeo: a areia, o molde, a cura e o chip entrando na peça.</span></a>
+    <a class="surge" href="/loja/"><small>Sem conversa</small>
+      <strong>A loja</strong><span>Para encomenda comum, a loja resolve direto.</span></a>
+  </nav>
+
+  <p class="nota surge"><span class="vivo" aria-hidden="true"></span>Campos do Jordão · São Paulo · respondemos em até um dia útil.</p>
 </main>
 
 <footer class="rodape">
@@ -190,22 +297,109 @@
 
 <script>
   // A mensagem já vai escrita: campo em branco é onde a intenção morre.
-  // Se a pessoa chegou de uma aplicação específica (/contato/?sobre=cardapio),
-  // o assunto vem junto, e você sabe de onde ela veio sem perguntar.
+  // Se a pessoa chegou de um link com assunto (/contato/?sobre=refil), ele
+  // vem junto, e o ateliê sabe de onde ela veio sem perguntar. Os nomes de
+  // `sobre` são contrato: cardapio, empresa e refil estão em links do site.
   (function () {
+    var NUMERO = '5511958280174';
     var ASSUNTOS = {
+      peca:      'Oi! Vim pelo site da Cinérea e gostaria de falar sobre uma peça.',
+      especial:  'Oi! Queria uma peça feita sob encomenda, para uma ocasião especial.',
       cardapio:  'Oi! Quero peças com cardápio para o meu restaurante.',
       casamento: 'Oi! Quero peças para o meu casamento.',
       empresa:   'Oi! Quero peças em quantidade para a minha empresa.',
       homenagem: 'Oi! Gostaria de uma peça de homenagem.',
       pousada:   'Oi! Quero peças para os quartos da minha pousada.',
-      refil:     'Oi! Preciso repor a areia perfumada da minha peça.',
+      refil:     'Oi! Preciso repor a areia da minha peça. O modelo é:',
       parceria:  'Oi! Gostaria de falar sobre uma parceria.',
     };
-    var pedido = new URLSearchParams(location.search).get('sobre');
-    var texto = ASSUNTOS[pedido] || 'Oi! Vim pelo site da Cinérea e gostaria de falar sobre uma peça.';
     var zap = document.getElementById('zap');
-    if (zap) zap.href = 'https://wa.me/5511958280174?text=' + encodeURIComponent(texto);
+    var balao = document.getElementById('balao');
+    var msg = document.getElementById('msg');
+    var fantasma = document.getElementById('fantasma');
+    var botoes = document.querySelectorAll('.temas button');
+    var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var vez = 0;
+
+    function link(t) { zap.href = 'https://wa.me/' + NUMERO + '?text=' + encodeURIComponent(t); }
+
+    // O balão "digita": três pontos, depois letra por letra. O texto inteiro
+    // já está no HTML, então sem script a página mostra a mensagem pronta, e
+    // o link já sai certo antes da animação começar.
+    function escrever(texto, pausa) {
+      var minha = ++vez;
+      link(texto);
+      fantasma.textContent = texto;
+      if (quieto) { msg.textContent = texto; return; }
+      balao.classList.remove('pronto', 'escrevendo');
+      balao.classList.add('pensando');
+      setTimeout(function () {
+        if (minha !== vez) return;
+        balao.classList.remove('pensando');
+        balao.classList.add('escrevendo');
+        msg.textContent = '';
+        var i = 0;
+        (function letra() {
+          if (minha !== vez) return;
+          i += 1;
+          msg.textContent = texto.slice(0, i);
+          if (i < texto.length) setTimeout(letra, 24);
+          else { balao.classList.remove('escrevendo'); balao.classList.add('pronto'); }
+        })();
+      }, pausa);
+    }
+
+    function marcar(tema) {
+      botoes.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.tema === tema ? 'true' : 'false'); });
+    }
+
+    function escolher(tema, pausa) {
+      marcar(tema);
+      escrever(ASSUNTOS[tema] || ASSUNTOS.peca, pausa);
+    }
+
+    botoes.forEach(function (b) {
+      b.addEventListener('click', function () { escolher(b.dataset.tema, 420); });
+    });
+    document.querySelectorAll('.item[data-tema]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.getElementById('compor').scrollIntoView({ behavior: quieto ? 'auto' : 'smooth', block: 'center' });
+        escolher(b.dataset.tema, 700);
+      });
+    });
+
+    var pedido = new URLSearchParams(location.search).get('sobre');
+    var inicial = ASSUNTOS[pedido] ? pedido : 'peca';
+    marcar(inicial);
+    msg.textContent = fantasma.textContent = ASSUNTOS[inicial];
+    link(ASSUNTOS[inicial]);
+    // a primeira mensagem se escreve quando a pessoa está olhando, não antes
+    if (!quieto) {
+      var comecou = false;
+      var comeca = function () { if (!comecou) { comecou = true; escrever(ASSUNTOS[inicial], 900); } };
+      if (document.visibilityState === 'visible') comeca();
+      else document.addEventListener('visibilitychange', function v() {
+        if (document.visibilityState !== 'visible') return;
+        document.removeEventListener('visibilitychange', v);
+        comeca();
+      });
+    }
+  })();
+
+  // As seções surgem ao chegar. Decoração: sem IntersectionObserver, ou com
+  // movimento reduzido, a classe `anima` nunca entra e tudo fica à vista.
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var olho = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('vista');
+        olho.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.documentElement.classList.add('anima');
+    document.querySelectorAll('.surge').forEach(function (e) { olho.observe(e); });
   })();
 </script>
 <script src="/vivo.js" defer></script>
