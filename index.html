@@ -211,6 +211,27 @@
     .faixa-texto{padding:48px max(22px,calc(50vw - 520px)) 48px 64px}
   }
 
+  /* ---- o ritual: encha, acenda, renove --------------------------------------
+     Três renders do Seixo real, na mesma câmera e no mesmo papel (a cena é
+     uma só e só muda o que aparece, atelier out/identidade/ritual). No
+     celular cada passo é foto ao lado do texto, para os três caberem perto
+     de uma tela; no computador, três colunas. */
+  .ritual{padding:72px 0 56px}
+  .ritual h2{font-size:clamp(32px,8vw,50px);line-height:1.05;margin-top:12px}
+  .ritual h2 em{font-style:italic}
+  .ritual-passos{list-style:none;padding:0;margin:34px 0 0;display:grid;gap:22px;counter-reset:r}
+  .ritual-passos li{counter-increment:r;display:grid;grid-template-columns:42% 1fr;gap:18px;align-items:center}
+  .ritual-passos figure{margin:0}
+  .ritual-passos img{display:block;width:100%;height:auto;background:var(--ash)}
+  .ritual-passos b{display:block;font-size:24px}
+  .ritual-passos b::before{content:counter(r);color:var(--ember);font-size:15px;margin-right:9px;vertical-align:middle}
+  .ritual-passos p{margin-top:6px;color:#45403A;line-height:1.55;font-size:15.5px;max-width:34ch}
+  @media(min-width:760px){
+    .ritual-passos{grid-template-columns:repeat(3,1fr);gap:36px}
+    .ritual-passos li{grid-template-columns:1fr;align-items:start}
+    .ritual-passos li:nth-child(2){margin-top:40px}
+  }
+
   /* ---- peças novas: uma trilha que desce a página ----------------------------
      As peças descem em zigue-zague, cada uma de um lado, e a seguinte sobe
      sobre o vão da anterior: é a página vertical que dá o caminho, e o pavio
@@ -497,6 +518,28 @@
       <a class="bt bt2" href="/loja/?colecao=Refis">Ver o refil</a>
     </div>
   </section>
+
+  <!-- O RITUAL (nov/2026): o que a faixa do refil diz em uma frase, mostrado
+       em três passos com a peça real. O bloco do terceiro é o que se forma em
+       volta do pavio quando a vela apaga, e sai inteiro: é por isso que a
+       peça não precisa de limpeza. -->
+  <div class="envolve">
+    <section class="ritual" id="ritual" aria-labelledby="ritTitulo">
+      <p class="rot">Como se usa</p>
+      <h2 class="serifa" id="ritTitulo">Encha. Acenda.<br><em>Renove.</em></h2>
+      <ol class="ritual-passos">
+        <li><figure class="pousada"><img class="laje" src="/ritual/1-encha.jpg" width="860" height="860" loading="lazy" decoding="async"
+              alt="Areia de cera caindo em fio dentro do Seixo, um pote de gesso."></figure>
+          <div><b class="serifa">Encha</b><p>Despeje a areia de cera na peça, até perto da borda.</p></div></li>
+        <li><figure class="pousada"><img class="laje l2" src="/ritual/2-acenda.jpg" width="860" height="860" loading="lazy" decoding="async"
+              alt="O Seixo cheio de areia, com um pavio aceso no meio."></figure>
+          <div><b class="serifa">Acenda</b><p>Firme o pavio na areia e acenda. A cera derrete só em volta da chama.</p></div></li>
+        <li><figure class="pousada"><img class="laje l3" src="/ritual/3-renove.jpg" width="860" height="860" loading="lazy" decoding="async"
+              alt="O Seixo com um pavio novo na areia e, ao lado, o bloco de cera endurecida com o pavio queimado."></figure>
+          <div><b class="serifa">Renove</b><p>Quando a vela acaba, a cera endurece num bloco em volta do pavio. Tire o bloco, complete a areia e ponha um pavio novo.</p></div></li>
+      </ol>
+    </section>
+  </div>
 
   <div class="envolve">
 
