@@ -387,8 +387,10 @@
   .ar-passos li{margin-bottom:7px}
   .ar-passos li b{color:var(--char)}
   .ar-passos a{color:var(--ember)}
+  /* Um tom abaixo do --ash, e de propósito: gesso branco sobre fundo quase
+     branco sumia (o dono não enxergava o Ondas, nov/2026). */
   .mv{
-    width:100%;height:min(62vh,460px);background:var(--ash);
+    width:100%;height:min(62vh,460px);background:#D6CEC2;
     border-radius:2px;--poster-color:transparent;
   }
   .rot{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
@@ -1445,11 +1447,17 @@ window.abrir3d = async (modelo, nome, quer) => {
 
      `ar-scale="fixed"` sobrevive à troca: o model-viewer o traduz em
      `resizable=false` no intent, e o tamanho real continua sendo o real. */
+  /* A LUZ DO VISUALIZADOR (nov/2026). Com `exposure="1.1"` e o ambiente
+     "neutral", que ilumina de frente e por igual, o gesso branco estourava e
+     o relevo sumia: o Ondas virava um disco liso. O ambiente "legacy" vem de
+     cima e de lado, `agx` segura o branco sem estourar, e a câmera um pouco
+     mais alta (62°) deixa o relevo ler. Conferido no Ondas, no David e no
+     vidrinho âmbar: nenhum escureceu demais. */
   caixa.innerHTML = `
     <model-viewer class="mv" id="mv3d" src="${esc(modelo)}" alt="${esc(nome)} em três dimensões"
-      camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1.1"
-      ar ar-modes="scene-viewer webxr quick-look" ar-scale="fixed"
-      environment-image="neutral" loading="eager">
+      camera-controls touch-action="pan-y" shadow-intensity="1.3" shadow-softness="0.5"
+      exposure="0.9" tone-mapping="agx" environment-image="legacy" camera-orbit="25deg 62deg auto"
+      ar ar-modes="scene-viewer webxr quick-look" ar-scale="fixed" loading="eager">
       <button slot="ar-button" class="bt" id="ar_bt" disabled>preparando…</button>
     </model-viewer>
     <div class="sub3d" id="ar_recado"></div>

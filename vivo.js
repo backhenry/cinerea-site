@@ -271,9 +271,46 @@ window.velaDeEspera = function (texto) {
    * cópia é onde a regra de quem pediu menos movimento se perde: ela não
    * estoura nada, só deixa de valer para o vídeo novo.
    */
+  // TOCAR SOZINHO PODE SER RECUSADO, e no celular é comum (nov/2026, o dono
+  // via só a imagem parada no iPhone e no Android). O iPhone em Modo Pouco
+  // Energia recusa todo vídeo que toca sem toque, e o `play()` rejeitado era
+  // engolido em silêncio. Agora o vídeo recusado fica na fila e começa no
+  // primeiro toque da pessoa em qualquer lugar da página, que é um gesto que
+  // o navegador sempre aceita.
+  var recusados = [];
+  function tocarRecusados() {
+    recusados.splice(0).forEach(function (v) {
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    });
+  }
+  ['touchend', 'click', 'keydown'].forEach(function (ev) {
+    document.addEventListener(ev, tocarRecusados, { passive: true });
+  });
+
+  // `?diag` no endereço escreve na página por que cada vídeo não tocou. Serve
+  // para conferir no aparelho de verdade, onde não há console.
+  var diag = /[?&]diag\b/.test(location.search);
+  function anotar(texto) {
+    if (!diag) return;
+    var c = document.getElementById('diagVideo');
+    if (!c) {
+      c = document.createElement('pre');
+      c.id = 'diagVideo';
+      c.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;margin:0;padding:10px;' +
+        'background:#161412;color:#F4F1EC;font:12px/1.4 monospace;white-space:pre-wrap;max-height:40vh;overflow:auto';
+      document.body.appendChild(c);
+    }
+    c.textContent += texto + '\n';
+  }
+  anotar('movimento reduzido: ' + (quieto ? 'SIM (vídeo desligado)' : 'não') +
+    ' | economia de dados: ' + (economizando ? 'SIM (vídeo desligado)' : 'não') +
+    (con ? ' | rede: ' + con.effectiveType : ''));
+
   function aoAparecer(id, arquivo) {
     var v = document.getElementById(id);
     if (!v) return;
+    anotar(id + ': na página');
 
     // O pôster já está no HTML, então não fazer nada aqui deixa a imagem parada
     // na tela. É a degradação certa: perde o movimento, não perde a figura.
@@ -286,7 +323,11 @@ window.velaDeEspera = function (texto) {
         if (e.isIntersecting) {
           if (!v.src) { v.src = arquivo; v.load(); }
           var p = v.play();
-          if (p && p.catch) p.catch(function () {});
+          if (p && p.then) p.then(function () { anotar(id + ': tocando'); });
+          if (p && p.catch) p.catch(function (erro) {
+            anotar(id + ': recusado (' + (erro && erro.name) + '), toca no primeiro toque');
+            if (recusados.indexOf(v) < 0) recusados.push(v);
+          });
         } else if (!v.paused) {
           // Pausar ao sair da tela: um laço tocando fora de vista gasta bateria
           // para ninguém. O pôster não volta, e nem deveria, a peça fica onde
