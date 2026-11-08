@@ -168,17 +168,18 @@
   .vit-preco{display:block;font-size:14.5px;color:var(--smoke);margin-top:4px;min-height:1.5em}
   .vit-mais{display:inline-block;margin-top:30px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--char);padding:12px 0}
   .vit-mais:hover{color:var(--ember)}
-  /* No celular, duas e meia por tela, rolando de lado: a terceira aparecendo
-     pela metade é o que diz que há mais para ver. */
+  /* No celular, a mesma trilha dos pratos e potes (nov/2026): as peças descem
+     em zigue-zague, cada uma subindo sobre o vão da anterior, e o pavio
+     serpenteia (vivo.js, modo vertical abaixo de 561 px). Era uma faixa que
+     rolava de lado, e o dono pediu que nada obrigasse a deslizar. Metade da
+     largura cada uma, e não mais: duas colunas que somam mais de 100% põem a
+     foto de uma em cima do nome da outra. */
   @media(max-width:560px){
-    .vit-grade{display:flex;gap:26px;overflow-x:auto;scroll-snap-type:x mandatory;
-      margin:26px -22px 0;padding:0 22px;scrollbar-width:none;scroll-padding-inline:22px}
-    .vit-grade::-webkit-scrollbar{display:none}
-    .vit-peca{flex:0 0 42%;scroll-snap-align:start}
-    /* rolando de lado não cabe a do meio maior; fica só o desnível e o giro */
-    .vit-grade{align-items:flex-start;padding-top:8px;padding-bottom:14px;padding-right:74px}
-    .vit-peca:nth-child(3n+2){margin-top:34px}
-    .vit-peca:nth-child(3n){margin-top:12px}
+    .vit-grade{display:block;margin:26px 0 0;padding:0 0 34px}
+    .vit-peca{width:50%}
+    .vit-peca:nth-child(n){margin-top:0}
+    .vit-peca:nth-child(even){margin-left:auto}
+    .vit-peca+.vit-peca{margin-top:-11vw}
     .vit-peca:nth-child(3n+2) .vit-nome,.vit-peca:nth-child(3n+2) .vit-preco{padding-left:0}
     .vit-nome{font-size:18px}
   }

@@ -486,7 +486,7 @@ window.velaDeEspera = function (texto) {
 // lado), o que dá um S em cada vão; um desvio alternado para um lado e para o
 // outro tira a cara de régua. Depois da última o fio desce, faz a volta por
 // baixo e sobe até a chama, que acende abaixo da peça.
-function ligarPorPavio(caixa, seletor, vertical) {
+function ligarPorPavio(caixa, seletor, modoVertical) {
   if (!caixa || !window.ResizeObserver) return;
   var NS = 'http://www.w3.org/2000/svg';
   var svg = document.createElementNS(NS, 'svg');
@@ -498,6 +498,9 @@ function ligarPorPavio(caixa, seletor, vertical) {
 
   function desenhar() {
     pedido = false;
+    // `vertical` pode ser uma pergunta e não um sim: a vitrine é trilha só no
+    // celular, e quem gira o aparelho troca de modo sem recarregar
+    var vertical = typeof modoVertical === 'function' ? modoVertical() : modoVertical;
     // por ÚLTIMO, e não primeiro: o desalinhamento usa :nth-child nas peças
     if (svg.parentNode !== caixa || svg.nextSibling) caixa.appendChild(svg);
     var fotos = caixa.querySelectorAll(seletor);
@@ -567,7 +570,9 @@ function ligarPorPavio(caixa, seletor, vertical) {
   window.addEventListener('load', pedir);
   pedir();
 }
-ligarPorPavio(document.getElementById('vitrine'), '.vit-foto');
+ligarPorPavio(document.getElementById('vitrine'), '.vit-foto', function () {
+  return window.matchMedia && matchMedia('(max-width:560px)').matches;
+});
 ligarPorPavio(document.querySelector('.novas-trilha'), '.novas-foto', true);
 
 // A segunda foto dos pratos e potes, a vista de cima, só onde há mouse. Ela

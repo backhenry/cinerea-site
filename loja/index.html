@@ -118,6 +118,35 @@
     background:linear-gradient(180deg,rgba(20,19,17,.28),rgba(20,19,17,.62));
   }
   .banner.comArte > *{position:relative}
+  /* DIAGRAMAÇÃO DE CINEMA (nov/2026). A arte é feita com a peça no terço
+     direito e a mesa mergulhando à esquerda (atelier casa.py --cinema): o
+     texto vai para a esquerda, o véu escurece só desse lado e some antes da
+     peça, e a faixa ganha altura para a cena respirar. No celular a arte se
+     ancora pela direita, para a peça continuar no quadro quando a largura
+     corta a imagem. */
+  .banner.comArte{
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+    text-align:left;min-height:260px;background-position:right center;
+    padding:34px max(22px,calc(50vw - 500px));
+  }
+  .banner.comArte::before{
+    background:linear-gradient(90deg,rgba(20,19,17,.74) 0%,rgba(20,19,17,.52) 34%,rgba(20,19,17,.12) 58%,rgba(20,19,17,0) 72%);
+  }
+  .banner.comArte strong,.banner.comArte .btexto{max-width:min(46%,30ch)}
+  .banner.comArte strong{font-size:clamp(22px,3.2vw,34px);line-height:1.1}
+  /* No celular não cabe texto e peça lado a lado: a 375 px o Seixo caía
+     atrás do título. Vira letterbox, a cena inteira em cima, como quadro de
+     filme (largura toda, sem corte), e o texto embaixo, no carvão. A arte é
+     2400x900, por isso a cena mede 37,5% da largura. */
+  @media(max-width:600px){
+    .banner.comArte{
+      background-size:100% auto;background-position:center top;background-repeat:no-repeat;
+      padding:calc(37.5vw + 16px) 18px 20px;min-height:0;justify-content:flex-start;
+    }
+    .banner.comArte::before{display:none}
+    .banner.comArte strong,.banner.comArte .btexto{max-width:none}
+    .banner.comArte strong{font-size:22px}
+  }
   .banner.comArte strong{font-size:clamp(19px,4.4vw,26px);text-shadow:0 1px 12px rgba(0,0,0,.35)}
   .banner.comArte .btexto{opacity:.95;text-shadow:0 1px 8px rgba(0,0,0,.35)}
 
@@ -138,8 +167,8 @@
      do cupom: 156 px na tela de 1280 e 188 px no celular de 375. Remedido no
      celular depois de o banner com arte perder parte do respiro: 160 px.
      Valem só até o primeiro desenho do banner, que tira a classe. */
-  #banner.reserva{min-height:157px}
-  @media(max-width:600px){#banner.reserva{min-height:160px}}
+  #banner.reserva{min-height:260px}
+  @media(max-width:600px){#banner.reserva{min-height:290px}}
   .bannerpilha{display:grid}
   /* NO CELULAR O BANNER TEM ALTURA MÍNIMA FIXA, e não só a reserva do
      primeiro quadro. A altura dele muda com a largura (160 px a 375, 136 a
@@ -147,6 +176,9 @@
      subia 24 px quando ele aparecia. Com piso, a faixa mede o mesmo em
      quase todo celular e o texto fica centrado nela. */
   @media(max-width:600px){ .bannerpilha{min-height:160px} }
+  /* com a arte de cinema a faixa mede 260 px na tela e ~293 no celular de
+     375 (letterbox: a cena em cima e o texto embaixo): as reservas acima
+     seguem esses números (nov/2026) */
   .bannerpilha > *{
     grid-area:1/1; opacity:0; transition:opacity .6s ease;
     pointer-events:none; visibility:hidden;
