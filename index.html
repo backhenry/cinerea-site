@@ -115,7 +115,26 @@
      A máscara vai na imagem e a sombra na caixa dela, porque máscara corta
      a sombra do próprio elemento. */
   .vit-grade{display:grid;grid-template-columns:1fr 1.18fr 1fr;column-gap:56px;margin:40px auto 0;max-width:920px;text-align:left;align-items:start}
-  .vit-peca{display:block;text-decoration:none;color:var(--char);position:relative;z-index:1}
+  .vit-peca{display:block;color:var(--char);position:relative;z-index:1}
+  .vit-link{display:block;text-decoration:none;color:var(--char)}
+  /* A segunda foto, como na loja: por cima da primeira, aparece com o mouse.
+     No toque não existe hover, e ela nem é baixada (lazy e escondida). */
+  .vit-foto{position:relative}
+  .vit-foto .segunda{position:absolute;inset:0;opacity:0;transition:opacity .45s ease}
+  @media(hover:hover){ .vit-peca:hover .vit-foto .segunda{opacity:1} }
+  @media(hover:none){ .vit-foto .segunda{display:none} }
+  /* A sacola laranja no canto da foto. Ela mora numa camada quadrada do
+     tamanho da foto, por cima do link, porque link dentro de link não existe. */
+  .vit-sobre{position:absolute;left:0;top:0;width:100%;aspect-ratio:1;pointer-events:none;z-index:2}
+  .vit-sacola{position:absolute;right:7%;bottom:7%;width:46px;height:46px;border-radius:50%;
+    display:grid;place-items:center;background:var(--ember);color:#fff;pointer-events:auto;
+    box-shadow:0 8px 18px -8px rgba(120,40,20,.6);opacity:0;transform:translateY(6px) scale(.92);
+    transition:opacity .22s ease,transform .22s ease,background .18s ease}
+  .vit-sacola svg{width:19px;height:19px}
+  .vit-peca:hover .vit-sacola,.vit-sacola:focus-visible{opacity:1;transform:none}
+  .vit-sacola:hover{background:#9C3A22}
+  @media(hover:none){ .vit-sacola{opacity:1;transform:none;width:44px;height:44px} }
+  @media(prefers-reduced-motion:reduce){ .vit-sacola{transition:none} }
   /* O pavio que liga as peças (desenhado pelo vivo.js): atrás das fotos, à
      vista só nos vãos, e aceso depois da última. Fio de carvão com uma trama
      clara por cima, que é o que faz ler como algodão trançado e não risco. */
@@ -207,6 +226,8 @@
   /* alturas desencontradas, como a matéria lá em cima */
   .novas-faixa figure:nth-child(even){margin-top:34px}
   .novas-faixa figcaption{margin-top:12px;font-size:14px;color:var(--smoke);max-width:30ch}
+  .novas-faixa a{display:block}
+  .novas-preco{display:block;margin-top:4px;font-size:14px;color:var(--smoke)}
   .novas-faixa figcaption b{display:block;font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;color:var(--char);margin-bottom:2px}
   .novas .bt{margin-top:30px}
   @media(min-width:900px){.novas-faixa img{height:440px}}
@@ -407,31 +428,31 @@
   <!-- PEÇAS NOVAS (nov/2026). As fotos em /novas/ são os RENDERS dos modelos
        3D reais (atelier, out/peca3d/colecao e out/peca3d/ondas), na mesma luz e
        no mesmo papel das fotos da loja: a peça nunca é gerada. Substituíram os
-       conceitos do Higgsfield. Ainda não existem moldadas, por isso a seção diz
-       "em breve". Peça baixa em paisagem, pote em retrato, para a faixa ter
+       conceitos do Higgsfield. Estão à venda desde 07/11/2026, moldadas sob
+       encomenda (a ficha diz isso); cada foto abre a ficha da peça na loja. Peça baixa em paisagem, pote em retrato, para a faixa ter
        ritmo. Faixa que rola de lado e não grade: as fotos têm proporções diferentes,
        e com altura fixa cada uma aparece inteira, sem recorte. -->
   <section class="novas" id="novas" aria-labelledby="novasTitulo">
     <div class="envolve novas-topo">
-      <p class="rot">Em breve no ateliê</p>
+      <p class="rot">Peças novas</p>
       <h2 class="serifa" id="novasTitulo">Pratos e potes<br><em>para a areia.</em></h2>
-      <p class="sub">Gesso fosco, feito à mão. A areia vai direto na peça: quando a vela acaba, você enche de novo.</p>
+      <p class="sub">Gesso fosco, feito à mão. A areia vai direto na peça: quando a vela acaba, você enche de novo. Cada uma é moldada depois do pedido.</p>
     </div>
     <div class="novas-faixa" tabindex="0" aria-label="Peças novas, role para o lado">
-      <figure class="pousada"><img class="laje" src="/novas/ondas.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Prato raso de gesso com relevo de ondas que se aproximam e se afastam, e a areia num poço no centro, com um pavio.">
-        <figcaption><b>Ondas</b>prato de mesa, a areia no centro</figcaption></figure>
-      <figure class="pousada"><img class="laje l2" src="/novas/seixo.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote pequeno de gesso em forma de seixo de rio, com um pavio.">
-        <figcaption><b>Seixo</b>pote pequeno, uma pedra de rio</figcaption></figure>
-      <figure class="pousada"><img class="laje l3" src="/novas/jardim.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Bandeja redonda e rasa de gesso com areia penteada em linhas, vários pavios e um rastelo pequeno.">
-        <figcaption><b>Jardim</b>bandeja rasa, a areia penteada</figcaption></figure>
-      <figure class="pousada"><img class="laje l4" src="/novas/derretido.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote de gesso com a borda escorrendo como cera derretida, cheio de areia.">
-        <figcaption><b>Derretido</b>pote com a borda escorrendo</figcaption></figure>
-      <figure class="pousada"><img class="laje" src="/novas/canoa.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Travessa longa e orgânica de gesso com areia e três pavios.">
-        <figcaption><b>Canoa</b>travessa longa, três pavios</figcaption></figure>
-      <figure class="pousada"><img class="laje l2" src="/novas/cratera.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Esfera de gesso com a superfície marcada como a da lua e areia no topo.">
-        <figcaption><b>Cratera</b>esfera com a superfície da lua</figcaption></figure>
+      <figure class="pousada"><a href="/loja/?peca=mw76wawuuxqy"><img class="laje" src="/novas/ondas.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Prato raso de gesso com relevo de ondas que se aproximam e se afastam, e a areia num poço no centro, com um pavio."></a>
+        <figcaption><b>Ondas</b>prato de mesa, a areia no centro<span class="novas-preco">R$ 229</span></figcaption></figure>
+      <figure class="pousada"><a href="/loja/?peca=mw76wp4hbn2w"><img class="laje l2" src="/novas/seixo.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote pequeno de gesso em forma de seixo de rio, com um pavio."></a>
+        <figcaption><b>Seixo</b>pote pequeno, uma pedra de rio<span class="novas-preco">R$ 119</span></figcaption></figure>
+      <figure class="pousada"><a href="/loja/?peca=mw770m9glivk"><img class="laje l3" src="/novas/jardim.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Bandeja redonda e rasa de gesso com areia penteada em linhas, vários pavios e um rastelo pequeno."></a>
+        <figcaption><b>Jardim</b>bandeja rasa, a areia penteada<span class="novas-preco">R$ 229</span></figcaption></figure>
+      <figure class="pousada"><a href="/loja/?peca=mw76yg7vthu8"><img class="laje l4" src="/novas/derretido.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Pote de gesso com a borda escorrendo como cera derretida, cheio de areia."></a>
+        <figcaption><b>Derretido</b>pote com a borda escorrendo<span class="novas-preco">R$ 149</span></figcaption></figure>
+      <figure class="pousada"><a href="/loja/?peca=mw76zx1g957q"><img class="laje" src="/novas/canoa.jpg" width="1100" height="825" loading="lazy" decoding="async" alt="Travessa longa e orgânica de gesso com areia e três pavios."></a>
+        <figcaption><b>Canoa</b>travessa longa, três pavios<span class="novas-preco">R$ 179</span></figcaption></figure>
+      <figure class="pousada"><a href="/loja/?peca=mw76xiq8g32b"><img class="laje l2" src="/novas/cratera.jpg" width="1100" height="1467" loading="lazy" decoding="async" alt="Esfera de gesso com a superfície marcada como a da lua e areia no topo."></a>
+        <figcaption><b>Cratera</b>esfera com a superfície da lua<span class="novas-preco">R$ 119</span></figcaption></figure>
     </div>
-    <div class="envolve"><a class="bt bt2" href="/contato/">Quero saber quando chegar</a></div>
+    <div class="envolve"><a class="bt" href="/loja/?colecao=Pratos">Ver as treze na loja</a></div>
   </section>
 
   <!-- O REFIL. A areia vem SEM aroma desde nov/2026, e por isso nada aqui fala

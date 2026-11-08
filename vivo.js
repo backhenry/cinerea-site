@@ -490,4 +490,4 @@ function ligarPorPavio(caixa, seletor) {
   pedir();
 }
 ligarPorPavio(document.getElementById('vitrine'), '.vit-foto');
-ligarPorPavio(document.querySelector('.novas-faixa'), 'figure > img');
+ligarPorPavio(document.querySelector('.novas-faixa'), 'figure img');

@@ -10,7 +10,9 @@
  * máscara pede só `itens`, que é o que se usa.
  *
  * Cada peça abre a ficha dela na loja (`/loja/?peca=`), e não a loja inteira:
- * quem tocou no David quer ver o David.
+ * quem tocou no David quer ver o David. A sacola laranja vai para
+ * `/loja/?sacola=`, que põe a peça na sacola e abre a gaveta: a sacola da loja
+ * vive na memória da página, e o endereço é o jeito de levar o pedido até lá.
  */
 (function () {
   var caixa = document.getElementById('vitrine');
@@ -42,6 +44,10 @@
       u.indexOf('https://firebasestorage.googleapis.com/v0/b/cinerea1.') === 0;
   }
 
+  var SACOLA = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+    '<path d="M4.5 8.5h15l-1.2 11a1.6 1.6 0 0 1-1.6 1.5H7.3a1.6 1.6 0 0 1-1.6-1.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>' +
+    '<path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+
   var brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
   function pinta(itens) {
@@ -54,12 +60,23 @@
       .concat(aVenda.filter(function (p) { return !p.destaque; }))
       .slice(0, 3);
     if (!escolhidas.length) return falha();
+    // Como na loja: a segunda foto vem por cima e só aparece com o mouse
+    // (quem decide é o CSS, por `hover`), e a sacola laranja leva a peça para
+    // a sacola DA LOJA. Ela não pode ficar dentro do link da ficha, porque link
+    // dentro de link não existe: vai numa camada própria por cima da foto.
     caixa.innerHTML = escolhidas.map(function (p) {
-      return '<a class="vit-peca" href="/loja/?peca=' + encodeURIComponent(p.id) + '">' +
+      var id = encodeURIComponent(p.id);
+      var segunda = fotoNossa(p.foto2)
+        ? '<img class="segunda" src="' + esc(p.foto2) + '" alt="" aria-hidden="true" loading="lazy" decoding="async" width="400" height="400">'
+        : '';
+      return '<div class="vit-peca">' +
+        '<a class="vit-link" href="/loja/?peca=' + id + '">' +
         '<span class="vit-foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nome) +
-        '" loading="lazy" decoding="async" width="400" height="400"></span>' +
+        '" loading="lazy" decoding="async" width="400" height="400">' + segunda + '</span>' +
         '<span class="vit-nome">' + esc(p.nome) + '</span>' +
-        '<span class="vit-preco">' + esc(brl.format(p.preco)) + '</span></a>';
+        '<span class="vit-preco">' + esc(brl.format(p.preco)) + '</span></a>' +
+        '<span class="vit-sobre"><a class="vit-sacola" href="/loja/?sacola=' + id + '" title="Colocar na sacola"' +
+        ' aria-label="Colocar ' + esc(p.nome) + ' na sacola">' + SACOLA + '</a></span></div>';
     }).join('');
   }
 
@@ -83,6 +100,7 @@
         nome: valor(m.nome) || 'Peça',
         preco: Number(valor(m.preco)) || 0,
         foto: valor(m.foto) || '',
+        foto2: valor(m.foto2) || '',
         situacao: valor(m.situacao),
         destaque: !!valor(m.destaque)
       };

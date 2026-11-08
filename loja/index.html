@@ -1717,6 +1717,13 @@ try {
   // vitrine da home usa, e serve igual para um link de peça no Instagram.
   { const pedida = new URLSearchParams(location.search).get('peca');
     if(pedida && produtos.some(p => p.id === pedida)) abrirFicha(pedida); }
+  // `/loja/?sacola={id}` é a sacola laranja da vitrine da home: põe a peça na
+  // sacola e abre a gaveta, para a pessoa ver que entrou. O parâmetro sai do
+  // endereço na hora, senão recarregar a página somaria a peça de novo.
+  { const q = new URLSearchParams(location.search), id = q.get('sacola');
+    const p = id && produtos.find(x => x.id === id);
+    if(p && p.situacao !== 'embreve'){ juntar(id); abrirGaveta(); }
+    if(id){ q.delete('sacola'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } }
   // A conferência do cupom vem DEPOIS de a loja aparecer, e não bloqueia: as
   // peças não podem esperar uma leitura que só decide se um código sai escrito
   // no banner. Quando ela volta, o banner se repinta com ou sem o código.
