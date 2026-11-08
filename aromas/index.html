@@ -44,7 +44,7 @@
   .selo{display:inline-block;margin-top:18px;font-size:13px;letter-spacing:.08em;color:var(--ember);font-weight:500}
   .capa-img{margin:0;rotate:1.2deg}
   /* os três vidrinhos, foto larga: aparece inteira, sem recorte */
-  .capa-img img{display:block;width:100%;height:auto}
+  .capa-img img,.capa-img video{display:block;width:100%;height:auto}
   @media(min-width:900px){ .capa{grid-template-columns:.9fr 1.1fr;gap:56px;padding-top:56px} }
 
   /* os três gestos */
@@ -76,7 +76,7 @@
   /* a estação: foto e texto lado a lado */
   .estacao{display:grid;gap:30px;padding:24px 0 80px;align-items:center}
   .estacao figure{margin:0;rotate:-.8deg}
-  .estacao img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+  .estacao img,.estacao video{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
   .estacao h2{font-size:clamp(34px,8vw,54px);line-height:1.05;margin-top:12px}
   @media(min-width:860px){ .estacao{grid-template-columns:.9fr 1.1fr;gap:56px} .estacao figure{max-width:440px} }
 
@@ -181,9 +181,15 @@
         <a class="bt bt2" href="/oraculo/">Qual combina comigo</a>
       </div>
     </div>
+    <!-- O giro dos vidrinhos (nov/2026): a PEÇA gira e a luz fica parada, para
+         o brilho correr pelo vidro (atelier turntable --papel). Volta inteira em
+         10 s, e o último quadro emenda no primeiro sem corte. O pôster é o
+         primeiro quadro: sem vídeo (menos movimento, economia de dados) fica a
+         foto parada, e a capa não muda de imagem quando o vídeo começa. -->
     <figure class="capa-img pousada">
-      <img class="laje" src="/aromas/frascos/trio.jpg" width="1200" height="900" fetchpriority="high" decoding="async"
-           alt="Três vidrinhos âmbar de pingar com conta-gotas de gola de gesso e rótulo da Cinérea: Névoa da Manhã, Lenha & Poesia e Sopro de Sono.">
+      <video class="laje" id="giroVidrinhos" muted loop playsinline preload="none"
+             poster="/aromas/frascos/giro-trio.jpg" width="1200" height="900"
+             aria-label="Os três vidrinhos âmbar de pingar girando devagar: Névoa da Manhã, Lenha &amp; Poesia e Sopro de Sono, com conta-gotas de gola de gesso e rótulo da Cinérea."></video>
     </figure>
   </section>
 
@@ -265,7 +271,8 @@
 
     <!-- A estação (nov/2026): o suporte de gesso dos três vidrinhos, com o
          lugar de cada coisa do ritual. Em breve, como os vidrinhos; leva à
-         mesma lista de espera. A foto é o render do modelo real. -->
+         mesma lista de espera. A foto é o render do modelo real. O giro dela
+         (giro-estacao.mp4, já ligado no vivo.js) entra depois. -->
     <section class="estacao" id="estacao" aria-labelledby="estTitulo">
       <figure class="pousada"><img class="laje l2" src="/aromas/frascos/estacao.jpg" width="1000" height="1250" loading="lazy" decoding="async"
            alt="A estação de gesso com os três vidrinhos âmbar em degraus, um copo de fósforos com a faixa de lixa de riscar, o acendedor longo, o apagador e o rastelo."></figure>
