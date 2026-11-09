@@ -29,6 +29,22 @@
      newsletter, e este aqui não é isca, é presente. */
   .oferta{display:grid;gap:30px;align-items:center}
   @media(min-width:760px){ .oferta{grid-template-columns:300px 1fr;gap:46px} }
+  /* NO CELULAR O BOTÃO ENTRA NA PRIMEIRA TELA (nov/2026). A capa a 300 px
+     tomava a tela inteira e o "Baixar" ficava na segunda. Agora a capa
+     encolhe, e o botão sobe para logo depois do título e da linha em itálico;
+     os dois parágrafos que explicam o livro vêm depois dele. */
+  @media(max-width:759px){
+    .palco{padding-top:30px}
+    .oferta{gap:22px}
+    .oferta .capa-livro{max-width:140px;margin:0}
+    .oferta > div{display:flex;flex-direction:column;align-items:flex-start}
+    .oferta > div > *{order:6}
+    .oferta > div > .rot{order:1}
+    .oferta > div > h1{order:2}
+    .oferta > div > .sub{order:3}
+    .oferta > div > .baixar{order:4}
+    .oferta > div > .selo{order:5}
+  }
 
   .capa-livro{
     width:100%;max-width:300px;height:auto;display:block;margin:0 auto;
@@ -45,17 +61,17 @@
                font-size:17.5px;color:var(--morno);line-height:1.5}
   .oferta p{margin-top:16px;font-size:16px;line-height:1.72;max-width:52ch}
 
+  /* O botão é o mesmo de ação do resto do site (nov/2026): carvão, cantos
+     quase retos e caixa alta espaçada, como o "Ver as peças" da home. Era
+     brasa, arredondado e com sombra, e destoava da gramática do comum.css. */
   .baixar{
-    display:inline-flex;align-items:center;gap:10px;margin-top:24px;
-    padding:16px 30px;background:var(--ember);color:var(--paper);
-    /* Raio 10 como todo botão de ação do site (ver comum.css). Pílula é
-       desenho de controle, de filtro que liga e desliga. */
-    text-decoration:none;border-radius:2px;font-size:16px;
-    box-shadow:0 6px 18px -8px rgba(181,70,42,.7);
-    transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+    display:inline-flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;
+    min-height:54px;padding:0 28px;background:var(--char);color:var(--paper);border:1px solid var(--char);
+    text-decoration:none;border-radius:2px;font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+    transition:background .15s ease,border-color .15s ease;
   }
-  .baixar svg{width:20px;height:20px;transition:transform .15s ease}
-  .baixar:hover{background:var(--char);box-shadow:0 8px 22px -8px rgba(28,26,23,.5)}
+  .baixar svg{width:18px;height:18px;transition:transform .15s ease}
+  .baixar:hover{background:var(--ember);border-color:var(--ember)}
   .baixar:hover svg{transform:translateY(2px)}
   .selo{margin-top:12px;font-size:13px;color:var(--smoke);line-height:1.6}
 
