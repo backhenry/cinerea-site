@@ -142,21 +142,7 @@
      vista só nos vãos, e aceso depois da última. Fio de carvão com uma trama
      clara por cima, que é o que faz ler como algodão trançado e não risco. */
   .vit-grade{position:relative}
-  .vit-fio{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
-  .vit-fio .fio{fill:none;stroke:#2A2420;stroke-width:2.6;stroke-linecap:round}
-  .vit-fio .trama{fill:none;stroke:rgba(244,241,236,.5);stroke-width:1.1;stroke-dasharray:2.2 3.2;stroke-linecap:round}
-  .vit-fio .brilho{fill:var(--ember);opacity:.14}
-  .vit-fio .chama{fill:#E9A04A;transform-origin:0 -3px}
-  .vit-fio .brasa{fill:var(--ember)}
-  @media(prefers-reduced-motion:no-preference){
-    .vit-fio .chama{animation:vit-chama 2.4s ease-in-out infinite alternate}
-  }
-  /* o pavio que queima com a rolagem (vivo.js): a chama só aparece quando o
-     fio chega ao fim, e uma brasa corre na ponta enquanto ele queima */
-  .vit-fio.queima .ponta{opacity:0;transition:opacity .9s ease}
-  .vit-fio.queima.acesa .ponta{opacity:1}
-  .vit-fio .frente{fill:#E9A04A;opacity:0;transition:opacity .3s ease;filter:drop-shadow(0 0 3px rgba(233,140,60,.95)) drop-shadow(0 0 7px rgba(184,70,43,.55))}
-  @keyframes vit-chama{30%{transform:scale(.94,1.06) skewX(2deg)}70%{transform:scale(1.04,.95) skewX(-3deg)}100%{transform:scale(.97,1.03)}}
+  /* o estilo do pavio que liga as peças (.vit-fio) mora no comum.css: a loja usa também */
   .vit-peca:nth-child(3n+2){margin-top:58px}
   .vit-peca:nth-child(3n){margin-top:18px}
   .vit-foto{display:block;aspect-ratio:1;rotate:-1.6deg;transition:rotate .5s cubic-bezier(.2,.7,.3,1);

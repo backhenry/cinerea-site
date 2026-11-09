@@ -313,11 +313,15 @@
   /* `auto-fit` com teto de largura, alinhado À ESQUERDA, junto com o nome da
      coleção (nov/2026, pedido do dono). Centrado, uma coleção de uma peça só
      deixava o cartão solto no meio da tela, longe do título que o apresenta. */
-  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:start;gap:30px 22px}
+  /* vão de 46 px entre colunas: é por ele que o pavio que liga as peças
+     aparece (o fio passa por trás das fotos) */
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:start;gap:30px 46px;position:relative}
+  /* as peças por cima do pavio que as liga (o fio passa por trás das fotos) */
+  .grade > .peca{position:relative;z-index:1}
   /* DUAS POR LINHA NO CELULAR. Com uma, cada cartão tinha 460 px e a pessoa
      via uma peça por tela; com duas, a primeira linha cabe inteira na tela. */
   @media(max-width:560px){
-    .grade{grid-template-columns:1fr 1fr;gap:24px 12px}
+    .grade{grid-template-columns:1fr 1fr;gap:24px 22px}
     .grade .nome{font-size:16px;margin-top:10px;line-height:1.25}
     .grade .desc{font-size:12.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     /* O título da seção encolhe junto, senão é ele que empurra a primeira
@@ -1065,6 +1069,13 @@ function linhasComPeca(){
   return colecoes.filter(c => produtos.some(p => p.colecao === c.id)).map(c => c.nome);
 }
 
+function ligarAsPecas(){
+  if (typeof window.ligarPorPavio !== 'function') return;   // o vivo.js ainda não chegou
+  document.querySelectorAll('#grade .grade').forEach(g => window.ligarPorPavio(g, '.moldura', 'serpente'));
+}
+// o vivo.js é `defer` e pode chegar depois da primeira pintura
+addEventListener('load', () => { if (document.querySelector('#grade .grade') && !document.querySelector('#grade .vit-fio')) ligarAsPecas(); });
+
 function pintar(){
   const linhas = linhasComPeca();
   document.getElementById('linhas').innerHTML = linhas.length>1
@@ -1127,6 +1138,11 @@ function pintar(){
 
   document.getElementById('grade').outerHTML =
     `<div id="grade">${html || `<p class="vazio">${esc(nadaEncontrado())}</p>`}</div>`;
+  // O PAVIO QUE LIGA AS PEÇAS (nov/2026), o mesmo da home: em cada grade, as
+  // colunas descem em alturas diferentes e o fio passa por todas em serpente,
+  // queimando com a rolagem. Quem desenha é o vivo.js; a grade se refaz a cada
+  // filtro, e o fio vem junto.
+  ligarAsPecas();
 
   // Os controles mostram o que está ligado, e o contador só aparece quando há
   // filtro: numa vitrine inteira, "12 peças" é ruído.

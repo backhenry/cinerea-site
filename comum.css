@@ -699,3 +699,22 @@ body.nova{
 .laje.l3{-webkit-mask-image:var(--laje3);mask-image:var(--laje3)}
 .laje.l4{-webkit-mask-image:var(--laje4);mask-image:var(--laje4)}
 .pousada{filter:drop-shadow(0 16px 18px rgba(22,20,18,.13)) drop-shadow(0 2px 3px rgba(22,20,18,.08))}
+
+/* ---- o pavio que liga as peças (vivo.js, ligarPorPavio) --------------------
+   Na home, a vitrine e a trilha dos pratos e potes; na loja, cada grade de
+   peças (nov/2026). Mora aqui porque são duas páginas e um desenho só. */
+.vit-fio{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.vit-fio .fio{fill:none;stroke:#2A2420;stroke-width:2.6;stroke-linecap:round}
+.vit-fio .trama{fill:none;stroke:rgba(244,241,236,.5);stroke-width:1.1;stroke-dasharray:2.2 3.2;stroke-linecap:round}
+.vit-fio .brilho{fill:var(--ember);opacity:.14}
+.vit-fio .chama{fill:#E9A04A;transform-origin:0 -3px}
+.vit-fio .brasa{fill:var(--ember)}
+@media(prefers-reduced-motion:no-preference){
+  .vit-fio .chama{animation:vit-chama 2.4s ease-in-out infinite alternate}
+}
+/* o pavio que queima com a rolagem (vivo.js): a chama só aparece quando o
+   fio chega ao fim, e uma brasa corre na ponta enquanto ele queima */
+.vit-fio.queima .ponta{opacity:0;transition:opacity .9s ease}
+.vit-fio.queima.acesa .ponta{opacity:1}
+.vit-fio .frente{fill:#E9A04A;opacity:0;transition:opacity .3s ease;filter:drop-shadow(0 0 3px rgba(233,140,60,.95)) drop-shadow(0 0 7px rgba(184,70,43,.55))}
+@keyframes vit-chama{30%{transform:scale(.94,1.06) skewX(2deg)}70%{transform:scale(1.04,.95) skewX(-3deg)}100%{transform:scale(.97,1.03)}}

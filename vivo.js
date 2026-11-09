@@ -523,7 +523,9 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
     }
   }
   var pedidoQ = false;
-  window.addEventListener('scroll', function () {
+  window.addEventListener('scroll', function rolou() {
+    // a loja refaz a grade a cada filtro: o fio da grade antiga para de ouvir
+    if (!caixa.isConnected) { window.removeEventListener('scroll', rolou); return; }
     if (!revela || pedidoQ) return;
     pedidoQ = true;
     requestAnimationFrame(function () { pedidoQ = false; queimar(); });
@@ -536,10 +538,12 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
     // `vertical` pode ser uma pergunta e não um sim: a vitrine é trilha só no
     // celular, e quem gira o aparelho troca de modo sem recarregar
     var vertical = typeof modoVertical === 'function' ? modoVertical() : modoVertical;
+    var serpente = vertical === 'serpente';
     // por ÚLTIMO, e não primeiro: o desalinhamento usa :nth-child nas peças
     if (svg.parentNode !== caixa || svg.nextSibling) caixa.appendChild(svg);
     var fotos = caixa.querySelectorAll(seletor);
     if (fotos.length < 2) { svg.innerHTML = ''; return; }
+    if (serpente) fotos = desalinhar(fotos);
     // zera antes de medir: o próprio fio conta na largura rolável, e um fio
     // largo de antes (girou o celular, encolheu a janela) mediria a si mesmo
     svg.setAttribute('width', 0); svg.setAttribute('height', 0);
@@ -548,13 +552,43 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
       var r = f.getBoundingClientRect();
       return { x: r.left - base.left + caixa.scrollLeft + r.width / 2,
                y: r.top - base.top + r.height * (vertical ? 0.5 : 0.6), w: r.width,
-               dir: r.right - base.left + caixa.scrollLeft, fundo: r.bottom - base.top };
+               dir: r.right - base.left + caixa.scrollLeft, fundo: r.bottom - base.top, fila: f.dataset.fila };
     });
     var W = Math.max(caixa.scrollWidth, caixa.clientWidth), H = caixa.scrollHeight;
     svg.setAttribute('width', W); svg.setAttribute('height', H);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     var d = 'M' + n(pts[0].x) + ' ' + n(pts[0].y), u = pts[pts.length - 1], fx, fy, i, a, b;
-    if (vertical) {
+    if (serpente) {
+      // A LOJA (nov/2026): fila a fila, em serpente. Na mesma fila o fio
+      // pesa no meio do vão; para descer de fila, ele faz a volta POR FORA da
+      // foto, do lado em que a fila terminou, e nunca além da tela.
+      var noViewport = base.left;
+      var folga = function (p, lado) {
+        var livre = lado > 0 ? window.innerWidth - (noViewport + p.x + p.w / 2) : noViewport + p.x - p.w / 2;
+        return Math.max(10, Math.min(32, livre - 8));
+      };
+      for (i = 1; i < pts.length; i++) {
+        a = pts[i - 1]; b = pts[i];
+        if (a.fila === b.fila) {
+          var vao = b.x - a.x, peso = Math.abs(vao) * .18;
+          d += ' C' + n(a.x + vao * .35) + ' ' + n(a.y + peso) + ' ' + n(b.x - vao * .35) + ' ' + n(b.y + peso) + ' ' + n(b.x) + ' ' + n(b.y);
+        } else {
+          // A DESCIDA DE FILA corre AO LADO da coluna, a uma distância fixa da
+          // borda: sai da foto de lado, desce reto e entra na foto de baixo,
+          // com as quinas arredondadas. Uma curva só passava rente à legenda
+          // e riscava o nome da peça.
+          var ld = a.x > W / 2 ? 1 : -1, f = folga(a, ld),
+              xa = a.x + ld * (a.w / 2 + f), xb = b.x + ld * (b.w / 2 + f), r = Math.min(26, (b.y - a.y) / 4, f);
+          d += ' L' + n(xa - ld * r) + ' ' + n(a.y) + ' Q' + n(xa) + ' ' + n(a.y) + ' ' + n(xa) + ' ' + n(a.y + r) +
+               ' L' + n(xb) + ' ' + n(b.y - r) + ' Q' + n(xb) + ' ' + n(b.y) + ' ' + n(xb - ld * r) + ' ' + n(b.y) +
+               ' L' + n(b.x) + ' ' + n(b.y);
+        }
+      }
+      // depois da última, o fio sai pelo lado de fora, sobe e acende
+      var lf = u.x > W / 2 ? 1 : -1;
+      fx = u.x + lf * (u.w / 2 + folga(u, lf) * .8); fy = u.y - Math.min(50, u.w * .25);
+      d += ' C' + n(u.x + lf * u.w * .3) + ' ' + n(u.y + 30) + ' ' + n(fx) + ' ' + n(fy + 40) + ' ' + n(fx) + ' ' + n(fy);
+    } else if (vertical) {
       // de centro a centro, um S por vão, desviando ora para um lado, ora para o outro
       // O trecho que aparece é o do VÃO, entre as duas fotos, e um S simples
       // atravessa o vão quase reto. Por isso cada trecho passa por um ponto do
@@ -595,7 +629,7 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
         '<circle class="brasa" r="2.6"/>' +
       '</g>';
     var fios = '<path class="fio" d="' + d + '"/><path class="trama" d="' + d + '"/>';
-    if (vertical && !pavioCalmo) {
+    if ((vertical || serpente) && !pavioCalmo) {
       var id = 'pavio-' + (++pavioConta);
       svg.innerHTML =
         '<defs><mask id="' + id + '" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="' + H + '">' +
@@ -607,7 +641,7 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
       frente = svg.querySelector('.frente');
       comprimento = revela.getTotalLength();
       revela.style.strokeDasharray = comprimento + ' ' + comprimento;
-      inicio = pts[0].y; fim = Math.max(fy, u.y);
+      inicio = Math.min.apply(null, pts.map(function (p) { return p.y; })); fim = Math.max(fy, u.y);
       svg.classList.add('queima');
       queimar();
     } else {
@@ -615,6 +649,31 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
       svg.classList.remove('queima', 'acesa');
       svg.innerHTML = fios + ponta;
     }
+  }
+
+  /* As colunas descem em alturas diferentes, como peças pousadas numa mesa, e
+     as fotos voltam na ordem da serpente: fila 1 da esquerda para a direita,
+     fila 2 da direita para a esquerda. A fila sai do `offsetTop` do cartão
+     MENOS o desalinhamento, que é margem e mudaria a conta. */
+  function desalinhar(fotos) {
+    var DESCE = window.innerWidth < 600 ? [0, 30] : [0, 54, 18, 70];
+    var cartoes = [].map.call(fotos, function (f) { return f.closest('.peca') || f.parentNode; });
+    cartoes.forEach(function (c) { c.style.marginTop = ''; });
+    var colunas = [], filas = [];
+    cartoes.forEach(function (c) {
+      if (colunas.indexOf(c.offsetLeft) < 0) colunas.push(c.offsetLeft);
+      if (filas.indexOf(c.offsetTop) < 0) filas.push(c.offsetTop);
+    });
+    colunas.sort(function (a, b) { return a - b; });
+    filas.sort(function (a, b) { return a - b; });
+    var itens = [].map.call(fotos, function (f, k) {
+      var c = cartoes[k], col = colunas.indexOf(c.offsetLeft), fila = filas.indexOf(c.offsetTop);
+      return { f: f, c: c, col: col, fila: fila };
+    });
+    if (colunas.length > 1) itens.forEach(function (it) { it.c.style.marginTop = DESCE[it.col % DESCE.length] + 'px'; });
+    itens.sort(function (a, b) { return a.fila - b.fila || (a.fila % 2 ? b.col - a.col : a.col - b.col); });
+    itens.forEach(function (it) { it.f.dataset.fila = it.fila; });
+    return itens.map(function (it) { return it.f; });
   }
 
   function pedir() { if (!pedido) { pedido = true; requestAnimationFrame(desenhar); } }
