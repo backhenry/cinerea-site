@@ -390,13 +390,48 @@
   /* MONTE SEU KIT (nov/2026). A faixa nasce no HTML com a altura dela, para a
      grade não pular quando o catálogo chega; some só se o kit estiver
      desligado na gestão. A tela de montar é irmã da ficha. */
-  .kit-faixa{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:74px;margin:18px 0 6px;
-    padding:14px 18px;border:1px solid var(--line);border-left:3px solid var(--ember);border-radius:2px;background:#FBFAF7;
-    cursor:pointer;text-align:left;width:100%;font:inherit;color:var(--char)}
-  .kit-faixa:hover{border-color:var(--char);border-left-color:var(--ember)}
-  .kit-faixa b{display:block;font-family:'Bodoni Moda';font-weight:500;font-size:21px}
-  .kit-faixa span{display:block;font-size:14px;color:var(--smoke);margin-top:2px}
-  .kit-faixa .kit-ir{flex:none;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+  /* A ENTRADA DO KIT (nov/2026): capa escura, como a do site, com o arranjo
+     se montando sozinho ao lado e a conta de um kit de verdade. A faixa creme
+     de antes sumia entre os filtros e as peças. Altura reservada no HTML: a
+     grade não pula quando o catálogo chega. */
+  .kit-faixa{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px;min-height:200px;margin:20px 0 10px;
+    padding:22px 24px;background:var(--char);color:var(--paper);border:0;border-radius:2px;cursor:pointer;text-align:left;width:100%;font:inherit;transition:transform .25s ease}
+  .kit-faixa:hover{transform:translateY(-2px)}
+  .kit-faixa > span{display:block;min-width:0}
+  .kf-selo{display:inline-block;background:var(--ember);color:#fff;font-size:12.5px;font-weight:600;letter-spacing:.06em;padding:4px 10px;border-radius:2px}
+  .kf-titulo{display:block;font-family:'Bodoni Moda';font-weight:500;font-size:clamp(28px,6vw,42px);line-height:1.04;margin-top:10px}
+  .kf-sub{display:block;font-size:14.5px;line-height:1.5;color:rgba(244,241,236,.72);margin-top:8px;max-width:46ch}
+  /* altura reservada: a conta chega com o catálogo, e a faixa não pode crescer depois */
+  .kf-conta{display:block;min-height:1.5em;margin-top:10px;font-size:14.5px;color:rgba(244,241,236,.85)}
+  .kf-conta s{opacity:.55;margin:0 4px}
+  .kf-conta b{color:#fff;font-weight:600}
+  .kf-ir{display:inline-block;margin-top:14px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--ember);padding-bottom:3px;transition:color .2s}
+  .kit-faixa:hover .kf-ir{color:#fff}
+  .kf-palco{position:relative;width:min(34vw,240px);aspect-ratio:1;background:#F4F1EC;border-radius:2px;overflow:hidden}
+  .kf-palco .cena{position:absolute;inset:0;transform:scale(1.16);transform-origin:36% 34%}
+  .kf-palco img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+  /* o arranjo se desfaz e se remonta, uma coisa de cada vez. O quadro ZERO é
+     o kit montado: aba escondida congela no primeiro quadro, e o que congela
+     tem de ser o kit inteiro, e não um palco vazio. */
+  .kf-palco img:nth-child(1){animation:kfMonta1 9s ease-in-out infinite}
+  .kf-palco img:nth-child(2){animation:kfMonta2 9s ease-in-out infinite}
+  .kf-palco img:nth-child(3){animation:kfMonta3 9s ease-in-out infinite}
+  .kf-palco img:nth-child(4){animation:kfMonta4 9s ease-in-out infinite}
+  @keyframes kfMonta1{0%,58%{opacity:1;transform:none}63%,66%{opacity:0;transform:translateY(-16px)}72%,100%{opacity:1;transform:none}}
+  @keyframes kfMonta2{0%,58%{opacity:1;transform:none}63%,74%{opacity:0;transform:translateY(-16px)}80%,100%{opacity:1;transform:none}}
+  @keyframes kfMonta3{0%,58%{opacity:1;transform:none}63%,82%{opacity:0;transform:translateY(-16px)}88%,100%{opacity:1;transform:none}}
+  @keyframes kfMonta4{0%,58%{opacity:1;transform:none}63%,88%{opacity:0;transform:translateY(-16px)}94%,100%{opacity:1;transform:none}}
+  @media(max-width:600px){ .kit-faixa{padding:18px;gap:14px} .kf-sub{display:none} .kf-palco{width:38vw} .kf-conta{font-size:13.5px} .kf-ir{white-space:nowrap;font-size:11.5px;letter-spacing:.1em} }
+  @media (prefers-reduced-motion: reduce){ .kf-palco img{animation:none!important} }
+  /* "leve em kit", na ficha da peça */
+  .leve-kit{display:flex;align-items:center;gap:14px;margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-left:3px solid var(--ember);border-radius:2px;background:#FBFAF7}
+  .leve-kit p{flex:1;font-size:14px;line-height:1.45;color:var(--char);margin:0}
+  .leve-kit p small{display:block;color:var(--smoke);font-size:13px;margin-top:2px}
+  .leve-kit button{flex:none;font:inherit;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;background:var(--char);color:var(--paper);border:0;border-radius:2px;padding:10px 14px;cursor:pointer}
+  .leve-kit button:hover{background:var(--ember)}
+  /* o lembrete da sacola */
+  .kit-lembrete{margin:0 0 12px;padding:12px 14px;border:1px dashed var(--ember);border-radius:2px;font-size:13.5px;line-height:1.45;color:var(--char)}
+  .kit-lembrete button{display:block;margin-top:8px;font:inherit;font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;border-bottom:1px solid var(--ember);color:var(--ember);padding:0 0 2px;cursor:pointer}
   .kit-faixa[hidden]{display:none}
   .montar{position:fixed;inset:0;background:var(--paper);overflow-y:auto;z-index:31;display:none}
   .montar.abre{display:block}
@@ -406,7 +441,10 @@
      `darken`, o fundo de cada foto some no fundo do palco e os objetos
      parecem pousados na mesma mesa. `multiply` escureceria o papel onde duas
      fotos se cruzam, e o retângulo de cada uma apareceria. */
+  /* `min-width:0`: sem ele, a fileira de opções (que rola de lado) alargava a
+     coluna além da tela e o texto saía cortado no celular */
   .mgrade{display:grid;gap:28px}
+  .mgrade > *{min-width:0}
   @media(min-width:900px){ .mgrade{grid-template-columns:minmax(0,1fr) 420px;gap:48px;align-items:start} .palco-col{position:sticky;top:70px;order:2} }
   @media(max-width:899px){ .palco-col{display:none} }
   /* o palco encolhe em tela baixa: ele, o resumo e o botão cabem juntos */
@@ -466,17 +504,14 @@
   .palco.completo + .selo-kit{opacity:1;transform:none;height:auto}
   .palco.completo ~ .palco-legenda{display:none}
   .palco-legenda{font-size:13px;color:var(--smoke);text-align:center;margin-top:10px}
-  /* no celular, o kit se monta numa fileira de miniaturas no resumo */
-  .mini{display:none;gap:8px;margin-bottom:10px}
-  @media(max-width:899px){ .mini{display:flex} }
-  .mini span{position:relative;width:46px;height:46px;border:1.5px dashed var(--line);border-radius:50%;overflow:hidden;background:#F4F1EC;flex:none}
-  .mini span.tem{border:1px solid var(--line)}
-  .mini span img{width:100%;height:100%;object-fit:cover;transform:scale(1.35)}
-  .mini span.chega img{animation:pousaMini .6s cubic-bezier(.2,.9,.3,1.3)}
-  @keyframes pousaMini{0%{transform:scale(.4);opacity:0}100%{transform:scale(1.35);opacity:1}}
-  .mini b{align-self:center;font-weight:500;font-size:12px;color:var(--ember);margin-left:4px;opacity:0;transition:opacity .3s}
-  .mini.completo b{opacity:1}
-  @media (prefers-reduced-motion: reduce){ .slot.chega img,.mini span.chega img{animation:none} .selo-kit{transition:none} }
+  /* NO CELULAR o palco grande não cabe ao lado dos passos: um palco pequeno
+     mora na barra de baixo, à esquerda dos totais, sempre à vista enquanto a
+     pessoa rola. As mesmas camadas, o mesmo arranjo. */
+  .mr-in{display:flex;gap:14px;align-items:flex-start}
+  .mr-in > div:last-child{flex:1;min-width:0}
+  .palco-mini{width:min(40vw,160px);flex:none;margin:0;min-width:0}
+  .palco-mini .lugar{font-size:0;border-width:1px}
+  @media (prefers-reduced-motion: reduce){ .slot.chega img{animation:none} .selo-kit{transition:none} }
   .mmiolo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(30px,7vw,40px);line-height:1.08}
   .mmiolo .msub{color:var(--smoke);margin-top:10px;line-height:1.55;max-width:52ch}
   .passo{margin-top:30px}
@@ -785,8 +820,14 @@ try {
 
 <div class="envolve">
   <button type="button" class="kit-faixa" id="kitFaixa" onclick="abrirKit()">
-    <div><b>Monte seu kit</b><span id="kitFaixaTexto">Uma peça, um refil e um pavio saem mais em conta juntos.</span></div>
-    <span class="kit-ir">Montar →</span>
+    <span>
+      <span class="kf-selo" id="kitFaixaSelo">kit com desconto</span>
+      <span class="kf-titulo">Monte seu kit</span>
+      <span class="kf-sub" id="kitFaixaTexto">Uma peça, um refil e um pavio, juntos, saem mais em conta. O aroma entra se você quiser.</span>
+      <span class="kf-conta" id="kitFaixaConta"></span>
+      <span class="kf-ir">Montar o meu →</span>
+    </span>
+    <span class="kf-palco" id="kitFaixaPalco" aria-hidden="true"><span class="cena"></span></span>
   </button>
   <div class="linhas" id="linhas"></div>
   <!-- A ENCOMENDA FICA DEPOIS DAS PEÇAS (nov/2026). Antes ela vinha no alto,
@@ -814,7 +855,15 @@ try {
     </aside>
   </div></div>
 </div>
-<div class="mresumo" id="mresumo"><div class="mr-in" id="mresumoIn"></div></div>
+<div class="mresumo" id="mresumo"><div class="mr-in">
+  <div class="palco palco-mini anel-compacto" id="palcoMini" aria-hidden="true"><div class="cena">
+    <div class="slot s-refil" data-slot="refil"><span class="lugar">refil</span><img alt=""></div>
+    <div class="slot s-peca" data-slot="peca"><span class="lugar">peça</span><img alt=""></div>
+    <div class="slot s-pavio" data-slot="pavio"><span class="lugar">pavio</span><img alt=""></div>
+    <div class="slot s-aroma" data-slot="aroma"><span class="lugar">aroma</span><img alt=""></div>
+  </div></div>
+  <div id="mresumoIn"></div>
+</div></div>
 <div class="ficha" id="ficha"><div class="fechar"><button onclick="fecharFicha()">← voltar</button></div><div class="fmiolo" id="fmiolo"></div></div>
 <div class="gaveta-fundo" id="gavetaFundo" onclick="fecharGaveta()"></div>
 <aside class="gaveta" id="gaveta" role="dialog" aria-modal="true" aria-label="Sua sacola" aria-hidden="true" inert>
@@ -829,6 +878,7 @@ try {
       <button onclick="usarCupom()" id="cupomBt">Usar</button>
     </div>
     <div class="grecado" id="cupomRecado" style="display:none"></div>
+    <div id="kitLembrete"></div>
     <div class="gtotais" id="gavetaTotais"></div>
     <button class="gfechar" onclick="fecharPedido()">Finalizar compra</button>
     <div class="gnota">Você entra na sua conta para pagar e acompanhar o pedido.</div>
@@ -1364,6 +1414,18 @@ function pintarGaveta(){
     return { kit: p.kit, preco: p.preco, qtd: q };
   }), kitPct);
   const valeKit = kit.desconto > descCupom;
+  // FALTA POUCO PARA O KIT: há peça, refil ou pavio na sacola, mas não os três.
+  // O botão abre o montador com o que já está aqui escolhido, e o "colocar na
+  // sacola" de lá acrescenta só o que falta.
+  { const caixa = document.getElementById('kitLembrete');
+    const naSacola = {};
+    linhas.forEach(([id]) => { const p = produtos.find(x => x.id === id); if (p && p.kit && !naSacola[p.kit]) naSacola[p.kit] = id; });
+    const falta = [['peca', 'uma peça'], ['refil', 'o refil'], ['pavio', 'o pavio']].filter(([k]) => !naSacola[k]).map(([, n]) => n);
+    const comeca = ['peca', 'refil', 'pavio'].some(k => naSacola[k]);
+    caixa.innerHTML = (kitPct > 0 && comeca && falta.length && !document.getElementById('kitFaixa').hidden)
+      ? `<div class="kit-lembrete">Falta pouco para o kit: com ${falta.join(' e ')}, sai com ${kitPct}% de desconto.
+           <button onclick="fecharGaveta();abrirKit(${esc(JSON.stringify(naSacola))}, true)">Completar o kit</button></div>`
+      : ''; }
   const desc = valeKit ? Math.round(Math.min(kit.desconto, total)*100)/100 : descCupom;
   document.getElementById('gavetaTotais').innerHTML =
     (desc > 0
@@ -1477,11 +1539,33 @@ function pintarFaixaKit(){
   if(!faixa) return;
   const temTudo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => produtos.some(p => p.kit === k));
   faixa.hidden = !(kitPct > 0 && temTudo);
-  if(!faixa.hidden) document.getElementById('kitFaixaTexto').textContent =
-    `Uma peça, um refil e um pavio juntos saem com ${kitPct}% de desconto. O aroma entra junto, se você quiser.`;
+  if(faixa.hidden) return;
+  document.getElementById('kitFaixaSelo').textContent = `−${kitPct}% no kit`;
+  // A CONTA DE UM KIT DE VERDADE: a peça mais barata com o refil e o pavio
+  // mais barato. Número real convence mais que um percentual sozinho.
+  const maisBarato = k => produtos.filter(p => p.kit === k).sort((a, b) => a.preco - b.preco)[0];
+  const ex = ['peca', 'refil', 'pavio'].map(maisBarato);
+  const avulso = ex.reduce((s, p) => s + p.preco, 0);
+  const kit = descontoDoKit(ex.map(p => ({ kit: p.kit, preco: p.preco, qtd: 1 })), kitPct);
+  document.getElementById('kitFaixaConta').innerHTML =
+    `${esc(ex[0].nome)} + refil + pavio: de<s>${brl(avulso)}</s>por <b>${brl(avulso - kit.desconto)}</b>`;
+  // o mesmo exemplo, montado ao lado, com as camadas do arranjo
+  if (arranjo) {
+    const anel = arranjo.pecas[ex[0].id] || 'compacto';
+    const aroma = produtos.find(p => p.kit === 'aroma' && (arranjo.camadas[anel] || []).includes(p.id));
+    const ordem = [ex[1], ex[0], aroma, ex[2]].filter(p => p && (arranjo.camadas[anel] || []).includes(p.id));
+    document.querySelector('#kitFaixaPalco .cena').innerHTML =
+      ordem.map(p => `<img src="/kit/${anel}/${encodeURIComponent(p.id)}.webp" alt="" loading="lazy">`).join('');
+  }
 }
 
-window.abrirKit = () => {
+// `pre` chega da ficha ("leve em kit", com a peça escolhida) ou da sacola
+// ("completar o kit", com o que já está nela). O que veio da sacola fica
+// marcado, para o botão final acrescentar só o que falta.
+let kitDaSacola = new Set();
+window.abrirKit = (pre, daSacola) => {
+  if (pre) { escolhaKit = { ...escolhaKit, ...pre }; }
+  kitDaSacola = new Set(daSacola ? Object.values(pre || {}) : []);
   pintarKit();
   document.getElementById('montar').classList.add('abre');
   document.getElementById('montar').scrollTop = 0;
@@ -1522,11 +1606,6 @@ function pintarKit(){
   const foraDeVenda = escolhidos.filter(p => p.situacao !== 'disponivel');
   const falta = PASSOS_KIT.filter(([k,,obr]) => obr && !escolhaKit[k]).map(([,nome]) => nome.toLowerCase());
   const resumo = `
-    <div class="mini${completo ? ' completo' : ''}" aria-hidden="true">${PASSOS_KIT.map(([k]) => {
-      const p = produtos.find(x => x.id === escolhaKit[k]);
-      const nova = p && naMini[k] !== p.id;
-      return `<span class="${p ? 'tem' : ''}${nova ? ' chega' : ''}">${p && p.foto ? `<img src="${esc(p.foto)}" alt="">` : ''}</span>`;
-    }).join('')}<b>${completo ? `kit completo, ${kitPct}% off` : ''}</b></div>
     <div class="lin"><span>Avulso</span><span>${brl(avulso)}</span></div>
     ${kit.desconto > 0 ? `<div class="lin kit"><span>Kit, ${kitPct}% off</span><span>−${brl(kit.desconto)}</span></div>` : ''}
     <div class="lin fim"><span>Total do kit</span><span>${brl(avulso - kit.desconto)}</span></div>
@@ -1534,7 +1613,7 @@ function pintarKit(){
       ? `<button class="bt" disabled>Falta escolher ${falta.join(', ')}</button>`
       : foraDeVenda.length
       ? `<button class="bt" onclick="avisarKit()">Quero ser avisado deste kit</button>
-         <p class="mnota">${foraDeVenda.map(p => esc(p.nome)).join(', ')} ${foraDeVenda.length > 1 ? 'estão' : 'está'} fora de venda agora. A gente avisa quando o kit puder sair.</p>`
+         <p class="mnota">${foraDeVenda.length > 1 ? `${foraDeVenda.length} itens estão` : 'Um item está'} fora de venda agora. A gente avisa quando o kit puder sair.</p>`
       : `<button class="bt" onclick="kitNaSacola()">Colocar o kit na sacola</button>`}`;
   document.getElementById('mresumoIn').innerHTML = resumo;
   document.getElementById('mresumoLado').innerHTML = resumo;
@@ -1542,15 +1621,25 @@ function pintarKit(){
 
 /* O palco só muda o lugar que mudou: refazer o HTML inteiro a cada toque
    reiniciaria a animação de todas as peças, e a que já estava pousada
-   cairia de novo. `naPalco` e `naMini` lembram o que está em cada lugar. */
-const naPalco = {}, naMini = {};
+   cairia de novo. `naPalco` lembra o que está em cada lugar, por palco: o
+   grande, do computador, e o pequeno, da barra do celular. */
+const naPalco = { palco: {}, palcoMini: {} };
 // O manifesto diz qual arranjo cada peça usa (largo para as grandes) e que
 // camadas existem. Sem ele, ou sem a camada, o palco cai na foto da loja.
 let arranjo = null;
-fetch('/kit/arranjo.json').then(r => r.ok ? r.json() : null).then(m => { arranjo = m; pintarPalco(); }).catch(() => {});
+fetch('/kit/arranjo.json').then(r => r.ok ? r.json() : null).then(m => { arranjo = m; pintarPalco(); if (produtos.length) pintarFaixaKit(); }).catch(() => {});
 function pintarPalco(){
+  ['palco', 'palcoMini'].forEach(pintarUmPalco);
   const palco = document.getElementById('palco');
+  const completo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => escolhaKit[k]);
+  document.getElementById('seloKit').textContent = `kit completo · ${kitPct}% off`;
+  document.getElementById('palcoLegenda').textContent = completo
+    ? 'Este é o seu kit.' : 'Escolha ao lado, e o kit se monta aqui.';
+}
+function pintarUmPalco(qual){
+  const palco = document.getElementById(qual);
   if(!palco) return;
+  const visto = naPalco[qual];
   const anel = (arranjo && arranjo.pecas[escolhaKit.peca]) || 'compacto';
   palco.classList.toggle('anel-largo', anel === 'largo');
   palco.classList.toggle('anel-compacto', anel !== 'largo');
@@ -1562,8 +1651,8 @@ function pintarPalco(){
     // a chave inclui o arranjo: trocar uma peça pequena por uma grande muda
     // o lugar de tudo, e as outras camadas descem de novo para o lugar novo
     const chave = p ? `${p.id}@${temCamada ? anel : 'foto'}` : '';
-    if (naPalco[k] === chave) return;
-    naPalco[k] = chave;
+    if (visto[k] === chave) return;
+    visto[k] = chave;
     const img = slot.querySelector('img');
     slot.classList.remove('chega');
     slot.classList.toggle('foto', !!p && !temCamada);
@@ -1581,15 +1670,11 @@ function pintarPalco(){
   });
   const completo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => escolhaKit[k]);
   palco.classList.toggle('completo', completo);
-  document.getElementById('seloKit').textContent = `kit completo · ${kitPct}% off`;
-  document.getElementById('palcoLegenda').textContent = completo
-    ? 'Este é o seu kit.' : 'Escolha ao lado, e o kit se monta aqui.';
-  // a fileira do celular é desenhada junto do resumo; aqui só se lembra o que já pousou
-  setTimeout(() => PASSOS_KIT.forEach(([k]) => { naMini[k] = escolhaKit[k] || ''; }), 0);
 }
 
 window.kitNaSacola = () => {
-  PASSOS_KIT.forEach(([k]) => { if (escolhaKit[k]) juntar(escolhaKit[k]); });
+  PASSOS_KIT.forEach(([k]) => { if (escolhaKit[k] && !kitDaSacola.has(escolhaKit[k])) juntar(escolhaKit[k]); });
+  kitDaSacola = new Set();
   fecharKit();
   abrirGaveta();
 };
@@ -1711,6 +1796,10 @@ window.abrirFicha = id => {
       ? `<p class="desc" style="margin-top:24px">Esta peça ainda está sendo feita. Fale com a gente para saber quando ela chega.</p>
          <button class="bt fraco" onclick="fecharFicha()">Voltar à loja</button>`
       : `<button class="bt" onclick="juntar('${esc(p.id)}')">Colocar na sacola</button>`}
+    ${p.kit && kitPct > 0 && !document.getElementById('kitFaixa').hidden ? `<div class="leve-kit">
+        <p>Leve em kit, com ${p.kit === 'peca' ? 'refil e pavio' : p.kit === 'refil' ? 'uma peça e o pavio' : p.kit === 'pavio' ? 'uma peça e o refil' : 'uma peça, o refil e o pavio'}.
+           <small>Juntos, saem com ${kitPct}% de desconto.</small></p>
+        <button onclick="fecharFicha();abrirKit({${p.kit}:'${esc(p.id)}'})">Montar o kit</button></div>` : ''}
     ${p.modelo?`<div class="ver3d" id="ver3d">
         <button class="bt ra" id="bt_abrir3d"
           onclick="abrir3d('${esc(p.modelo)}','${esc(p.nome)}', true)"
