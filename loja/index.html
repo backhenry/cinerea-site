@@ -553,7 +553,11 @@
     transition:opacity .4s ease,transform .5s cubic-bezier(.3,1.6,.5,1)}
   .mmiolo.completo .passo.ultimo h3 i::after{opacity:1;transform:none;animation:kitChama 2.2s ease-in-out infinite alternate}
   @keyframes kitChama{30%{transform:scale(.94,1.07) skewX(2deg)}70%{transform:scale(1.04,.95) skewX(-3deg)}100%{transform:scale(.97,1.03)}}
-  .opcoes{display:flex;align-items:flex-start;gap:20px;overflow-x:auto;padding:16px 4px 22px;scroll-snap-type:x proximity}
+  /* A escolhida cresce 5% e tem foto girada com sombra: a fila precisa de
+     folga nos lados, senão a borda dela (e o começo do nome) é cortada pelo
+     próprio rolar. A margem negativa devolve a folga, e a primeira opção
+     continua alinhada com o título do passo. */
+  .opcoes{display:flex;align-items:flex-start;gap:20px;overflow-x:auto;padding:16px 16px 22px;margin:0 -12px;scroll-padding-inline:16px;scroll-snap-type:x proximity}
   .opcao{flex:0 0 136px;scroll-snap-align:start;text-align:left;font:inherit;color:var(--char);background:none;border:0;padding:0;cursor:pointer;position:relative;
     transition:transform .35s cubic-bezier(.3,1.4,.5,1),opacity .3s ease}
   .opcao:nth-child(even){margin-top:18px}
