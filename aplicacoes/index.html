@@ -70,6 +70,17 @@
   .peca-card .ver{display:inline-block;margin-top:12px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--char);padding-bottom:3px}
   .peca-card:hover .ver,.peca-card:hover .nome{color:var(--ember);border-color:var(--ember)}
   @media(min-width:760px){ .duas{grid-template-columns:1fr 1fr;gap:48px} .peca-card:nth-child(2){margin-top:60px} }
+  /* NO CELULAR, LADO A LADO TAMBÉM (nov/2026). Uma embaixo da outra, com a
+     foto na largura toda, as duas tomavam quase duas telas, e o título diz
+     "duas peças, o mesmo chip": elas têm de aparecer juntas. A segunda desce
+     um pouco, como no computador, e o texto encolhe para caber na coluna. */
+  @media(max-width:759px){
+    .duas{grid-template-columns:1fr 1fr;gap:16px}
+    .peca-card:nth-child(2){margin-top:34px}
+    .peca-card .nome{font-size:22px;margin-top:12px}
+    .peca-card .desc{font-size:14px;line-height:1.5}
+    .peca-card .ver{font-size:11.5px;letter-spacing:.12em;padding-top:12px;margin-top:0}
+  }
 
   .ideias{background:var(--ash);padding:72px 0 40px}
   .grupo{display:grid;gap:26px;max-width:1080px;margin:44px auto 0;padding:0 22px 32px;align-items:center}
