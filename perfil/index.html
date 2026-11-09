@@ -28,6 +28,14 @@
   .cartao{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:4px;padding:20px;margin-bottom:14px}
   .cartao h3{font-family:'Bodoni Moda';font-weight:500;font-size:19px;line-height:1.25}
   .cartao .sub{font-size:13px;color:var(--smoke);margin-top:4px}
+  /* O código do cartão: letra de máquina e espaçada, como impressa, para a
+     pessoa comparar caractere com caractere. A caixa alta é só da vista: o
+     que vai para a regra passa por `normalizarCodigo`. */
+  input.codigo{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:19px;letter-spacing:.14em;text-transform:uppercase}
+  input.codigo::placeholder{letter-spacing:.14em;opacity:.45}
+  .cartao .nota{font-size:13.5px;color:var(--smoke);margin-top:10px}
+  .cartao .nota a{display:inline-block;padding:12px 0;color:var(--char);text-underline-offset:3px}
+  .cartao .nota a:hover{color:var(--ember)}
 
   label{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--smoke);margin:16px 0 6px}
   input,select,textarea{
@@ -440,13 +448,23 @@ let secao = /[?&](pago|pendente|falhou)=/.test(location.search) ? 'encomendas'
  * abre sozinho ao encostar. A página do convidado oferece "Esta peça é sua?" e
  * traz o chip para cá em `?guardar=`.
  *
- * SÓ GUARDA PEÇA QUE TEM DONO NA CERTIDÃO, e esse dono é esta conta. O link
- * da página do convidado é visto por qualquer um que encoste o celular, e se
- * encaminha por mensagem. Guardar peça sem dono por aqui seria o sequestro que
- * a regra de posse veio fechar, a um toque: o convidado da festa guarda a peça
- * antes de quem a comprou. A regra ainda deixa registrar peça sem dono (é o
- * que mantém de pé tudo que foi vendido antes dela), mas esta tela não oferece:
- * peça sem dono vai para o WhatsApp, e a casa a liga à encomenda na gestão.
+ * SÓ GUARDA PEÇA COM PROVA DE POSSE, e são duas:
+ *
+ *   - a certidão tem `dono`, e é esta conta (venda pela loja, a casa sabe
+ *     quem comprou);
+ *   - a certidão tem `cartao: true`, e a pessoa digita o código impresso no
+ *     cartão da caixa (venda no balcão ou pelo WhatsApp, sem conta).
+ *
+ * O link da página do convidado é visto por qualquer um que encoste o celular,
+ * e se encaminha por mensagem. Guardar peça sem prova por aqui seria o
+ * sequestro que a regra de posse veio fechar, a um toque: o convidado da festa
+ * guarda a peça antes de quem a comprou. A regra ainda deixa registrar peça
+ * sem prova (é o que mantém de pé tudo que foi vendido antes dela), mas esta
+ * tela não oferece: essa peça vai para o WhatsApp.
+ *
+ * O código mora em `ativacoes/`, que ninguém lê; quem compara é a regra. A
+ * marca `cartao` só diz QUANDO perguntar, e a regra só a aceita com o código
+ * gravado junto.
  */
 const TAG_VALIDA = /^[0-9A-F]{8,20}$/;
 
@@ -472,8 +490,26 @@ function estadoDaGuarda({ certidao, uid, jaNaConta }){
   if (jaNaConta) return 'ja-sua';
   if (!certidao) return 'nao-existe';
   const dono = typeof certidao.dono === 'string' ? certidao.dono : '';
-  if (!dono) return 'sem-dono';
-  return dono === uid ? 'pode-guardar' : 'outra-conta';
+  if (dono && dono !== uid) return 'outra-conta';
+  // Com cartão, o código é exigido pela regra mesmo para o dono: pedir aqui
+  // é o que evita a gravação que a regra recusaria.
+  if (certidao.cartao === true) return 'pede-codigo';
+  return dono ? 'pode-guardar' : 'sem-dono';
+}
+
+/**
+ * O código do cartão como a regra o compara. CÓPIA de `normalizarCodigo`, em
+ * `cinerea-gestao/core.js`, que é quem o gera: o alfabeto não tem B, I, O, S,
+ * Z, 0, 1, 2, 5 nem 8, que se confundem impressos. Maiúsculas, fora o que não
+ * é do alfabeto, exatamente 8, hífen no meio. Comprimento errado vira vazio,
+ * nunca um código pela metade. `tests/guardar-peca.test.mjs`, no repositório
+ * do app, passa os mesmos textos pelas duas cópias.
+ */
+const ALFABETO_CODIGO = 'ACDEFGHJKLMNPQRTUVWXY34679';
+function normalizarCodigo(v){
+  const s = String(v ?? '').toUpperCase().replace(/[^0-9A-Z]/g, '')
+    .split('').filter(c => ALFABETO_CODIGO.includes(c)).join('');
+  return s.length === 8 ? s.slice(0, 4) + '-' + s.slice(4) : '';
 }
 
 let guardarTag = tagParaGuardar(location.search);
@@ -883,6 +919,19 @@ async function telaGuardar(){
       <div class="botoes"><button class="bt" id="g_guardar">Guardar na minha conta</button></div>
       <div class="erro some" id="g_erro"></div>
     </div>`,
+    'pede-codigo': `<div class="cartao">
+      <h3>${nomePeca}</h3>
+      <p class="sub">Esta peça veio com um cartão dentro da caixa. Digite o
+        código impresso nele: é o que mostra que a peça está com você.</p>
+      <label for="g_codigo">Código do cartão</label>
+      <input id="g_codigo" class="codigo" maxlength="12" placeholder="ACDE-FGHJ"
+        autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false">
+      <label for="g_nome">Como você chama esta peça?</label>
+      <input id="g_nome" maxlength="40" value="${esc(cert?.modelo || '')}" placeholder="a vela da sala">
+      <div class="botoes"><button class="bt" id="g_guardar">Guardar na minha conta</button></div>
+      <div class="erro some" id="g_erro"></div>
+      <p class="nota">Perdeu o cartão? <a href="${esc(whatsDaGuarda(cert))}" target="_blank" rel="noopener">Fale com o ateliê</a>.</p>
+    </div>`,
     'ja-sua': `<div class="cartao">
       <h3>${nomePeca}</h3>
       <p class="sub">Esta peça já está na sua conta.</p>
@@ -920,6 +969,12 @@ async function telaGuardar(){
 async function guardarPeca(tag){
   const bt = document.getElementById('g_guardar');
   const nome = document.getElementById('g_nome').value.trim().slice(0, 40);
+  // O campo só existe na tela de peça com cartão. Lá, o código vai junto, e
+  // sem ele a regra recusaria a gravação de qualquer jeito.
+  const campoCodigo = document.getElementById('g_codigo');
+  const ativacao = campoCodigo ? normalizarCodigo(campoCodigo.value) : '';
+  if (campoCodigo && !ativacao)
+    return falha('g_erro', 'O código tem 8 letras e números, como está no cartão: ACDE-FGHJ.');
   if (nome.length < 2) return falha('g_erro', 'Dê um nome à peça, nem que seja "a da sala".');
   bt.disabled = true; bt.textContent = 'guardando…';
   try{
@@ -932,12 +987,18 @@ async function guardarPeca(tag){
       nome, capacidade: null, permanente: true,
       adicionadaEm: serverTimestamp(), atualizadaEm: serverTimestamp(),
       conteudoAtual: null, historico: [],
+      ...(ativacao ? { ativacao } : {}),
     });
   }catch(e){
     console.error(e);
     bt.disabled = false; bt.textContent = 'Guardar na minha conta';
+    // Na tela do cartão, a recusa tem um motivo só: peça de outra conta nem
+    // chega a oferecer o campo. Dizer qual é poupa a pessoa de achar que é a
+    // internet e tentar dez vezes o mesmo código.
     return falha('g_erro', e?.code === 'permission-denied'
-      ? 'A peça não pôde entrar nesta conta. Fale com o ateliê pelo WhatsApp.'
+      ? (campoCodigo
+        ? 'Esse código não é o desta peça. Confira as letras no cartão, uma a uma.'
+        : 'A peça não pôde entrar nesta conta. Fale com o ateliê pelo WhatsApp.')
       : 'Não consegui guardar agora. Confira a internet e tente de novo.');
   }
   // Abre a peça já pronta para escolher o que ela diz: é o motivo de a pessoa
