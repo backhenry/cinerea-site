@@ -78,12 +78,19 @@
   .caixa h3{font-family:'Bodoni Moda';font-weight:500;font-size:19px}
   .caixa p{margin-top:8px;font-size:14.5px;color:var(--smoke);line-height:1.65}
 
-  .bt{display:inline-block;margin-top:20px;padding:15px 28px;background:var(--char);
-      color:var(--paper);text-decoration:none;border-radius:2px;font-size:15px;
-      border:none;cursor:pointer;font-family:'Hanken Grotesk';transition:.15s}
-  .bt:hover{background:var(--ember)}
-  .bt.fraco{background:none;color:var(--char);border:1px solid var(--line)}
+  /* Os botões de ação do site (nov/2026): carvão, cantos quase retos e caixa
+     alta espaçada, como na home e no livro. O contorno é o par do "bt2". */
+  .bt{display:inline-flex;align-items:center;justify-content:center;min-height:54px;margin-top:20px;padding:0 28px;
+      background:var(--char);color:var(--paper);text-decoration:none;border:1px solid var(--char);border-radius:2px;
+      font-family:'Hanken Grotesk';font-size:13.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+      cursor:pointer;transition:.15s}
+  .bt:hover{background:var(--ember);border-color:var(--ember)}
+  .bt.fraco{background:none;color:var(--char);border-color:var(--char)}
   .bt.fraco:hover{border-color:var(--ember);color:var(--ember);background:none}
+  /* O título de cada pergunta recebe o foco para o leitor de tela anunciar a
+     pergunta nova. Ele não é botão, e o contorno do navegador em volta dele só
+     parecia defeito. */
+  [tabindex="-1"]:focus{outline:none}
   .refazer{display:block;margin-top:34px;background:none;border:none;padding:0;
            cursor:pointer;font-family:'Hanken Grotesk';font-size:13.5px;color:var(--smoke)}
   .refazer:hover{color:var(--ember)}
@@ -190,7 +197,7 @@
       <a href="/#areia">A vela que se repõe</a>
       <a href="/#chip">O chip dentro dela</a>
       <a href="/perfil/">Minhas peças</a>
-      <a href="/contato/?sobre=refil">Qual refil é o meu</a>
+      <a href="/loja/?colecao=Refis">Repor a areia</a>
     </div>
     <div>
       <h3>Falar com o ateliê</h3>
