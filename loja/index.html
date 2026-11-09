@@ -1655,7 +1655,7 @@ window.fecharKit = () => {
 
 window.escolherNoKit = (passo, id) => {
   escolhaKit[passo] = escolhaKit[passo] === id && passo === 'aroma' ? '' : id;
-  pintarKit();
+  pintarKit(false);
 };
 
 let kitFechado = false;
@@ -1664,18 +1664,29 @@ window.alternarResumo = (abrir) => {
   const aberto = barra.classList.toggle('aberto', typeof abrir === 'boolean' ? abrir : !barra.classList.contains('aberto'));
   document.getElementById('mrAlca').setAttribute('aria-expanded', aberto);
 };
-function pintarKit(){
+/* `refazer` só ao abrir o kit. Um toque numa opção NÃO refaz o HTML (nov/2026):
+   refeito, cada foto era uma <img> nova, e todas sumiam e voltavam a cada
+   escolha; no celular, cada fila de opções ainda voltava para o começo. O
+   toque só troca o `aria-pressed` e as classes, e as fotos ficam onde estão. */
+function pintarKit(refazer = true){
   const opcoes = (passo, obrigatorio) => {
     const lista = produtos.filter(p => p.kit === passo);
-    const sem = obrigatorio ? '' : `<button type="button" class="opcao nenhum" aria-pressed="${!escolhaKit[passo]}"
+    const sem = obrigatorio ? '' : `<button type="button" class="opcao nenhum" data-id="" aria-pressed="${!escolhaKit[passo]}"
         onclick="escolherNoKit('${passo}','')">sem ${passo === 'aroma' ? 'aroma' : 'este'}</button>`;
-    return sem + lista.map(p => `<button type="button" class="opcao" aria-pressed="${escolhaKit[passo] === p.id}"
+    return sem + lista.map(p => `<button type="button" class="opcao" data-id="${esc(p.id)}" aria-pressed="${escolhaKit[passo] === p.id}"
         onclick="escolherNoKit('${passo}','${esc(p.id)}')">
         ${p.foto ? `<span class="foto"><img src="${esc(p.foto)}" alt="" loading="lazy">${p.situacao !== 'disponivel' ? `<span class="os">${p.situacao === 'esgotado' ? 'esgotado' : 'em breve'}</span>` : ''}</span>`
                  : (p.situacao !== 'disponivel' ? `<span class="os">${p.situacao === 'esgotado' ? 'esgotado' : 'em breve'}</span>` : '')}
         <span class="on">${esc(p.nome)}</span><span class="op">${brl(p.preco)}</span></button>`).join('');
   };
-  document.getElementById('mmiolo').innerHTML = `
+  const miolo = document.getElementById('mmiolo');
+  const passos = miolo.querySelectorAll('.passo');
+  if (!refazer && passos.length === PASSOS_KIT.length) {
+    PASSOS_KIT.forEach(([k], i) => {
+      passos[i].classList.toggle('feito', !!escolhaKit[k]);
+      passos[i].querySelectorAll('.opcao').forEach(b => b.setAttribute('aria-pressed', String((escolhaKit[k] || '') === b.dataset.id)));
+    });
+  } else miolo.innerHTML = `
     <h2>Monte seu kit</h2>
     <p class="msub">Escolha uma peça, o refil e o pavio, e o aroma se quiser. Juntos, saem com ${kitPct}% de desconto sobre o preço avulso.</p>
     ${PASSOS_KIT.map(([k, nome, obr], i) => `<div class="passo${escolhaKit[k] ? ' feito' : ''}${k === 'pavio' ? ' ultimo' : ''}"><h3><i>${i + 1}</i>${nome}</h3>
