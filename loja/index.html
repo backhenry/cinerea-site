@@ -520,8 +520,9 @@
   .mr-alca span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .palco-mini{cursor:pointer;transition:width .3s ease}
   .mresumo:not(.aberto) .palco-mini{width:64px}
-  .mresumo:not(.aberto) .lin:not(.fim),.mresumo:not(.aberto) .mnota{display:none}
-  .mresumo:not(.aberto) .lin.fim{margin-top:0}
+  .mresumo:not(.aberto) .lin:not(.fim):not(.kit),.mresumo:not(.aberto) .mnota{display:none}
+  .mresumo:not(.aberto) .lin.kit{margin-top:0;font-size:13px}
+  .mresumo:not(.aberto) .lin.fim{margin-top:2px}
   .mresumo:not(.aberto) .bt{margin-top:8px;padding-top:11px;padding-bottom:11px}
   .bt .curto{display:none}
   .mresumo:not(.aberto) .bt .longo{display:none}
