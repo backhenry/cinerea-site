@@ -683,10 +683,13 @@ function ligarPorPavio(caixa, seletor, modoVertical) {
   window.addEventListener('load', pedir);
   pedir();
 }
-ligarPorPavio(document.getElementById('vitrine'), '.vit-foto', function () {
-  return window.matchMedia && matchMedia('(max-width:560px)').matches;
+// a vitrine é fila de lado em qualquer tela: no computador as três cabem, no
+// celular ela desliza (nov/2026)
+ligarPorPavio(document.getElementById('vitrine'), '.vit-foto', false);
+// no celular os pratos e potes também viram fila de lado, e o fio corre de lado
+ligarPorPavio(document.querySelector('.novas-trilha'), '.novas-foto', function () {
+  return !(window.matchMedia && matchMedia('(max-width:560px)').matches);
 });
-ligarPorPavio(document.querySelector('.novas-trilha'), '.novas-foto', true);
 
 // A segunda foto dos pratos e potes, a vista de cima, só onde há mouse. Ela
 // existe para a troca no hover, e no toque seria peso baixado para nunca

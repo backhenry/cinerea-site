@@ -75,11 +75,12 @@
   /* NO CELULAR, EM FILA DE LADO (nov/2026). Empilhados, com a foto na largura
      toda, os três tomavam quase três telas de rolagem. Em fila, um por vez e
      o próximo aparecendo na borda, cabem numa tela só. A fila vai de borda a
-     borda da janela, e o recuo dos lados é o que centra cada cartão. */
+     borda da janela (a margem negativa é a do `.envolve`, 26 px à esquerda
+     por causa da vela e 22 à direita), e o recuo dos lados centra o cartão. */
   .pontos-vidros{display:none}
   @media(max-width:759px){
     .vidros{position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
-            margin:30px calc(50% - 50vw) 0;padding:10px 14vw 16px}
+            margin:30px -22px 0 -26px;padding:10px 14vw 16px}
     .vidros::-webkit-scrollbar{display:none}
     .vidro{flex:0 0 72vw;scroll-snap-align:center}
     .vidro .notas{font-size:13px}

@@ -67,6 +67,17 @@
   .heroi h1 em{font-style:italic}
   .heroi .sub{margin-top:18px;max-width:34ch;font-size:16.5px;color:var(--smoke);line-height:1.55}
   .heroi .acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  /* NO CELULAR OS BOTÕES ENTRAM NA PRIMEIRA TELA (nov/2026). Com a foto a
+     118vw, quem chegava pelo Instagram via o David e o título, e o "Ver as
+     peças" só depois de rolar. O David ocupa o meio da foto e sobra papel em
+     cima e embaixo: é esse papel que sai, e não a peça. */
+  @media(max-width:899px){
+    .heroi-foto img{height:min(72vw,330px);object-position:50% 47%}
+    .heroi-texto{padding-top:14px}
+    .heroi h1{margin-top:10px}
+    .heroi .sub{margin-top:12px}
+    .heroi .acoes{margin-top:20px}
+  }
   @media(min-width:900px){
     /* O texto pede ~520 px para o título caber em duas linhas a 64 px; com a
        coluna mais estreita ele quebrava em quatro ("A vela / acaba."). */
@@ -162,18 +173,21 @@
   .vit-preco{display:block;font-size:14.5px;color:var(--smoke);margin-top:4px;min-height:1.5em}
   .vit-mais{display:inline-block;margin-top:30px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--char);padding:12px 0}
   .vit-mais:hover{color:var(--ember)}
-  /* No celular, a mesma trilha dos pratos e potes (nov/2026): as peças descem
-     em zigue-zague, cada uma subindo sobre o vão da anterior, e o pavio
-     serpenteia (vivo.js, modo vertical abaixo de 561 px). Era uma faixa que
-     rolava de lado, e o dono pediu que nada obrigasse a deslizar. Metade da
-     largura cada uma, e não mais: duas colunas que somam mais de 100% põem a
-     foto de uma em cima do nome da outra. */
+  /* NO CELULAR, UMA FILA QUE DESLIZA (nov/2026, revertendo a trilha). As duas
+     vitrines em zigue-zague somavam ~3.800 px, mais de um terço da home, e o
+     dono pediu que coubessem numa tela cada. A fila vai de borda a borda, a
+     peça para no centro e a seguinte aparece na borda; o pavio corre de lado
+     entre elas (vivo.js, modo horizontal, que acompanha a rolagem da fila).
+     A margem negativa é a do `.envolve` no celular, 26 px à esquerda (a vela
+     da margem) e 22 à direita: com `calc(50% - 50vw)` a fila saía 2 px para
+     fora e a página inteira rolava de lado. */
   @media(max-width:560px){
-    .vit-grade{display:block;margin:26px 0 0;padding:0 0 34px}
-    .vit-peca{width:50%}
-    .vit-peca:nth-child(n){margin-top:0}
-    .vit-peca:nth-child(even){margin-left:auto}
-    .vit-peca+.vit-peca{margin-top:-11vw}
+    .vit-grade{display:flex;position:relative;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+               gap:34px;margin:26px -22px 0 -26px;padding:8px 18vw 30px;align-items:flex-start}
+    .vit-grade::-webkit-scrollbar{display:none}
+    .vit-peca{flex:0 0 64vw;width:auto;scroll-snap-align:center}
+    .vit-peca:nth-child(n){margin:0}
+    .vit-peca:nth-child(even){margin-top:22px}
     .vit-peca:nth-child(3n+2) .vit-nome,.vit-peca:nth-child(3n+2) .vit-preco{padding-left:0}
     .vit-nome{font-size:18px}
   }
@@ -270,6 +284,16 @@
     .novas-trilha figure:nth-child(4){right:4%}
     .novas-trilha figure:nth-child(5){left:2%}
     .novas-trilha figure:nth-child(6){right:9%}
+  }
+  @media(max-width:560px){
+    .novas-trilha{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:34px;
+                  margin:30px calc(50% - 50vw) 0;padding:8px 18vw 30px;align-items:flex-start}
+    .novas-trilha::-webkit-scrollbar{display:none}
+    .novas-trilha figure,.novas-trilha figure.em-pe{flex:0 0 64vw;width:auto;scroll-snap-align:center}
+    .novas-trilha figure.em-pe{flex-basis:50vw}
+    .novas-trilha figure+figure,.novas-trilha figure:nth-child(even){margin:0}
+    .novas-trilha figure:nth-child(even){margin-top:22px}
+    .novas-trilha figure:nth-child(n){left:0;right:0}
   }
 
   /* ---- o chip -------------------------------------------------------------- */
