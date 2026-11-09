@@ -435,7 +435,7 @@
   .kit-faixa[hidden]{display:none}
   .montar{position:fixed;inset:0;background:var(--paper);overflow-y:auto;z-index:31;display:none}
   .montar.abre{display:block}
-  .mmiolo{max-width:1100px;margin:0 auto;padding:22px 22px 210px}
+  .mmiolo{max-width:1100px;margin:0 auto;padding:22px 22px 150px}
   /* O PALCO (nov/2026): o kit se monta ao lado, enquanto a pessoa escolhe.
      As fotos da loja são feitas no papel EXATO do site (#F4F1EC); com
      `darken`, o fundo de cada foto some no fundo do palco e os objetos
@@ -511,6 +511,22 @@
   .mr-in > div:last-child{flex:1;min-width:0}
   .palco-mini{width:min(40vw,160px);flex:none;margin:0;min-width:0}
   .palco-mini .lugar{font-size:0;border-width:1px}
+  /* A BARRA RECOLHIDA (nov/2026). Aberta, com o arranjo de 160 px, a conta e
+     a nota, ela tomava quase 40% da tela e cortava as opções que a pessoa
+     estava escolhendo. Recolhida, fica a miniatura, o total e o botão; o resto
+     abre ao tocar na alça ou na miniatura, e abre sozinho quando o kit fecha. */
+  .mr-alca{display:block;width:100%;height:22px;margin:-12px 0 4px;border:0;background:none;cursor:pointer;position:relative}
+  .mr-alca::before{content:'';position:absolute;left:50%;top:9px;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line)}
+  .mr-alca span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .palco-mini{cursor:pointer;transition:width .3s ease}
+  .mresumo:not(.aberto) .palco-mini{width:64px}
+  .mresumo:not(.aberto) .lin:not(.fim),.mresumo:not(.aberto) .mnota{display:none}
+  .mresumo:not(.aberto) .lin.fim{margin-top:0}
+  .mresumo:not(.aberto) .bt{margin-top:8px;padding-top:11px;padding-bottom:11px}
+  .bt .curto{display:none}
+  .mresumo:not(.aberto) .bt .longo{display:none}
+  .mresumo:not(.aberto) .bt .curto{display:inline}
+  @media (prefers-reduced-motion: reduce){ .palco-mini{transition:none} }
   @media (prefers-reduced-motion: reduce){ .slot.chega img{animation:none} .selo-kit{transition:none} }
   .mmiolo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(30px,7vw,40px);line-height:1.08}
   .mmiolo .msub{color:var(--smoke);margin-top:10px;line-height:1.55;max-width:52ch}
@@ -892,8 +908,8 @@ try {
     </aside>
   </div></div>
 </div>
-<div class="mresumo" id="mresumo"><div class="mr-in">
-  <div class="palco palco-mini anel-compacto" id="palcoMini" aria-hidden="true"><div class="cena">
+<div class="mresumo" id="mresumo"><button type="button" class="mr-alca" id="mrAlca" aria-expanded="false" aria-controls="mresumo" onclick="alternarResumo()"><span>Ver o kit e a conta</span></button><div class="mr-in">
+  <div class="palco palco-mini anel-compacto" id="palcoMini" aria-hidden="true" onclick="alternarResumo()"><div class="cena">
     <div class="slot s-refil" data-slot="refil"><span class="lugar">refil</span><img alt=""></div>
     <div class="slot s-peca" data-slot="peca"><span class="lugar">peça</span><img alt=""></div>
     <div class="slot s-pavio" data-slot="pavio"><span class="lugar">pavio</span><img alt=""></div>
@@ -1624,6 +1640,8 @@ let kitDaSacola = new Set();
 window.abrirKit = (pre, daSacola) => {
   if (pre) { escolhaKit = { ...escolhaKit, ...pre }; }
   kitDaSacola = new Set(daSacola ? Object.values(pre || {}) : []);
+  kitFechado = false;
+  alternarResumo(false);
   pintarKit();
   document.getElementById('montar').classList.add('abre');
   document.getElementById('montar').scrollTop = 0;
@@ -1639,6 +1657,12 @@ window.escolherNoKit = (passo, id) => {
   pintarKit();
 };
 
+let kitFechado = false;
+window.alternarResumo = (abrir) => {
+  const barra = document.getElementById('mresumo');
+  const aberto = barra.classList.toggle('aberto', typeof abrir === 'boolean' ? abrir : !barra.classList.contains('aberto'));
+  document.getElementById('mrAlca').setAttribute('aria-expanded', aberto);
+};
 function pintarKit(){
   const opcoes = (passo, obrigatorio) => {
     const lista = produtos.filter(p => p.kit === passo);
@@ -1669,13 +1693,16 @@ function pintarKit(){
     ${kit.desconto > 0 ? `<div class="lin kit"><span>Kit, ${kitPct}% off</span><span>−${brl(kit.desconto)}</span></div>` : ''}
     <div class="lin fim"><span>Total do kit</span><span>${brl(avulso - kit.desconto)}</span></div>
     ${!completo
-      ? `<button class="bt" disabled>Falta escolher ${falta.join(', ')}</button>`
+      ? `<button class="bt" disabled><span class="longo">Falta escolher ${falta.join(', ')}</span><span class="curto">${falta.length === 1 ? `Falta escolher ${falta[0]}` : `Faltam ${falta.length} escolhas`}</span></button>`
       : foraDeVenda.length
       ? `<button class="bt" onclick="avisarKit()">Quero ser avisado deste kit</button>
          <p class="mnota">${foraDeVenda.length > 1 ? `${foraDeVenda.length} itens estão` : 'Um item está'} fora de venda agora. A gente avisa quando o kit puder sair.</p>`
       : `<button class="bt" onclick="kitNaSacola()">Colocar o kit na sacola</button>`}`;
   document.getElementById('mresumoIn').innerHTML = resumo;
   document.getElementById('mresumoLado').innerHTML = resumo;
+  // o kit acabou de fechar: a barra abre sozinha e mostra o arranjo e a conta
+  if (completo && !kitFechado) alternarResumo(true);
+  kitFechado = completo;
 }
 
 /* O palco só muda o lugar que mudou: refazer o HTML inteiro a cada toque
