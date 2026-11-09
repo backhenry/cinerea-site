@@ -132,7 +132,10 @@
   .anima .surge{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
   .anima .surge.de-lado{transform:translateX(-42px)}
   .anima .surge.de-lado.direita{transform:translateX(42px)}
-  .anima .surge.vista{opacity:1;transform:none}
+  /* o "vista" tem de vencer a regra da direita, que tem um seletor a mais:
+     sem isso a capa ficava 42 px para a direita para sempre */
+  .anima .surge.vista,.anima .surge.de-lado.vista,.anima .surge.de-lado.direita.vista{opacity:1;transform:none}
+  main{overflow-x:clip}
   /* os três gestos se desenham pelo traço; o comprimento de cada caminho é
      medido pelo script (--L), porque o Chrome não aplica pathLength ao
      tracejado (medido em Aplicações) */

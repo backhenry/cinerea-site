@@ -107,7 +107,13 @@
   .anima .surge{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
   .anima .surge.de-lado{transform:translateX(-42px)}
   .anima .grupo.inverte .surge.de-lado,.anima .surge.de-lado.direita{transform:translateX(42px)}
-  .anima .surge.vista{opacity:1;transform:none}
+  /* O "vista" tem de vencer os dois deslocamentos de lado, e a regra da
+     direita tem um seletor a mais: com `.surge.vista` sozinho, a capa e a
+     foto do presente ficavam 42 px para a direita PARA SEMPRE, e no celular a
+     página rolava de lado. */
+  .anima .surge.vista,.anima .surge.de-lado.vista,.anima .grupo.inverte .surge.de-lado.vista,.anima .surge.de-lado.direita.vista{opacity:1;transform:none}
+  /* e o que ainda não surgiu, deslocado, não pode alargar a página */
+  main{overflow-x:clip}
   /* o fio de cada passo se desenha da esquerda para a direita */
   .passos li{position:relative;border-top-color:transparent}
   .passos li::before{content:'';position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--char);transform-origin:left}
