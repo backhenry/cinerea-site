@@ -87,6 +87,11 @@
   .cta:hover{background:var(--ember)}
   .cta:active{transform:scale(.985)}
   .cta:focus-visible{outline:2px solid var(--ember); outline-offset:3px}
+  /* o segundo botão (Ligar, ao lado de Salvar contato): contorno, e mais perto */
+  .cta + .cta{margin-top:10px}
+  .cta2{background:transparent;color:inherit;border:1px solid rgba(150,140,130,.5);text-align:center}
+  .cta2:hover{background:transparent;border-color:var(--ember);color:var(--ember)}
+  .fone{margin-top:10px;font-size:18px;letter-spacing:.02em;opacity:.85}
 
   .recado{
     font-family:'Fraunces'; font-style:italic; font-weight:300;
@@ -228,6 +233,34 @@ function enderecoSeguro(url){
   return ESQUEMAS.test(t) ? t : null;
 }
 
+/* O CONTATO (nov/2026). O painel publica "nome · telefone" como texto, e a
+ * página mostrava só isso: o convidado via um nome e um número e não tinha como
+ * ligar nem guardar. No iPhone, que não oferece vCard pelo NFC, esta página é o
+ * único jeito de o contato chegar a ele. */
+function contatoDe(dados){
+  const partes = String(dados ?? '').split(' · ');
+  const nome = partes.shift().trim();
+  return { nome, telefone: partes.join(' · ').trim() };
+}
+
+/* O que vira `tel:` é só dígito, mais o + do começo. Nada que o dono escreveu
+ * entra no endereço como texto, então não há esquema para filtrar. */
+function telefoneDe(t){
+  const s = String(t ?? '').trim();
+  const d = s.replace(/\D/g, '');
+  if (d.length < 8 || d.length > 15) return '';
+  return (s.startsWith('+') ? '+' : '') + d;
+}
+
+/* A ficha (vCard 3.0) que o celular oferece guardar. Barra, vírgula e ponto e
+ * vírgula são escapados, e quebra de linha vira `\n`: sem isso, um nome com
+ * uma quebra abriria um campo novo dentro da ficha. */
+function fichaDe(nome, tel){
+  const v = x => String(x ?? '').replace(/[\\,;]/g, c => '\\' + c).replace(/\r?\n|\r/g, '\\n');
+  return ['BEGIN:VCARD', 'VERSION:3.0', `FN:${v(nome)}`, `N:;${v(nome)};;;`,
+          tel ? `TEL;TYPE=CELL:${tel}` : '', 'END:VCARD'].filter(Boolean).join('\r\n') + '\r\n';
+}
+
 function abrirEm(url, rotulo){
   const seguro = enderecoSeguro(url);
   // Sem esquema conhecido, mostra o texto em vez de um link que não se sabe
@@ -360,7 +393,11 @@ function mostrar(v, cert){
         </a>`;
       }).join('')}</div>`;
   } else if (v.tipo === 'contato') {
-    bloco = `<p class="rot">Contato</p><p class="rede">${esc(v.dados)}</p>`;
+    const c = contatoDe(v.dados), tel = telefoneDe(c.telefone);
+    bloco = `<p class="rot">Contato</p><p class="rede">${esc(c.nome)}</p>
+      ${c.telefone ? `<p class="fone">${esc(c.telefone)}</p>` : ''}
+      ${c.nome ? `<button class="cta" type="button" id="salvarContato">Salvar contato</button>` : ''}
+      ${tel ? `<a class="cta cta2" href="tel:${tel}">Ligar</a>` : ''}`;
   } else {
     const nomes   = {link:'Link', playlist:'Playlist', whatsapp:'WhatsApp', local:'Lugar'};
     const rotulos = {link:'Abrir o link', playlist:'Ouvir a playlist', whatsapp:'Falar no WhatsApp', local:'Ver no mapa'};
@@ -393,7 +430,7 @@ function mostrar(v, cert){
   const ondeRepor = (cert?.refil && enderecoSeguro(cert.refil)) || '/loja/?colecao=Refis';
   const caminhos = `<div class="caminhos surge" style="animation-delay:.16s">
     <a class="caminho" href="${esc(ondeRepor)}" rel="noopener">
-      Repor a areia<span class="sub">quando a fragrância acabar</span>
+      Repor a areia<span class="sub">quando a areia acabar</span>
     </a>
     <a class="caminho" href="/loja/">
       Ver as peças<span class="sub">a loja da Cinérea</span>
@@ -408,6 +445,27 @@ function mostrar(v, cert){
   if (previa) document.querySelector('.assinatura')?.remove();
   // Para a brasa da marca parar de piscar: a peça já abriu.
   document.body.classList.add('pronto');
+
+  // Salvar o contato: a ficha é montada aqui, no toque, e entregue como
+  // arquivo .vcf. O iPhone abre a ficha direto no app Contatos quando a página
+  // NAVEGA até ela; com `download`, ele guardaria um arquivo em Arquivos, que
+  // ninguém vai procurar. No Android, baixar é o que abre a ficha.
+  const salvar = document.getElementById('salvarContato');
+  if (salvar && v && v.tipo === 'contato') {
+    salvar.addEventListener('click', () => {
+      const c = contatoDe(v.dados);
+      const url = URL.createObjectURL(new Blob([fichaDe(c.nome, telefoneDe(c.telefone))], { type: 'text/vcard;charset=utf-8' }));
+      const iphone = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (iphone) { location.href = url; }
+      else {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (c.nome.replace(/[^\p{L}\p{N} ]/gu, '').trim() || 'contato') + '.vcf';
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    });
+  }
 
   // Copiar a senha do wi-fi. `writeText` exige contexto seguro (temos HTTPS) e
   // um gesto do usuário, por isso vive no clique, e não no carregamento.
@@ -442,7 +500,7 @@ const DEMO = {
   local:    { tipo:'local',    dados:'https://maps.google.com/?q=Campos+do+Jord%C3%A3o' },
   wifi:     { tipo:'wifi',     dados:'Cinerea_Casa', senha:'gesso2026' },
   recado:   { tipo:'recado',   dados:'Que esta chama acompanhe vocês dois.' },
-  contato:  { tipo:'contato',  dados:'Henrique Martins' },
+  contato:  { tipo:'contato',  dados:'Marina Alves · (12) 99876-5432' },
   links:    { tipo:'links', titulo:'Meus links', itens:[
     { rotulo:'@cinerea.velas', url:'https://instagram.com/cinerea.velas', icone:'instagram' },
     { rotulo:'@cinerea.velas', url:'https://tiktok.com/@cinerea.velas',  icone:'tiktok' },
