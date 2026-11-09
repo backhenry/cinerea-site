@@ -1155,7 +1155,7 @@ async function telaFechar(){
     const p = porId.get(String(i.id));
     return p ? { id:String(i.id), qtd:Math.max(1,Math.min(99,Number(i.qtd)||1)),
                  nome:p.nome, preco:Number(p.preco)||0, situacao:p.situacao,
-                 leve:!!p.leve } : null;
+                 leve:!!p.leve, kit:p.kit||'' } : null;
   }).filter(Boolean);
 
   const foraDaVitrine = carga.itens.length - itens.length;
@@ -1178,6 +1178,8 @@ async function telaFechar(){
   window.__checkoutItens = itens;
   window.__checkoutCupom = carga.cupom || null;
   window.__checkoutTabela = cat.frete || null;
+  // o percentual do kit vem do catálogo publicado, como o preço
+  window.__checkoutKit = Number(cat.kit?.desconto) || 0;
   // O cupom é RELIDO aqui, e não herdado da loja. Entre pôr na sacola e chegar
   // nesta tela ele pode ter vencido, sido desligado, ou a sacola pode ter
   // encolhido abaixo do mínimo. O servidor vai reler de qualquer jeito na hora
@@ -1344,6 +1346,27 @@ function pintarItensDaSacola(){
     <div class="ck-linha"><span>${i.qtd}× ${esc(i.nome)}</span><b>${brl(i.preco*i.qtd)}</b></div>`).join('');
 }
 
+/**
+ * O desconto do kit: uma peça, um refil e um pavio, e o aroma se tiver.
+ * CÓPIA de `descontoDoKit` em cinerea-app/functions/sacola.js, que é a que
+ * cobra; `tests/kit-copias.test.mjs` exige o mesmo centavo. Mudou lá, mudar aqui.
+ */
+function descontoDoKit(itens, percentual) {
+  const pct = Math.min(Math.max(Number(percentual) || 0, 0), 100);
+  const por = { peca: [], refil: [], pavio: [], aroma: [] };
+  for (const i of itens || []) {
+    const lista = por[i.kit];
+    if (!lista) continue;
+    const q = Math.max(0, Math.floor(Number(i.qtd) || 0));
+    for (let n = 0; n < q; n++) lista.push(Number(i.preco) || 0);
+  }
+  const kits = Math.min(por.peca.length, por.refil.length, por.pavio.length);
+  if (!pct || !kits) return { desconto: 0, kits: 0, base: 0 };
+  const maiores = (l, n) => l.sort((a, b) => b - a).slice(0, n).reduce((s, v) => s + v, 0);
+  const base = maiores(por.peca, kits) + maiores(por.refil, kits) + maiores(por.pavio, kits) + maiores(por.aroma, kits);
+  return { desconto: Math.round((base * pct / 100) * 100) / 100, kits, base: Math.round(base * 100) / 100 };
+}
+
 /** A conta que a pessoa vê. Prévia, quem cobra é o servidor. */
 function pintarTotais(){
   const itens = window.__checkoutItens || [];
@@ -1354,7 +1377,11 @@ function pintarTotais(){
   const cupomAplicado = dados && !dados.ausente
     ? descontoDoCupom(bruto, dados, Date.now())
     : { desconto: 0, motivo: dados?.ausente ? 'não encontrei esse cupom' : '' };
-  const desconto = cupomAplicado.desconto;
+  // KIT E CUPOM NÃO SOMAM, vale o maior; empate fica com o cupom. A mesma
+  // escolha que o servidor faz em `escolherDesconto`.
+  const kit = descontoDoKit(itens, window.__checkoutKit);
+  const valeKit = kit.desconto > cupomAplicado.desconto;
+  const desconto = valeKit ? cents(Math.min(kit.desconto, bruto)) : cupomAplicado.desconto;
 
   /* O FRETE OLHA O VALOR JÁ DESCONTADO, e não o bruto, é o que o servidor faz.
      Calcular sobre o bruto daria "frete grátis" na tela para quem só chega ao
@@ -1380,7 +1407,12 @@ function pintarTotais(){
 
   // O cupom aparece com o VALOR, e não com uma promessa. "Total menos o cupom"
   // não é preço: quem está prestes a pagar precisa do número.
-  const linhaCupom = !codigo ? '' : desconto > 0
+  const linhaKit = valeKit
+    ? `<div class="ck-linha"><span>Kit (${window.__checkoutKit}%)</span><b class="ck-desconto">−${brl(desconto)}</b></div>` : '';
+  const linhaCupom = !codigo ? '' : valeKit
+    ? `<div class="ck-linha"><span>Cupom ${esc(codigo)}</span>
+         <span class="sub ck-recusado">não soma com o kit, vale o maior</span></div>`
+    : desconto > 0
     ? `<div class="ck-linha"><span>Cupom ${esc(codigo)}</span><b class="ck-desconto">−${brl(desconto)}</b></div>`
     : `<div class="ck-linha"><span>Cupom ${esc(codigo)}</span>
          <span class="sub ck-recusado">${esc(cupomAplicado.motivo || 'não se aplica')}</span></div>`;
@@ -1398,6 +1430,7 @@ function pintarTotais(){
 
   document.getElementById('ck_totais').innerHTML = `
     <div class="ck-linha"><span>Peças</span><b>${brl(bruto)}</b></div>
+    ${linhaKit}
     ${linhaCupom}
     <div class="ck-linha"><span>Frete</span>${dizFrete}</div>
     ${dizPrazo}
