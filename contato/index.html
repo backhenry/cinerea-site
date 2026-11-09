@@ -94,6 +94,21 @@
   .lista{display:grid;grid-template-columns:1fr;gap:1px;margin-top:34px;background:var(--line);border:1px solid var(--line)}
   @media(min-width:560px){ .lista{grid-template-columns:repeat(2,1fr)} }
   @media(min-width:900px){ .lista{grid-template-columns:repeat(3,1fr)} }
+  /* NO CELULAR, EM FILA DE LADO (nov/2026). Empilhados, os seis tomavam um
+     terço da página repetindo os botões lá de cima. Em fila, um por vez com o
+     próximo na borda, cabem numa tela. A margem negativa devolve o recuo de
+     22 px da seção, e a fila vai de borda a borda. */
+  .pontos-lista{display:none}
+  @media(max-width:559px){
+    .lista{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+           background:none;border:0;margin:28px -22px 0;padding:4px 12vw 12px;position:relative}
+    .lista::-webkit-scrollbar{display:none}
+    .lista .item{flex:0 0 76vw;scroll-snap-align:center;border:1px solid var(--line)}
+    .pontos-lista{display:flex;justify-content:center}
+    .pontos-lista button{width:44px;height:30px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+    .pontos-lista button::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .2s ease}
+    .pontos-lista button[aria-current="true"]::before{background:var(--char)}
+  }
   /* botão centra o conteúdo na vertical por padrão; aqui tudo começa no topo */
   .item{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;
     font:inherit;color:var(--char);background:var(--paper);border:0;padding:28px 26px 26px;cursor:pointer;transition:background .25s}
@@ -226,12 +241,13 @@
         <p>Peça para guardar a memória de alguém. Fazemos com calma e sem pressa
            de orçamento.</p><span class="ir">Escrever sobre isso</span></button>
       <button type="button" class="item" data-tema="refil"><span class="n">v.</span><h3>Refil de areia</h3>
-        <p>A areia da sua peça acabou e você não sabe qual repor. Diga o modelo
-           que a gente indica.</p><span class="ir">Escrever sobre isso</span></button>
+        <p>A areia da sua peça acabou. Diga o modelo, e a gente diz quanto repor
+           para o tamanho dela.</p><span class="ir">Escrever sobre isso</span></button>
       <button type="button" class="item" data-tema="parceria"><span class="n">vi.</span><h3>Parceria</h3>
         <p>Lojas, pousadas e ateliês que querem trabalhar com as peças, ou usar
            o chip nos próprios produtos.</p><span class="ir">Escrever sobre isso</span></button>
     </div>
+    <div class="pontos-lista" id="pontosLista"></div>
   </section>
 
   <nav class="caminhos" aria-label="Outros caminhos">
@@ -401,6 +417,29 @@
     document.documentElement.classList.add('anima');
     document.querySelectorAll('.surge').forEach(function (e) { olho.observe(e); });
   })();
+</script>
+<script>
+/* Os pontos da fila de assuntos, só no celular: dizem em qual se está e
+ * levam a cada um. */
+(function () {
+  var fila = document.querySelector('.lista'), pts = document.getElementById('pontosLista');
+  if (!fila || !pts) return;
+  var itens = Array.prototype.slice.call(fila.querySelectorAll('.item'));
+  itens.forEach(function (it) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ver ' + it.querySelector('h3').textContent);
+    b.onclick = function () { fila.scrollTo({ left: it.offsetLeft - (fila.clientWidth - it.offsetWidth) / 2, behavior: 'smooth' }); };
+    pts.appendChild(b);
+  });
+  function marcar() {
+    var meio = fila.scrollLeft + fila.clientWidth / 2, perto = 0, d = Infinity;
+    itens.forEach(function (it, i) { var x = Math.abs(it.offsetLeft + it.offsetWidth / 2 - meio); if (x < d) { d = x; perto = i; } });
+    Array.prototype.forEach.call(pts.children, function (b, i) { b.setAttribute('aria-current', i === perto ? 'true' : 'false'); });
+  }
+  fila.addEventListener('scroll', marcar, { passive: true });
+  marcar();
+})();
 </script>
 <script src="/vivo.js" defer></script>
 <script src="/contador.js" defer></script>
