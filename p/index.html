@@ -128,6 +128,10 @@
     margin-top:26px; width:100%; max-width:420px;
     background:var(--ash); border-radius:14px; padding:22px 24px;
   }
+  /* 13px de texto e 44px de alvo: o recuo amplia o toque sem afastar a linha. */
+  .guardar{margin-top:2px}
+  .guardar a{display:inline-block;padding:12px 0;color:var(--smoke);text-underline-offset:3px}
+  .guardar a:hover{color:var(--ember)}
   .proc{font-family:'Fraunces';font-weight:400;font-size:18px;margin-top:8px;line-height:1.3}
   /* Os dois caminhos que a peça abre para quem a recebeu: comprar a sua, e
      repor a areia quando esta acabar. Secundários de propósito, o conteúdo
@@ -416,6 +420,12 @@ function mostrar(v, cert){
       <p class="rot">Peça original</p>
       <p class="proc">${esc(cert.modelo || 'Cinérea')}${serie ? ' · ' + esc(serie) : ''}</p>
       ${feita ? `<p class="nota" style="margin-top:4px">feita em ${esc(feita)}</p>` : ''}
+      ${/* O caminho do dono que não tem o aplicativo, e no iPhone é todo dono.
+            Aparece para qualquer um que encoste o celular, e sem risco: quem
+            decide se a peça entra na conta é o perfil, pela certidão, e não
+            este link. Só com chip de verdade: na prévia (`?demo=`) não há peça
+            para guardar. */ ''}
+      ${chip ? `<p class="nota guardar"><a href="/perfil/?guardar=${encodeURIComponent(chip)}">Esta peça é sua? Guarde na sua conta</a></p>` : ''}
     </div>`;
   }
 

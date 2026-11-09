@@ -427,6 +427,57 @@ let secao = /[?&](pago|pendente|falhou)=/.test(location.search) ? 'encomendas'
           : (/[?&]sacola=/.test(location.search) && sacolaGuardada()) ? 'fechar'
           : 'pecas';
 
+/* ------------------------------------------------------- guardar a peça --- */
+/**
+ * Guardar uma peça pela web, sem aplicativo (nov/2026).
+ *
+ * POR QUE EXISTE: o cliente de iPhone não instala o aplicativo (o time gratuito
+ * da Apple recusa o NFC), e até aqui peça só entrava na conta pelo aplicativo.
+ * A peça dele nunca aparecia neste perfil, e trocar o que ela diz era
+ * impossível, justamente para quem o perfil foi feito.
+ *
+ * O CAMINHO: o chip de uma peça permanente guarda `/p/?c={chip}`, que o iPhone
+ * abre sozinho ao encostar. A página do convidado oferece "Esta peça é sua?" e
+ * traz o chip para cá em `?guardar=`.
+ *
+ * SÓ GUARDA PEÇA QUE TEM DONO NA CERTIDÃO, e esse dono é esta conta. O link
+ * da página do convidado é visto por qualquer um que encoste o celular, e se
+ * encaminha por mensagem. Guardar peça sem dono por aqui seria o sequestro que
+ * a regra de posse veio fechar, a um toque: o convidado da festa guarda a peça
+ * antes de quem a comprou. A regra ainda deixa registrar peça sem dono (é o
+ * que mantém de pé tudo que foi vendido antes dela), mas esta tela não oferece:
+ * peça sem dono vai para o WhatsApp, e a casa a liga à encomenda na gestão.
+ */
+const TAG_VALIDA = /^[0-9A-F]{8,20}$/;
+
+/** O chip pedido na barra de endereço, ou `null`. Nunca um id pela metade. */
+function tagParaGuardar(busca){
+  const bruto = new URLSearchParams(busca).get('guardar');
+  if (!bruto) return null;
+  const t = bruto.trim().toUpperCase();
+  return TAG_VALIDA.test(t) ? t : null;
+}
+
+/**
+ * O que a tela mostra, a partir do que a rede trouxe.
+ *
+ * `certidao`: os dados de `pecas/{tag}`, ou `null` se não existe.
+ * `jaNaConta`: se `clientes/{uid}/pecas/{tag}` já existe.
+ *
+ * A ORDEM IMPORTA: "já está na conta" vem antes de tudo, porque quem guardou
+ * pelo aplicativo, antes de a certidão ganhar dono, continua dono dela e não
+ * pode ser mandado ao WhatsApp por uma peça que já é sua.
+ */
+function estadoDaGuarda({ certidao, uid, jaNaConta }){
+  if (jaNaConta) return 'ja-sua';
+  if (!certidao) return 'nao-existe';
+  const dono = typeof certidao.dono === 'string' ? certidao.dono : '';
+  if (!dono) return 'sem-dono';
+  return dono === uid ? 'pode-guardar' : 'outra-conta';
+}
+
+let guardarTag = tagParaGuardar(location.search);
+
 /**
  * A sacola que a loja deixou aqui.
  *
@@ -454,6 +505,7 @@ onAuthStateChanged(auth, async u => {
   if (!u) { abas.classList.add('some'); pintarEntrada(); return; }
   abas.classList.remove('some');
   document.getElementById('titulo').textContent = 'Sua conta';
+  if (guardarTag) return telaGuardar();
   await abrirSecao(secao);
 });
 
@@ -478,7 +530,17 @@ function mostrarAbaEscolhida(){
   barra.scrollLeft = Math.max(0, Math.min(barra.scrollWidth - barra.clientWidth, alvo));
 }
 
+/** Sai do "guardar" sem deixar o pedido na barra: recarregar não o repete. */
+function esquecerGuarda(){
+  if (!guardarTag) return;
+  guardarTag = null;
+  const q = new URLSearchParams(location.search);
+  q.delete('guardar');
+  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : ''));
+}
+
 async function abrirSecao(qual){
+  esquecerGuarda();
   secao = qual;
   document.querySelectorAll('#abas button').forEach(b =>
     b.classList.toggle('aqui', b.dataset.secao === qual));
@@ -561,6 +623,8 @@ function pintarEntrada(){
     criando ? 'Criar sua conta' : 'Entrar na sua conta';
   document.getElementById('chamada').textContent = veioDaSacola
     ? 'Falta só a conta para você pagar e acompanhar o pedido.'
+    : guardarTag
+    ? 'Entre com a conta da sua compra para guardar a peça.'
     : 'Suas peças, suas encomendas e seus dados, com a mesma conta do aplicativo.';
 
   const guardado = window.__emailDigitado || '';
@@ -590,9 +654,9 @@ function pintarEntrada(){
     </div>
     ${criando ? `<div class="sub" style="margin-top:14px">Ao criar a conta você concorda com a
       <a href="/privacidade/">política de privacidade</a>.</div>` : ''}
-    <div class="aviso">Aqui você troca o que suas peças dizem, acompanha suas
-      encomendas e cuida dos seus dados. Reconhecer uma peça nova e gravar o chip
-      continuam só no aplicativo, no Android, porque exigem NFC.</div>
+    <div class="aviso">${guardarTag
+      ? 'Use o mesmo e-mail com que você comprou: é por ele que sabemos que a peça é sua. Assim que entrar, ela vem junto.'
+      : 'Aqui você troca o que suas peças dizem, acompanha suas encomendas e cuida dos seus dados. Para guardar uma peça nova, encoste o celular nela e toque em “Esta peça é sua?” no fim da página que abrir.'}</div>
   </div>`;
 
   const campoEmail = document.getElementById('email');
@@ -773,6 +837,117 @@ function enderecoDeConfianca(bruto){
   }catch{ return ''; }
 }
 
+/* -------------------------------------------------------- tela de guardar --- */
+function whatsDaGuarda(cert){
+  const nome = cert?.modelo ? `a minha peça ${cert.modelo}` : 'uma peça';
+  const t = `Oi! Quero guardar ${nome} na minha conta do site (chip ${guardarTag}, conta ${usuario?.email || ''}).`;
+  return 'https://wa.me/5511958280174?text=' + encodeURIComponent(t);
+}
+
+async function telaGuardar(){
+  document.querySelectorAll('#abas button').forEach(b => b.classList.remove('aqui'));
+  document.getElementById('titulo').textContent = 'Guardar uma peça';
+  document.getElementById('chamada').textContent = '';
+  tela.innerHTML = esperando('conferindo a peça…');
+
+  const tag = guardarTag;
+  let cert, jaNaConta;
+  try{
+    const [c, minha] = await Promise.all([
+      getDoc(doc(fdb,'pecas',tag)),
+      getDoc(doc(fdb,'clientes',usuario.uid,'pecas',tag)),
+    ]);
+    cert = c.exists() ? c.data() : null;
+    jaNaConta = minha.exists();
+  }catch(e){
+    console.error(e);
+    tela.innerHTML = `<div class="cartao"><h3>Não consegui conferir a peça agora</h3>
+      <p class="sub">Confira a internet e recarregue a página.</p></div>`;
+    return;
+  }
+  if (tag !== guardarTag) return;   // a pessoa já foi para outra aba
+
+  const estado = estadoDaGuarda({ certidao: cert, uid: usuario.uid, jaNaConta });
+  const serie = cert?.serie && cert?.total ? ` · peça ${cert.serie} de ${cert.total}` : '';
+  const nomePeca = esc(cert?.modelo || 'Sua peça') + esc(serie);
+  const zap = `<a class="bt" href="${esc(whatsDaGuarda(cert))}" target="_blank" rel="noopener">Falar com o ateliê</a>`;
+  const minhas = `<button class="bt bt2" data-ir="pecas">Ver minhas peças</button>`;
+
+  const TELAS = {
+    'pode-guardar': `<div class="cartao">
+      <h3>${nomePeca}</h3>
+      <p class="sub">Esta peça foi ligada à sua conta na compra. Guardando, você
+        passa a trocar o que ela diz por aqui, de qualquer aparelho.</p>
+      <label for="g_nome">Como você chama esta peça?</label>
+      <input id="g_nome" maxlength="40" value="${esc(cert?.modelo || '')}" placeholder="a vela da sala">
+      <div class="botoes"><button class="bt" id="g_guardar">Guardar na minha conta</button></div>
+      <div class="erro some" id="g_erro"></div>
+    </div>`,
+    'ja-sua': `<div class="cartao">
+      <h3>${nomePeca}</h3>
+      <p class="sub">Esta peça já está na sua conta.</p>
+      <div class="botoes">${minhas}</div>
+    </div>`,
+    'outra-conta': `<div class="cartao">
+      <h3>${nomePeca}</h3>
+      <p class="sub">Esta peça está ligada a outra conta. Se você comprou com outro
+        e-mail, entre com ele. Se ela foi presente ou mudou de dono, fale com o
+        ateliê que a gente resolve.</p>
+      <div class="botoes">${zap}${minhas}</div>
+    </div>`,
+    'sem-dono': `<div class="cartao">
+      <h3>${nomePeca}</h3>
+      <p class="sub">Esta peça ainda não foi ligada a nenhuma conta. Antes de ela
+        entrar na sua, o ateliê confirma que ela é sua: é isso que impede alguém
+        que encostou o celular nela numa visita de guardá-la primeiro. Mande uma
+        mensagem e a gente libera.</p>
+      <div class="botoes">${zap}${minhas}</div>
+    </div>`,
+    'nao-existe': `<div class="cartao">
+      <h3>Não encontrei esta peça</h3>
+      <p class="sub">Ela ainda não tem certidão do ateliê. Mande uma mensagem e a
+        gente confere.</p>
+      <div class="botoes">${zap}${minhas}</div>
+    </div>`,
+  };
+  tela.innerHTML = TELAS[estado];
+
+  tela.querySelectorAll('[data-ir]').forEach(b => b.onclick = () => abrirSecao(b.dataset.ir));
+  const bt = document.getElementById('g_guardar');
+  if (bt) bt.onclick = () => guardarPeca(tag);
+}
+
+async function guardarPeca(tag){
+  const bt = document.getElementById('g_guardar');
+  const nome = document.getElementById('g_nome').value.trim().slice(0, 40);
+  if (nome.length < 2) return falha('g_erro', 'Dê um nome à peça, nem que seja "a da sala".');
+  bt.disabled = true; bt.textContent = 'guardando…';
+  try{
+    // Os mesmos campos que o aplicativo grava (`adicionarPeca`, em
+    // `src/dados/pecas.ts`), mais `permanente`: se a peça abriu a página do
+    // convidado, o chip guarda o endereço fixo, e é isso que deixa trocar o
+    // conteúdo por aqui. `capacidade` fica nula, ela só importa para gravar
+    // dentro do chip, o que a peça permanente não precisa mais.
+    await setDoc(doc(fdb,'clientes',usuario.uid,'pecas',tag), {
+      nome, capacidade: null, permanente: true,
+      adicionadaEm: serverTimestamp(), atualizadaEm: serverTimestamp(),
+      conteudoAtual: null, historico: [],
+    });
+  }catch(e){
+    console.error(e);
+    bt.disabled = false; bt.textContent = 'Guardar na minha conta';
+    return falha('g_erro', e?.code === 'permission-denied'
+      ? 'A peça não pôde entrar nesta conta. Fale com o ateliê pelo WhatsApp.'
+      : 'Não consegui guardar agora. Confira a internet e tente de novo.');
+  }
+  // Abre a peça já pronta para escolher o que ela diz: é o motivo de a pessoa
+  // ter vindo. `carregarPecas` só volta depois de buscar as certidões, então o
+  // editor não é repintado por cima pela lista.
+  await abrirSecao('pecas');
+  const i = pecas.findIndex(p => p.tagUid === tag);
+  if (i >= 0 && secao === 'pecas') pintarEditor(i);
+}
+
 /* ----------------------------------------------------------------- lista --- */
 function pintarLista(){
   document.getElementById('titulo').textContent = 'Suas peças';
@@ -782,8 +957,9 @@ function pintarLista(){
   if(!pecas.length){
     tela.innerHTML = `<div class="cartao">
       <h3>Nenhuma peça nesta conta ainda</h3>
-      <p class="sub">Peça aparece aqui depois que o aplicativo a reconhece pela
-        primeira vez, encostando o celular nela. É o único passo que exige NFC.</p>
+      <p class="sub">Para guardar a sua, encoste o celular nela e toque em
+        “Esta peça é sua?” no fim da página que abrir. Funciona no iPhone e no
+        Android, sem aplicativo.</p>
       <div class="botoes"><a class="bt bt2" href="/loja/">Ver a loja</a></div>
     </div>`;
     return;
@@ -2060,9 +2236,10 @@ function pintarAjuda(){
 
   <div class="cartao">
     <h3>Sobre a peça que não aparece aqui</h3>
-    <p class="sub">Peça só entra na sua conta depois que o aplicativo a reconhece,
-      encostando o celular nela uma vez. É o único passo que exige o aparelho na
-      mão. Daí em diante você troca o conteúdo por aqui, de onde estiver.</p>
+    <p class="sub">Encoste o celular na peça e toque em “Esta peça é sua?” no fim
+      da página que abrir. Ela entra na conta com que você comprou, e daí em
+      diante você troca o conteúdo por aqui, de onde estiver. Se a peça foi
+      presente ou chegou por outro caminho, fale com o ateliê.</p>
   </div>`;
 }
 
