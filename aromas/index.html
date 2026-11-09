@@ -125,6 +125,45 @@
   .livro-link b{display:block;font-size:24px;line-height:1.15;margin-top:8px}
   .livro-link .txt{display:block;margin-top:8px;color:#CFC7BB;font-size:14.5px;line-height:1.5}
   .livro-link:hover b{color:#E9A04A}
+
+  /* MOVIMENTO (nov/2026), na mesma regra das outras páginas: o repouso é
+     VISÍVEL e quem esconde é o script, pondo `anima` no <html> só depois de
+     ligar quem mostra de volta. */
+  .anima .surge{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+  .anima .surge.de-lado{transform:translateX(-42px)}
+  .anima .surge.de-lado.direita{transform:translateX(42px)}
+  .anima .surge.vista{opacity:1;transform:none}
+  /* os três gestos se desenham pelo traço; o comprimento de cada caminho é
+     medido pelo script (--L), porque o Chrome não aplica pathLength ao
+     tracejado (medido em Aplicações) */
+  .anima .passos li.surge [data-traco]{stroke-dasharray:var(--L) var(--L);stroke-dashoffset:var(--L)}
+  .anima .passos li.surge.vista [data-traco]{animation:traco 1.3s ease forwards}
+  @keyframes traco{from{stroke-dashoffset:var(--L)}to{stroke-dashoffset:0}}
+  /* encha: os grãos caem um a um */
+  .anima .passos li.surge .graos circle{opacity:0}
+  .anima .passos li.surge.vista .graos circle{animation:grao .5s ease-out forwards}
+  @keyframes grao{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+  /* pingue: a gota cai na areia e volta, em ciclo; o primeiro quadro é a
+     gota no lugar, então aba congelada mostra o desenho inteiro */
+  .passos .gota{transform-box:fill-box;transform-origin:center;animation:pinga 2.8s ease-in infinite}
+  @keyframes pinga{0%,50%{transform:none;opacity:1}82%{transform:translateY(9px) scale(.9,1.1);opacity:1}92%,100%{transform:translateY(10px) scale(1.3,.4);opacity:0}}
+  /* acenda: a chama respira e a fumaça sobe */
+  .passos .chama-ic{transform-box:fill-box;transform-origin:50% 100%;animation:tremula 2.2s ease-in-out infinite}
+  @keyframes tremula{0%,100%{transform:none}30%{transform:scale(.94,1.05) skewX(-3deg)}60%{transform:scale(1.03,.97) skewX(2deg)}}
+  .passos .fumo{stroke-dasharray:5 7;animation:sobe 3s linear infinite}
+  @keyframes sobe{to{stroke-dashoffset:-24}}
+  /* combinar: os dois pontos de cor chegam separados e se juntam */
+  .anima .pares li.surge .dupla i+i{transform:translateX(16px);transition:transform 1s cubic-bezier(.3,1.3,.5,1) .35s}
+  .anima .pares li.surge.vista .dupla i+i{transform:none}
+  /* de onde vem: o fio de cada planta se desenha */
+  .plantas li{position:relative;border-top-color:transparent}
+  .plantas li::before{content:'';position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--char);transform-origin:left}
+  .anima .plantas li.surge::before{transform:scaleX(0);transition:transform 1s cubic-bezier(.6,0,.2,1) .15s}
+  .anima .plantas li.surge.vista::before{transform:scaleX(1)}
+  @media (prefers-reduced-motion: reduce){
+    .anima .surge,.anima .surge.de-lado{opacity:1;transform:none;transition:none}
+    .passos .gota,.passos .chama-ic,.passos .fumo{animation:none}
+  }
 </style>
 </head>
 <body class="nova">
@@ -171,12 +210,12 @@
 
   <section class="capa" id="capa">
     <div class="capa-texto">
-      <p class="rot">Aromas</p>
-      <h1 class="serifa">O cheiro,<br><em>você escolhe.</em></h1>
-      <p class="sub">A areia da Cinérea vem sem aroma, de propósito. O perfume chega à parte,
+      <p class="rot surge">Aromas</p>
+      <h1 class="serifa surge">O cheiro,<br><em>você escolhe.</em></h1>
+      <p class="sub surge">A areia da Cinérea vem sem aroma, de propósito. O perfume chega à parte,
          num vidrinho de pingar: você escolhe o seu, troca quando quiser e combina como quiser.</p>
-      <p class="selo">Os vidrinhos chegam em breve.</p>
-      <div class="acoes">
+      <p class="selo surge">Os vidrinhos chegam em breve.</p>
+      <div class="acoes surge">
         <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20entrar%20na%20lista%20de%20espera%20dos%20aromas%20da%20Cin%C3%A9rea." target="_blank" rel="noopener">Entrar na lista de espera</a>
         <a class="bt bt2" href="/oraculo/">Qual combina comigo</a>
       </div>
@@ -186,7 +225,7 @@
          10 s, e o último quadro emenda no primeiro sem corte. O pôster é o
          primeiro quadro: sem vídeo (menos movimento, economia de dados) fica a
          foto parada, e a capa não muda de imagem quando o vídeo começa. -->
-    <figure class="capa-img pousada">
+    <figure class="capa-img pousada surge de-lado direita">
       <video class="laje" id="giroVidrinhos" muted loop playsinline preload="none"
              poster="/aromas/frascos/giro-trio.jpg" width="1200" height="900"
              aria-label="Os três vidrinhos âmbar de pingar girando devagar: Névoa da Manhã, Lenha &amp; Poesia e Sopro de Sono, com conta-gotas de gola de gesso e rótulo da Cinérea."></video>
@@ -196,49 +235,49 @@
   <div class="envolve">
 
     <section class="gestos" id="como" aria-labelledby="comoTitulo">
-      <p class="rot">Como funciona</p>
-      <h2 class="serifa" id="comoTitulo">Três gestos.</h2>
-      <ol class="passos">
-        <li>
+      <p class="rot surge">Como funciona</p>
+      <h2 class="serifa surge" id="comoTitulo">Três gestos.</h2>
+      <ol class="passos" data-escalonar>
+        <li class="surge">
           <svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 64 C22 56,98 56,98 64 C98 92,84 102,60 102 C36 102,22 92,22 64Z" stroke="#161412" stroke-width="2.2"/>
             <path d="M24 64 C40 70,80 70,96 64" stroke="#161412" stroke-width="1.4" opacity=".5"/>
-            <g fill="#161412" opacity=".55"><circle cx="38" cy="74" r="1.6"/><circle cx="48" cy="80" r="1.6"/><circle cx="60" cy="76" r="1.6"/><circle cx="72" cy="81" r="1.6"/><circle cx="82" cy="74" r="1.6"/><circle cx="54" cy="88" r="1.6"/><circle cx="68" cy="90" r="1.6"/></g>
+            <g class="graos" fill="#161412" opacity=".55"><circle cx="38" cy="74" r="1.6"/><circle cx="48" cy="80" r="1.6"/><circle cx="60" cy="76" r="1.6"/><circle cx="72" cy="81" r="1.6"/><circle cx="82" cy="74" r="1.6"/><circle cx="54" cy="88" r="1.6"/><circle cx="68" cy="90" r="1.6"/></g>
             <path d="M60 64 V48" stroke="#161412" stroke-width="2.2"/>
           </svg>
           <b class="serifa">Encha</b>
           <p>Areia de cera na peça, em volta do pavio. Ela não tem cheiro nenhum.</p>
         </li>
-        <li>
+        <li class="surge">
           <svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 76 C22 70,98 70,98 76 C98 98,84 106,60 106 C36 106,22 98,22 76Z" stroke="#161412" stroke-width="2.2"/>
             <path d="M60 76 V64" stroke="#161412" stroke-width="2.2"/>
             <rect x="72" y="10" width="14" height="22" rx="5" stroke="#161412" stroke-width="2.2"/>
             <path d="M75 32 h8 l-2 16 h-4 Z" stroke="#161412" stroke-width="2.2"/>
-            <path d="M79 54 C76 58,75 61,79 63 C83 61,82 58,79 54Z" fill="#B8462B" stroke="none"/>
+            <path class="gota" d="M79 54 C76 58,75 61,79 63 C83 61,82 58,79 54Z" fill="#B8462B" stroke="none"/>
           </svg>
           <b class="serifa">Pingue</b>
           <p>Algumas gotas na areia em volta do pavio, sem molhar o pavio. Mais gotas, mais presença.</p>
         </li>
-        <li>
+        <li class="surge">
           <svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 76 C22 70,98 70,98 76 C98 98,84 106,60 106 C36 106,22 98,22 76Z" stroke="#161412" stroke-width="2.2"/>
             <path d="M60 76 V64" stroke="#161412" stroke-width="2.2"/>
-            <path d="M60 30 C52 42,52 52,60 58 C68 52,68 42,60 30Z" fill="#B8462B" stroke="none"/>
-            <path d="M40 40 C36 30,44 24,40 14 M80 40 C84 30,76 24,80 14" stroke="#161412" stroke-width="1.6" opacity=".35"/>
+            <path class="chama-ic" d="M60 30 C52 42,52 52,60 58 C68 52,68 42,60 30Z" fill="#B8462B" stroke="none"/>
+            <path class="fumo" d="M40 40 C36 30,44 24,40 14 M80 40 C84 30,76 24,80 14" stroke="#161412" stroke-width="1.6" opacity=".35"/>
           </svg>
           <b class="serifa">Acenda</b>
           <p>O calor da chama leva o aroma para a casa. Quando acabar, pingue de novo.</p>
         </li>
       </ol>
-      <p class="cuidado">Pingue sempre com a vela apagada e fria. Nunca no pavio, nunca numa vela acesa ou ainda quente.</p>
+      <p class="cuidado surge">Pingue sempre com a vela apagada e fria. Nunca no pavio, nunca numa vela acesa ou ainda quente.</p>
     </section>
 
     <section class="assinaturas" id="assinaturas" aria-labelledby="assTitulo">
-      <p class="rot">As assinaturas da casa</p>
-      <h2 class="serifa" id="assTitulo">Três vidrinhos,<br><em>em breve.</em></h2>
-      <div class="vidros">
-        <article class="vidro" style="--tinta:#C9C6BC">
+      <p class="rot surge">As assinaturas da casa</p>
+      <h2 class="serifa surge" id="assTitulo">Três vidrinhos,<br><em>em breve.</em></h2>
+      <div class="vidros" data-escalonar>
+        <article class="vidro surge" style="--tinta:#C9C6BC">
           <img class="laje" src="/aromas/frascos/nevoa.jpg" width="1000" height="1250" loading="lazy" decoding="async"
                alt="O vidrinho âmbar de Névoa da Manhã, com conta-gotas de gola de gesso e rótulo da Cinérea.">
           <p class="hora">de manhã</p>
@@ -246,7 +285,7 @@
           <p class="carater">fresca, de ar frio</p>
           <p class="notas">pinho silvestre · cipreste · alecrim</p>
         </article>
-        <article class="vidro" style="--tinta:#9C7656">
+        <article class="vidro surge" style="--tinta:#9C7656">
           <img class="laje" src="/aromas/frascos/lenha.jpg" width="1000" height="1250" loading="lazy" decoding="async"
                alt="O vidrinho âmbar de Lenha & Poesia, com conta-gotas de gola de gesso e rótulo da Cinérea.">
           <p class="hora">à lareira</p>
@@ -254,7 +293,7 @@
           <p class="carater">quente, de madeira</p>
           <p class="notas">cedro-do-atlas · patchouli · vetiver</p>
         </article>
-        <article class="vidro" style="--tinta:#BDB0A8">
+        <article class="vidro surge" style="--tinta:#BDB0A8">
           <img class="laje" src="/aromas/frascos/sopro.jpg" width="1000" height="1250" loading="lazy" decoding="async"
                alt="O vidrinho âmbar de Sopro de Sono, com conta-gotas de gola de gesso e rótulo da Cinérea.">
           <p class="hora">à noite</p>
@@ -263,7 +302,7 @@
           <p class="notas">lavanda · sálvia esclareia · benjoim</p>
         </article>
       </div>
-      <div class="acoes centro">
+      <div class="acoes centro surge">
         <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20entrar%20na%20lista%20de%20espera%20dos%20aromas%20da%20Cin%C3%A9rea." target="_blank" rel="noopener">Entrar na lista de espera</a>
         <a class="bt bt2" href="/oraculo/">Descobrir o meu em três perguntas</a>
       </div>
@@ -274,12 +313,12 @@
          mesma lista de espera. A foto é o render do modelo real. O giro dela
          (giro-estacao.mp4, já ligado no vivo.js) entra depois. -->
     <section class="estacao" id="estacao" aria-labelledby="estTitulo">
-      <figure class="pousada"><img class="laje l2" src="/aromas/frascos/estacao.jpg" width="1000" height="1250" loading="lazy" decoding="async"
+      <figure class="pousada surge de-lado"><img class="laje l2" src="/aromas/frascos/estacao.jpg" width="1000" height="1250" loading="lazy" decoding="async"
            alt="A estação de gesso com os três vidrinhos âmbar em degraus, um copo de fósforos com a faixa de lixa de riscar, o acendedor longo, o apagador e o rastelo."></figure>
       <div>
-        <p class="rot">Em breve · a estação</p>
-        <h2 class="serifa" id="estTitulo">O lugar de<br><em>cada coisa.</em></h2>
-        <p class="sub">Um bloco de gesso só, ao lado da peça: os três vidrinhos em degraus, os fósforos com
+        <p class="rot surge">Em breve · a estação</p>
+        <h2 class="serifa surge" id="estTitulo">O lugar de<br><em>cada coisa.</em></h2>
+        <p class="sub surge">Um bloco de gesso só, ao lado da peça: os três vidrinhos em degraus, os fósforos com
            a lixa de riscar, o acendedor, o apagador e o rastelo da areia. E um furo para o conta-gotas
            ficar em pé enquanto você pinga.</p>
         <div class="acoes">
@@ -292,16 +331,16 @@
 
   <section class="faixa-combina" id="combinar" aria-labelledby="combTitulo">
     <div class="envolve">
-      <p class="rot">Trocar e combinar</p>
-      <h2 class="serifa" id="combTitulo">Uma peça,<br><em>muitos cheiros.</em></h2>
-      <p class="sub">Como o aroma não mora na areia, a peça não fica presa a um cheiro só.
+      <p class="rot surge">Trocar e combinar</p>
+      <h2 class="serifa surge" id="combTitulo">Uma peça,<br><em>muitos cheiros.</em></h2>
+      <p class="sub surge">Como o aroma não mora na areia, a peça não fica presa a um cheiro só.
          Duas gotas de um, uma do outro, e a sala ganha uma assinatura que é só sua.</p>
-      <ul class="pares">
-        <li><span class="dupla"><i style="background:#C9C6BC"></i><i style="background:#9C7656"></i></span><b>Névoa + Lenha</b>a manhã fria com a lareira acesa</li>
-        <li><span class="dupla"><i style="background:#9C7656"></i><i style="background:#BDB0A8"></i></span><b>Lenha + Sopro</b>o fim de semana inteiro em casa</li>
-        <li><span class="dupla"><i style="background:#C9C6BC"></i><i style="background:#BDB0A8"></i></span><b>Névoa + Sopro</b>a casa recém-arrumada, janela aberta</li>
+      <ul class="pares" data-escalonar>
+        <li class="surge"><span class="dupla"><i style="background:#C9C6BC"></i><i style="background:#9C7656"></i></span><b>Névoa + Lenha</b>a manhã fria com a lareira acesa</li>
+        <li class="surge"><span class="dupla"><i style="background:#9C7656"></i><i style="background:#BDB0A8"></i></span><b>Lenha + Sopro</b>o fim de semana inteiro em casa</li>
+        <li class="surge"><span class="dupla"><i style="background:#C9C6BC"></i><i style="background:#BDB0A8"></i></span><b>Névoa + Sopro</b>a casa recém-arrumada, janela aberta</li>
       </ul>
-      <p class="nota">Para trocar de aroma, troque a areia em volta do pavio: a maior parte do cheiro antigo
+      <p class="nota surge">Para trocar de aroma, troque a areia em volta do pavio: a maior parte do cheiro antigo
          sai junto com o bloco de cera que se forma quando a vela apaga. Aromas de fundo, como
          patchouli e vetiver, demoram um pouco mais para ir embora.</p>
     </div>
@@ -310,8 +349,8 @@
   <div class="envolve">
 
     <section class="tempos" id="tempos" aria-labelledby="tempTitulo">
-      <p class="rot">Como um aroma se sustenta</p>
-      <h2 class="serifa" id="tempTitulo">Todo cheiro tem três tempos.</h2>
+      <p class="rot surge">Como um aroma se sustenta</p>
+      <h2 class="serifa surge" id="tempTitulo">Todo cheiro tem três tempos.</h2>
       <!-- A única diferença entre as três faixas é a duração do sopro: 3,5 s,
            9 s e 19 s. Quem olha dez segundos vê a de cima subir três vezes
            enquanto a de baixo ainda está no meio, e entende sem ler. -->
@@ -325,22 +364,22 @@
     </section>
 
     <section class="origem" id="origem" aria-labelledby="oriTitulo">
-      <p class="rot">De onde vem</p>
-      <h2 class="serifa" id="oriTitulo">A parte da planta muda tudo.</h2>
-      <p class="sub">O óleo da flor da lavanda é outra coisa do que sairia da folha. Por isso a origem vem
+      <p class="rot surge">De onde vem</p>
+      <h2 class="serifa surge" id="oriTitulo">A parte da planta muda tudo.</h2>
+      <p class="sub surge">O óleo da flor da lavanda é outra coisa do que sairia da folha. Por isso a origem vem
          com o nome botânico, e não só com um nome bonito.</p>
-      <ul class="plantas">
-        <li><b class="serifa">Lavanda</b><span>flor</span><i>Lavandula angustifolia</i></li>
-        <li><b class="serifa">Bergamota</b><span>casca do fruto</span><i>Citrus × bergamia</i></li>
-        <li><b class="serifa">Cedro-do-atlas</b><span>cerne da madeira</span><i>Cedrus atlantica</i></li>
-        <li><b class="serifa">Patchouli</b><span>folha e caule</span><i>Pogostemon cablin</i></li>
-        <li><b class="serifa">Vetiver</b><span>raiz</span><i>Vetiveria zizanioides</i></li>
-        <li><b class="serifa">Ylang-ylang</b><span>flor</span><i>Cananga odorata</i></li>
+      <ul class="plantas" data-escalonar>
+        <li class="surge"><b class="serifa">Lavanda</b><span>flor</span><i>Lavandula angustifolia</i></li>
+        <li class="surge"><b class="serifa">Bergamota</b><span>casca do fruto</span><i>Citrus × bergamia</i></li>
+        <li class="surge"><b class="serifa">Cedro-do-atlas</b><span>cerne da madeira</span><i>Cedrus atlantica</i></li>
+        <li class="surge"><b class="serifa">Patchouli</b><span>folha e caule</span><i>Pogostemon cablin</i></li>
+        <li class="surge"><b class="serifa">Vetiver</b><span>raiz</span><i>Vetiveria zizanioides</i></li>
+        <li class="surge"><b class="serifa">Ylang-ylang</b><span>flor</span><i>Cananga odorata</i></li>
       </ul>
     </section>
 
     <section class="remedio" aria-labelledby="remTitulo">
-      <h2 class="serifa" id="remTitulo">Aroma não é remédio.</h2>
+      <h2 class="serifa surge" id="remTitulo">Aroma não é remédio.</h2>
       <p>Uma vela não é tratamento, e a Cinérea não promete efeito nenhum sobre a sua saúde. O que uma
          peça acesa faz é o que o olfato faz de melhor sem precisar prometer nada: dar prazer, marcar
          presença e guardar memória. Já é bastante.</p>
@@ -413,18 +452,36 @@
 
 <script src="/vivo.js" defer></script>
 <script>
-/* As faixas dos tempos só sopram quando a pessoa chega nelas. A classe que
- * esconde o ponto (.anima) entra AQUI, e não no HTML: sem script, ou com aba
- * escondida congelando animação, o ponto fica à vista e nada some. */
+/* A página acende ao rolar: títulos, fotos, os gestos que se desenham e as
+ * faixas dos tempos, que só sopram quando a pessoa chega nelas. A classe que
+ * esconde (.anima) entra AQUI, e não no HTML: sem script, com movimento
+ * reduzido ou com aba escondida congelando animação, nada some. */
 (function () {
   var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var alvo = document.querySelector('.tempos');
-  if (!alvo || quieto || !('IntersectionObserver' in window)) return;
-  document.documentElement.classList.add('anima');
+  if (quieto || !('IntersectionObserver' in window)) return;
+  // os traços dos gestos levam o próprio comprimento (+1 px pela ponta redonda)
+  document.querySelectorAll('.passos svg path, .passos svg rect').forEach(function (el) {
+    var s = el.getAttribute('stroke');
+    if (!s || s === 'none' || el.classList.contains('fumo')) return;
+    el.style.setProperty('--L', (el.getTotalLength() + 1).toFixed(1) + 'px');
+    el.setAttribute('data-traco', '');
+  });
+  // os grãos caem em fila, depois que a tigela se desenhou
+  document.querySelectorAll('.passos .graos circle').forEach(function (c, i) {
+    c.style.animationDelay = (0.9 + i * 0.12).toFixed(2) + 's';
+  });
+  // em grupo, cada item chega um pouco depois do anterior
+  document.querySelectorAll('[data-escalonar]').forEach(function (g) {
+    Array.prototype.forEach.call(g.querySelectorAll(':scope > .surge'), function (el, i) {
+      el.style.transitionDelay = (i * 0.1).toFixed(2) + 's';
+      el.querySelectorAll('[data-traco]').forEach(function (c) { c.style.animationDelay = (0.15 + i * 0.25).toFixed(2) + 's'; });
+    });
+  });
   var olho = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('vista'); olho.unobserve(e.target); } });
-  }, { rootMargin: '0px 0px -12% 0px' });
-  olho.observe(alvo);
+  }, { rootMargin: '0px 0px -10% 0px' });
+  document.documentElement.classList.add('anima');
+  document.querySelectorAll('.surge, .tempos').forEach(function (el) { olho.observe(el); });
 })();
 </script>
 <script src="/contador.js" defer></script>

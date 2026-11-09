@@ -1,0 +1,52 @@
+{
+ "pecas": {
+  "mw76wawuuxqy": "largo",
+  "mw770m9glivk": "largo",
+  "mw77113847yc": "largo",
+  "mw76zx1g957q": "largo",
+  "mw770bl617d3": "largo",
+  "msfkfkc56u43": "largo",
+  "mw76wp4hbn2w": "compacto",
+  "mw76x41x6ilf": "compacto",
+  "mw76xiq8g32b": "compacto",
+  "mw76xwg3jqr8": "compacto",
+  "mw76yg7vthu8": "compacto",
+  "mw76yrku7l97": "compacto",
+  "mw76z5bxw405": "compacto",
+  "mw76zjbinskn": "compacto"
+ },
+ "camadas": {
+  "compacto": [
+   "mscogt8rehjl",
+   "mw76wp4hbn2w",
+   "mw76x41x6ilf",
+   "mw76xiq8g32b",
+   "mw76xwg3jqr8",
+   "mw76yg7vthu8",
+   "mw76yrku7l97",
+   "mw76z5bxw405",
+   "mw76zjbinskn",
+   "mw7b37dbbbkt",
+   "mw7b3vvxds35",
+   "mw7b4k3abqci",
+   "mw8jd9josc50",
+   "mw8jdzgu44tb",
+   "mw8jelvavuva"
+  ],
+  "largo": [
+   "mscogt8rehjl",
+   "msfkfkc56u43",
+   "mw76wawuuxqy",
+   "mw76zx1g957q",
+   "mw770bl617d3",
+   "mw770m9glivk",
+   "mw77113847yc",
+   "mw7b37dbbbkt",
+   "mw7b3vvxds35",
+   "mw7b4k3abqci",
+   "mw8jd9josc50",
+   "mw8jdzgu44tb",
+   "mw8jelvavuva"
+  ]
+ }
+}

@@ -400,7 +400,83 @@
   .kit-faixa[hidden]{display:none}
   .montar{position:fixed;inset:0;background:var(--paper);overflow-y:auto;z-index:31;display:none}
   .montar.abre{display:block}
-  .mmiolo{max-width:760px;margin:0 auto;padding:22px 22px 190px}
+  .mmiolo{max-width:1100px;margin:0 auto;padding:22px 22px 210px}
+  /* O PALCO (nov/2026): o kit se monta ao lado, enquanto a pessoa escolhe.
+     As fotos da loja são feitas no papel EXATO do site (#F4F1EC); com
+     `darken`, o fundo de cada foto some no fundo do palco e os objetos
+     parecem pousados na mesma mesa. `multiply` escureceria o papel onde duas
+     fotos se cruzam, e o retângulo de cada uma apareceria. */
+  .mgrade{display:grid;gap:28px}
+  @media(min-width:900px){ .mgrade{grid-template-columns:minmax(0,1fr) 420px;gap:48px;align-items:start} .palco-col{position:sticky;top:70px;order:2} }
+  @media(max-width:899px){ .palco-col{display:none} }
+  /* o palco encolhe em tela baixa: ele, o resumo e o botão cabem juntos */
+  .palco{position:relative;aspect-ratio:1;width:min(100%, calc(100vh - 420px));min-width:260px;margin:24px auto 0;
+    background:#F4F1EC;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+  /* no computador o resumo mora embaixo do palco, e a barra fixa sai */
+  .mresumo-lado{margin-top:14px}
+  .mresumo-lado .lin{display:flex;justify-content:space-between;font-size:14px;color:var(--smoke);margin-top:3px}
+  .mresumo-lado .lin.fim{font-size:17px;color:var(--char);font-weight:600;margin-top:6px}
+  .mresumo-lado .lin.kit{color:var(--ember)}
+  .mresumo-lado .bt{margin-top:12px}
+  .mresumo-lado .bt:disabled{opacity:.45;cursor:default}
+  .mresumo-lado .mnota{font-size:12.5px;color:var(--smoke);margin-top:8px;text-align:center}
+  @media(min-width:900px){ body .montar.abre + .mresumo{display:none} .mmiolo{padding-bottom:60px} }
+  /* CADA LUGAR É UMA CAMADA DO QUADRO INTEIRO (kit/<arranjo>/<id>.webp):
+     renders com a mesma câmera, a mesma luz e a escala real, cada produto já
+     na posição dele no arranjo, fundo transparente e a sombra no alfa. Uma
+     sobre a outra, leem como uma foto só. A ordem de empilhar é a da mesa:
+     o refil atrás, o pavio na frente. */
+  /* O ENQUADRAMENTO. Todas as camadas recebem o MESMO zoom, então o arranjo
+     não se desfaz; o valor é por arranjo, medido nos renders: no compacto o
+     conjunto ocupa o terço de cima à esquerda do quadro e sobrava mesa. */
+  .cena{position:absolute;inset:0;transition:transform .6s cubic-bezier(.3,.7,.2,1)}
+  .palco.anel-compacto .cena{transform:scale(1.16);transform-origin:36% 34%}
+  .palco.anel-largo .cena{transform:scale(1.08);transform-origin:46% 42%}
+  .slot{position:absolute;inset:0}
+  .s-refil{z-index:1}
+  .s-peca{z-index:2}
+  .s-aroma{z-index:3}
+  .s-pavio{z-index:4}
+  .slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .25s}
+  /* peça sem camada de arranjo: a foto da loja, num canto, como antes */
+  .slot.foto img{inset:auto;width:46%;height:46%;object-fit:cover;mix-blend-mode:darken}
+  .s-peca.foto img{left:27%;top:27%}
+  .s-refil.foto img{left:2%;top:2%}
+  .s-aroma.foto img{right:2%;top:24%}
+  .s-pavio.foto img{right:4%;bottom:2%}
+  .slot.tem img{opacity:1}
+  .slot.chega img{animation:pousa .75s cubic-bezier(.2,.9,.3,1.2)}
+  /* a camada desce e assenta; sem giro, porque ela é o quadro inteiro */
+  @keyframes pousa{0%{opacity:0;transform:translateY(-22px)}60%{opacity:1}100%{opacity:1;transform:none}}
+  /* os contornos ficam onde cada coisa pousa no arranjo */
+  /* o palco é quadrado: largura e altura no mesmo % dão círculo. A classe é
+     `lugar`, e não `vazio`: a loja já tem um `.vazio` (o "nada por aqui")
+     com 60 px de folga, e o contorno herdava e virava oval. */
+  .s-refil .lugar{left:17%;top:30%;width:20%;height:20%}
+  .s-peca .lugar{left:41%;top:45%;width:24%;height:24%}
+  .s-aroma .lugar{left:62%;top:32%;width:15%;height:15%}
+  .s-pavio .lugar{left:62%;top:62%;width:18%;height:18%}
+  .slot .lugar{position:absolute;white-space:nowrap;transform:translate(-50%,-50%);border:1.5px dashed var(--line);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-family:'Bodoni Moda';font-style:italic;font-size:14px;color:var(--smoke);text-align:center;line-height:1.15;transition:opacity .3s}
+  .slot.tem .lugar{opacity:0}
+  /* o selo mora FORA do palco, no lugar da legenda: dentro, cobria o pavio */
+  .selo-kit{display:table;margin:12px auto 0;transform:scale(.7);opacity:0;height:0;overflow:hidden;white-space:nowrap;background:var(--char);color:var(--paper);
+    padding:8px 14px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;transition:opacity .35s,transform .45s cubic-bezier(.3,1.5,.5,1)}
+  .selo-kit::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ember);margin-right:8px;vertical-align:1px}
+  .palco.completo + .selo-kit{opacity:1;transform:none;height:auto}
+  .palco.completo ~ .palco-legenda{display:none}
+  .palco-legenda{font-size:13px;color:var(--smoke);text-align:center;margin-top:10px}
+  /* no celular, o kit se monta numa fileira de miniaturas no resumo */
+  .mini{display:none;gap:8px;margin-bottom:10px}
+  @media(max-width:899px){ .mini{display:flex} }
+  .mini span{position:relative;width:46px;height:46px;border:1.5px dashed var(--line);border-radius:50%;overflow:hidden;background:#F4F1EC;flex:none}
+  .mini span.tem{border:1px solid var(--line)}
+  .mini span img{width:100%;height:100%;object-fit:cover;transform:scale(1.35)}
+  .mini span.chega img{animation:pousaMini .6s cubic-bezier(.2,.9,.3,1.3)}
+  @keyframes pousaMini{0%{transform:scale(.4);opacity:0}100%{transform:scale(1.35);opacity:1}}
+  .mini b{align-self:center;font-weight:500;font-size:12px;color:var(--ember);margin-left:4px;opacity:0;transition:opacity .3s}
+  .mini.completo b{opacity:1}
+  @media (prefers-reduced-motion: reduce){ .slot.chega img,.mini span.chega img{animation:none} .selo-kit{transition:none} }
   .mmiolo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(30px,7vw,40px);line-height:1.08}
   .mmiolo .msub{color:var(--smoke);margin-top:10px;line-height:1.55;max-width:52ch}
   .passo{margin-top:30px}
@@ -722,7 +798,22 @@ try {
   <p class="sob-encomenda">O que não está aqui a gente faz sob encomenda, uma peça por vez: <a href="/contato/">conte o que você precisa</a>.</p>
 </div>
 
-<div class="montar" id="montar" role="dialog" aria-modal="true" aria-label="Monte seu kit"><div class="fechar"><button onclick="fecharKit()">← voltar à loja</button></div><div class="mmiolo" id="mmiolo"></div></div>
+<div class="montar" id="montar" role="dialog" aria-modal="true" aria-label="Monte seu kit"><div class="fechar"><button onclick="fecharKit()">← voltar à loja</button></div>
+  <div class="mmiolo"><div class="mgrade">
+    <div id="mmiolo"></div>
+    <aside class="palco-col" aria-label="O seu kit, montado">
+      <div class="palco anel-compacto" id="palco"><div class="cena">
+        <div class="slot s-refil" data-slot="refil"><span class="lugar">o refil</span><img alt=""></div>
+        <div class="slot s-peca" data-slot="peca"><span class="lugar">a peça</span><img alt=""></div>
+        <div class="slot s-pavio" data-slot="pavio"><span class="lugar">o pavio</span><img alt=""></div>
+        <div class="slot s-aroma" data-slot="aroma"><span class="lugar">o aroma</span><img alt=""></div>
+      </div></div>
+      <div class="selo-kit" id="seloKit">kit completo</div>
+      <p class="palco-legenda" id="palcoLegenda">Escolha ao lado, e o kit se monta aqui.</p>
+      <div class="mresumo-lado" id="mresumoLado"></div>
+    </aside>
+  </div></div>
+</div>
 <div class="mresumo" id="mresumo"><div class="mr-in" id="mresumoIn"></div></div>
 <div class="ficha" id="ficha"><div class="fechar"><button onclick="fecharFicha()">← voltar</button></div><div class="fmiolo" id="fmiolo"></div></div>
 <div class="gaveta-fundo" id="gavetaFundo" onclick="fecharGaveta()"></div>
@@ -1423,13 +1514,19 @@ function pintarKit(){
     ${PASSOS_KIT.map(([k, nome, obr], i) => `<div class="passo"><h3><i>${i + 1}</i>${nome}</h3>
       <div class="opcoes">${opcoes(k, obr)}</div></div>`).join('')}`;
 
+  pintarPalco();
   const escolhidos = PASSOS_KIT.map(([k]) => produtos.find(p => p.id === escolhaKit[k])).filter(Boolean);
   const completo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => escolhaKit[k]);
   const avulso = escolhidos.reduce((s, p) => s + p.preco, 0);
   const kit = descontoDoKit(escolhidos.map(p => ({ kit: p.kit, preco: p.preco, qtd: 1 })), kitPct);
   const foraDeVenda = escolhidos.filter(p => p.situacao !== 'disponivel');
   const falta = PASSOS_KIT.filter(([k,,obr]) => obr && !escolhaKit[k]).map(([,nome]) => nome.toLowerCase());
-  document.getElementById('mresumoIn').innerHTML = `
+  const resumo = `
+    <div class="mini${completo ? ' completo' : ''}" aria-hidden="true">${PASSOS_KIT.map(([k]) => {
+      const p = produtos.find(x => x.id === escolhaKit[k]);
+      const nova = p && naMini[k] !== p.id;
+      return `<span class="${p ? 'tem' : ''}${nova ? ' chega' : ''}">${p && p.foto ? `<img src="${esc(p.foto)}" alt="">` : ''}</span>`;
+    }).join('')}<b>${completo ? `kit completo, ${kitPct}% off` : ''}</b></div>
     <div class="lin"><span>Avulso</span><span>${brl(avulso)}</span></div>
     ${kit.desconto > 0 ? `<div class="lin kit"><span>Kit, ${kitPct}% off</span><span>−${brl(kit.desconto)}</span></div>` : ''}
     <div class="lin fim"><span>Total do kit</span><span>${brl(avulso - kit.desconto)}</span></div>
@@ -1439,6 +1536,56 @@ function pintarKit(){
       ? `<button class="bt" onclick="avisarKit()">Quero ser avisado deste kit</button>
          <p class="mnota">${foraDeVenda.map(p => esc(p.nome)).join(', ')} ${foraDeVenda.length > 1 ? 'estão' : 'está'} fora de venda agora. A gente avisa quando o kit puder sair.</p>`
       : `<button class="bt" onclick="kitNaSacola()">Colocar o kit na sacola</button>`}`;
+  document.getElementById('mresumoIn').innerHTML = resumo;
+  document.getElementById('mresumoLado').innerHTML = resumo;
+}
+
+/* O palco só muda o lugar que mudou: refazer o HTML inteiro a cada toque
+   reiniciaria a animação de todas as peças, e a que já estava pousada
+   cairia de novo. `naPalco` e `naMini` lembram o que está em cada lugar. */
+const naPalco = {}, naMini = {};
+// O manifesto diz qual arranjo cada peça usa (largo para as grandes) e que
+// camadas existem. Sem ele, ou sem a camada, o palco cai na foto da loja.
+let arranjo = null;
+fetch('/kit/arranjo.json').then(r => r.ok ? r.json() : null).then(m => { arranjo = m; pintarPalco(); }).catch(() => {});
+function pintarPalco(){
+  const palco = document.getElementById('palco');
+  if(!palco) return;
+  const anel = (arranjo && arranjo.pecas[escolhaKit.peca]) || 'compacto';
+  palco.classList.toggle('anel-largo', anel === 'largo');
+  palco.classList.toggle('anel-compacto', anel !== 'largo');
+  PASSOS_KIT.forEach(([k]) => {
+    const slot = palco.querySelector(`[data-slot="${k}"]`);
+    const p = produtos.find(x => x.id === escolhaKit[k]);
+    const temCamada = p && arranjo && (arranjo.camadas[anel] || []).includes(p.id);
+    const src = !p ? '' : temCamada ? `/kit/${anel}/${encodeURIComponent(p.id)}.webp` : (p.foto || '');
+    // a chave inclui o arranjo: trocar uma peça pequena por uma grande muda
+    // o lugar de tudo, e as outras camadas descem de novo para o lugar novo
+    const chave = p ? `${p.id}@${temCamada ? anel : 'foto'}` : '';
+    if (naPalco[k] === chave) return;
+    naPalco[k] = chave;
+    const img = slot.querySelector('img');
+    slot.classList.remove('chega');
+    slot.classList.toggle('foto', !!p && !temCamada);
+    if (src) {
+      img.src = src;
+      img.alt = p.nome;
+      slot.classList.add('tem');
+      void slot.offsetWidth;          // reinicia a animação quando troca
+      slot.classList.add('chega');
+    } else {
+      slot.classList.remove('tem');
+      img.removeAttribute('src');
+      img.alt = '';
+    }
+  });
+  const completo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => escolhaKit[k]);
+  palco.classList.toggle('completo', completo);
+  document.getElementById('seloKit').textContent = `kit completo · ${kitPct}% off`;
+  document.getElementById('palcoLegenda').textContent = completo
+    ? 'Este é o seu kit.' : 'Escolha ao lado, e o kit se monta aqui.';
+  // a fileira do celular é desenhada junto do resumo; aqui só se lembra o que já pousou
+  setTimeout(() => PASSOS_KIT.forEach(([k]) => { naMini[k] = escolhaKit[k] || ''; }), 0);
 }
 
 window.kitNaSacola = () => {
