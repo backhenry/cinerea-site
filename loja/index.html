@@ -313,15 +313,11 @@
   /* `auto-fit` com teto de largura, alinhado À ESQUERDA, junto com o nome da
      coleção (nov/2026, pedido do dono). Centrado, uma coleção de uma peça só
      deixava o cartão solto no meio da tela, longe do título que o apresenta. */
-  /* vão de 46 px entre colunas: é por ele que o pavio que liga as peças
-     aparece (o fio passa por trás das fotos) */
-  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:start;gap:30px 46px;position:relative}
-  /* as peças por cima do pavio que as liga (o fio passa por trás das fotos) */
-  .grade > .peca{position:relative;z-index:1}
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,232px));justify-content:start;gap:30px 28px}
   /* DUAS POR LINHA NO CELULAR. Com uma, cada cartão tinha 460 px e a pessoa
      via uma peça por tela; com duas, a primeira linha cabe inteira na tela. */
   @media(max-width:560px){
-    .grade{grid-template-columns:1fr 1fr;gap:24px 22px}
+    .grade{grid-template-columns:1fr 1fr;gap:24px 14px}
     .grade .nome{font-size:16px;margin-top:10px;line-height:1.25}
     .grade .desc{font-size:12.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     /* O título da seção encolhe junto, senão é ele que empurra a primeira
@@ -518,21 +514,58 @@
   @media (prefers-reduced-motion: reduce){ .slot.chega img{animation:none} .selo-kit{transition:none} }
   .mmiolo h2{font-family:'Bodoni Moda';font-weight:500;font-size:clamp(30px,7vw,40px);line-height:1.08}
   .mmiolo .msub{color:var(--smoke);margin-top:10px;line-height:1.55;max-width:52ch}
-  .passo{margin-top:30px}
-  .passo h3{font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
-  .passo h3 i{font-style:normal;color:var(--ember);margin-right:6px}
-  .opcoes{display:flex;gap:12px;overflow-x:auto;padding:12px 2px 10px;scroll-snap-type:x proximity}
-  .opcao{flex:0 0 148px;scroll-snap-align:start;text-align:left;font:inherit;color:var(--char);background:none;border:1px solid var(--line);
-    border-radius:2px;padding:8px 8px 10px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s}
-  .opcao:hover{border-color:var(--char)}
-  .opcao[aria-pressed="true"]{border-color:var(--ember);box-shadow:0 0 0 1px var(--ember)}
-  .opcao img{display:block;width:100%;aspect-ratio:1;object-fit:cover;background:var(--ash)}
-  .opcao .on{display:block;font-size:14px;margin-top:8px;line-height:1.3}
+  /* OS PASSOS, LIGADOS POR UM PAVIO (nov/2026). Um fio desce pela esquerda
+     de um número a outro; cada passo escolhido acende (o número fica brasa e
+     o trecho abaixo dele também) e, com o kit completo, uma chama acende no
+     terceiro. As opções são fotos soltas, com a borda de laje do site, um
+     pouco tortas e em alturas diferentes: a mesma mesa da loja, e não uma
+     fileira de caixas. */
+  .passo{position:relative;padding:26px 0 0 46px}
+  .passo::before{content:'';position:absolute;left:14px;top:52px;bottom:-26px;width:2.4px;border-radius:2px;
+    background:repeating-linear-gradient(#2A2420 0 5px,#3a322c 5px 7px);transition:background .5s ease}
+  .passo:last-child::before{display:none}
+  .passo.feito::before{background:linear-gradient(var(--ember),#2A2420 85%)}
+  .passo h3{font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke);min-height:30px;display:flex;align-items:center}
+  .passo h3 i{position:absolute;left:0;top:22px;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);
+    display:flex;align-items:center;justify-content:center;font-family:'Bodoni Moda';font-style:italic;font-size:15px;letter-spacing:0;color:var(--smoke);z-index:1;
+    transition:background .35s ease,border-color .35s ease,color .35s ease,transform .35s cubic-bezier(.3,1.6,.5,1)}
+  .passo.feito h3 i{background:var(--ember);border-color:var(--ember);color:#fff;transform:scale(1.08)}
+  /* a chama, no terceiro passo, quando peça, refil e pavio estão escolhidos */
+  .passo h3 i::after{content:'';position:absolute;left:50%;top:-15px;width:11px;height:15px;margin-left:-5.5px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    background:radial-gradient(circle at 50% 70%,#FBE3A6 0 25%,#E9A04A 45%,rgba(184,70,43,.0) 75%);opacity:0;transform:scale(.4);transform-origin:50% 100%;
+    transition:opacity .4s ease,transform .5s cubic-bezier(.3,1.6,.5,1)}
+  .mmiolo.completo .passo.ultimo h3 i::after{opacity:1;transform:none;animation:kitChama 2.2s ease-in-out infinite alternate}
+  @keyframes kitChama{30%{transform:scale(.94,1.07) skewX(2deg)}70%{transform:scale(1.04,.95) skewX(-3deg)}100%{transform:scale(.97,1.03)}}
+  .opcoes{display:flex;align-items:flex-start;gap:20px;overflow-x:auto;padding:16px 4px 22px;scroll-snap-type:x proximity}
+  .opcao{flex:0 0 136px;scroll-snap-align:start;text-align:left;font:inherit;color:var(--char);background:none;border:0;padding:0;cursor:pointer;position:relative;
+    transition:transform .35s cubic-bezier(.3,1.4,.5,1),opacity .3s ease}
+  .opcao:nth-child(even){margin-top:18px}
+  .opcao:nth-child(3n){margin-top:8px}
+  .opcao .foto{display:block;position:relative;rotate:-1.4deg;filter:drop-shadow(0 10px 12px rgba(22,20,18,.12))}
+  .opcao:nth-child(even) .foto{rotate:1.2deg}
+  .opcao .foto img{display:block;width:100%;aspect-ratio:1;object-fit:cover;background:var(--ash);
+    -webkit-mask:var(--laje1) center/100% 100% no-repeat;mask:var(--laje1) center/100% 100% no-repeat}
+  .opcao:nth-child(4n+2) .foto img{-webkit-mask-image:var(--laje2);mask-image:var(--laje2)}
+  .opcao:nth-child(4n+3) .foto img{-webkit-mask-image:var(--laje3);mask-image:var(--laje3)}
+  .opcao:nth-child(4n) .foto img{-webkit-mask-image:var(--laje4);mask-image:var(--laje4)}
+  .opcao:hover{transform:translateY(-3px)}
+  /* escolhida: cresce um pouco, o nome acende, e as vizinhas do passo esmaecem */
+  .opcoes:has([aria-pressed="true"]) .opcao:not([aria-pressed="true"]){opacity:.5}
+  .opcoes:has([aria-pressed="true"]) .opcao:not([aria-pressed="true"]):hover{opacity:.85}
+  .opcao[aria-pressed="true"]{transform:scale(1.05)}
+  .opcao[aria-pressed="true"] .on{color:var(--ember)}
+  .opcao[aria-pressed="true"] .foto::after{content:'';position:absolute;right:6px;bottom:8px;width:22px;height:22px;border-radius:50%;background:var(--ember);
+    box-shadow:0 0 0 3px var(--paper);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12'/%3E%3C/svg%3E");}
+  .opcao[aria-pressed="true"] .foto::before{content:'';position:absolute;right:13px;bottom:16px;width:8px;height:4px;border:2px solid #fff;border-top:0;border-right:0;rotate:-45deg;z-index:2}
+  .opcao .on{display:block;font-size:14px;margin-top:10px;line-height:1.3;transition:color .25s}
   .opcao .op{display:block;font-size:13px;color:var(--smoke);margin-top:2px}
-  .opcao .os{position:absolute;top:14px;left:14px;background:var(--char);color:var(--paper);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:2px}
-  /* sem foto (pavio recém-cadastrado), o selo não pode cobrir o nome */
+  .opcao .os{position:absolute;top:10px;left:10px;z-index:2;background:var(--char);color:var(--paper);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:2px}
   .opcao:not(:has(img)) .os{position:static;display:inline-block;margin-bottom:6px}
-  .opcao.nenhum{display:flex;align-items:center;justify-content:center;min-height:120px;color:var(--smoke);font-size:14px;text-align:center}
+  /* "sem aroma": um círculo tracejado, a mesma forma do lugar vazio no palco */
+  .opcao.nenhum{display:flex;align-items:center;justify-content:center;flex-basis:104px;height:104px;margin-top:16px;border:1.5px dashed var(--line);border-radius:50%;
+    color:var(--smoke);font-family:'Bodoni Moda';font-style:italic;font-size:14px;text-align:center}
+  .opcao.nenhum[aria-pressed="true"]{border-color:var(--ember);color:var(--ember)}
   .mresumo{position:fixed;left:0;right:0;bottom:0;z-index:32;background:var(--paper);border-top:1px solid var(--line);padding:14px 22px 18px;display:none}
   .montar.abre + .mresumo{display:block}
   .mresumo .mr-in{max-width:760px;margin:0 auto}
@@ -1069,12 +1102,22 @@ function linhasComPeca(){
   return colecoes.filter(c => produtos.some(p => p.colecao === c.id)).map(c => c.nome);
 }
 
-function ligarAsPecas(){
-  if (typeof window.ligarPorPavio !== 'function') return;   // o vivo.js ainda não chegou
-  document.querySelectorAll('#grade .grade').forEach(g => window.ligarPorPavio(g, '.moldura', 'serpente'));
+/* O desalinhamento das colunas: cada coluna desce um pouco, e a conta se
+   refaz quando a grade muda de largura (girar o celular, janela menor). A
+   coluna sai do `offsetLeft`, que a margem de cima não altera. */
+const DESCE_COLUNA = () => innerWidth < 600 ? [0, 30] : [0, 54, 18, 70];
+function desalinhar(g){
+  const cartoes = [...g.querySelectorAll(':scope > .peca')];
+  cartoes.forEach(c => { c.style.marginTop = ''; });
+  const colunas = [...new Set(cartoes.map(c => c.offsetLeft))].sort((a, b) => a - b);
+  if (colunas.length < 2) return;
+  const desce = DESCE_COLUNA();
+  cartoes.forEach(c => { c.style.marginTop = desce[colunas.indexOf(c.offsetLeft) % desce.length] + 'px'; });
 }
-// o vivo.js é `defer` e pode chegar depois da primeira pintura
-addEventListener('load', () => { if (document.querySelector('#grade .grade') && !document.querySelector('#grade .vit-fio')) ligarAsPecas(); });
+const olhoDaGrade = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => desalinhar(e.target))) : null;
+function desalinharGrades(){
+  document.querySelectorAll('#grade .grade').forEach(g => { desalinhar(g); olhoDaGrade && olhoDaGrade.observe(g); });
+}
 
 function pintar(){
   const linhas = linhasComPeca();
@@ -1138,11 +1181,10 @@ function pintar(){
 
   document.getElementById('grade').outerHTML =
     `<div id="grade">${html || `<p class="vazio">${esc(nadaEncontrado())}</p>`}</div>`;
-  // O PAVIO QUE LIGA AS PEÇAS (nov/2026), o mesmo da home: em cada grade, as
-  // colunas descem em alturas diferentes e o fio passa por todas em serpente,
-  // queimando com a rolagem. Quem desenha é o vivo.js; a grade se refaz a cada
-  // filtro, e o fio vem junto.
-  ligarAsPecas();
+  // AS COLUNAS DESCEM EM ALTURAS DIFERENTES, como peças pousadas numa mesa.
+  // O pavio que as ligava saiu a pedido do dono (nov/2026): na loja ele
+  // disputava com as fotos; o pavio fica no montador do kit.
+  desalinharGrades();
 
   // Os controles mostram o que está ligado, e o contador só aparece quando há
   // filtro: numa vitrine inteira, "12 peças" é ruído.
@@ -1604,19 +1646,20 @@ function pintarKit(){
         onclick="escolherNoKit('${passo}','')">sem ${passo === 'aroma' ? 'aroma' : 'este'}</button>`;
     return sem + lista.map(p => `<button type="button" class="opcao" aria-pressed="${escolhaKit[passo] === p.id}"
         onclick="escolherNoKit('${passo}','${esc(p.id)}')">
-        ${p.foto ? `<img src="${esc(p.foto)}" alt="" loading="lazy">` : ''}
-        ${p.situacao !== 'disponivel' ? `<span class="os">${p.situacao === 'esgotado' ? 'esgotado' : 'em breve'}</span>` : ''}
+        ${p.foto ? `<span class="foto"><img src="${esc(p.foto)}" alt="" loading="lazy">${p.situacao !== 'disponivel' ? `<span class="os">${p.situacao === 'esgotado' ? 'esgotado' : 'em breve'}</span>` : ''}</span>`
+                 : (p.situacao !== 'disponivel' ? `<span class="os">${p.situacao === 'esgotado' ? 'esgotado' : 'em breve'}</span>` : '')}
         <span class="on">${esc(p.nome)}</span><span class="op">${brl(p.preco)}</span></button>`).join('');
   };
   document.getElementById('mmiolo').innerHTML = `
     <h2>Monte seu kit</h2>
     <p class="msub">Escolha uma peça, o refil e o pavio, e o aroma se quiser. Juntos, saem com ${kitPct}% de desconto sobre o preço avulso.</p>
-    ${PASSOS_KIT.map(([k, nome, obr], i) => `<div class="passo"><h3><i>${i + 1}</i>${nome}</h3>
+    ${PASSOS_KIT.map(([k, nome, obr], i) => `<div class="passo${escolhaKit[k] ? ' feito' : ''}${k === 'pavio' ? ' ultimo' : ''}"><h3><i>${i + 1}</i>${nome}</h3>
       <div class="opcoes">${opcoes(k, obr)}</div></div>`).join('')}`;
 
   pintarPalco();
   const escolhidos = PASSOS_KIT.map(([k]) => produtos.find(p => p.id === escolhaKit[k])).filter(Boolean);
   const completo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => escolhaKit[k]);
+  document.querySelector('.montar .mmiolo').classList.toggle('completo', completo);
   const avulso = escolhidos.reduce((s, p) => s + p.preco, 0);
   const kit = descontoDoKit(escolhidos.map(p => ({ kit: p.kit, preco: p.preco, qtd: 1 })), kitPct);
   const foraDeVenda = escolhidos.filter(p => p.situacao !== 'disponivel');
