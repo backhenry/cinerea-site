@@ -72,6 +72,22 @@
   .vidro .carater{font-style:italic;font-family:'Bodoni Moda',serif;font-size:18px;color:#45403A;margin-top:4px}
   .vidro .notas{font-size:14px;color:var(--smoke);margin-top:12px}
   @media(min-width:760px){ .vidros{grid-template-columns:repeat(3,1fr)} .vidro:nth-child(2){margin-top:26px} }
+  /* NO CELULAR, EM FILA DE LADO (nov/2026). Empilhados, com a foto na largura
+     toda, os três tomavam quase três telas de rolagem. Em fila, um por vez e
+     o próximo aparecendo na borda, cabem numa tela só. A fila vai de borda a
+     borda da janela, e o recuo dos lados é o que centra cada cartão. */
+  .pontos-vidros{display:none}
+  @media(max-width:759px){
+    .vidros{position:relative;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+            margin:30px calc(50% - 50vw) 0;padding:10px 14vw 16px}
+    .vidros::-webkit-scrollbar{display:none}
+    .vidro{flex:0 0 72vw;scroll-snap-align:center}
+    .vidro .notas{font-size:13px}
+    .pontos-vidros{display:flex;justify-content:center}
+    .pontos-vidros button{width:44px;height:30px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+    .pontos-vidros button::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .2s ease}
+    .pontos-vidros button[aria-current="true"]::before{background:var(--char)}
+  }
 
   /* a estação: foto e texto lado a lado */
   .estacao{display:grid;gap:30px;padding:24px 0 80px;align-items:center}
@@ -305,6 +321,7 @@
           <p class="notas">lavanda · sálvia esclareia · benjoim</p>
         </article>
       </div>
+      <div class="pontos-vidros" id="pontosVidros"></div>
       <div class="acoes centro surge">
         <a class="bt" href="https://wa.me/5511958280174?text=Oi%21%20Quero%20entrar%20na%20lista%20de%20espera%20dos%20aromas%20da%20Cin%C3%A9rea." target="_blank" rel="noopener">Entrar na lista de espera</a>
         <a class="bt bt2" href="/oraculo/">Descobrir o meu em três perguntas</a>
@@ -485,6 +502,30 @@
   }, { rootMargin: '0px 0px -10% 0px' });
   document.documentElement.classList.add('anima');
   document.querySelectorAll('.surge, .tempos').forEach(function (el) { olho.observe(el); });
+})();
+</script>
+<script>
+/* Os pontos da fila de vidrinhos: dizem em qual se está e levam a cada um.
+ * Só aparecem no celular (o CSS esconde no computador, onde os três ficam
+ * lado a lado). */
+(function () {
+  var fila = document.querySelector('.vidros'), pts = document.getElementById('pontosVidros');
+  if (!fila || !pts) return;
+  var vidros = Array.prototype.slice.call(fila.querySelectorAll('.vidro'));
+  vidros.forEach(function (v, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ver ' + v.querySelector('h3').textContent);
+    b.onclick = function () { fila.scrollTo({ left: v.offsetLeft - (fila.clientWidth - v.offsetWidth) / 2, behavior: 'smooth' }); };
+    pts.appendChild(b);
+  });
+  function marcar() {
+    var meio = fila.scrollLeft + fila.clientWidth / 2, perto = 0, d = Infinity;
+    vidros.forEach(function (v, i) { var x = Math.abs(v.offsetLeft + v.offsetWidth / 2 - meio); if (x < d) { d = x; perto = i; } });
+    Array.prototype.forEach.call(pts.children, function (b, i) { b.setAttribute('aria-current', i === perto ? 'true' : 'false'); });
+  }
+  fila.addEventListener('scroll', marcar, { passive: true });
+  marcar();
 })();
 </script>
 <script src="/contador.js" defer></script>
