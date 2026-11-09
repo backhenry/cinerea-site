@@ -363,6 +363,16 @@ const LIMITE_HISTORICO = 20;
 
 const digitos = s => String(s||'').replace(/\D/g,'');
 
+/* Telefone de Meus dados: grava só os dígitos e mostra com DDD e hífen. Com
+   dez ou onze dígitos é um número brasileiro e ganha a máscara; com outra
+   quantidade (DDI, ramal) volta como veio, porque inventar a máscara erraria. */
+function telefoneLegivel(s){
+  const d = digitos(s);
+  if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return String(s||'');
+}
+
 /** Mesma lista fechada de esquemas do app: uma regra genérica aceitaria `palavra:`. */
 function normalizarUrl(bruto){
   const t = String(bruto||'').trim();
@@ -452,10 +462,27 @@ document.getElementById('abas').onclick = e => {
   if (bt) abrirSecao(bt.dataset.secao);
 };
 
+/* No celular as quatro abas não cabem e a barra rola de lado. Sem isto, tocar
+   em "Fale conosco" abria a seção com a aba dela FORA da tela, e a barra
+   continuava mostrando as outras três. Rola só a barra, e não a página:
+   `scrollIntoView` também mexeria na rolagem vertical. */
+function mostrarAbaEscolhida(){
+  const barra = document.getElementById('abas');
+  const bt = barra.querySelector('button.aqui');
+  if (!bt || barra.scrollWidth <= barra.clientWidth) return;
+  // Pela caixa na tela, e não por `offsetLeft`: a barra não é posicionada, então
+  // o `offsetLeft` do botão conta a partir do corpo da página. E sem rolagem
+  // suave: é um salto de poucos pixels numa barra que a pessoa acabou de tocar.
+  const b = bt.getBoundingClientRect(), r = barra.getBoundingClientRect();
+  const alvo = barra.scrollLeft + (b.left - r.left) - (r.width - b.width) / 2;
+  barra.scrollLeft = Math.max(0, Math.min(barra.scrollWidth - barra.clientWidth, alvo));
+}
+
 async function abrirSecao(qual){
   secao = qual;
   document.querySelectorAll('#abas button').forEach(b =>
     b.classList.toggle('aqui', b.dataset.secao === qual));
+  mostrarAbaEscolhida();
   if (qual === 'fechar')     return telaFechar();
   if (qual === 'pecas')      return carregarPecas();
   if (qual === 'encomendas') return carregarEncomendas();
@@ -1664,6 +1691,7 @@ function recadoDaVolta(){
 }
 
 async function carregarEncomendas(){
+  document.getElementById('titulo').textContent = 'Suas encomendas';
   document.getElementById('chamada').textContent = 'O andamento de cada pedido.';
   tela.innerHTML = esperando('buscando suas encomendas…');
   try{
@@ -1870,6 +1898,7 @@ async function apagarPublicoDaPeca(uid, tagUid){
 }
 
 async function pintarDados(){
+  document.getElementById('titulo').textContent = 'Seus dados';
   document.getElementById('chamada').textContent = 'Seu nome, seu acesso.';
   let nome = usuario.displayName || '';
   try{
@@ -1878,9 +1907,9 @@ async function pintarDados(){
   }catch(e){ console.error(e); }
 
   tela.innerHTML = `<div class="cartao">
-    <h3>Seus dados</h3>
+    <h3>Nome e telefone</h3>
     <label>Nome</label><input id="d_nome" value="${esc(nome)}" autocomplete="name">
-    <label>Telefone</label><input id="d_tel" placeholder="12 99123-4567" inputmode="tel">
+    <label>Telefone</label><input id="d_tel" placeholder="(12) 99123-4567" inputmode="tel" autocomplete="tel">
     <div class="botoes"><button class="bt" id="d_salvar">Salvar</button></div>
     <div class="erro some" id="d_recado"></div>
   </div>
@@ -1928,7 +1957,7 @@ async function pintarDados(){
 
   try{
     const d = await getDoc(doc(fdb,'clientes',usuario.uid));
-    if(d.exists() && d.data().telefone) document.getElementById('d_tel').value = d.data().telefone;
+    if(d.exists() && d.data().telefone) document.getElementById('d_tel').value = telefoneLegivel(d.data().telefone);
   }catch(e){}
 
   document.getElementById('d_salvar').onclick = salvarDados;
@@ -1992,7 +2021,7 @@ async function pintarDados(){
 
 async function salvarDados(){
   const nome = document.getElementById('d_nome').value.trim();
-  const tel  = document.getElementById('d_tel').value.trim();
+  const tel  = digitos(document.getElementById('d_tel').value);
   if(nome.length < 2) return falha('d_recado','Escreva seu nome.');
   const bt = document.getElementById('d_salvar');
   bt.disabled = true;
@@ -2003,6 +2032,7 @@ async function salvarDados(){
     await updateProfile(usuario, { displayName: nome });
     await setDoc(doc(fdb,'clientes',usuario.uid),
       { nome, telefone: tel, atualizadoEm: serverTimestamp() }, { merge:true });
+    document.getElementById('d_tel').value = telefoneLegivel(tel);
     falha('d_recado','Salvo.');
   }catch(e){ console.error(e); falha('d_recado','Não consegui salvar agora.'); }
   bt.disabled = false;
@@ -2010,6 +2040,7 @@ async function salvarDados(){
 
 /* ------------------------------------------------------------- fale conosco --- */
 function pintarAjuda(){
+  document.getElementById('titulo').textContent = 'Fale conosco';
   document.getElementById('chamada').textContent = 'Quem responde é quem faz.';
   tela.innerHTML = `<div class="cartao">
     <h3>Fale com o ateliê</h3>
@@ -2023,7 +2054,7 @@ function pintarAjuda(){
 
   <div class="cartao">
     <h3>Repor a areia</h3>
-    <p class="sub">Quando a fragrância acabar, a escultura fica: você repõe só a areia.</p>
+    <p class="sub">A escultura fica para sempre: quando a areia acabar, você repõe só a areia.</p>
     <div class="botoes"><a class="bt bt2" href="/loja/?colecao=Refis">Ver os refis</a></div>
   </div>
 
