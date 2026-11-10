@@ -877,7 +877,7 @@ try {
 </div>
 
 <div class="envolve">
-  <button type="button" class="kit-faixa" id="kitFaixa" onclick="abrirKit()">
+  <button type="button" class="kit-faixa" id="kitFaixa" onclick="abrirKit()" hidden>
     <span>
       <span class="kf-selo" id="kitFaixaSelo">kit com desconto</span>
       <span class="kf-titulo">Monte seu kit</span>
@@ -887,6 +887,15 @@ try {
     </span>
     <span class="kf-palco" id="kitFaixaPalco" aria-hidden="true"><span class="cena"></span></span>
   </button>
+  <script>
+  /* A FAIXA DO KIT NASCE ESCONDIDA, e o aparelho lembra a última visita.
+     Ela só existe quando dá para comprar um kit (`kitAVenda`), e isso só se
+     sabe quando o catálogo chega. Nascendo visível, com a loja esgotada, a
+     grade pulava ~230 px para cima nesse instante; nascendo escondida, quem
+     volta com o kit à venda veria o pulo ao contrário. Lembrar o último estado
+     tira o pulo de quem volta, como a altura do banner logo acima. */
+  try { if (localStorage.getItem('cinerea-kit') === '1') document.getElementById('kitFaixa').hidden = false; } catch (e) {}
+  </script>
   <div class="linhas" id="linhas"></div>
   <!-- A ENCOMENDA FICA DEPOIS DAS PEÇAS (nov/2026). Antes ela vinha no alto,
        junto do título, e com o banner, a busca e os filtros empurrava a
@@ -1604,8 +1613,12 @@ function descontoDoKit(itens, percentual) {
  * para a sacola de sempre, e é a sacola que reconhece o kit e aplica o
  * desconto (e o servidor confere de novo na hora de cobrar).
  *
- * Peça fora de venda aparece, com o selo, e pode ser escolhida: com tudo
- * esgotado, o kit vira um pedido de aviso pelo WhatsApp em vez de sacola.
+ * Peça fora de venda aparece, com o selo, e pode ser escolhida, desde que o
+ * kit exista: ele só é oferecido quando cada passo obrigatório tem ao menos
+ * um item À VENDA. Antes (nov/2026) ele aparecia com tudo esgotado, como a
+ * primeira oferta da loja e em toda ficha, e abria três passos sem nada que
+ * se pudesse comprar: a maior promessa da página era um beco sem saída.
+ * Some sozinho, e volta sozinho quando a leva chega.
  * ------------------------------------------------------------------------- */
 const PASSOS_KIT = [
   ['peca', 'A peça', true], ['refil', 'O refil de areia', true],
@@ -1613,16 +1626,23 @@ const PASSOS_KIT = [
 ];
 let escolhaKit = {};
 
+// O kit existe quando há desconto e cada passo obrigatório tem algo à venda.
+function kitAVenda(){
+  return kitPct > 0 && PASSOS_KIT.filter(([,,obr]) => obr)
+    .every(([k]) => produtos.some(p => p.kit === k && p.situacao === 'disponivel'));
+}
+
 function pintarFaixaKit(){
   const faixa = document.getElementById('kitFaixa');
   if(!faixa) return;
-  const temTudo = PASSOS_KIT.filter(([,,obr]) => obr).every(([k]) => produtos.some(p => p.kit === k));
-  faixa.hidden = !(kitPct > 0 && temTudo);
+  faixa.hidden = !kitAVenda();
+  try { localStorage.setItem('cinerea-kit', faixa.hidden ? '0' : '1'); } catch (e) {}
   if(faixa.hidden) return;
   document.getElementById('kitFaixaSelo').textContent = `−${kitPct}% no kit`;
   // A CONTA DE UM KIT DE VERDADE: a peça mais barata com o refil e o pavio
-  // mais barato. Número real convence mais que um percentual sozinho.
-  const maisBarato = k => produtos.filter(p => p.kit === k).sort((a, b) => a.preco - b.preco)[0];
+  // mais barato, entre os que estão à venda. Número real convence mais que
+  // um percentual sozinho, e o exemplo não pode ser um kit que não se compra.
+  const maisBarato = k => produtos.filter(p => p.kit === k && p.situacao === 'disponivel').sort((a, b) => a.preco - b.preco)[0];
   const ex = ['peca', 'refil', 'pavio'].map(maisBarato);
   const avulso = ex.reduce((s, p) => s + p.preco, 0);
   const kit = descontoDoKit(ex.map(p => ({ kit: p.kit, preco: p.preco, qtd: 1 })), kitPct);
