@@ -647,6 +647,17 @@
   .bt{display:block;width:100%;margin-top:24px;padding:16px;border:none;border-radius:2px;background:var(--char);color:var(--paper);font-size:15px;cursor:pointer}
   .bt:hover{background:var(--ember)}
   .bt.fraco{background:none;border:1px solid var(--line);color:var(--char)}
+  /* LISTA DE ESPERA, na ficha da peça esgotada (nov/2026). */
+  .avise{margin-top:14px}
+  .avise label{display:block;margin-top:10px;font-size:13px;color:var(--smoke)}
+  .avise input{display:block;width:100%;margin-top:4px;padding:13px 14px;font:inherit;font-size:16px;color:var(--char);background:#fff;border:1px solid var(--line);border-radius:2px}
+  .avise input:focus{outline:2px solid var(--char);outline-offset:1px}
+  .avise .bt{margin-top:14px}
+  .avise-erro{min-height:0;margin:8px 0 0;font-size:13.5px;color:var(--ember)}
+  .avise-erro:empty{display:none}
+  .avise-nota{margin:10px 0 0;font-size:12.5px;color:var(--smoke)}
+  .avise-nota a{color:inherit}
+  .avise-ok{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-left:3px solid var(--ember);background:#FBFAF7;font-size:14.5px;line-height:1.5}
   /* O BOTÃO DA REALIDADE AUMENTADA tinha a cara do "Voltar à loja": sem fundo,
      borda no tom da linha, o mais apagado da ficha. Justo o argumento que mais
      vende uma peça feita para morar com ela, e o dono pediu que ficasse visível.
@@ -1937,8 +1948,14 @@ window.abrirFicha = id => {
          descrição, da ficha técnica e da realidade aumentada: a pessoa
          decidia comprar olhando o preço e tinha de rolar procurando onde. -->
     ${esgotado
-      ? `<p class="desc" style="margin-top:24px"><b>Esgotada.</b> Cada peça é moldada à mão, uma por vez, e esta leva acabou. Peça para ser avisado e a gente guarda uma da próxima para você.</p>
-         <button class="bt" onclick="avisarQuandoVoltar('${esc(p.id)}')">Quero ser avisado</button>`
+      ? `<p class="desc" style="margin-top:24px"><b>Esgotada.</b> Cada peça é moldada à mão, uma por vez, e esta leva acabou. Deixe seu nome e WhatsApp, e a gente avisa quando a próxima sair.</p>
+         <form class="avise" id="avise" novalidate onsubmit="return entrarNaEspera(event,'${esc(p.id)}')">
+           <label>Seu nome<input name="nome" autocomplete="given-name" maxlength="60" required></label>
+           <label>WhatsApp com DDD<input name="whats" type="tel" inputmode="tel" autocomplete="tel" placeholder="(12) 99999-9999" required></label>
+           <p class="avise-erro" id="aviseErro" role="alert"></p>
+           <button class="bt" type="submit">Quero ser avisado</button>
+           <p class="avise-nota">Usamos só para este aviso, e apagamos depois de avisar. <a href="/privacidade/">Privacidade</a></p>
+         </form>`
       : breve
       ? `<p class="desc" style="margin-top:24px">Esta peça ainda está sendo feita. Fale com a gente para saber quando ela chega.</p>
          <button class="bt fraco" onclick="fecharFicha()">Voltar à loja</button>`
@@ -2293,8 +2310,63 @@ window.contatoWhats = () => {
   location.href = `https://wa.me/${numero}?text=`+encodeURIComponent('Olá! Tenho uma dúvida sobre uma peça da Cinérea.');
 };
 
-// Esgotado vira conversa: a pessoa pede para ser avisada e a mensagem já
-// vai com o nome da peça, que é o que o ateliê precisa para guardar uma.
+/* LISTA DE ESPERA (nov/2026). Antes, "Quero ser avisado" abria o WhatsApp, e
+ * cada interessado virava uma conversa que o ateliê tinha de lembrar de
+ * responder; quem desistia de escrever se perdia. Agora o nome e o número
+ * ficam em `espera/`, e a gestão avisa todo mundo quando a leva chega.
+ *
+ * Fala com a API do Firestore direto, como o contador: a loja não carrega o
+ * SDK. O pedido EXIGE que o documento não exista (`currentDocument`) e manda
+ * a hora do SERVIDOR (`REQUEST_TIME`), que é o que a regra confere. Esta
+ * função é pura de propósito: o teste de regra a extrai daqui e manda o mesmo
+ * corpo ao emulador. */
+function pedidoDeEspera(projeto, id, dados){
+  const raiz = 'projects/' + projeto + '/databases/(default)/documents/espera/';
+  return { writes: [{
+    update: { name: raiz + id, fields: {
+      peca: { stringValue: String(dados.peca) },
+      nome: { stringValue: String(dados.nome) },
+      whats: { stringValue: String(dados.whats) },
+    } },
+    currentDocument: { exists: false },
+    updateTransforms: [{ fieldPath: 'em', setToServerValue: 'REQUEST_TIME' }],
+  }] };
+}
+
+/* O número como a regra aceita: só dígitos, de 10 a 13. Vazio é "não serve". */
+function whatsDaEspera(v){
+  const d = String(v || '').replace(/\D/g, '');
+  return d.length >= 10 && d.length <= 13 ? d : '';
+}
+
+window.entrarNaEspera = async (ev, id) => {
+  ev.preventDefault();
+  const f = ev.target, erro = document.getElementById('aviseErro');
+  const nome = f.nome.value.trim().slice(0, 60);
+  const numero = whatsDaEspera(f.whats.value);
+  if (!nome) { erro.textContent = 'Diga como podemos te chamar.'; f.nome.focus(); return false; }
+  if (!numero) { erro.textContent = 'Confira o WhatsApp: o número com DDD, como (12) 99999-9999.'; f.whats.focus(); return false; }
+  erro.textContent = '';
+  const bt = f.querySelector('button'); bt.disabled = true; bt.textContent = 'Guardando…';
+  const p = produtos.find(x => x.id === id);
+  const docId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()).replace(/[^A-Za-z0-9]/g, '').slice(0, 24);
+  try {
+    const r = await fetch('https://firestore.googleapis.com/v1/projects/cinerea1/databases/(default)/documents:commit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pedidoDeEspera('cinerea1', docId, { peca: id, nome, whats: numero })),
+    });
+    if (!r.ok) throw new Error(String(r.status));
+    f.outerHTML = `<p class="avise-ok">Pronto, ${esc(nome)}. Quando ${esc(p ? p.nome : 'a peça')} voltar, a gente te chama no WhatsApp.</p>`;
+  } catch (e) {
+    // Sem conseguir gravar, a pessoa não pode ficar sem saída: o caminho de
+    // antes continua aqui, a conversa pelo WhatsApp já com o nome da peça.
+    bt.disabled = false; bt.textContent = 'Quero ser avisado';
+    erro.innerHTML = 'Não consegui guardar agora. <a href="#" onclick="avisarQuandoVoltar(\'' + esc(id) + '\');return false">Peça pelo WhatsApp</a>.';
+  }
+  return false;
+};
+
+// O caminho antigo, pelo WhatsApp: agora é a saída quando a lista falha.
 window.avisarQuandoVoltar = id => {
   const p = produtos.find(x => x.id === id);
   const numero = whats ? (whats.length>=12?whats:'55'+whats) : '5511958280174';
