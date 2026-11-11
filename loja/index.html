@@ -381,6 +381,9 @@
     .peca:hover .moldura img{transform:none}
   }
   .breve{position:absolute;top:12px;left:12px;background:var(--char);color:var(--paper);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:3px}
+  /* Sob encomenda vende: o selo é claro, para não ler como "esgotado". */
+  .breve.encomenda{background:var(--paper);color:var(--char);border:1px solid var(--line)}
+  .peca .envio{font-size:12.5px;color:var(--smoke);margin-top:2px}
   .nome{font-family:'Bodoni Moda';font-weight:500;font-size:19px;margin-top:13px}
   .desc{font-size:13.5px;color:var(--smoke);margin-top:3px}
   .preco{font-size:15px}
@@ -842,7 +845,7 @@ try {
 
 <section class="capa-loja">
   <div class="envolve">
-    <h1>O que está pronto no ateliê.</h1>
+    <h1>Feitas à mão, uma por vez.</h1>
   </div>
 </section>
 
@@ -1048,6 +1051,10 @@ async function carregar(){
     colecao:p.colecao||'', destaque:!!p.destaque, pronto:Number(p.pronto)||0,
     // o papel da peça no kit (peca, refil, pavio, aroma), vindo da gestão
     kit:['peca','refil','pavio','aroma'].includes(p.kit)?p.kit:'',
+    // Dias até o envio, para peça feita DEPOIS do pedido (nov/2026). Ela está
+    // à venda, e é por isso que isto não é uma quarta situação: o que muda é
+    // só o que a loja promete de prazo. Ver `textoEnvio`.
+    envioDias:Math.max(0, Math.round(Number(p.envioDias)||0)),
   }));
   kitPct = Math.min(Math.max(Number(d?.kit?.desconto)||0,0),100);
   // Sem reordenar: a gestão publica já na ordem em que a loja mostra. Ordenar
@@ -1082,9 +1089,25 @@ function lerFicha(f){
     .map(l => { const i = l.indexOf(':'); return i < 0 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
 }
 
+/**
+ * SOB ENCOMENDA (nov/2026). Os pratos e potes são moldados depois do pedido, e
+ * a loja dizia "esgotado" neles enquanto a home dizia "moldada depois do
+ * pedido": duas frases verdadeiras sobre a mesma peça, uma desmentindo a outra.
+ * Agora a peça está à venda e diz o prazo. Vazio quando não há o que dizer:
+ * peça fora de venda não promete envio, e peça pronta não precisa.
+ *
+ * A MESMA frase existe no `vitrine.js` da home, e o teste confere as duas.
+ */
+function textoEnvio(p){
+  const d = Math.round(Number(p && p.envioDias) || 0);
+  if (!p || p.situacao !== 'disponivel' || d < 1) return '';
+  return 'sob encomenda, envio em ' + d + (d === 1 ? ' dia' : ' dias');
+}
+
 function cartao(p){
   const breve = p.situacao !== 'disponivel';
   const selo = p.situacao === 'esgotado' ? 'esgotado' : 'em breve';
+  const envio = textoEnvio(p);
   // A SEGUNDA FOTO SÓ ENTRA SE EXISTIR. Sem ela o cartão volta ao que sempre
   // foi: uma imagem que se aproxima devagar. Duplicar a primeira para "ter o
   // efeito" seria pior que não ter, a pessoa passa o mouse e nada muda.
@@ -1093,6 +1116,7 @@ function cartao(p){
          <img src="${esc(p.foto)}" alt="${esc(p.nome)}" loading="lazy">
          ${p.foto2 && comPonteiro()?`<img class="segunda" src="${esc(p.foto2)}" alt="" loading="lazy" aria-hidden="true">`:''}
          ${breve?`<span class="breve">${selo}</span>`:''}
+         ${envio?`<span class="breve encomenda">sob encomenda</span>`:''}
        </div>`
     : marca();
 
@@ -1111,7 +1135,8 @@ function cartao(p){
   return `<div class="peca" onclick="abrirFicha('${esc(p.id)}')">${foto}
     <div class="nome">${esc(p.nome)}</div>
     ${p.desc?`<div class="desc">${esc(p.desc)}</div>`:''}
-    <div class="pe"><span class="preco">${brl(p.preco)}</span>${juntar}</div></div>`;
+    <div class="pe"><span class="preco">${brl(p.preco)}</span>${juntar}</div>
+    ${envio?`<div class="envio">${esc(envio.replace('sob encomenda, ',''))}</div>`:''}</div>`;
 }
 
 /**
@@ -1917,6 +1942,9 @@ window.abrirFicha = id => {
       : breve
       ? `<p class="desc" style="margin-top:24px">Esta peça ainda está sendo feita. Fale com a gente para saber quando ela chega.</p>
          <button class="bt fraco" onclick="fecharFicha()">Voltar à loja</button>`
+      : textoEnvio(p)
+      ? `<p class="desc" style="margin-top:24px"><b>Sob encomenda.</b> Moldada à mão depois do seu pedido, uma por vez. Envio em ${Math.round(p.envioDias)} ${p.envioDias === 1 ? 'dia' : 'dias'}.</p>
+         <button class="bt" onclick="juntar('${esc(p.id)}')">Colocar na sacola</button>`
       : `<button class="bt" onclick="juntar('${esc(p.id)}')">Colocar na sacola</button>`}
     ${p.kit && kitPct > 0 && !document.getElementById('kitFaixa').hidden ? `<div class="leve-kit">
         <p>Leve em kit, com ${p.kit === 'peca' ? 'refil e pavio' : p.kit === 'refil' ? 'uma peça e o pavio' : p.kit === 'pavio' ? 'uma peça e o refil' : 'uma peça, o refil e o pavio'}.

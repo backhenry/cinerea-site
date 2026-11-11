@@ -171,6 +171,8 @@
   .vit-nome{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
     font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;line-height:1.2;margin-top:12px;min-height:2.4em}
   .vit-preco{display:block;font-size:14.5px;color:var(--smoke);margin-top:4px;min-height:1.5em}
+  .vit-envio{display:block;font-size:12.5px;color:var(--smoke);margin-top:2px}
+  .vit-peca:nth-child(3n+2) .vit-envio{padding-left:14%}
   .vit-mais{display:inline-block;margin-top:30px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--char);padding:12px 0}
   .vit-mais:hover{color:var(--ember)}
   /* NO CELULAR, UMA FILA QUE DESLIZA (nov/2026, revertendo a trilha). As duas
@@ -188,7 +190,7 @@
     .vit-peca{flex:0 0 64vw;width:auto;scroll-snap-align:center}
     .vit-peca:nth-child(n){margin:0}
     .vit-peca:nth-child(even){margin-top:22px}
-    .vit-peca:nth-child(3n+2) .vit-nome,.vit-peca:nth-child(3n+2) .vit-preco{padding-left:0}
+    .vit-peca:nth-child(3n+2) .vit-nome,.vit-peca:nth-child(3n+2) .vit-preco,.vit-peca:nth-child(3n+2) .vit-envio{padding-left:0}
     .vit-nome{font-size:18px}
   }
 
@@ -266,6 +268,7 @@
   .novas-trilha figcaption{margin-top:12px;font-size:14px;color:var(--smoke);max-width:30ch}
   .novas-trilha a{display:block}
   .novas-preco{display:block;margin-top:4px;font-size:14px;color:var(--smoke)}
+  .novas-envio{display:block;margin-top:2px;font-size:12.5px;color:var(--smoke)}
   .novas-trilha figcaption b{display:block;font-family:'Bodoni Moda',serif;font-weight:500;font-size:20px;color:var(--char);margin-bottom:2px}
   .novas .bt{margin-top:6px}
   /* a segunda foto e a sacola, as mesmas da vitrine; a foto não é quadrada
@@ -467,7 +470,7 @@
 
     <section class="vitrine" aria-labelledby="vitTitulo">
       <div class="rot">Na vitrine</div>
-      <h2 class="serifa" id="vitTitulo">Pronto no ateliê, para levar.</h2>
+      <h2 class="serifa" id="vitTitulo">Moldadas à mão, uma por vez.</h2>
       <!-- Três caixas vazias do tamanho final: quem preenche é /vitrine.js,
            com o mesmo catálogo que a loja lê. Sem rede, elas viram um convite
            para a loja em vez de ficarem vazias. -->

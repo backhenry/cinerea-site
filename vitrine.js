@@ -50,6 +50,36 @@
 
   var SELO = '<span class="vit-selo">esgotado</span>';
 
+  /* SOB ENCOMENDA (nov/2026): a peça feita depois do pedido está à venda e diz
+     o prazo. É a MESMA frase do `textoEnvio` da loja, e o teste confere as
+     duas: a home prometendo um prazo e a ficha outro é a mesma peça mentindo
+     numa das duas telas. */
+  function textoEnvio(p) {
+    var d = Math.round(Number(p && p.envioDias) || 0);
+    if (!p || p.situacao !== 'disponivel' || d < 1) return '';
+    return 'sob encomenda, envio em ' + d + (d === 1 ? ' dia' : ' dias');
+  }
+
+  /* Na trilha dos pratos e potes, escrita na página, o prazo entra embaixo do
+     preço de cada peça que está à venda sob encomenda. */
+  function marcarEnvio(itens) {
+    if (!document.querySelectorAll) return;
+    var porId = {};
+    itens.forEach(function (p) { porId[p.id] = p; });
+    var links = document.querySelectorAll('a.vit-sacola[href*="sacola="]');
+    Array.prototype.forEach.call(links, function (a) {
+      var id = decodeURIComponent((a.getAttribute('href').split('sacola=')[1] || '').split('&')[0]);
+      var texto = textoEnvio(porId[id]);
+      var fig = a.closest && a.closest('figure');
+      var leg = fig && fig.querySelector('figcaption');
+      if (!texto || !leg || leg.querySelector('.novas-envio')) return;
+      var s = document.createElement('span');
+      s.className = 'novas-envio';
+      s.textContent = texto;
+      leg.appendChild(s);
+    });
+  }
+
   /* As sacolas que já estão escritas na página (a trilha dos pratos e potes)
      apontam para peças fixas. Peça fora de venda perde a sacola e ganha o
      selo; sem isso o toque levaria à loja e não poria nada na sacola. */
@@ -101,7 +131,8 @@
         '<span class="vit-foto"><img src="' + esc(p.foto) + '" alt="' + esc(p.nome) +
         '" loading="lazy" decoding="async" width="400" height="400">' + segunda + '</span>' +
         '<span class="vit-nome">' + esc(p.nome) + '</span>' +
-        '<span class="vit-preco">' + esc(brl.format(p.preco)) + '</span></a>' +
+        '<span class="vit-preco">' + esc(brl.format(p.preco)) + '</span>' +
+        (textoEnvio(p) ? '<span class="vit-envio">' + esc(textoEnvio(p)) + '</span>' : '') + '</a>' +
         '<span class="vit-sobre">' + (p.situacao === 'esgotado' ? SELO :
         '<a class="vit-sacola" href="/loja/?sacola=' + id + '" title="Colocar na sacola"' +
         ' aria-label="Colocar ' + esc(p.nome) + ' na sacola">' + SACOLA + '</a>') + '</span></div>';
@@ -129,11 +160,13 @@
         preco: Number(valor(m.preco)) || 0,
         foto: valor(m.foto) || '',
         foto2: valor(m.foto2) || '',
-        situacao: valor(m.situacao),
+        situacao: valor(m.situacao) || 'disponivel',
+        envioDias: Number(valor(m.envioDias)) || 0,
         destaque: !!valor(m.destaque)
       };
     }).filter(function (p) { return p.id; });
     marcarForaDeVenda(itens);
+    marcarEnvio(itens);
     pinta(itens);
   }).catch(falha);
 })();
